@@ -1,4 +1,9 @@
-var registerBpmnJSPlugin = require('camunda-modeler-plugin-helpers').registerBpmnJSPlugin;
+import {
+    registerBpmnJSPlugin
+  } from 'camunda-modeler-plugin-helpers';
+import ConvertToCamundaCloudPlugin from './ConvertToCamundaCloudPlugin';
 
-var ConvertToCamundaCloudPlugin = require('./ConvertToCamundaCloudPlugin');
-registerBpmnJSPlugin(ConvertToCamundaCloudPlugin);
+registerBpmnJSPlugin({
+    __init__: [ 'convertToCamundaCloudPlugin' ],
+    convertToCamundaCloudPlugin: [ 'type', ConvertToCamundaCloudPlugin ]
+  });

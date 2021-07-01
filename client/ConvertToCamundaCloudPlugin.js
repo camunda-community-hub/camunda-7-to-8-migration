@@ -1,18 +1,39 @@
 'use strict';
 
+import BpmnJS from "bpmn-js/lib/Modeler";
+
+import camundaModdlePackage from "camunda-bpmn-moddle/resources/camunda";
+import camundaModdleExtension from "camunda-bpmn-moddle/lib";
+
+import zeebeModdlePackage from "zeebe-bpmn-moddle/resources/zeebe";
+import zeebeModdleExtension from "zeebe-bpmn-moddle/lib";
+
 var removeDiacritics = require('diacritics').remove;
 var domify = require('min-dom/lib/domify'),
     domEvent = require('min-dom/lib/event'),
     domClasses = require('min-dom/lib/classes'),
     domQuery = require('min-dom/lib/query'),
-    clear = require('min-dom/lib/clear'),
-    BpmnJS = require('bpmn-js/lib/Modeler');
+    clear = require('min-dom/lib/clear');
+//    BpmnJS = require('bpmn-js/lib/Modeler');
 
-function ConvertToCamundaCloudPlugin(elementRegistry, editorActions, canvas, modeling) {
+const bpmnJS = new BpmnJS({
+  additionalModules: [camundaModdleExtension, zeebeModdleExtension],
+  moddleExtensions: {
+    camunda: camundaModdlePackage,
+    zeebe: zeebeModdlePackage
+  }
+  });
+const moddle = bpmnJS.get('moddle');
+
+export default function ConvertToCamundaCloudPlugin(elementRegistry, editorActions, canvas, modeling) {
+  var self = this;
+
   this._elementRegistry = elementRegistry;
   this._modeling = modeling;
 
-  var self = this;
+  console.log(moddle.create("camunda:InputOutputParameter"));
+  console.log(moddle.create("zeebe:InputOutputParameter"));
+
 
   this.state = {
     open: false
@@ -25,38 +46,36 @@ function ConvertToCamundaCloudPlugin(elementRegistry, editorActions, canvas, mod
   });
 }
 
+// https://github.com/camunda-community-hub/camunda-modeler-plugin-rename-technical-ids/blob/main/client/RenameTechnicalIDsPlugin.js
+// https://github.com/bpmn-io/bpmn-js-examples/tree/master/bpmn-properties
+// https://github.com/camunda/camunda-modeler-plugin-example
+// https://github.com/camunda/camunda-modeler/tree/master/docs/plugins
+// https://www.youtube.com/watch?v=sav98y4EFzE
 ConvertToCamundaCloudPlugin.prototype.convertToCamundaCloud = function(name, type) {
   var self = this;
   console.log("YEAH");
-  self.generateIDs();
-}
 
-ConvertToCamundaCloudPlugin.prototype.generateIDs = function() {
-  var self = this;
-  var bpmnJS = new BpmnJS();
-
-  var moddle = bpmnJS.get('moddle');
 
   var elements = this._elementRegistry._elements;
   this.technicalIds = {};
   Object.keys(elements).forEach(function(key) {
     var element = elements[key].element;
-//    console.log(key);
-    console.log(element);
-
     if (element.type == "bpmn:ServiceTask") {
+      console.log(element);
       if (element.businessObject.topic) { // External Tasks
-        var taskDef = moddle.create("zeebe:taskDefinition");
+        var taskDef = moddle.create("zeebe:TaskDefinition");
         taskDef.type = element.businessObject.topic;
 
-        var extensions  = element.businessObject.extensionElements;
-        if (!extensions) {
-          extensions = moddle.create('bpmn:ExtensionElements', {});          
+        if (!element.businessObject.extensionElements) {
+          var moddleExtensionElements = moddle.create('bpmn:ExtensionElements', {});          
+          moddleExtensionElements.get('values').push(taskDef);
+          element.businessObject.extensionElements = moddleExtensionElements;
+        } else {
+          //??
         }
-        extensions.append(taskDef);
+        console.log(element.businessObject);
       }
       console.log(element);
-
     }
 
   });
@@ -90,8 +109,3 @@ ConvertToCamundaCloudPlugin.prototype._getTechnicalID = function(name, type) {
 
 
 ConvertToCamundaCloudPlugin.$inject = [ 'elementRegistry', 'editorActions', 'canvas', 'modeling' ];
-
-module.exports = {
-    __init__: ['convertToCamundaCloudPlugin'],
-    convertToCamundaCloudPlugin: ['type', ConvertToCamundaCloudPlugin]
-};
