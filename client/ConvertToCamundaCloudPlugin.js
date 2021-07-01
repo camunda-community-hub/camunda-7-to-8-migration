@@ -30,10 +30,8 @@ export default function ConvertToCamundaCloudPlugin(elementRegistry, editorActio
 
   this._elementRegistry = elementRegistry;
   this._modeling = modeling;
-
-  console.log(moddle.create("camunda:InputOutputParameter"));
-  console.log(moddle.create("zeebe:InputOutputParameter"));
-
+  this._displayNotification = displayNotification;
+  this._triggerAction = triggerAction;
 
   this.state = {
     open: false
@@ -51,47 +49,26 @@ export default function ConvertToCamundaCloudPlugin(elementRegistry, editorActio
 // https://github.com/camunda/camunda-modeler-plugin-example
 // https://github.com/camunda/camunda-modeler/tree/master/docs/plugins
 // https://www.youtube.com/watch?v=sav98y4EFzE
-ConvertToCamundaCloudPlugin.prototype.convertToCamundaCloud = function(name, type) {
+ConvertToCamundaCloudPlugin.prototype.convertToCamundaCloud = function() {
   var self = this;
-  console.log("YEAH");
 
-
-  var elements = this._elementRegistry._elements;
-  this.technicalIds = {};
+  var elements = this._elementRegistry._elements;  
   Object.keys(elements).forEach(function(key) {
     var element = elements[key].element;
     if (element.type == "bpmn:ServiceTask") {
+      convertServiceTask(element);
       console.log(element);
-      if (element.businessObject.topic) { // External Tasks
-        var taskDef = moddle.create("zeebe:TaskDefinition");
-        taskDef.type = element.businessObject.topic;
-
-        if (!element.businessObject.extensionElements) {
-          var moddleExtensionElements = moddle.create('bpmn:ExtensionElements', {});          
-          moddleExtensionElements.get('values').push(taskDef);
-          element.businessObject.extensionElements = moddleExtensionElements;
-        } else {
-          //??
-        }
-        console.log(element.businessObject);
-      }
-      console.log(element);
+    } else if (element.type == "bpmn:ServiceTask") {
     }
 
   });
+
+  save();
 };
 
 /**
-ConvertToCamundaCloudPlugin.prototype._getTechnicalID = function(name, type) {
-  var name = removeDiacritics(name); // remove diacritics
-  name = name.replace(/[^\w\s]/gi, ''); // now replace special characters
-  name = this._getCamelCase(name);; // get camelcase
-  
-  if ( !isNaN(name.charAt(0)) ) { // mask leading numbers
-     name = 'N' + name;
-  }
-  
-  if ( type === 'bpmn:Process' ) {
+ * 
+ *  {  if ( type === 'bpmn:Process' ) {
     return name + 'Process';
   } else if ( type === 'bpmn:IntermediateCatchEvent' || type === 'bpmn:IntermediateThrowEvent' ) {
     return name + 'Event';
@@ -103,9 +80,40 @@ ConvertToCamundaCloudPlugin.prototype._getTechnicalID = function(name, type) {
     return name + 'Gateway';
   } else {
     return name + type.replace('bpmn:','');
-  }
-};
+  }} element 
  */
 
+function convertServiceTask(element) {
+  if (element.businessObject.topic) { // External Tasks
+    var taskDef = moddle.create("zeebe:TaskDefinition");
+    taskDef.type = element.businessObject.topic;
+    addExtensionElement(element, taskDef);
+  }
 
-ConvertToCamundaCloudPlugin.$inject = [ 'elementRegistry', 'editorActions', 'canvas', 'modeling' ];
+}
+
+function addExtensionElement(element, extensionElement) {
+  if (!element.businessObject.extensionElements) {
+    var moddleExtensionElements = moddle.create('bpmn:ExtensionElements', {});          
+    moddleExtensionElements.get('values').push(extensionElement);
+    element.businessObject.extensionElements = moddleExtensionElements;
+  } else {
+    //??
+  }
+}
+
+function save() {
+  // trigger a tab save operation
+  this._triggerAction('save')
+    .then(tab => {
+      if (!tab) {
+        return this._displayNotification({ title: 'Failed to save' });
+      } else {
+        console.log("saved");
+    }
+    });
+}
+
+
+
+ConvertToCamundaCloudPlugin.$inject = [ 'elementRegistry', 'editorActions', 'canvas', 'modeling'];
