@@ -30,8 +30,6 @@ export default function ConvertToCamundaCloudPlugin(elementRegistry, editorActio
 
   this._elementRegistry = elementRegistry;
   this._modeling = modeling;
-  this._displayNotification = displayNotification;
-  this._triggerAction = triggerAction;
 
   this.state = {
     open: false
