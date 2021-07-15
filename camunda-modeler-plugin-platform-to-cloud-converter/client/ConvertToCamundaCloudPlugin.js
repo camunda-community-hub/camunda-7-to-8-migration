@@ -8,19 +8,21 @@ import camundaModdleExtension from "camunda-bpmn-moddle/lib";
 import zeebeModdlePackage from "zeebe-bpmn-moddle/resources/zeebe";
 import zeebeModdleExtension from "zeebe-bpmn-moddle/lib";
 
-var removeDiacritics = require('diacritics').remove;
-var domify = require('min-dom/lib/domify'),
-    domEvent = require('min-dom/lib/event'),
-    domClasses = require('min-dom/lib/classes'),
-    domQuery = require('min-dom/lib/query'),
-    clear = require('min-dom/lib/clear');
-//    BpmnJS = require('bpmn-js/lib/Modeler');
+import modelerModdlePackage from 'modeler-moddle/resources/modeler';
+
+//var removeDiacritics = require('diacritics').remove;
+//var domify = require('min-dom/lib/domify'),
+//    domEvent = require('min-dom/lib/event'),
+//    domClasses = require('min-dom/lib/classes'),
+//    domQuery = require('min-dom/lib/query'),
+//    clear = require('min-dom/lib/clear');   
 
 const bpmnJS = new BpmnJS({
   additionalModules: [camundaModdleExtension, zeebeModdleExtension],
   moddleExtensions: {
     camunda: camundaModdlePackage,
-    zeebe: zeebeModdlePackage
+    zeebe: zeebeModdlePackage,
+    modeler: modelerModdlePackage
   }
   });
 const moddle = bpmnJS.get('moddle');
@@ -42,6 +44,13 @@ export default function ConvertToCamundaCloudPlugin(elementRegistry, editorActio
   });
 }
 
+// Save Trigger Example: 
+// https://github.com/pinussilvestrus/camunda-modeler-autosave-plugin/blob/main/client/AutoSavePlugin.js#L109
+// https://forum.bpmn.io/t/trigger-a-model-file-save-from-within-a-camunda-modeler-plugin/6423/4
+
+// Render in the toolbar:
+// https://github.com/pinussilvestrus/camunda-modeler-autosave-plugin/blob/main/client/AutoSavePlugin.js#L134
+
 // https://github.com/camunda-community-hub/camunda-modeler-plugin-rename-technical-ids/blob/main/client/RenameTechnicalIDsPlugin.js
 // https://github.com/bpmn-io/bpmn-js-examples/tree/master/bpmn-properties
 // https://github.com/camunda/camunda-modeler-plugin-example
@@ -53,13 +62,21 @@ ConvertToCamundaCloudPlugin.prototype.convertToCamundaCloud = function() {
   var elements = this._elementRegistry._elements;  
   Object.keys(elements).forEach(function(key) {
     var element = elements[key].element;
+    console.log(element);
     if (element.type == "bpmn:ServiceTask") {
+      console.log("------------ Service Task -----------------");
       convertServiceTask(element);
       console.log(element);
-    } else if (element.type == "bpmn:ServiceTask") {
+    } else if (element.type == "bpmn:CallActivity") {
+      console.log("------------ Call Activity -----------------");
+      convertCallActivity(element);
+      console.log(element);
+    } else if (element.type == "modeler:ExecutionPlatform") {
+      console.log("------------ Call Activity -----------------");      
+      convertCallActivity(element);
+      console.log(element);
     }
-
-  });
+});modeler:executionPlatform="Camunda Cloud"
 
   save();
 };
@@ -87,7 +104,14 @@ function convertServiceTask(element) {
     taskDef.type = element.businessObject.topic;
     addExtensionElement(element, taskDef);
   }
-
+}
+function convertCallActivity(element) {
+  if (element.businessObject.calledElement) {
+    var calledElementDef = moddle.create("zeebe:CalledElement");
+    calledElementDef.processId = element.businessObject.calledElement;
+    //calledElementDef.propagateAllChildVariables
+    addExtensionElement(element, calledElementDef);
+  }
 }
 
 function addExtensionElement(element, extensionElement) {
@@ -101,7 +125,7 @@ function addExtensionElement(element, extensionElement) {
 }
 
 function save() {
-  // trigger a tab save operation
+  /* trigger a tab save operation
   this._triggerAction('save')
     .then(tab => {
       if (!tab) {
@@ -110,8 +134,8 @@ function save() {
         console.log("saved");
     }
     });
+    */
 }
-
 
 
 ConvertToCamundaCloudPlugin.$inject = [ 'elementRegistry', 'editorActions', 'canvas', 'modeling'];

@@ -1,8 +1,7 @@
 'use strict';
 
 module.exports = {
-  name: 'Convert to Camunda Cloud',
+  name: 'Camunda Cloud',
   menu: './menu/menu.js',
-  script: './dist/client.js',
-  style: './style/style.css'
+  script: './dist/client.js'
 };
