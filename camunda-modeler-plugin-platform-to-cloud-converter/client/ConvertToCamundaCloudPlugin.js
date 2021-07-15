@@ -71,12 +71,11 @@ ConvertToCamundaCloudPlugin.prototype.convertToCamundaCloud = function() {
       console.log("------------ Call Activity -----------------");
       convertCallActivity(element);
       console.log(element);
-    } else if (element.type == "modeler:ExecutionPlatform") {
-      console.log("------------ Call Activity -----------------");      
-      convertCallActivity(element);
-      console.log(element);
+    } else if (element.type == "modeler:ExecutionPlatform") { 
+      // modeler:executionPlatform="Camunda Cloud"
+      console.log("------------ Nope -----------------");      
     }
-});modeler:executionPlatform="Camunda Cloud"
+  });
 
   save();
 };
