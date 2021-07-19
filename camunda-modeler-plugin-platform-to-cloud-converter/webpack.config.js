@@ -2,7 +2,7 @@ const path = require('path');
 
 module.exports = {
   mode: 'development',
-  entry: './client/ConvertToCamundaCloudPluginIndex.js',
+  entry: './client/ConvertToCamundaCloudClientExtensionIndex.js',
   output: {
     path: path.resolve(__dirname, 'dist'),
     filename: 'client.js'

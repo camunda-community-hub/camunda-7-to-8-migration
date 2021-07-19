@@ -28,11 +28,12 @@ const bpmnJS = new BpmnJS({
 const moddle = bpmnJS.get('moddle');
 var bpmnDefintions = bpmnJS.getDefinitions();
 
-export default function ConvertToCamundaCloudPlugin(elementRegistry, editorActions, canvas, modeling) {
+export default function ConvertToCamundaCloudPlugin(elementRegistry, editorActions, canvas, modeling, xBpmnJS) {
   var self = this;
 
   this._elementRegistry = elementRegistry;
   this._modeling = modeling;
+  this._canvas = canvas;
 
   this.state = {
     open: false
@@ -44,7 +45,6 @@ export default function ConvertToCamundaCloudPlugin(elementRegistry, editorActio
     }
   });
   console.log( bpmnDefintions );
-  console.log(this.bpmnDefintions );
 }
 
 // Save Trigger Example: 
@@ -61,6 +61,9 @@ export default function ConvertToCamundaCloudPlugin(elementRegistry, editorActio
 // https://www.youtube.com/watch?v=sav98y4EFzE
 ConvertToCamundaCloudPlugin.prototype.convertToCamundaCloud = function() {
   var self = this;
+
+  console.log( this._canvas.getRootElement() );
+  console.log( this._canvas.getRootElement().businessObject );
 
   var elements = this._elementRegistry._elements;  
   Object.keys(elements).forEach(function(key) {
@@ -140,4 +143,4 @@ function save() {
 }
 
 
-ConvertToCamundaCloudPlugin.$inject = [ 'elementRegistry', 'editorActions', 'canvas', 'modeling'];
+ConvertToCamundaCloudPlugin.$inject = [ 'elementRegistry', 'editorActions', 'canvas', 'modeling', 'bpmnjs'];
