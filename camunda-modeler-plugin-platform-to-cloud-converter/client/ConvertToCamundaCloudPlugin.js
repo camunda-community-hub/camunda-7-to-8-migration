@@ -62,8 +62,8 @@ export default function ConvertToCamundaCloudPlugin(elementRegistry, editorActio
 ConvertToCamundaCloudPlugin.prototype.convertToCamundaCloud = function() {
   var self = this;
 
-  console.log( this._canvas.getRootElement() );
-  console.log( this._canvas.getRootElement().businessObject );
+  definitionsElement = this._canvas.getRootElement().businessObject.$parent;
+  console.log(definitionsElement);
 
   var elements = this._elementRegistry._elements;  
   Object.keys(elements).forEach(function(key) {
