@@ -17,7 +17,7 @@ import ConvertToCamundaCloudPlugin from './ConvertToCamundaCloudPluginIndex';
  * - hook into <tab.saved> to perform a post-safe action
  *
  */
-export default class ConvertToCamundaCloudModelerPlugin extends PureComponent {
+export default class ConvertToCamundaCloudClientExtension extends PureComponent {
 
   constructor(props) {
 
