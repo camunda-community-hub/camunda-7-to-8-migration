@@ -1,7 +1,4 @@
-import {
-    registerBpmnJSPlugin
-  } from 'camunda-modeler-plugin-helpers';
-
+import { registerBpmnJSPlugin } from 'camunda-modeler-plugin-helpers';
 import ConvertToCamundaCloudPlugin from './ConvertToCamundaCloudPlugin';
 
 registerBpmnJSPlugin({

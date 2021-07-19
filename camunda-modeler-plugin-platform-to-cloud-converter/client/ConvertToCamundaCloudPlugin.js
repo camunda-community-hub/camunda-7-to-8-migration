@@ -26,6 +26,7 @@ const bpmnJS = new BpmnJS({
   }
   });
 const moddle = bpmnJS.get('moddle');
+var bpmnDefintions = bpmnJS.getDefinitions();
 
 export default function ConvertToCamundaCloudPlugin(elementRegistry, editorActions, canvas, modeling) {
   var self = this;
@@ -42,6 +43,8 @@ export default function ConvertToCamundaCloudPlugin(elementRegistry, editorActio
       self.convertToCamundaCloud();
     }
   });
+  console.log( bpmnDefintions );
+  console.log(this.bpmnDefintions );
 }
 
 // Save Trigger Example: 
