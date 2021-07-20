@@ -24,7 +24,8 @@ export default class ConvertToCamundaCloudClientExtension extends PureComponent 
     super(props);
 
     const {
-      subscribe
+      subscribe,
+      triggerAction
     } = props;
 
     subscribe('bpmn.modeler.configure', (event) => {
@@ -49,6 +50,16 @@ export default class ConvertToCamundaCloudClientExtension extends PureComponent 
 
       log('Modeler created for tab', tab);
 
+      modeler.on('saveTab', (event) => {
+        triggerAction('save')
+          .then(tab => {
+            if (!tab) {
+              return this._displayNotification({ title: 'Failed to save' });
+            } else {
+              console.log("saved");
+            }
+          });
+      });
       modeler.on('saveXML.start', (event) => {
 
         const {

@@ -28,11 +28,11 @@
     "inherits": "^2.0.3",
     "lodash": "^3.10.1",
     "min-dom": "^0.2.0",
-    "diacritics": "^1.3.0",
     "watchify": "^3.9.0",
     "bpmn-js": "^8.7.1",
     "camunda-bpmn-moddle": "^5.0.0",
     "zeebe-bpmn-moddle": "^0.7.0",
-    "modeler-moddle": "^0.1.0"
+    "modeler-moddle": "^0.1.0",
+    "jquery": "^3.5.1"
   }
 }

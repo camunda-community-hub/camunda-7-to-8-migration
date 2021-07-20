@@ -1,4 +1,5 @@
 'use strict';
+var $ = require('jquery');
 
 import BpmnJS from "bpmn-js/lib/Modeler";
 
@@ -10,13 +11,6 @@ import zeebeModdleExtension from "zeebe-bpmn-moddle/lib";
 
 import modelerModdlePackage from 'modeler-moddle/resources/modeler';
 
-//var removeDiacritics = require('diacritics').remove;
-//var domify = require('min-dom/lib/domify'),
-//    domEvent = require('min-dom/lib/event'),
-//    domClasses = require('min-dom/lib/classes'),
-//    domQuery = require('min-dom/lib/query'),
-//    clear = require('min-dom/lib/clear');   
-
 const bpmnJS = new BpmnJS({
   additionalModules: [camundaModdleExtension, zeebeModdleExtension],
   moddleExtensions: {
@@ -26,14 +20,16 @@ const bpmnJS = new BpmnJS({
   }
   });
 const moddle = bpmnJS.get('moddle');
-var bpmnDefintions = bpmnJS.getDefinitions();
 
-export default function ConvertToCamundaCloudPlugin(elementRegistry, editorActions, canvas, modeling, xBpmnJS) {
+export default function ConvertToCamundaCloudPlugin(elementRegistry, editorActions, canvas, modeling, eventBus, commandStack, overlays) {
   var self = this;
 
   this._elementRegistry = elementRegistry;
   this._modeling = modeling;
   this._canvas = canvas;
+  this._eventBus = eventBus;
+  this._commandStack = commandStack;
+  this._overlays = overlays;
 
   this.state = {
     open: false
@@ -44,47 +40,75 @@ export default function ConvertToCamundaCloudPlugin(elementRegistry, editorActio
       self.convertToCamundaCloud();
     }
   });
-  console.log( bpmnDefintions );
+
+  commandStack.registerHandler('finish.model.convertion', function () { 
+    // noop;
+  });
 }
 
-// Save Trigger Example: 
-// https://github.com/pinussilvestrus/camunda-modeler-autosave-plugin/blob/main/client/AutoSavePlugin.js#L109
-// https://forum.bpmn.io/t/trigger-a-model-file-save-from-within-a-camunda-modeler-plugin/6423/4
+function finishModelConvertion() {
+  // NOOP at the moment, executing the command triggers a 'elements.changed' event 
+  // that marks the model as dirty - which all I want to have at the moment
 
-// Render in the toolbar:
-// https://github.com/pinussilvestrus/camunda-modeler-autosave-plugin/blob/main/client/AutoSavePlugin.js#L134
+  // we could also save the model if we would want to:
+  // this._eventBus.fire('saveTab');
+}
 
-// https://github.com/camunda-community-hub/camunda-modeler-plugin-rename-technical-ids/blob/main/client/RenameTechnicalIDsPlugin.js
-// https://github.com/bpmn-io/bpmn-js-examples/tree/master/bpmn-properties
-// https://github.com/camunda/camunda-modeler-plugin-example
-// https://github.com/camunda/camunda-modeler/tree/master/docs/plugins
-// https://www.youtube.com/watch?v=sav98y4EFzE
 ConvertToCamundaCloudPlugin.prototype.convertToCamundaCloud = function() {
   var self = this;
 
-  definitionsElement = this._canvas.getRootElement().businessObject.$parent;
-  console.log(definitionsElement);
+  convertDefinitions(self._canvas.getRootElement());
 
-  var elements = this._elementRegistry._elements;  
+  var elements = self._elementRegistry._elements;
   Object.keys(elements).forEach(function(key) {
     var element = elements[key].element;
+    var hints;
+
     console.log(element);
     if (element.type == "bpmn:ServiceTask") {
-      console.log("------------ Service Task -----------------");
-      convertServiceTask(element);
-      console.log(element);
+      hints = convertServiceTask(element);
     } else if (element.type == "bpmn:CallActivity") {
-      console.log("------------ Call Activity -----------------");
-      convertCallActivity(element);
-      console.log(element);
-    } else if (element.type == "modeler:ExecutionPlatform") { 
-      // modeler:executionPlatform="Camunda Cloud"
-      console.log("------------ Nope -----------------");      
+      hints = convertCallActivity(element);
+    }
+
+    if (hints) {
+      addOverlay(self._overlays, element, hints.join("<br>"));
     }
   });
 
-  save();
+  self._commandStack.execute('finish.model.convertion');  
 };
+
+function addOverlay(overlays, element, text) {
+  var tooltipId = element.id + '_tooltip_info';
+  overlays.add(element, 'migration-info-marker', {
+    position: { top: 0, left: 0 },
+    html: 
+      '<div>' +
+      '  <div style="background: #D2335C;">'+'Hints from migration'+'</div>' + 
+      '  <div id="' + tooltipId + '" style="width:500px; background-color: #FFDE00;">'+text+'</div>' +
+      '</div>'
+  });
+  addListener(element, tooltipId);
+}
+function addListener(element, tooltipId) {
+  $('[data-element-id="' + element.id + '"]')
+    .hover(
+      function () { $('#' + tooltipId).show(); },
+      function () { $('#' + tooltipId).hide(); }
+    );
+  $('#' + tooltipId).hide();
+}
+
+function addExtensionElement(element, extensionElement) {
+  if (!element.businessObject.extensionElements) {
+    var moddleExtensionElements = moddle.create('bpmn:ExtensionElements', {});          
+    moddleExtensionElements.get('values').push(extensionElement);
+    element.businessObject.extensionElements = moddleExtensionElements;
+  } else {
+    //??
+  }
+}
 
 /**
  * 
@@ -103,44 +127,51 @@ ConvertToCamundaCloudPlugin.prototype.convertToCamundaCloud = function() {
   }} element 
  */
 
+/**
+ * CONVERTION METHODS FOR VARIOUS ELEMENT TYPES
+ * ###############################################
+ */
+
+function convertDefinitions(rootElement) {
+  var definitionsElement = rootElement.businessObject.$parent;
+  definitionsElement.set('modeler:executionPlatform', 'Camunda Cloud')
+  definitionsElement.set('modeler:executionPlatformVersion', '1.1.0')  
+}
+
 function convertServiceTask(element) {
+  var hints = [];
+  console.log("------------ Service Task -----------------");
+
   if (element.businessObject.topic) { // External Tasks
     var taskDef = moddle.create("zeebe:TaskDefinition");
     taskDef.type = element.businessObject.topic;
     addExtensionElement(element, taskDef);
   }
+
+  console.log(element);
+  console.log("------------ ---------- -----------------");
+  return hints;
 }
+
+// TODO: Add hint to model
 function convertCallActivity(element) {
+  var hints = [];
+  console.log("------------ Call Activity -----------------");
+
   if (element.businessObject.calledElement) {
     var calledElementDef = moddle.create("zeebe:CalledElement");
     calledElementDef.processId = element.businessObject.calledElement;
     //calledElementDef.propagateAllChildVariables
     addExtensionElement(element, calledElementDef);
   }
-}
 
-function addExtensionElement(element, extensionElement) {
-  if (!element.businessObject.extensionElements) {
-    var moddleExtensionElements = moddle.create('bpmn:ExtensionElements', {});          
-    moddleExtensionElements.get('values').push(extensionElement);
-    element.businessObject.extensionElements = moddleExtensionElements;
-  } else {
-    //??
-  }
-}
+  hints.push("Hello Bernd")
 
-function save() {
-  /* trigger a tab save operation
-  this._triggerAction('save')
-    .then(tab => {
-      if (!tab) {
-        return this._displayNotification({ title: 'Failed to save' });
-      } else {
-        console.log("saved");
-    }
-    });
-    */
+  console.log(element);
+  console.log("------------ ---------- -----------------");
+  return hints;
 }
 
 
-ConvertToCamundaCloudPlugin.$inject = [ 'elementRegistry', 'editorActions', 'canvas', 'modeling', 'bpmnjs'];
+
+ConvertToCamundaCloudPlugin.$inject = [ 'elementRegistry', 'editorActions', 'canvas', 'modeling', 'eventBus', 'commandStack', 'overlays']; // 'bpmnjs'
