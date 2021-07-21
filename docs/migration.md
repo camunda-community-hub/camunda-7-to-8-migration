@@ -11,13 +11,13 @@ Depending on the migrations scenario you need to migrate
 
 // https://page.camunda.com/wp-how-to-migrate-to-camunda
 
-* **BPMN models:** While Camunda Cloud also uses BPMN files (like Camunda Platform), it requires different extension atrributes to configure details for execution. BPMN models can be automatically converted using a Camunda Modeler Plugin, but some elements or attributes are not supported in Camunda Cloud and need manual intervention.
+* **BPMN models:** While Camunda Cloud also uses BPMN files (like Camunda Platform), it requires *different extension atrributes* to configure details for execution. BPMN models can be semi-automatically converted using [this Camunda Modeler Plugin](https://github.com/berndruecker/camunda-platform-to-cloud-migration/tree/main/camunda-modeler-plugin-platform-to-cloud-converter). Note that some elements or attributes are either not supported or behave slightly different in Camunda Cloud, so the convertion will require manual supervision.
 
-* **Application code:** The application code needs to leverage a different client library that leads to certain code changes you have to apply. Additionally glue code needs to be adapted, like external task workers from Camunda Platform will be job workers in Camunda Cloud. An adapter library can help, but will not completly automate this step.
+* **Application code:** The application code needs to leverage a *different API* and/or a *different client library*. This will lead to *code changes* you have to implement. This applies to clients talking to the workflow engine (e.g. to start process instances), but also to glue code (e.g. connected to service tasks) as external task workers from Camunda Platform need to be changed to job workers in Camunda Cloud. If you are in Java and used the Camunda Platform Java Client, you can leverage [this adapter library](https://github.com/berndruecker/camunda-platform-to-cloud-migration/tree/main/zeebe-camunda-platform-adapter), which removes some manual work for code changed. Note, that this will not completly automate this step.
 
-* **Runtime data:** Running process instances of Camunda Platform are stored in the Camunda Platform database. This data cannot be easily migrated to Camunda Cloud. A possible workaround is to create a process model on Camunda Cloud that is purely used for migration to bring process instances to their respective wait state as described in an older whitepaper around [How to migrate to Camunda](https://page.camunda.com/wp-how-to-migrate-to-camunda).
+* **Runtime data:** Running process instances of Camunda Platform are stored in the Camunda Platform database. *This data cannot be migrated to Camunda Cloud*. A possible workaround is to create a process model on Camunda Cloud that is purely used for migration to bring process instances to their respective wait state as described in the whitepaper [How to migrate to Camunda](https://page.camunda.com/wp-how-to-migrate-to-camunda).
 
-* **History data:** Historic data cannot be migrated.
+* **History data:** *Historic data cannot be migrated*.
 
 
 
