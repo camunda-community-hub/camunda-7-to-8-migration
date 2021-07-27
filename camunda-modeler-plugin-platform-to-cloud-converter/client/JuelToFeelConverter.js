@@ -1,5 +1,9 @@
 'use strict';
 
+/**
+ * Convert JUEL Expressions (see https://docs.oracle.com/javaee/5/tutorial/doc/bnahq.html)
+ * to FEEL (see https://camunda.github.io/feel-scala/docs/reference/language-guide/feel-expressions-introduction)
+ */
 function convertJuel(juelExpression) {
     var feelExpression = juelExpression;
     var hints = [];
@@ -29,8 +33,5 @@ function convertJuel(juelExpression) {
         hints: hints
     };
 }
-
-console.log( convertJuel("#{x}") );
-console.log( convertJuel("#{x>5}") );
 
 module.exports = convertJuel;

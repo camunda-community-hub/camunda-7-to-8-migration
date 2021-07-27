@@ -3,8 +3,8 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
-	<groupId>io.berndrueckr</groupId>
-	<artifactId>zeebe-camunda-platform-adapter</artifactId>
+	<groupId>io.berndruecker</groupId>
+	<artifactId>camunda-platform-to-cloud-adapter</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<packaging>jar</packaging>
 
@@ -18,14 +18,19 @@
 	<dependencies>
 		<dependency>
 			<groupId>io.camunda</groupId>
-			<artifactId>zeebe-client-java</artifactId>
+			<artifactId>spring-zeebe-starter</artifactId>
 			<version>${version.zeebe}</version>
-		</dependency>
+		</dependency>	
 		<dependency>
 			<groupId>org.camunda.bpm</groupId>
 			<artifactId>camunda-engine</artifactId>
 			<version>${version.camunda.platform}</version>
 		</dependency>
+		<dependency>
+			<groupId>org.camunda.bpm</groupId>
+			<artifactId>camunda-external-task-client</artifactId>
+			<version>${version.camunda.platform}</version>
+		</dependency>		
 		<!-- copied code from https://github.com/camunda-consulting/on-demand-call-activity/tree/master/abstract-delegate-execution
 		into this project for simplicity
 		<dependency>

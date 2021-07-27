@@ -1,5 +1,6 @@
 'use strict';
 var $ = require('jquery');
+const convertJuel = require("./JuelToFeelConverter");
 
 import BpmnJS from "bpmn-js/lib/Modeler";
 
@@ -65,13 +66,23 @@ ConvertToCamundaCloudPlugin.prototype.convertToCamundaCloud = function() {
     var hints;
 
     console.log(element);
+    ///////////////////////////////////////////////////////////////////////////
     if (element.type == "bpmn:ServiceTask") {
+      hints = convertServiceTask(element);
+    } else if (element.type == "bpmn:SendTask") {
       hints = convertServiceTask(element);
     } else if (element.type == "bpmn:CallActivity") {
       hints = convertCallActivity(element);
+    } else if (element.type == "bpmn:UserTask") {
+      hints = convertUserTask(element);
+    } else if (element.type == "bpmn:ExclusiveGateway") {
+      hints = convertXorGateway(element);
+    } else if (element.type == "bpmn:SequenceFlow") {
+      hints = convertSequenceFlow(element);
     }
+  ///////////////////////////////////////////////////////////////////////////
 
-    if (hints) {
+    if (hints && hints.length > 0) {
       addOverlay(self._overlays, element, hints.join("<br>"));
     }
   });
@@ -105,9 +116,31 @@ function addExtensionElement(element, extensionElement) {
     var moddleExtensionElements = moddle.create('bpmn:ExtensionElements', {});          
     moddleExtensionElements.get('values').push(extensionElement);
     element.businessObject.extensionElements = moddleExtensionElements;
+    return extensionElement;
   } else {
-    //??
+    for (const extensionElementInLoop of element.businessObject.extensionElements.get('values')) {
+      if (extensionElementInLoop.$type == extensionElement.$type) { // already exists - return it
+        return extensionElementInLoop;
+      }
+    }
+    // doesn't exist yet - push it to the list:
+    element.businessObject.extensionElements.get('values').push(extensionElement);
+    return extensionElement;
   }
+}
+
+function createTaskDefinition(element, taskType) {
+  var taskDef = addExtensionElement(element, moddle.create("zeebe:TaskDefinition"));
+  taskDef.type = taskType;  
+}
+
+function addTaskHeader(element, key, value) {
+  var header = moddle.create("zeebe:Header");
+  header.key = key;
+  header.value = value;
+
+  var taskHeaders = addExtensionElement(element, moddle.create("zeebe:TaskHeaders", {}));
+  taskHeaders.get('values').push(header);    
 }
 
 /**
@@ -142,10 +175,47 @@ function convertServiceTask(element) {
   var hints = [];
   console.log("------------ Service Task -----------------");
 
-  if (element.businessObject.topic) { // External Tasks
-    var taskDef = moddle.create("zeebe:TaskDefinition");
-    taskDef.type = element.businessObject.topic;
-    addExtensionElement(element, taskDef);
+  if (element.businessObject.class) { // ```camunda:class```
+    createTaskDefinition(element, "camunda-platform-to-cloud-migration");
+    addTaskHeader(element, "class", element.businessObject.class);
+  } else if (element.businessObject.delegateExpression) { // ```camunda:delegateExpression```
+    createTaskDefinition(element, "camunda-platform-to-cloud-migration");
+    addTaskHeader(element, "delegateExpression", element.businessObject.delegateExpression);
+  } else if (element.businessObject.expression) { // ```camunda:expression```
+    createTaskDefinition(element, "camunda-platform-to-cloud-migration");
+    addTaskHeader(element, "expression", element.businessObject.expression);
+  } else if (element.businessObject.topic) { // External Tasks
+    createTaskDefinition(element, element.businessObject.topic);
+  }
+  // TODO: IO, Field Injection, Expressions
+  if (!element.businessObject.asyncBefore || !element.businessObject.asyncAfter) {
+    hints.push("Service tasks are all 'async' in Camunda Cloud")
+  }
+
+  console.log(element);
+  console.log("------------ ---------- -----------------");
+  return hints;
+}
+
+function convertUserTask(element) {
+  var hints = [];
+  console.log("------------ User Task -----------------");
+
+  if (element.businessObject.class) { // ```camunda:class```
+    createTaskDefinition(element, "camunda-platform-to-cloud-migration");
+    addTaskHeader(element, "class", element.businessObject.class);
+  } else if (element.businessObject.delegateExpression) { // ```camunda:delegateExpression```
+    createTaskDefinition(element, "camunda-platform-to-cloud-migration");
+    addTaskHeader(element, "delegateExpression", element.businessObject.delegateExpression);
+  } else if (element.businessObject.expression) { // ```camunda:expression```
+    createTaskDefinition(element, "camunda-platform-to-cloud-migration");
+    addTaskHeader(element, "expression", element.businessObject.expression);
+  } else if (element.businessObject.topic) { // External Tasks
+    createTaskDefinition(element, element.businessObject.topic);
+  }
+  // TODO: IO, Field Injection, Expressions
+  if (!element.businessObject.asyncBefore || !element.businessObject.asyncAfter) {
+    hints.push("Service tasks are all 'async' in Camunda Cloud")
   }
 
   console.log(element);
@@ -159,19 +229,29 @@ function convertCallActivity(element) {
   console.log("------------ Call Activity -----------------");
 
   if (element.businessObject.calledElement) {
-    var calledElementDef = moddle.create("zeebe:CalledElement");
+    var calledElementDef = addExtensionElement(element, moddle.create("zeebe:CalledElement"));
     calledElementDef.processId = element.businessObject.calledElement;
-    //calledElementDef.propagateAllChildVariables
-    addExtensionElement(element, calledElementDef);
+    //TODO: calledElementDef.propagateAllChildVariables
   }
-
-  hints.push("Hello Bernd")
 
   console.log(element);
   console.log("------------ ---------- -----------------");
   return hints;
 }
 
+
+function convertXorGateway(element) {
+  // nothing to do, convertion is done in sequence flows
+}
+
+function convertSequenceFlow(element) {
+  // nothing to do, convertion is done in sequence flows
+  if (element.businessObject && element.businessObject.conditionExpression && element.businessObject.conditionExpression.body) {
+    var feelResult = convertJuel(element.businessObject.conditionExpression.body);
+    element.businessObject.conditionExpression.body = feelResult.feelExpression;
+    return feelResult.hints;
+  }
+}
 
 
 ConvertToCamundaCloudPlugin.$inject = [ 'elementRegistry', 'editorActions', 'canvas', 'modeling', 'eventBus', 'commandStack', 'overlays']; // 'bpmnjs'
