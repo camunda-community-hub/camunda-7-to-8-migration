@@ -1,4 +1,4 @@
-package com.camunda.consulting;
+package io.berndruecker.converter.delegate.execution;
 
 import io.camunda.zeebe.client.api.response.ActivatedJob;
 

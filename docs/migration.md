@@ -122,6 +122,21 @@ In both engines, a send task has the same behavior as a service task - so please
 
 * ```xxxx```
 
+## Business Rule Tasks
+
+```
+DecisionService decisionService = BpmPlatform.getDefaultProcessEngine()
+					.getDecisionService();
+				DmnDecisionResult decisionResult = decisionService.evaluateDecisionByKey(decisionRef)
+					.variables(job.getVariablesAsMap())
+					.evaluate();
+
+				// TODO: implement other result mappings
+				DmnDecisionResultEntries singleResult = decisionResult.getSingleResult();
+				resultPayload = new HashMap<>();
+				String resultVariableName = (String) jobHeaders.get("resultVariable");
+				resultPayload.put(resultVariableName, singleResult.getEntryMap());
+```
 
 
 

@@ -25,11 +25,11 @@
       <bpmn:outgoing>Flow_133deh1</bpmn:outgoing>
     </bpmn:serviceTask>
     <bpmn:sequenceFlow id="Flow_1yz9a8i" sourceRef="Activity_065ruya" targetRef="main-process" />
-    <bpmn:serviceTask id="Activity_065ruya" name="Expression Language" camunda:expression="#{sampleBean.someMethod()}">
+    <bpmn:serviceTask id="Activity_065ruya" name="Expression Language" camunda:expression="#{sampleBean.someMethod(y)}">
       <bpmn:extensionElements>
         <zeebe:taskDefinition type="camunda-platform-to-cloud-migration" />
         <zeebe:taskHeaders>
-          <zeebe:header key="expression" value="#{sampleBean.someMethod()}" />
+          <zeebe:header key="expression" value="#{sampleBean.someMethod(y)}" />
         </zeebe:taskHeaders>
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_133deh1</bpmn:incoming>
