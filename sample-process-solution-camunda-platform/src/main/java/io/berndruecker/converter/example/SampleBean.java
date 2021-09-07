@@ -5,8 +5,9 @@ import org.springframework.stereotype.Component;
 @Component
 public class SampleBean {
 
-    public void someMethod(String text) {
+    public int someMethod(String text) {
         System.out.println("SampleBean.someMethod('" + text + "')");
+        return 42;
     }
 
 }

@@ -29,8 +29,11 @@ Camunda Cloud supports the BPMN process language - just like Camunda Platform. H
 
 1. **Coverage**: Camunda Cloud being a young product still lacks some elements Camunda Platform already supports. You can see [the current coverage of BPMN in the Camunda Cloud docs](https://docs.camunda.io/docs/reference/bpmn-processes/bpmn-coverage). Missing elements will be added to Camunda Cloud step-by-step. If your model uses an unsupported element, you have to adjust your model.
 
-2. **Technical configuration**: Some configuration attributes used for execution differ between Camunda Cloud and Camunda Platform, at least by using a different namespace. The following list gives you a rough overview
-Also the basis [this Camunda Modeler Plugin](https://github.com/berndruecker/camunda-platform-to-cloud-migration/tree/main/camunda-modeler-plugin-platform-to-cloud-converter)
+2. **Technical configuration**: Some configuration attributes used for execution differ between Camunda Cloud and Camunda Platform, at least by using a different namespace. This section gives you a rough overview, which is also the basis for [this Camunda Modeler Plugin](https://github.com/berndruecker/camunda-platform-to-cloud-migration/tree/main/camunda-modeler-plugin-platform-to-cloud-converter) that can migrate existing BPMN process models from Camunda Platform to Camunda Cloud.
+
+
+
+
 
 
 ## Service Tasks 
@@ -42,7 +45,7 @@ Also the basis [this Camunda Modeler Plugin](https://github.com/berndruecker/cam
 * Attach Java glue code that is called by the engine. 
 * Use External Tasks, where workers subscribe to the engine.
 
-In Camunda Cloud, you always have external workers that subscribe to the engine, which is why migration code that using External Tasks is generally easier to do.
+In Camunda Cloud, you always have external workers that subscribe to the engine, which is why code that uses External Tasks is generally easier to migrate.
 
 
 ### Attached Java Code
@@ -55,59 +58,69 @@ There are three ways to implement this marked by different attributes in the BPM
 
 Camunda Cloud can not directly execute custom Java code. Instead, there must be a worker, subscribing to the service task, that can execute your existing code.
 
-The [Camunda Platform to Cloud Adapter](https://github.com/berndruecker/camunda-platform-to-cloud-migration/tree/main/camunda-platform-to-cloud-adapter) implements such a worker based on [Spring Zeebe](https://github.com/camunda-community-hub/spring-zeebe). This can either be used directly, but more often might be used as a starting point or for inspiration. It subscribes to the topic ```camunda-platform-to-cloud-migration``` and then uses some [task headers](https://docs.camunda.io/docs/reference/bpmn-processes/service-tasks/service-tasks#task-headers) to call the right delegation class or expression from within this worker. 
+The [Camunda Platform to Cloud Adapter](https://github.com/berndruecker/camunda-platform-to-cloud-migration/tree/main/camunda-platform-to-cloud-adapter) implements a worker based on [Spring Zeebe](https://github.com/camunda-community-hub/spring-zeebe), which can either be used directly, be used as a starting point or simply serve for inspiration. It subscribes to the topic ```camunda-platform-to-cloud-migration```. [Task headers](https://docs.camunda.io/docs/reference/bpmn-processes/service-tasks/service-tasks#task-headers) are used to configure a delegation class or expression for this worker. 
 
 The [Camunda Platform To Cloud Converter Modeler Plugin](https://github.com/berndruecker/camunda-platform-to-cloud-migration/tree/main/camunda-modeler-plugin-platform-to-cloud-converter) will adjust your service tasks automatically for this adapter.
 
 The following attributes/elements are migrated:
 * ```camunda:class```
 * ```camunda:delegateExpression```
-* ```camunda:expression```
+* ```camunda:expression``` and ```camunda:resultVariable```
 
 
 Note that some attributes cannot be migrated:
 * ```camunda:asyncBefore```: every task in Zeebe is always asyncBefore and asyncAfter
 * ```camunda:asyncAfter```: every task in Zeebe is always asyncBefore and asyncAfter
-* ```camunda:exclusive```
-* ```camunda:jobPriority```
-* ```camunda:resultVariable```
-* ```camunda:taskPriority```
-* ```camunda:failedJobRetryTimeCycle```
+* ```camunda:exclusive```: jobs are always exclusive in Zeebe
+* ```camunda:jobPriority```: There is no way to priotize jobs in Zeebe (yet)
+* ```camunda:failedJobRetryTimeCycle```: You cannot yet configure the retry time cycle
 
 
-Todo / To Check:
-* ```camunda:inputOutput```
-* ```camunda:type```
-* ```camunda:errorEventDefinition```
 
 
 ### External Tasks
 
 External Tasks in Camunda Platform also used a worker, like in Camunda Cloud. So the ```external task topic``` is directly translated in a ```task type name``` in Camunda Cloud. This means, you have to migrate your existing external task worker to a Zeebe worker.
 
-If you developed your Camunda Platform external task worker using [the Java client](https://github.com/camunda/camunda-bpm-platform/tree/master/clients/java), you can use [Camunda Platform to Cloud Adapter](https://github.com/berndruecker/camunda-platform-to-cloud-migration/tree/main/camunda-platform-to-cloud-adapter) to adapt your worker code easily. 
+If you developed your Camunda Platform external task worker using [the Java client](https://github.com/camunda/camunda-bpm-platform/tree/master/clients/java), you can use [Camunda Platform to Cloud Adapter](https://github.com/berndruecker/camunda-platform-to-cloud-migration/tree/main/camunda-platform-to-cloud-adapter) to adapt your worker code. 
 
 
 The following attributes/elements are migrated:
 * ```camunda:topic```
 
 
+The following attributes/elements cannot be migrated:
+* ```camunda:taskPriority```
+
+
+
 ### Connectors
 
 Connectors cannot be migrated at this moment. You need to look at what connectors you are using and decide for your migration strategy.
 
-The following attributes/elements are not migrated:
+The following attributes/elements cannot be migrated:
 
 * ```camunda:connector```
 
+### General Configuration for Service Tasks
 
-### Field Injection
+Field Injection
 
-
-* ```camunda:field```
+* ```camunda:field``` (TODO)
 
 
 TODO: Check https://docs.camunda.org/manual/7.15/user-guide/process-engine/delegation-code/#field-injection - especially value setting & Expression Language
+
+
+Todo / To Check:
+* ```camunda:inputOutput``` (TODO)
+* ```camunda:errorEventDefinition``` (TODO)
+
+The following attributes/elements cannot be migrated:
+* ```camunda:type```
+
+
+
 
 
 ## Send Tasks
@@ -117,12 +130,43 @@ TODO: Check https://docs.camunda.org/manual/7.15/user-guide/process-engine/deleg
 In both engines, a send task has the same behavior as a service task - so please refer to the details above. A send task is migrated exactly like a service task.
 
 
+
+
+
+
 ## Human Tasks
 
 
-* ```xxxx```
+![Send Task](/reference/bpmn-processes/assets/bpmn-symbols/user-task.svg)
+
+Human task management is still catching up in Camunda Cloud, so many configuration options are not yet available. Specifically, the following attributes/elements cannot be migrated:
+
+* Task assignment (to users or groups):
+  * ```camunda:humanPerformer```
+  * ```camunda:potentialOwner```
+  * ```camunda:assignee```
+  * ```camunda:candidateUsers```
+  * ```camunda:candidateGroups```
+* Form handling:
+  * ```camunda:formKey```
+  * ```camunda:formHandlerClass```
+  * ```camunda:formData```
+  * ```camunda:formProperty```
+* ```camunda:taskListener```
+* ```camunda:dueDate```
+* ```camunda:followUpDate```
+* ```camunda:priority```
+
+
+Todo / To Check:
+* ```camunda:inputOutput``` (TODO)
+
+
+
 
 ## Business Rule Tasks
+
+![Business Rule Task](/reference/bpmn-processes/assets/bpmn-symbols/business-rule-task.svg)
 
 ```
 DecisionService decisionService = BpmPlatform.getDefaultProcessEngine()
@@ -142,11 +186,48 @@ DecisionService decisionService = BpmPlatform.getDefaultProcessEngine()
 
 ## Call Activities
 
+![Send Task](/reference/bpmn-processes/assets/bpmn-symbols/call-activity.svg)
+
+Call activities are generally supported in Zeebe. The following attributes/elements can be migrated:
+* ```camunda:calledElement``` --> zeebe:calledElement
+
+The following attributes/elements cannot be migrated:
+* ```camunda:calledElementBinding```: Currently Zeebe always assumes 'late' binding
+* ```camunda:calledElementVersionTag```: Zeebe does not know a version tag
+* ```camunda:variableMappingClass```: You cannot execute code to do variable mapping in Zeebe
+* ```camunda:variableMappingDelegateExpression```: You cannot execute code to do variable mapping in Zeebe
+* Data Mapping
+  * ```camunda:in```: There is no way to priotize jobs in Zeebe (yet)
+  * ```camunda:out```: You cannot yet configure the retry time cycle
+
+
+TODO: inputOutput
+
 
 
 ## Message Receive Events And Receive Tasks
 
 ## Script Task
+
+![Script Task](/reference/bpmn-processes/assets/bpmn-symbols/script-task.svg)
+
+Script tasks are not natively executed by the Zeebe engine. They behave like normal service tasks instead, which means you have to operate a worker that can execute scripts. One available option is the [Zeebe script worker](https://github.com/camunda-community-hub/zeebe-script-worker) as community extension. 
+
+If you do this, the following attributes/elements are migrated:
+* ```camunda:scriptFormat```
+* ```camunda:script```
+* ```camunda:resultVariable```
+
+The following attributes/elements cannot be migrated:
+* ```camunda:asyncBefore```: every task in Zeebe is always asyncBefore and asyncAfter
+* ```camunda:asyncAfter```: every task in Zeebe is always asyncBefore and asyncAfter
+* ```camunda:exclusive```: jobs are always exclusive in Zeebe
+* ```camunda:jobPriority```: There is no way to priotize jobs in Zeebe (yet)
+* ```camunda:failedJobRetryTimeCycle```: You cannot yet configure the retry time cycle
+
+TODO: inputOutput
+
+
 
 ## Gateways & Expression Language
 

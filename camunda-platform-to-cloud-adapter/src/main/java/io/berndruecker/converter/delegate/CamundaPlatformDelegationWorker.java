@@ -11,6 +11,7 @@ import org.camunda.bpm.engine.delegate.JavaDelegate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.HashMap;
 import java.util.Map;
 
 @Component
@@ -25,6 +26,7 @@ public class CamundaPlatformDelegationWorker {
         String delegateClass = job.getCustomHeaders().get("class");
         String delegateExpression = job.getCustomHeaders().get("delegateExpression");
         String expression = job.getCustomHeaders().get("expression");
+        String resultVariable = job.getCustomHeaders().get("resultVariable");
 
         // and delegate depending on exact way of implementation
         Map<String, Object> resultPayload = null;
@@ -40,8 +42,11 @@ public class CamundaPlatformDelegationWorker {
             resultPayload = execution.getVariables();
         }
         else if (expression!=null) {
-            // TODO: What to do with the result?
-            expressionResolver.evaluate(expression, execution);
+            Object result = expressionResolver.evaluate(expression, execution);
+            if (resultVariable!=null) {
+                resultPayload = new HashMap<>();
+                resultPayload.put(resultVariable, result);
+            }
         }
         else {
             throw new RuntimeException("Either 'class' or 'delegateExpression' or 'expression' must be specified in task headers for job :" + job);
