@@ -4,3 +4,6 @@ node_modules
 .settings
 target
 .classpath
+.vscode
+*.db
+*.iml

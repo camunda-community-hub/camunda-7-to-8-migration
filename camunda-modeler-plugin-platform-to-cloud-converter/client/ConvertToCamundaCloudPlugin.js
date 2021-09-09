@@ -382,6 +382,31 @@ function convertScriptTask(element) {
   var hints = [];
   console.log("------------ Business Rule Task -----------------");
 
+  if (element.businessObject.class || element.businessObject.delegateExpression || element.businessObject.expression || element.businessObject.topic) { 
+    // used like a service task
+    convertServiceTask(element);
+  } else {
+    // used for specific DMN integration
+    createTaskDefinition(element, "DMN");
+    addTaskHeader(element, "decisionRef", element.businessObject.decisionRef);
+    
+    if (element.businessObject.decisionRefBinding) {unsupportedAttribute(hints, "Business Rule Task", "decisionRefBinding");}
+    if (element.businessObject.decisionRefVersion) {unsupportedAttribute(hints, "Business Rule Task", "decisionRefVersion");}
+    if (element.businessObject.decisionRefVersionTag) {unsupportedAttribute(hints, "Business Rule Task", "decisionRefVersionTag");}
+    if (element.businessObject.mapDecisionResult) {unsupportedAttribute(hints, "Business Rule Task", "mapDecisionResult");}
+    if (element.businessObject.resultVariable) {unsupportedAttribute(hints, "Business Rule Task", "resultVariable");}
+    if (element.businessObject.decisionRefTenantId) {unsupportedAttribute(hints, "Business Rule Task", "decisionRefTenantId");}
+
+    if (!element.businessObject.asyncBefore || !element.businessObject.asyncAfter) {hints.push("Tasks are all 'async' in Camunda Cloud");}
+    // if (element.businessObject.exclusive) Exclusive is ignored - as all jobs are automatically exclusive in Camunda Cloud
+    if (element.businessObject.jobPriority) {unsupportedAttribute(hints, "Business Rule Task", "jobPriority");}
+    if (element.businessObject.taskPriority) {unsupportedAttribute(hints, "Business Rule Task", "taskPriority");}
+    if (element.businessObject.type) {unsupportedAttribute(hints, "Business Rule Task", "type");}
+  
+    if (readExtensionElement(element, "failedJobRetryTimeCycle")) {unsupportedExtensionElement(hints, "Service Task", "failedJobRetryTimeCycle");}
+    if (readExtensionElement(element, "connector")) {unsupportedExtensionElement(hints, "Service Task", "connector");}
+  }
+
   console.log(element);
   console.log("------------ ---------- -----------------");
   return hints;
