@@ -402,6 +402,9 @@ function addExtensionElement(element, extensionElement) {
 }
 
 function readExtensionElement(element, extensionElementType) {
+  if (!element.businessObject.extensionElements) {
+    return null;
+  }
   for (const extensionElementInLoop of element.businessObject.extensionElements.get('values')) {
     if (extensionElementInLoop.$type == extensionElementType) { 
       return extensionElementInLoop;
@@ -496,16 +499,16 @@ function convertServiceTask(element) {
 
   if (readExtensionElement(element, "failedJobRetryTimeCycle")) {unsupportedExtensionElement(hints, "Service Task", "failedJobRetryTimeCycle");}
   if (readExtensionElement(element, "connector")) {unsupportedExtensionElement(hints, "Service Task", "connector");}
-  if (errorEventDefinition = readExtensionElement(element, "errorEventDefinition")) {
+  //if (errorEventDefinition = readExtensionElement(element, "errorEventDefinition")) {
     // TODO handle errorEventDefinition
-  }
-  if (field = readExtensionElement(element, "field")) {
+  //}
+  //if (field = readExtensionElement(element, "field")) {
     // TODO handle field
-  }
-  if (inputOutput = readExtensionElement(element, "inputOutput")) {
+  //}
+  //if (inputOutput = readExtensionElement(element, "inputOutput")) {
     // TODO handle inputOutput
-  }
-  if (taskListener = readExtensionElement(element, "taskListener")) {
+  //}
+  if (readExtensionElement(element, "taskListener")) {
     unsupportedExtensionElement(hints, "Service Task", "taskListener");
   }
 
@@ -542,10 +545,10 @@ function convertUserTask(element) {
   if (element.businessObject.priority) {unsupportedAttribute(hints, "User Task", "priority");}
   // Ignore asyncBefore, asyncAfter, exclusive, jobPriority, failedJobRetryTimeCycle - as without listeners that does not make any difference anyway
 
-  if (inputOutput = readExtensionElement(element, "inputOutput")) {
+  //if (inputOutput = readExtensionElement(element, "inputOutput")) {
     // TODO handle inputOutput
-  }
-  if (taskListener = readExtensionElement(element, "taskListener")) {
+  //}
+  if (readExtensionElement(element, "taskListener")) {
     unsupportedExtensionElement(hints, "Service Task", "taskListener");
   }
 
@@ -581,15 +584,15 @@ function convertCallActivity(element) {
   if (element.businessObject.variableMappingClass) {unsupportedAttribute(hints, "Call Activity", "variableMappingClass");}
   if (element.businessObject.variableMappingDelegateExpression) {unsupportedAttribute(hints, "Call Activity", "variableMappingDelegateExpression");}
   
-  if (inMapping = readExtensionElement(element, "in")) {
+  if (readExtensionElement(element, "in")) {
     unsupportedExtensionElement(hints, "Call Activity", "in");
   }
-  if (outMapping = readExtensionElement(element, "out")) {
+  if (readExtensionElement(element, "out")) {
     unsupportedExtensionElement(hints, "Call Activity", "out");
   }
-  if (inputOutput = readExtensionElement(element, "inputOutput")) {
+  //if (inputOutput = readExtensionElement(element, "inputOutput")) {
     // TODO handle inputOutput
-  }
+  //}
 
   console.log(element);
   console.log("------------ ---------- -----------------");
