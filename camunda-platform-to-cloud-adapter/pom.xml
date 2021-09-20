@@ -8,11 +8,17 @@
 	<version>0.0.1-SNAPSHOT</version>
 	<packaging>jar</packaging>
 
+	<parent>
+		<groupId>org.camunda.community</groupId>
+		<artifactId>community-hub-release-parent</artifactId>
+		<version>1.0.0</version>
+	</parent>	
+
 	<properties>
 		<maven.compiler.source>1.8</maven.compiler.source>
 		<maven.compiler.target>1.8</maven.compiler.target>
-    	<version.zeebe>1.1.0</version.zeebe>
-    	<version.camunda.platform>7.15.0</version.camunda.platform>
+		<version.zeebe>1.1.0</version.zeebe>
+		<version.camunda.platform>7.15.0</version.camunda.platform>
 	</properties>
 
 	<dependencies>
