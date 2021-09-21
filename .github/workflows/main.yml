@@ -6,8 +6,8 @@ on:
     types: [published]
   workflow_dispatch:
 jobs:
-  publish:
-    runs-on: ubuntu-20.04
+  publish-maven:
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
       - name: Cache
@@ -47,3 +47,19 @@ jobs:
           asset_path: ${{ steps.release.outputs.artifacts_archive_path }}
           asset_name: ${{ steps.release.outputs.artifacts_archive_path }}
           asset_content_type: application/zip
+  publish-modeler-plugin:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@master
+    - name: Archive Release
+      uses: thedoctor0/zip-release@master
+      with:
+        path: 'camunda-modeler-plugin-platform-to-cloud-converter'
+        type: 'zip'
+        filename: 'camunda-modeler-plugin-platform-to-cloud-converter.zip'
+        exclusions: '*.git* /*node_modules/*'
+    - name: Upload Release
+      uses: ncipollo/release-action@v1
+      with:
+        artifacts: "camunda-modeler-plugin-platform-to-cloud-converter.zip"
+        token: ${{ secrets.GITHUB_TOKEN }}
