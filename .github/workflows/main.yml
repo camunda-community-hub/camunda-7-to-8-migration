@@ -59,12 +59,9 @@ jobs:
           filename: 'camunda-modeler-plugin-platform-to-cloud-converter.zip'
           exclusions: '*.git* /*node_modules/*'
       - if: github.event.release
-        name: Attach artifacts to GitHub Release (Release only)
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        name: Upload Release
+        uses: ncipollo/release-action@v1
         with:
-          upload_url: ${{ steps.archive_plugin.outputs.upload_url }}
-          asset_path: camunda-modeler-plugin-platform-to-cloud-converter.zip
-          asset_name: camunda-modeler-plugin-platform-to-cloud-converter.zip
-          asset_content_type: application/zip
+          artifacts: "camunda-modeler-plugin-platform-to-cloud-converter.zip"
+          allowUpdates: true
+          token: ${{ secrets.GITHUB_TOKEN }}
