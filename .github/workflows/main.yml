@@ -62,4 +62,5 @@ jobs:
       uses: ncipollo/release-action@v1
       with:
         artifacts: "camunda-modeler-plugin-platform-to-cloud-converter.zip"
+        allowUpdates: true
         token: ${{ secrets.GITHUB_TOKEN }}
