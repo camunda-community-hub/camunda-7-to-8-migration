@@ -6,8 +6,8 @@ on:
     types: [published]
   workflow_dispatch:
 jobs:
-  publish:
-    runs-on: ubuntu-20.04
+  publish-maven:
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
       - name: Cache
@@ -34,6 +34,7 @@ jobs:
           maven-psw: ${{ secrets.MAVEN_CENTRAL_DEPLOYMENT_PSW }}
           maven-gpg-passphrase: ${{ secrets.MAVEN_CENTRAL_GPG_SIGNING_KEY_PASSPHRASE }}
           github-token: ${{ secrets.GITHUB_TOKEN }}
+          artifacts-pattern: ./camunda-platform-to-cloud-adapter/target/nexus-staging/**/*.jar
           maven-additional-options: -f camunda-platform-to-cloud-adapter/pom.xml
         id: release
       - if: github.event.release
@@ -44,5 +45,23 @@ jobs:
         with:
           upload_url: ${{ github.event.release.upload_url }}
           asset_path: ${{ steps.release.outputs.artifacts_archive_path }}
-          asset_name: ${{ steps.release.outputs.artifacts_archive_path }}
+          asset_name: camunda-platform-to-cloud-adapter.zip
           asset_content_type: application/zip
+  publish-modeler-plugin:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@master
+      - name: Archive Plugin
+        uses: thedoctor0/zip-release@master
+        with:
+          path: 'camunda-modeler-plugin-platform-to-cloud-converter'
+          type: 'zip'
+          filename: 'camunda-modeler-plugin-platform-to-cloud-converter.zip'
+          exclusions: '*.git* /*node_modules/*'
+      - if: github.event.release
+        name: Upload Release
+        uses: ncipollo/release-action@v1
+        with:
+          artifacts: "camunda-modeler-plugin-platform-to-cloud-converter.zip"
+          allowUpdates: true
+          token: ${{ secrets.GITHUB_TOKEN }}
