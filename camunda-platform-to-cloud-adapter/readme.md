@@ -10,6 +10,15 @@ Details on how service tasks are adapted are described in the [upcoming migratio
 
 # How to use
 
+Add the dependency to the adapter library (double check the latest version):
+```
+<dependency>
+    <groupId>org.camunda.community.cloud.migration</groupId>
+    <artifactId>camunda-platform-to-cloud-adapter</artifactId>
+    <version>0.0.3</version>
+</dependency>
+```
+
 Import the adapter into your Spring Boot application as shown in the [example application](../example/process-solution-migrated/src/main/java/io/berndruecker/converter/example/Application.java):
 
 ```

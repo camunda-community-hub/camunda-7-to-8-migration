@@ -27,9 +27,9 @@
       <version>1.1.0</version>
     </dependency>
     <dependency>
-    	<groupId>io.berndruecker</groupId>
+    	<groupId>org.camunda.community.cloud.migration</groupId>
       <artifactId>camunda-platform-to-cloud-adapter</artifactId>
-      <version>0.0.1-SNAPSHOT</version>
+      <version>0.0.3</version>
     </dependency>
   </dependencies>
 
