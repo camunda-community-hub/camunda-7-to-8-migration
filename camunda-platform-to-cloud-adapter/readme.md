@@ -4,7 +4,7 @@ This library allows to reuse Java delegates or Spring expressions from process s
 
 The adapter requires to use Spring Boot.
 
-Details on how service tasks are adapted are described in the [upcoming migration guide](https://github.com/berndruecker/camunda-cloud-documentation/blob/migration-guide-initial-draft/docs/guides/migrating-from-Camunda-Platform.md).
+Details on how service tasks are adapted are described in this [migration guide](https://docs.camunda.io/docs/guides/migrating-from-Camunda-Platform/#migration-tooling).
 
 **Important note:*** This adapter does not aim to cover every possible situation, but it might work out-of-the-box for some cases or give you jump-start to extend it to suite your needs.
 
