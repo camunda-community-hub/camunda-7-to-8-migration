@@ -10,14 +10,26 @@ Details on how service tasks are adapted are described in this [migration guide]
 
 # How to use
 
+## Add dependency
+
 Add the dependency to the adapter library (double check the latest version):
 ```
 <dependency>
     <groupId>org.camunda.community.cloud.migration</groupId>
     <artifactId>camunda-platform-to-cloud-adapter</artifactId>
     <version>0.0.3</version>
+    <exclusions>
+      <exclusion>
+        <groupId>org.springframework</groupId>
+        <artifactId>spring-beans</artifactId>
+      </exclusion>
+    </exclusions>
 </dependency>
 ```
+
+The exclusion makes sure, your own Spring dependency version is used and no conflicts occur. 
+
+## Import adapter
 
 Import the adapter into your Spring Boot application as shown in the [example application](../example/process-solution-migrated/src/main/java/io/berndruecker/converter/example/Application.java):
 
@@ -29,7 +41,11 @@ Import the adapter into your Spring Boot application as shown in the [example ap
 public class Application {
 ```
 
-Now you will have a job worker that subscribes to `camunda-platform-to-cloud-migration` and accept task headers for a java delegate class or expression, e.g.:
+This will also start a job worker that subscribes to `camunda-platform-to-cloud-migration`.
+
+## Using migration worker
+
+To use that worker, add the `taskType=camunda-platform-to-cloud-migration` to your service task and add task headers for a java delegate class or expression, e.g.:
 
 ```
     <bpmn:serviceTask id="task1" name="Java Delegate">
@@ -42,4 +58,7 @@ Now you will have a job worker that subscribes to `camunda-platform-to-cloud-mig
     </bpmn:serviceTask>
 ```
 
+## Example
+
 Check out [the full example](../eample/process-solution-migrated/src/main/resources/process.bpmn) for more details.
+
