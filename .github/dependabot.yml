@@ -1,0 +1,7 @@
+version: 2
+updates:
+- package-ecosystem: maven
+  directory: "/camunda-platform-to-cloud-adapter/"
+  schedule:
+    interval: daily    
+  open-pull-requests-limit: 10
