@@ -12,7 +12,7 @@ Details on how service tasks are adapted are described in this [migration guide]
 
 ## Add dependency
 
-Add the dependency to the adapter library (double check the latest version):
+Add the dependency to the adapter library (double-check for the latest version):
 ```
 <dependency>
     <groupId>org.camunda.community.cloud.migration</groupId>

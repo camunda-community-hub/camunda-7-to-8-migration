@@ -1,9 +1,9 @@
-package io.berndruecker.converter;
+package org.camunda.community.cloud.migration;
 
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
-@ComponentScan("io.berndruecker.converter")
+@ComponentScan("org.camunda.community.cloud.migration")
 public class CamundaPlatformToCloudAdapterConfig {
 }

@@ -1,7 +1,7 @@
-package io.berndruecker.converter.delegate;
+package org.camunda.community.cloud.migration.worker;
 
-import io.berndruecker.converter.delegate.execution.ZeebeJobDelegateExecution;
-import io.berndruecker.converter.delegate.juel.JuelExpressionResolver;
+import org.camunda.community.cloud.migration.execution.ZeebeJobDelegateExecution;
+import org.camunda.community.cloud.migration.juel.JuelExpressionResolver;
 import io.camunda.zeebe.client.api.command.CompleteJobCommandStep1;
 import io.camunda.zeebe.client.api.response.ActivatedJob;
 import io.camunda.zeebe.client.api.worker.JobClient;
