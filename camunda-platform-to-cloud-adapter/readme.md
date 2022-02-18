@@ -13,11 +13,12 @@ Details on how service tasks are adapted are described in this [migration guide]
 ## Add dependency
 
 Add the dependency to the adapter library (double-check for the latest version):
-```
+
+```xml
 <dependency>
     <groupId>org.camunda.community.cloud.migration</groupId>
     <artifactId>camunda-platform-to-cloud-adapter</artifactId>
-    <version>0.0.3</version>
+    <version>0.0.4</version>
     <exclusions>
       <exclusion>
         <groupId>org.springframework</groupId>
@@ -33,7 +34,7 @@ The exclusion makes sure, your own Spring dependency version is used and no conf
 
 Import the adapter into your Spring Boot application as shown in the [example application](../example/process-solution-migrated/src/main/java/io/berndruecker/converter/example/Application.java):
 
-```
+```java
 @SpringBootApplication
 @EnableZeebeClient
 @Import(CamundaPlatformToCloudAdapterConfig.class)
@@ -47,15 +48,15 @@ This will also start a job worker that subscribes to `camunda-platform-to-cloud-
 
 To use that worker, add the `taskType=camunda-platform-to-cloud-migration` to your service task and add task headers for a java delegate class or expression, e.g.:
 
-```
-    <bpmn:serviceTask id="task1" name="Java Delegate">
-      <bpmn:extensionElements>
-        <zeebe:taskDefinition type="camunda-platform-to-cloud-migration" />
-        <zeebe:taskHeaders>
-          <zeebe:header key="class" value="io.berndruecker.converter.example.SampleJavaDelegate" />
-        </zeebe:taskHeaders>
-      </bpmn:extensionElements>
-    </bpmn:serviceTask>
+```xml
+<bpmn:serviceTask id="task1" name="Java Delegate">
+  <bpmn:extensionElements>
+    <zeebe:taskDefinition type="camunda-platform-to-cloud-migration" />
+    <zeebe:taskHeaders>
+      <zeebe:header key="class" value="io.berndruecker.converter.example.SampleJavaDelegate" />
+    </zeebe:taskHeaders>
+  </bpmn:extensionElements>
+</bpmn:serviceTask>
 ```
 
 ## Example
