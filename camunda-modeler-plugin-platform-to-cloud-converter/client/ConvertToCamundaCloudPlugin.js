@@ -320,11 +320,44 @@ function convertCallActivity(element) {
   if (element.businessObject.variableMappingClass) {unsupportedAttribute(hints, "Call Activity", "variableMappingClass");}
   if (element.businessObject.variableMappingDelegateExpression) {unsupportedAttribute(hints, "Call Activity", "variableMappingDelegateExpression");}
   
-  if (readExtensionElement(element, "in")) {
-    unsupportedExtensionElement(hints, "Call Activity", "in");
+  var inMapping = readExtensionElement(element, "camunda:In");
+  if (inMapping) {
+    // Ignore variables all - this is the default in CamundaCloud
+    //inMapping.variables;
+    
+    var zeebeInput = addExtensionElement(element, moddle.create("zeebe:Input"));
+    zeebeInput.target = inMapping.target;
+    if (inMapping.source) {
+      zeebeInput.source = "= " + inMapping.source;
+    } else if (inMapping.sourceExpression) {
+      zeebeInput.source = convertJuel(inMapping.sourceExpression);
+    }
+    
+    // Ignoring for now:
+    // inMapping.local;
+
+    // unsupportedExtensionElement(hints, "Call Activity", "in");
+    //<camunda:in source="Xsource" target="Ytarget" />    
+    //<camunda:in variables="all" />
+    // <camunda:out sourceExpression="#{Lalala}" target="target" local="true" />
   }
-  if (readExtensionElement(element, "out")) {
-    unsupportedExtensionElement(hints, "Call Activity", "out");
+
+  var outMapping = readExtensionElement(element, "camunda:Out");
+  if (outMapping) {
+
+    var zeebeOutput = addExtensionElement(element, moddle.create("zeebe:Output"));
+    zeebeOutput.target = outMapping.target;
+    if (outMapping.source) {
+      zeebeOutput.source = "= " + outMapping.source;
+    } else if (outMapping.sourceExpression) {
+      zeebeOutput.source = convertJuel(outMapping.sourceExpression);
+    }
+
+    // Ignoring for now
+    //outMapping.businessObject.variables;
+    //outMapping.businessObject.local;
+
+    //unsupportedExtensionElement(hints, "Call Activity", "out");
   }
   //if (inputOutput = readExtensionElement(element, "inputOutput")) {
     // TODO handle inputOutput
