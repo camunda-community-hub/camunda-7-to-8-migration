@@ -413,6 +413,22 @@ function readExtensionElement(element, extensionElementType) {
   return null;
 }
 
+function removeExtensionElement(element, extensionElementType) {
+  if (!element.businessObject.extensionElements) {
+    return false;
+  }
+  var extensionElementArray = element.businessObject.extensionElements.get('values');
+  for (const extensionElementInLoop of extensionElementArray) {
+    if (extensionElementInLoop.$type == extensionElementType) { 
+      const index = extensionElementArray.indexOf(extensionElementInLoop)
+      extensionElementArray.splice(index, 1);
+      return true;
+    }
+  }
+  return false;
+}
+
+
 function createTaskDefinition(element, taskType) {
   var taskDef = addExtensionElement(element, moddle.create("zeebe:TaskDefinition"));
   taskDef.type = taskType;  
@@ -480,15 +496,20 @@ function convertServiceTask(element) {
   if (element.businessObject.class) { // ```camunda:class```
     createTaskDefinition(element, "camunda-platform-to-cloud-migration");
     addTaskHeader(element, "class", element.businessObject.class);
+    element.businessObject.class = null;
   } else if (element.businessObject.delegateExpression) { // ```camunda:delegateExpression```
     createTaskDefinition(element, "camunda-platform-to-cloud-migration");
     addTaskHeader(element, "delegateExpression", element.businessObject.delegateExpression);
+    element.businessObject.delegateExpression = null;
   } else if (element.businessObject.expression) { // ```camunda:expression```
     createTaskDefinition(element, "camunda-platform-to-cloud-migration");
     addTaskHeader(element, "expression", element.businessObject.expression);
     addTaskHeader(element, "resultVariable", element.businessObject.resultVariable);
+    element.businessObject.expression = null;
+    element.businessObject.resultVariable = null;
   } else if (element.businessObject.topic) { // External Tasks
     createTaskDefinition(element, element.businessObject.topic);
+    element.businessObject.topic = null;
   }
 
   if (!element.businessObject.asyncBefore || !element.businessObject.asyncAfter) {hints.push("Service tasks are all 'async' in Camunda Cloud");}
@@ -588,8 +609,11 @@ function convertCallActivity(element) {
   if (inMapping) {
     // Ignore variables all - this is the default in CamundaCloud
     //inMapping.variables;
-    
-    var zeebeInput = addExtensionElement(element, moddle.create("zeebe:Input"));
+
+    var zeebeInput = moddle.create('zeebe:Input', {});
+    const ioMapping = addExtensionElement(element, moddle.create("zeebe:IoMapping", {}));
+    ioMapping.get('inputParameters').push(zeebeInput); // see also https://github.com/bpmn-io/bpmn-js-properties-panel/blob/1b9317ec41b2c04281a9dd83c43f5ed412feb860/src/provider/cloud-element-templates/properties/CustomProperties.js#L548
+
     zeebeInput.target = inMapping.target;
     if (inMapping.source) {
       zeebeInput.source = "= " + inMapping.source;
@@ -604,12 +628,16 @@ function convertCallActivity(element) {
     //<camunda:in source="Xsource" target="Ytarget" />    
     //<camunda:in variables="all" />
     // <camunda:out sourceExpression="#{Lalala}" target="target" local="true" />
+    removeExtensionElement(element, "camunda:In");
   }
 
   var outMapping = readExtensionElement(element, "camunda:Out");
   if (outMapping) {
 
-    var zeebeOutput = addExtensionElement(element, moddle.create("zeebe:Output"));
+    var zeebeOutput = moddle.create('zeebe:Output', {});
+    const ioMapping = addExtensionElement(element, moddle.create("zeebe:IoMapping", {}));
+    ioMapping.get('outputParameters').push(zeebeOutput);
+
     zeebeOutput.target = outMapping.target;
     if (outMapping.source) {
       zeebeOutput.source = "= " + outMapping.source;
@@ -622,6 +650,7 @@ function convertCallActivity(element) {
     //outMapping.businessObject.local;
 
     //unsupportedExtensionElement(hints, "Call Activity", "out");
+    removeExtensionElement(element, "camunda:Out");
   }
   //if (inputOutput = readExtensionElement(element, "inputOutput")) {
     // TODO handle inputOutput
