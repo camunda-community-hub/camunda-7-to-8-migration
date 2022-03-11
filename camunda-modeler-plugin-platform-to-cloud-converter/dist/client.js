@@ -542,22 +542,42 @@ function convertServiceTask(element) {
  * # https://docs.camunda.org/manual/7.15/reference/bpmn20/tasks/user-task/
  * ##################
  */
+function assignments(element) {
+  return addExtensionElement(element, moddle.create("zeebe:AssignmentDefinition"));
+}
 function convertUserTask(element) {
   var hints = [];
   console.log("------------ User Task -----------------");
 
   // Assignment
-  if (element.businessObject.humanPerformer) {unsupportedElement(hints, "User Task", "humanPerformer");}
-  if (element.businessObject.potentialOwner) {unsupportedElement(hints, "User Task", "potentialOwner");}
-  if (element.businessObject.assignee) {unsupportedAttribute(hints, "User Task", "assignee");}
+  if (element.businessObject.assignee) {
+    assignments(element).assignee = element.businessObject.assignee;
+    element.businessObject.assignee = null;
+  }
+  if (element.businessObject.humanPerformer) {
+    assignments(element).assignee = element.businessObject.humanPerformer;
+    element.businessObject.humanPerformer = null;
+  }
+  if (element.businessObject.candidateGroups) {
+    assignments(element).candidateGroups = element.businessObject.candidateGroups;    
+    element.businessObject.candidateGroups = null;
+  }
+  if (element.businessObject.potentialOwner) {
+    assignments(element).candidateGroups = element.businessObject.potentialOwner;    
+    element.businessObject.potentialOwner = null;
+  }
   if (element.businessObject.candidateUsers) {unsupportedAttribute(hints, "User Task", "candidateUsers");}
-  if (element.businessObject.candidateGroups) {unsupportedAttribute(hints, "User Task", "candidateGroups");}
 
   // Forms TODO: Think about form migration
-  if (element.businessObject.formKey) {unsupportedAttribute(hints, "User Task", "formKey");}
+  if (element.businessObject.formRef) {
+    addExtensionElement(element, moddle.create("zeebe:FormDefinition")).formKey = element.businessObject.formRef;
+    element.businessObject.formRef = null;
+    hints.push("Forms work slightly differently in Camunda Cloud, please check your form definition and reference");
+  }
   if (element.businessObject.formHandlerClass) {unsupportedAttribute(hints, "User Task", "formHandlerClass");}
-  if (readExtensionElement(element, "formData")) {unsupportedExtensionElement(hints, "Service Task", "formData");}
-  if (readExtensionElement(element, "formProperty")) {unsupportedExtensionElement(hints, "Service Task", "formData");}
+  if (readExtensionElement(element, "formKey")) {unsupportedExtensionElement(hints, "User Task", "formKey");}
+  if (readExtensionElement(element, "formData")) {unsupportedExtensionElement(hints, "User Task", "formData");}
+  if (readExtensionElement(element, "formProperty")) {unsupportedExtensionElement(hints, "User Task", "formData");}
 
   if (element.businessObject.dueDate) {unsupportedAttribute(hints, "User Task", "dueDate");}
   if (element.businessObject.followUpDate) {unsupportedAttribute(hints, "User Task", "followUpDate");}
@@ -4705,8 +4725,8 @@ function PathMap() {
 
 // helpers //////////////////////
 
-// copied from https://github.com/adobe-webplatform/Snap.svg/blob/master/src/svg.js
-var tokenRegex = /\{([^}]+)\}/g,
+// copied and adjusted from https://github.com/adobe-webplatform/Snap.svg/blob/master/src/svg.js
+var tokenRegex = /\{([^{}]+)\}/g,
     objNotationRegex = /(?:(?:^|\.)(.+?)(?=\[|\.|$|\()|\[('|")(.+?)\2\])(\(\))?/g; // matches .xxxxx or ["xxxxx"] to run over object properties
 
 function replacer(all, key, obj) {
@@ -6170,9 +6190,14 @@ ModdleCopy.prototype.copyProperty = function(property, parent, propertyName) {
 
   var propertyDescriptor = this._moddle.getPropertyDescriptor(parent, propertyName);
 
-  // do NOT copy Ids and references
-  if (propertyDescriptor.isId || propertyDescriptor.isReference) {
+  // do NOT copy references
+  if (propertyDescriptor.isReference) {
     return;
+  }
+
+  // copy id
+  if (propertyDescriptor.isId) {
+    return this._copyId(property, parent);
   }
 
   // copy arrays
@@ -6211,6 +6236,18 @@ ModdleCopy.prototype.copyProperty = function(property, parent, propertyName) {
 
   // copy primitive properties
   return property;
+};
+
+ModdleCopy.prototype._copyId = function(id, element) {
+
+  // disallow if already taken
+  if (this._moddle.ids.assigned(id)) {
+    return;
+  } else {
+
+    this._moddle.ids.claim(id, element);
+    return id;
+  }
 };
 
 // helpers //////////
@@ -7601,7 +7638,7 @@ function LabelEditingProvider(
 
   function activateDirectEdit(element, force) {
     if (force ||
-        Object(_modeling_util_ModelingUtil__WEBPACK_IMPORTED_MODULE_4__["isAny"])(element, [ 'bpmn:Task', 'bpmn:TextAnnotation', 'bpmn:Group' ]) ||
+        Object(_modeling_util_ModelingUtil__WEBPACK_IMPORTED_MODULE_4__["isAny"])(element, [ 'bpmn:Task', 'bpmn:TextAnnotation' ]) ||
         isCollapsedSubProcess(element)) {
 
       directEditing.activate(element);
@@ -8244,6 +8281,10 @@ BpmnFactory.prototype._needsId = function(element) {
 };
 
 BpmnFactory.prototype._ensureId = function(element) {
+  if (element.id) {
+    this._model.ids.claim(element.id, element);
+    return;
+  }
 
   // generate semantic ids for elements
   // bpmn:SequenceFlow -> SequenceFlow_ID
@@ -8314,7 +8355,8 @@ BpmnFactory.prototype.createDiWaypoint = function(point) {
 
 BpmnFactory.prototype.createDiEdge = function(semantic, waypoints, attrs) {
   return this.create('bpmndi:BPMNEdge', Object(min_dash__WEBPACK_IMPORTED_MODULE_0__["assign"])({
-    bpmnElement: semantic
+    bpmnElement: semantic,
+    waypoint: this.createDiWaypoints(waypoints)
   }, attrs));
 };
 
@@ -9739,7 +9781,6 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var inherits__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(inherits__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var diagram_js_lib_features_modeling_Modeling__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! diagram-js/lib/features/modeling/Modeling */ "./node_modules/diagram-js/lib/features/modeling/Modeling.js");
 /* harmony import */ var _cmd_UpdateModdlePropertiesHandler__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./cmd/UpdateModdlePropertiesHandler */ "./node_modules/bpmn-js/lib/features/modeling/cmd/UpdateModdlePropertiesHandler.js");
-/* harmony import */ var _cmd_UpdateModdlePropertiesHandler__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_cmd_UpdateModdlePropertiesHandler__WEBPACK_IMPORTED_MODULE_2__);
 /* harmony import */ var _cmd_UpdatePropertiesHandler__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./cmd/UpdatePropertiesHandler */ "./node_modules/bpmn-js/lib/features/modeling/cmd/UpdatePropertiesHandler.js");
 /* harmony import */ var _cmd_UpdateCanvasRootHandler__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./cmd/UpdateCanvasRootHandler */ "./node_modules/bpmn-js/lib/features/modeling/cmd/UpdateCanvasRootHandler.js");
 /* harmony import */ var _cmd_AddLaneHandler__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./cmd/AddLaneHandler */ "./node_modules/bpmn-js/lib/features/modeling/cmd/AddLaneHandler.js");
@@ -9796,7 +9837,7 @@ Modeling.$inject = [
 Modeling.prototype.getHandlers = function() {
   var handlers = diagram_js_lib_features_modeling_Modeling__WEBPACK_IMPORTED_MODULE_1__["default"].prototype.getHandlers.call(this);
 
-  handlers['element.updateModdleProperties'] = _cmd_UpdateModdlePropertiesHandler__WEBPACK_IMPORTED_MODULE_2___default.a;
+  handlers['element.updateModdleProperties'] = _cmd_UpdateModdlePropertiesHandler__WEBPACK_IMPORTED_MODULE_2__["default"];
   handlers['element.updateProperties'] = _cmd_UpdatePropertiesHandler__WEBPACK_IMPORTED_MODULE_3__["default"];
   handlers['canvas.updateRoot'] = _cmd_UpdateCanvasRootHandler__WEBPACK_IMPORTED_MODULE_4__["default"];
   handlers['lane.add'] = _cmd_AddLaneHandler__WEBPACK_IMPORTED_MODULE_5__["default"];
@@ -10773,122 +10814,97 @@ function CreateParticipantBehavior(canvas, eventBus, modeling) {
     }
   });
 
-  function ensureCollaboration(context) {
-    var parent = context.parent,
-        collaboration;
-
+  // turn process into collaboration when creating first participant
+  function getOrCreateCollaboration() {
     var rootElement = canvas.getRootElement();
 
     if (Object(_util_ModelUtil__WEBPACK_IMPORTED_MODULE_2__["is"])(rootElement, 'bpmn:Collaboration')) {
-      collaboration = rootElement;
-    } else {
-
-      // update root element by making collaboration
-      collaboration = modeling.makeCollaboration();
-
-      // re-use process when creating first participant
-      context.process = parent;
+      return rootElement;
     }
 
-    context.parent = collaboration;
+    return modeling.makeCollaboration();
   }
 
-  // turn process into collaboration before adding participant
+  // when creating mutliple elements through `elements.create` parent must be set to collaboration
+  // and passed to `shape.create` as hint
+  this.preExecute('elements.create', HIGH_PRIORITY, function(context) {
+    var elements = context.elements,
+        parent = context.parent,
+        participant = findParticipant(elements),
+        hints;
+
+    if (participant && Object(_util_ModelUtil__WEBPACK_IMPORTED_MODULE_2__["is"])(parent, 'bpmn:Process')) {
+      context.parent = getOrCreateCollaboration();
+
+      hints = context.hints = context.hints || {};
+
+      hints.participant = participant;
+      hints.process = parent;
+      hints.processRef = Object(_util_ModelUtil__WEBPACK_IMPORTED_MODULE_2__["getBusinessObject"])(participant).get('processRef');
+    }
+  }, true);
+
+  // when creating single shape through `shape.create` parent must be set to collaboration
+  // unless it was already set through `elements.create`
   this.preExecute('shape.create', function(context) {
     var parent = context.parent,
         shape = context.shape;
 
     if (Object(_util_ModelUtil__WEBPACK_IMPORTED_MODULE_2__["is"])(shape, 'bpmn:Participant') && Object(_util_ModelUtil__WEBPACK_IMPORTED_MODULE_2__["is"])(parent, 'bpmn:Process')) {
-      ensureCollaboration(context);
+      context.parent = getOrCreateCollaboration();
+
+      context.process = parent;
+      context.processRef = Object(_util_ModelUtil__WEBPACK_IMPORTED_MODULE_2__["getBusinessObject"])(shape).get('processRef');
     }
   }, true);
 
+  // #execute necessary because #preExecute not called on CommandStack#redo
   this.execute('shape.create', function(context) {
-    var process = context.process,
-        shape = context.shape;
+    var hints = context.hints || {},
+        process = context.process || hints.process,
+        shape = context.shape,
+        participant = hints.participant;
 
-    if (process) {
-      context.oldProcessRef = shape.businessObject.processRef;
+    // both shape.create and elements.create must be handled
+    if (process && (!participant || shape === participant)) {
 
-      // re-use process when creating first participant
-      shape.businessObject.processRef = process.businessObject;
+      // monkey-patch process ref
+      Object(_util_ModelUtil__WEBPACK_IMPORTED_MODULE_2__["getBusinessObject"])(shape).set('processRef', Object(_util_ModelUtil__WEBPACK_IMPORTED_MODULE_2__["getBusinessObject"])(process));
     }
   }, true);
 
   this.revert('shape.create', function(context) {
-    var process = context.process,
-        shape = context.shape;
+    var hints = context.hints || {},
+        process = context.process || hints.process,
+        processRef = context.processRef || hints.processRef,
+        shape = context.shape,
+        participant = hints.participant;
 
-    if (process) {
+    // both shape.create and elements.create must be handled
+    if (process && (!participant || shape === participant)) {
 
-      // re-use process when creating first participant
-      shape.businessObject.processRef = context.oldProcessRef;
+      // monkey-patch process ref
+      Object(_util_ModelUtil__WEBPACK_IMPORTED_MODULE_2__["getBusinessObject"])(shape).set('processRef', processRef);
     }
   }, true);
 
   this.postExecute('shape.create', function(context) {
-    var process = context.process,
-        shape = context.shape;
+    var hints = context.hints || {},
+        process = context.process || context.hints.process,
+        shape = context.shape,
+        participant = hints.participant;
 
     if (process) {
+      var children = process.children.slice();
 
-      // move children from process to participant
-      var processChildren = process.children.slice();
-
-      modeling.moveElements(processChildren, { x: 0, y: 0 }, shape);
-    }
-
-  }, true);
-
-  // turn process into collaboration when creating participants
-  this.preExecute('elements.create', HIGH_PRIORITY, function(context) {
-    var elements = context.elements,
-        parent = context.parent,
-        participant;
-
-    var hasParticipants = findParticipant(elements);
-
-    if (hasParticipants && Object(_util_ModelUtil__WEBPACK_IMPORTED_MODULE_2__["is"])(parent, 'bpmn:Process')) {
-      ensureCollaboration(context);
-
-      participant = findParticipant(elements);
-
-      context.oldProcessRef = participant.businessObject.processRef;
-
-      // re-use process when creating first participant
-      participant.businessObject.processRef = parent.businessObject;
+      // both shape.create and elements.create must be handled
+      if (!participant) {
+        modeling.moveElements(children, { x: 0, y: 0 }, shape);
+      } else if (shape === participant) {
+        modeling.moveElements(children, { x: 0, y: 0 }, participant);
+      }
     }
   }, true);
-
-  this.revert('elements.create', function(context) {
-    var elements = context.elements,
-        process = context.process,
-        participant;
-
-    if (process) {
-      participant = findParticipant(elements);
-
-      // re-use process when creating first participant
-      participant.businessObject.processRef = context.oldProcessRef;
-    }
-  }, true);
-
-  this.postExecute('elements.create', function(context) {
-    var elements = context.elements,
-        process = context.process,
-        participant;
-
-    if (process) {
-      participant = findParticipant(elements);
-
-      // move children from process to first participant
-      var processChildren = process.children.slice();
-
-      modeling.moveElements(processChildren, { x: 0, y: 0 }, participant);
-    }
-
-  }, true);
-
 }
 
 CreateParticipantBehavior.$inject = [
@@ -11643,12 +11659,12 @@ function DropOnFlowBehavior(eventBus, bpmnRules, modeling) {
       dockingPoint = intersection.bendpoint ? waypoints[intersection.index] : mid;
 
       // if last waypointBefore is inside shape's bounds, ignore docking point
-      if (!isPointInsideBBox(shape, waypointsBefore[waypointsBefore.length-1])) {
+      if (waypointsBefore.length === 1 || !isPointInsideBBox(shape, waypointsBefore[waypointsBefore.length-1])) {
         waypointsBefore.push(copy(dockingPoint));
       }
 
       // if first waypointAfter is inside shape's bounds, ignore docking point
-      if (!isPointInsideBBox(shape, waypointsAfter[0])) {
+      if (waypointsAfter.length === 1 || !isPointInsideBBox(shape, waypointsAfter[0])) {
         waypointsAfter.unshift(copy(dockingPoint));
       }
     }
@@ -13479,7 +13495,7 @@ ReplaceElementBehaviour.$inject = [
 /*!*******************************************************************************!*\
   !*** ./node_modules/bpmn-js/lib/features/modeling/behavior/ResizeBehavior.js ***!
   \*******************************************************************************/
-/*! exports provided: LANE_MIN_DIMENSIONS, PARTICIPANT_MIN_DIMENSIONS, SUB_PROCESS_MIN_DIMENSIONS, TEXT_ANNOTATION_MIN_DIMENSIONS, default */
+/*! exports provided: LANE_MIN_DIMENSIONS, PARTICIPANT_MIN_DIMENSIONS, SUB_PROCESS_MIN_DIMENSIONS, TEXT_ANNOTATION_MIN_DIMENSIONS, default, getParticipantResizeConstraints */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -13489,9 +13505,13 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "SUB_PROCESS_MIN_DIMENSIONS", function() { return SUB_PROCESS_MIN_DIMENSIONS; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "TEXT_ANNOTATION_MIN_DIMENSIONS", function() { return TEXT_ANNOTATION_MIN_DIMENSIONS; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return ResizeBehavior; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "getParticipantResizeConstraints", function() { return getParticipantResizeConstraints; });
 /* harmony import */ var _util_ModelUtil__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../../util/ModelUtil */ "./node_modules/bpmn-js/lib/util/ModelUtil.js");
 /* harmony import */ var _util_DiUtil__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../../util/DiUtil */ "./node_modules/bpmn-js/lib/util/DiUtil.js");
-/* harmony import */ var _util_ResizeUtil__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./util/ResizeUtil */ "./node_modules/bpmn-js/lib/features/modeling/behavior/util/ResizeUtil.js");
+/* harmony import */ var diagram_js_lib_layout_LayoutUtil__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! diagram-js/lib/layout/LayoutUtil */ "./node_modules/diagram-js/lib/layout/LayoutUtil.js");
+/* harmony import */ var _util_LaneUtil__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../util/LaneUtil */ "./node_modules/bpmn-js/lib/features/modeling/util/LaneUtil.js");
+
+
 
 
 
@@ -13508,7 +13528,6 @@ var SUB_PROCESS_MIN_DIMENSIONS = { width: 140, height: 120 };
 
 var TEXT_ANNOTATION_MIN_DIMENSIONS = { width: 50, height: 30 };
 
-
 /**
  * Set minimum bounds/resize constraints on resize.
  *
@@ -13522,7 +13541,7 @@ function ResizeBehavior(eventBus) {
         balanced = context.balanced;
 
     if (Object(_util_ModelUtil__WEBPACK_IMPORTED_MODULE_0__["is"])(shape, 'bpmn:Lane') || Object(_util_ModelUtil__WEBPACK_IMPORTED_MODULE_0__["is"])(shape, 'bpmn:Participant')) {
-      context.resizeConstraints = Object(_util_ResizeUtil__WEBPACK_IMPORTED_MODULE_2__["getParticipantResizeConstraints"])(shape, direction, balanced);
+      context.resizeConstraints = getParticipantResizeConstraints(shape, direction, balanced);
     }
 
     if (Object(_util_ModelUtil__WEBPACK_IMPORTED_MODULE_0__["is"])(shape, 'bpmn:Participant')) {
@@ -13540,6 +13559,126 @@ function ResizeBehavior(eventBus) {
 }
 
 ResizeBehavior.$inject = [ 'eventBus' ];
+
+
+var abs = Math.abs,
+    min = Math.min,
+    max = Math.max;
+
+
+function addToTrbl(trbl, attr, value, choice) {
+  var current = trbl[attr];
+
+  // make sure to set the value if it does not exist
+  // or apply the correct value by comparing against
+  // choice(value, currentValue)
+  trbl[attr] = current === undefined ? value : choice(value, current);
+}
+
+function addMin(trbl, attr, value) {
+  return addToTrbl(trbl, attr, value, min);
+}
+
+function addMax(trbl, attr, value) {
+  return addToTrbl(trbl, attr, value, max);
+}
+
+var LANE_RIGHT_PADDING = 20,
+    LANE_LEFT_PADDING = 50,
+    LANE_TOP_PADDING = 20,
+    LANE_BOTTOM_PADDING = 20;
+
+function getParticipantResizeConstraints(laneShape, resizeDirection, balanced) {
+  var lanesRoot = Object(_util_LaneUtil__WEBPACK_IMPORTED_MODULE_3__["getLanesRoot"])(laneShape);
+
+  var isFirst = true,
+      isLast = true;
+
+  // max top/bottom size for lanes
+  var allLanes = Object(_util_LaneUtil__WEBPACK_IMPORTED_MODULE_3__["collectLanes"])(lanesRoot, [ lanesRoot ]);
+
+  var laneTrbl = Object(diagram_js_lib_layout_LayoutUtil__WEBPACK_IMPORTED_MODULE_2__["asTRBL"])(laneShape);
+
+  var maxTrbl = {},
+      minTrbl = {};
+
+  if (/e/.test(resizeDirection)) {
+    minTrbl.right = laneTrbl.left + LANE_MIN_DIMENSIONS.width;
+  } else
+  if (/w/.test(resizeDirection)) {
+    minTrbl.left = laneTrbl.right - LANE_MIN_DIMENSIONS.width;
+  }
+
+  allLanes.forEach(function(other) {
+
+    var otherTrbl = Object(diagram_js_lib_layout_LayoutUtil__WEBPACK_IMPORTED_MODULE_2__["asTRBL"])(other);
+
+    if (/n/.test(resizeDirection)) {
+
+      if (otherTrbl.top < (laneTrbl.top - 10)) {
+        isFirst = false;
+      }
+
+      // max top size (based on next element)
+      if (balanced && abs(laneTrbl.top - otherTrbl.bottom) < 10) {
+        addMax(maxTrbl, 'top', otherTrbl.top + LANE_MIN_DIMENSIONS.height);
+      }
+
+      // min top size (based on self or nested element)
+      if (abs(laneTrbl.top - otherTrbl.top) < 5) {
+        addMin(minTrbl, 'top', otherTrbl.bottom - LANE_MIN_DIMENSIONS.height);
+      }
+    }
+
+    if (/s/.test(resizeDirection)) {
+
+      if (otherTrbl.bottom > (laneTrbl.bottom + 10)) {
+        isLast = false;
+      }
+
+      // max bottom size (based on previous element)
+      if (balanced && abs(laneTrbl.bottom - otherTrbl.top) < 10) {
+        addMin(maxTrbl, 'bottom', otherTrbl.bottom - LANE_MIN_DIMENSIONS.height);
+      }
+
+      // min bottom size (based on self or nested element)
+      if (abs(laneTrbl.bottom - otherTrbl.bottom) < 5) {
+        addMax(minTrbl, 'bottom', otherTrbl.top + LANE_MIN_DIMENSIONS.height);
+      }
+    }
+  });
+
+  // max top/bottom/left/right size based on flow nodes
+  var flowElements = lanesRoot.children.filter(function(s) {
+    return !s.hidden && !s.waypoints && (Object(_util_ModelUtil__WEBPACK_IMPORTED_MODULE_0__["is"])(s, 'bpmn:FlowElement') || Object(_util_ModelUtil__WEBPACK_IMPORTED_MODULE_0__["is"])(s, 'bpmn:Artifact'));
+  });
+
+  flowElements.forEach(function(flowElement) {
+
+    var flowElementTrbl = Object(diagram_js_lib_layout_LayoutUtil__WEBPACK_IMPORTED_MODULE_2__["asTRBL"])(flowElement);
+
+    if (isFirst && /n/.test(resizeDirection)) {
+      addMin(minTrbl, 'top', flowElementTrbl.top - LANE_TOP_PADDING);
+    }
+
+    if (/e/.test(resizeDirection)) {
+      addMax(minTrbl, 'right', flowElementTrbl.right + LANE_RIGHT_PADDING);
+    }
+
+    if (isLast && /s/.test(resizeDirection)) {
+      addMax(minTrbl, 'bottom', flowElementTrbl.bottom + LANE_BOTTOM_PADDING);
+    }
+
+    if (/w/.test(resizeDirection)) {
+      addMin(minTrbl, 'left', flowElementTrbl.left - LANE_LEFT_PADDING);
+    }
+  });
+
+  return {
+    min: minTrbl,
+    max: maxTrbl
+  };
+}
 
 /***/ }),
 
@@ -14247,7 +14386,9 @@ function UnclaimIdBehavior(canvas, injector, moddle, modeling) {
     var rootElement = canvas.getRootElement(),
         rootElementBo = rootElement.businessObject;
 
-    moddle.ids.unclaim(rootElementBo.id);
+    if (Object(_util_ModelUtil__WEBPACK_IMPORTED_MODULE_2__["is"])(rootElement, 'bpmn:Collaboration')) {
+      moddle.ids.unclaim(rootElementBo.id);
+    }
   });
 }
 
@@ -15359,150 +15500,6 @@ function lineIntersect(l1s, l1e, l2s, l2e) {
 
 /***/ }),
 
-/***/ "./node_modules/bpmn-js/lib/features/modeling/behavior/util/ResizeUtil.js":
-/*!********************************************************************************!*\
-  !*** ./node_modules/bpmn-js/lib/features/modeling/behavior/util/ResizeUtil.js ***!
-  \********************************************************************************/
-/*! exports provided: getParticipantResizeConstraints */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "getParticipantResizeConstraints", function() { return getParticipantResizeConstraints; });
-/* harmony import */ var _util_ModelUtil__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../../../util/ModelUtil */ "./node_modules/bpmn-js/lib/util/ModelUtil.js");
-/* harmony import */ var diagram_js_lib_layout_LayoutUtil__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! diagram-js/lib/layout/LayoutUtil */ "./node_modules/diagram-js/lib/layout/LayoutUtil.js");
-/* harmony import */ var _modeling_util_LaneUtil__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../modeling/util/LaneUtil */ "./node_modules/bpmn-js/lib/features/modeling/util/LaneUtil.js");
-/* harmony import */ var _ResizeBehavior__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../ResizeBehavior */ "./node_modules/bpmn-js/lib/features/modeling/behavior/ResizeBehavior.js");
-
-
-
-
-
-
-
-
-var abs = Math.abs,
-    min = Math.min,
-    max = Math.max;
-
-
-function addToTrbl(trbl, attr, value, choice) {
-  var current = trbl[attr];
-
-  // make sure to set the value if it does not exist
-  // or apply the correct value by comparing against
-  // choice(value, currentValue)
-  trbl[attr] = current === undefined ? value : choice(value, current);
-}
-
-function addMin(trbl, attr, value) {
-  return addToTrbl(trbl, attr, value, min);
-}
-
-function addMax(trbl, attr, value) {
-  return addToTrbl(trbl, attr, value, max);
-}
-
-var LANE_RIGHT_PADDING = 20,
-    LANE_LEFT_PADDING = 50,
-    LANE_TOP_PADDING = 20,
-    LANE_BOTTOM_PADDING = 20;
-
-
-function getParticipantResizeConstraints(laneShape, resizeDirection, balanced) {
-  var lanesRoot = Object(_modeling_util_LaneUtil__WEBPACK_IMPORTED_MODULE_2__["getLanesRoot"])(laneShape);
-
-  var isFirst = true,
-      isLast = true;
-
-  // max top/bottom size for lanes
-  var allLanes = Object(_modeling_util_LaneUtil__WEBPACK_IMPORTED_MODULE_2__["collectLanes"])(lanesRoot, [ lanesRoot ]);
-
-  var laneTrbl = Object(diagram_js_lib_layout_LayoutUtil__WEBPACK_IMPORTED_MODULE_1__["asTRBL"])(laneShape);
-
-  var maxTrbl = {},
-      minTrbl = {};
-
-  if (/e/.test(resizeDirection)) {
-    minTrbl.right = laneTrbl.left + _ResizeBehavior__WEBPACK_IMPORTED_MODULE_3__["LANE_MIN_DIMENSIONS"].width;
-  } else
-  if (/w/.test(resizeDirection)) {
-    minTrbl.left = laneTrbl.right - _ResizeBehavior__WEBPACK_IMPORTED_MODULE_3__["LANE_MIN_DIMENSIONS"].width;
-  }
-
-  allLanes.forEach(function(other) {
-
-    var otherTrbl = Object(diagram_js_lib_layout_LayoutUtil__WEBPACK_IMPORTED_MODULE_1__["asTRBL"])(other);
-
-    if (/n/.test(resizeDirection)) {
-
-      if (otherTrbl.top < (laneTrbl.top - 10)) {
-        isFirst = false;
-      }
-
-      // max top size (based on next element)
-      if (balanced && abs(laneTrbl.top - otherTrbl.bottom) < 10) {
-        addMax(maxTrbl, 'top', otherTrbl.top + _ResizeBehavior__WEBPACK_IMPORTED_MODULE_3__["LANE_MIN_DIMENSIONS"].height);
-      }
-
-      // min top size (based on self or nested element)
-      if (abs(laneTrbl.top - otherTrbl.top) < 5) {
-        addMin(minTrbl, 'top', otherTrbl.bottom - _ResizeBehavior__WEBPACK_IMPORTED_MODULE_3__["LANE_MIN_DIMENSIONS"].height);
-      }
-    }
-
-    if (/s/.test(resizeDirection)) {
-
-      if (otherTrbl.bottom > (laneTrbl.bottom + 10)) {
-        isLast = false;
-      }
-
-      // max bottom size (based on previous element)
-      if (balanced && abs(laneTrbl.bottom - otherTrbl.top) < 10) {
-        addMin(maxTrbl, 'bottom', otherTrbl.bottom - _ResizeBehavior__WEBPACK_IMPORTED_MODULE_3__["LANE_MIN_DIMENSIONS"].height);
-      }
-
-      // min bottom size (based on self or nested element)
-      if (abs(laneTrbl.bottom - otherTrbl.bottom) < 5) {
-        addMax(minTrbl, 'bottom', otherTrbl.top + _ResizeBehavior__WEBPACK_IMPORTED_MODULE_3__["LANE_MIN_DIMENSIONS"].height);
-      }
-    }
-  });
-
-  // max top/bottom/left/right size based on flow nodes
-  var flowElements = lanesRoot.children.filter(function(s) {
-    return !s.hidden && !s.waypoints && (Object(_util_ModelUtil__WEBPACK_IMPORTED_MODULE_0__["is"])(s, 'bpmn:FlowElement') || Object(_util_ModelUtil__WEBPACK_IMPORTED_MODULE_0__["is"])(s, 'bpmn:Artifact'));
-  });
-
-  flowElements.forEach(function(flowElement) {
-
-    var flowElementTrbl = Object(diagram_js_lib_layout_LayoutUtil__WEBPACK_IMPORTED_MODULE_1__["asTRBL"])(flowElement);
-
-    if (isFirst && /n/.test(resizeDirection)) {
-      addMin(minTrbl, 'top', flowElementTrbl.top - LANE_TOP_PADDING);
-    }
-
-    if (/e/.test(resizeDirection)) {
-      addMax(minTrbl, 'right', flowElementTrbl.right + LANE_RIGHT_PADDING);
-    }
-
-    if (isLast && /s/.test(resizeDirection)) {
-      addMax(minTrbl, 'bottom', flowElementTrbl.bottom + LANE_BOTTOM_PADDING);
-    }
-
-    if (/w/.test(resizeDirection)) {
-      addMin(minTrbl, 'left', flowElementTrbl.left - LANE_LEFT_PADDING);
-    }
-  });
-
-  return {
-    min: minTrbl,
-    max: maxTrbl
-  };
-}
-
-/***/ }),
-
 /***/ "./node_modules/bpmn-js/lib/features/modeling/cmd/AddLaneHandler.js":
 /*!**************************************************************************!*\
   !*** ./node_modules/bpmn-js/lib/features/modeling/cmd/AddLaneHandler.js ***!
@@ -15877,12 +15874,26 @@ SetColorHandler.prototype.postExecute = function(context) {
     // TODO @barmac: remove once we drop bpmn.io properties
     ensureLegacySupport(assignedDi);
 
-    self._commandStack.execute('element.updateProperties', {
-      element: element,
-      properties: {
-        di: assignedDi
-      }
-    });
+    if (element.labelTarget) {
+
+      // set label colors as bpmndi:BPMNLabel#color
+      self._commandStack.execute('element.updateModdleProperties', {
+        element: element,
+        moddleElement: element.businessObject.di.label,
+        properties: {
+          color: di['background-color']
+        }
+      });
+    } else {
+
+      // set colors bpmndi:BPMNEdge or bpmndi:BPMNShape
+      self._commandStack.execute('element.updateProperties', {
+        element: element,
+        properties: {
+          di: assignedDi
+        }
+      });
+    }
   });
 
 };
@@ -16333,17 +16344,16 @@ UpdateFlowNodeRefsHandler.prototype.revert = function(context) {
 /*!*****************************************************************************************!*\
   !*** ./node_modules/bpmn-js/lib/features/modeling/cmd/UpdateModdlePropertiesHandler.js ***!
   \*****************************************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return UpdateModdlePropertiesHandler; });
+/* harmony import */ var min_dash__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! min-dash */ "./node_modules/min-dash/dist/index.esm.js");
+/* harmony import */ var _util_ModelUtil__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../../util/ModelUtil */ "./node_modules/bpmn-js/lib/util/ModelUtil.js");
 
 
-var reduce = __webpack_require__(/*! min-dash */ "./node_modules/min-dash/dist/index.esm.js").reduce,
-    keys = __webpack_require__(/*! min-dash */ "./node_modules/min-dash/dist/index.esm.js").keys,
-    forEach = __webpack_require__(/*! min-dash */ "./node_modules/min-dash/dist/index.esm.js").forEach,
-    is = __webpack_require__(/*! ../../../util/ModelUtil */ "./node_modules/bpmn-js/lib/util/ModelUtil.js").is,
-    getBusinessObject = __webpack_require__(/*! ../../../util/ModelUtil */ "./node_modules/bpmn-js/lib/util/ModelUtil.js").getBusinessObject;
 
 
 function UpdateModdlePropertiesHandler(elementRegistry) {
@@ -16351,9 +16361,6 @@ function UpdateModdlePropertiesHandler(elementRegistry) {
 }
 
 UpdateModdlePropertiesHandler.$inject = ['elementRegistry'];
-
-module.exports = UpdateModdlePropertiesHandler;
-
 
 UpdateModdlePropertiesHandler.prototype.execute = function(context) {
 
@@ -16366,7 +16373,7 @@ UpdateModdlePropertiesHandler.prototype.execute = function(context) {
   }
 
   var changed = context.changed || this.getVisualReferences(moddleElement).concat(element);
-  var oldProperties = context.oldProperties || getModdleProperties(moddleElement, keys(properties));
+  var oldProperties = context.oldProperties || getModdleProperties(moddleElement, Object(min_dash__WEBPACK_IMPORTED_MODULE_0__["keys"])(properties));
 
   setModdleProperties(moddleElement, properties);
 
@@ -16397,7 +16404,7 @@ UpdateModdlePropertiesHandler.prototype.getVisualReferences = function(moddleEle
 
   var elementRegistry = this._elementRegistry;
 
-  if (is(moddleElement, 'bpmn:DataObject')) {
+  if (Object(_util_ModelUtil__WEBPACK_IMPORTED_MODULE_1__["is"])(moddleElement, 'bpmn:DataObject')) {
     return getAllDataObjectReferences(moddleElement, elementRegistry);
   }
 
@@ -16408,14 +16415,14 @@ UpdateModdlePropertiesHandler.prototype.getVisualReferences = function(moddleEle
 // helpers /////////////////
 
 function getModdleProperties(moddleElement, propertyNames) {
-  return reduce(propertyNames, function(result, key) {
+  return Object(min_dash__WEBPACK_IMPORTED_MODULE_0__["reduce"])(propertyNames, function(result, key) {
     result[key] = moddleElement.get(key);
     return result;
   }, {});
 }
 
 function setModdleProperties(moddleElement, properties) {
-  forEach(properties, function(value, key) {
+  Object(min_dash__WEBPACK_IMPORTED_MODULE_0__["forEach"])(properties, function(value, key) {
     moddleElement.set(key, value);
   });
 }
@@ -16423,11 +16430,12 @@ function setModdleProperties(moddleElement, properties) {
 function getAllDataObjectReferences(dataObject, elementRegistry) {
   return elementRegistry.filter(function(element) {
     return (
-      is(element, 'bpmn:DataObjectReference') &&
-          getBusinessObject(element).dataObjectRef === dataObject
+      Object(_util_ModelUtil__WEBPACK_IMPORTED_MODULE_1__["is"])(element, 'bpmn:DataObjectReference') &&
+          Object(_util_ModelUtil__WEBPACK_IMPORTED_MODULE_1__["getBusinessObject"])(element).dataObjectRef === dataObject
     );
   });
 }
+
 
 /***/ }),
 
@@ -16972,33 +16980,19 @@ function computeLanesResize(shape, newBounds) {
 /*!*************************************************************************!*\
   !*** ./node_modules/bpmn-js/lib/features/modeling/util/ModelingUtil.js ***!
   \*************************************************************************/
-/*! exports provided: isAny, getParent */
+/*! exports provided: is, isAny, getParent */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "isAny", function() { return isAny; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "getParent", function() { return getParent; });
-/* harmony import */ var min_dash__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! min-dash */ "./node_modules/min-dash/dist/index.esm.js");
-/* harmony import */ var _util_ModelUtil__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../../util/ModelUtil */ "./node_modules/bpmn-js/lib/util/ModelUtil.js");
+/* harmony import */ var _util_ModelUtil__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../../util/ModelUtil */ "./node_modules/bpmn-js/lib/util/ModelUtil.js");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "is", function() { return _util_ModelUtil__WEBPACK_IMPORTED_MODULE_0__["is"]; });
+
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "isAny", function() { return _util_ModelUtil__WEBPACK_IMPORTED_MODULE_0__["isAny"]; });
 
 
 
-
-
-/**
- * Return true if element has any of the given types.
- *
- * @param {djs.model.Base} element
- * @param {Array<string>} types
- *
- * @return {boolean}
- */
-function isAny(element, types) {
-  return Object(min_dash__WEBPACK_IMPORTED_MODULE_0__["some"])(types, function(t) {
-    return Object(_util_ModelUtil__WEBPACK_IMPORTED_MODULE_1__["is"])(element, t);
-  });
-}
 
 
 /**
@@ -17016,7 +17010,7 @@ function getParent(element, anyType) {
   }
 
   while ((element = element.parent)) {
-    if (isAny(element, anyType)) {
+    if (Object(_util_ModelUtil__WEBPACK_IMPORTED_MODULE_0__["isAny"])(element, anyType)) {
       return element;
     }
   }
@@ -17137,6 +17131,10 @@ function BpmnOrderingProvider(eventBus, canvas, translate) {
       element.order = order = computeOrder(element);
     }
 
+    if (!order) {
+      throw new Error('no order for <' + element.id + '>');
+    }
+
     return order;
   }
 
@@ -17154,10 +17152,7 @@ function BpmnOrderingProvider(eventBus, canvas, translate) {
     }
 
     if (!actualParent) {
-      throw new Error(translate('no parent for {element} in {parent}', {
-        element: element.id,
-        parent: newParent.id
-      }));
+      throw new Error('no parent for <' + element.id + '> in <' + (newParent && newParent.id) + '>');
     }
 
     return actualParent;
@@ -17175,11 +17170,9 @@ function BpmnOrderingProvider(eventBus, canvas, translate) {
 
     var elementOrder = getOrder(element);
 
-
     if (elementOrder.containers) {
       newParent = findActualParent(element, newParent, elementOrder.containers);
     }
-
 
     var currentIndex = newParent.children.indexOf(element);
 
@@ -17343,7 +17336,7 @@ PaletteProvider.prototype.getPaletteEntries = function(element) {
 
     create.start(event, [ subProcess, startEvent ], {
       hints: {
-        autoSelect: [ startEvent ]
+        autoSelect: [ subProcess ]
       }
     });
   }
@@ -17588,7 +17581,7 @@ ReplaceMenuProvider.prototype.getEntries = function(element) {
     return this._createEntries(element, _replace_ReplaceOptions__WEBPACK_IMPORTED_MODULE_4__["DATA_OBJECT_REFERENCE"]);
   }
 
-  if (Object(_util_ModelUtil__WEBPACK_IMPORTED_MODULE_0__["is"])(businessObject, 'bpmn:DataStoreReference')) {
+  if (Object(_util_ModelUtil__WEBPACK_IMPORTED_MODULE_0__["is"])(businessObject, 'bpmn:DataStoreReference') && !Object(_util_ModelUtil__WEBPACK_IMPORTED_MODULE_0__["is"])(element.parent, 'bpmn:Collaboration')) {
     return this._createEntries(element, _replace_ReplaceOptions__WEBPACK_IMPORTED_MODULE_4__["DATA_STORE_REFERENCE"]);
   }
 
@@ -22586,13 +22579,19 @@ function isLabel(element) {
 /*!****************************************************!*\
   !*** ./node_modules/bpmn-js/lib/util/ModelUtil.js ***!
   \****************************************************/
-/*! exports provided: is, getBusinessObject */
+/*! exports provided: is, isAny, getBusinessObject, getDi */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "is", function() { return is; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "isAny", function() { return isAny; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "getBusinessObject", function() { return getBusinessObject; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "getDi", function() { return getDi; });
+/* harmony import */ var min_dash__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! min-dash */ "./node_modules/min-dash/dist/index.esm.js");
+
+
+
 /**
  * Is an element of the given BPMN type?
  *
@@ -22609,6 +22608,20 @@ function is(element, type) {
 
 
 /**
+ * Return true if element has any of the given types.
+ *
+ * @param {djs.model.Base} element
+ * @param {Array<string>} types
+ *
+ * @return {boolean}
+ */
+function isAny(element, types) {
+  return Object(min_dash__WEBPACK_IMPORTED_MODULE_0__["some"])(types, function(t) {
+    return is(element, t);
+  });
+}
+
+/**
  * Return the business object for a given element.
  *
  * @param  {djs.model.Base|ModdleElement} element
@@ -22617,6 +22630,19 @@ function is(element, type) {
  */
 function getBusinessObject(element) {
   return (element && element.businessObject) || element;
+}
+
+/**
+ * Return the di object for a given element.
+ *
+ * @param  {djs.model.Base} element
+ *
+ * @return {ModdleElement}
+ */
+function getDi(element) {
+  var bo = getBusinessObject(element);
+
+  return bo && bo.di;
 }
 
 /***/ }),
@@ -29980,6 +30006,14 @@ function ensurePx(number) {
   return Object(min_dash__WEBPACK_IMPORTED_MODULE_0__["isNumber"])(number) ? number + 'px' : number;
 }
 
+function findRoot(element) {
+  while (element.parent) {
+    element = element.parent;
+  }
+
+  return element;
+}
+
 /**
  * Creates a HTML container element for a SVG element with
  * the given configuration
@@ -30025,6 +30059,11 @@ function createGroup(parent, cls, childIndex) {
 }
 
 var BASE_LAYER = 'base';
+var HIDDEN_MARKER = 'djs-element-hidden';
+
+// render plane contents behind utility layers
+var PLANE_LAYER_INDEX = 0;
+var UTILITY_LAYER_INDEX = 1;
 
 
 var REQUIRED_MODEL_ATTRS = {
@@ -30061,22 +30100,22 @@ Canvas.$inject = [
   'elementRegistry'
 ];
 
+/**
+ * Creates a <svg> element that is wrapped into a <div>.
+ * This way we are always able to correctly figure out the size of the svg element
+ * by querying the parent node.
 
+ * (It is not possible to get the size of a svg element cross browser @ 2014-04-01)
+
+ * <div class="djs-container" style="width: {desired-width}, height: {desired-height}">
+ *   <svg width="100%" height="100%">
+ *    ...
+ *   </svg>
+ * </div>
+ */
 Canvas.prototype._init = function(config) {
 
   var eventBus = this._eventBus;
-
-  // Creates a <svg> element that is wrapped into a <div>.
-  // This way we are always able to correctly figure out the size of the svg element
-  // by querying the parent node.
-  //
-  // (It is not possible to get the size of a svg element cross browser @ 2014-04-01)
-  //
-  // <div class="djs-container" style="width: {desired-width}, height: {desired-height}">
-  //   <svg width="100%" height="100%">
-  //    ...
-  //   </svg>
-  // </div>
 
   // html container
   var container = this._container = createContainer(config);
@@ -30089,6 +30128,7 @@ Canvas.prototype._init = function(config) {
   var viewport = this._viewport = createGroup(svg, 'viewport');
 
   this._layers = {};
+  this._planes = {};
 
   // debounce canvas.viewbox.changed events
   // for smoother diagram interaction
@@ -30123,7 +30163,8 @@ Canvas.prototype._init = function(config) {
     'connection.added',
     'shape.removed',
     'connection.removed',
-    'elements.changed'
+    'elements.changed',
+    'plane.set'
   ], function() {
     delete this._cachedViewbox;
   }, this);
@@ -30147,7 +30188,8 @@ Canvas.prototype._destroy = function(emit) {
   delete this._svg;
   delete this._container;
   delete this._layers;
-  delete this._rootElement;
+  delete this._planes;
+  delete this._activePlane;
   delete this._viewport;
 };
 
@@ -30162,11 +30204,15 @@ Canvas.prototype._clear = function() {
     var type = Object(_util_Elements__WEBPACK_IMPORTED_MODULE_2__["getType"])(element);
 
     if (type === 'root') {
-      self.setRootElement(null, true);
+      self.setRootElementForPlane(null, self.findPlane(element), true);
     } else {
       self._removeElement(element, type);
     }
   });
+
+  // remove all planes
+  this._activePlane = null;
+  this._planes = {};
 
   // force recomputation of view box
   delete this._cachedViewbox;
@@ -30179,7 +30225,7 @@ Canvas.prototype._clear = function() {
  * @returns {SVGElement}
  */
 Canvas.prototype.getDefaultLayer = function() {
-  return this.getLayer(BASE_LAYER, 0);
+  return this.getLayer(BASE_LAYER, PLANE_LAYER_INDEX);
 };
 
 /**
@@ -30228,8 +30274,8 @@ Canvas.prototype.getLayer = function(name, index) {
  */
 Canvas.prototype._createLayer = function(name, index) {
 
-  if (!index) {
-    index = 0;
+  if (typeof index === 'undefined') {
+    index = UTILITY_LAYER_INDEX;
   }
 
   var childIndex = Object(min_dash__WEBPACK_IMPORTED_MODULE_0__["reduce"])(this._layers, function(childIndex, layer) {
@@ -30245,6 +30291,140 @@ Canvas.prototype._createLayer = function(name, index) {
     index: index
   };
 
+};
+
+/**
+ * Returns a plane that is used to draw elements on it.
+ *
+ * @param {string} name
+ *
+ * @return {Object} plane descriptor with { layer, rootElement, name }
+ */
+Canvas.prototype.getPlane = function(name) {
+  if (!name) {
+    throw new Error('must specify a name');
+  }
+
+  return this._planes[name];
+};
+
+/**
+ * Creates a plane that is used to draw elements on it. If no
+ * root element is provided, an implicit root will be used.
+ *
+ * @param {string} name
+ * @param {Object|djs.model.Root} [rootElement] optional root element
+ *
+ * @return {Object} plane descriptor with { layer, rootElement, name }
+ */
+Canvas.prototype.createPlane = function(name, rootElement) {
+  if (!name) {
+    throw new Error('must specify a name');
+  }
+
+  if (this._planes[name]) {
+    throw new Error('plane ' + name + ' already exists');
+  }
+
+  if (!rootElement) {
+    rootElement = {
+      id: '__implicitroot' + name,
+      children: [],
+      isImplicit: true
+    };
+  }
+
+  var svgLayer = this.getLayer(name, PLANE_LAYER_INDEX);
+  Object(tiny_svg__WEBPACK_IMPORTED_MODULE_4__["classes"])(svgLayer).add(HIDDEN_MARKER);
+
+  var plane = this._planes[name] = {
+    layer: svgLayer,
+    name: name,
+    rootElement: null
+  };
+
+  this.setRootElementForPlane(rootElement, plane);
+
+  return plane;
+};
+
+/**
+ * Sets the active plane and hides the previously active plane.
+ *
+ * @param {string|Object} plane
+ *
+ * @return {Object} plane descriptor with { layer, rootElement, name }
+ */
+Canvas.prototype.setActivePlane = function(plane) {
+  if (!plane) {
+    throw new Error('must specify a plane');
+  }
+
+  if (typeof plane === 'string') {
+    plane = this.getPlane(plane);
+  }
+
+  // hide previous Plane
+  if (this._activePlane) {
+    Object(tiny_svg__WEBPACK_IMPORTED_MODULE_4__["classes"])(this._activePlane.layer).add(HIDDEN_MARKER);
+  }
+
+  this._activePlane = plane;
+
+  // show current Plane
+  Object(tiny_svg__WEBPACK_IMPORTED_MODULE_4__["classes"])(plane.layer).remove(HIDDEN_MARKER);
+
+  if (plane.rootElement) {
+    this._elementRegistry.updateGraphics(plane.rootElement, this._svg, true);
+  }
+
+  this._eventBus.fire('plane.set', { plane: plane });
+
+  return plane;
+};
+
+/**
+ * Returns the currently active layer
+ *
+ * @returns {SVGElement}
+ */
+
+Canvas.prototype.getActiveLayer = function() {
+  return this.getActivePlane().layer;
+};
+
+/**
+ * Returns the currently active plane.
+ *
+ * @return {Object} plane descriptor with { layer, rootElement, name }
+ */
+Canvas.prototype.getActivePlane = function() {
+  var plane = this._activePlane;
+  if (!plane) {
+    plane = this.createPlane(BASE_LAYER);
+    this.setActivePlane(BASE_LAYER);
+  }
+
+  return plane;
+};
+
+/**
+ * Returns the plane which contains the given element.
+ *
+ * @param {string|djs.model.Base} element
+ *
+ * @return {Object} plane descriptor with { layer, rootElement, name }
+ */
+Canvas.prototype.findPlane = function(element) {
+  if (typeof element === 'string') {
+    element = this._elementRegistry.get(element);
+  }
+
+  var root = findRoot(element);
+
+  return Object(min_dash__WEBPACK_IMPORTED_MODULE_0__["find"])(this._planes, function(plane) {
+    return plane.rootElement === root;
+  });
 };
 
 /**
@@ -30368,11 +30548,9 @@ Canvas.prototype.toggleMarker = function(element, marker) {
 };
 
 Canvas.prototype.getRootElement = function() {
-  if (!this._rootElement) {
-    this.setRootElement({ id: '__implicitroot', children: [] });
-  }
+  var plane = this.getActivePlane();
 
-  return this._rootElement;
+  return plane.rootElement;
 };
 
 
@@ -30389,12 +30567,41 @@ Canvas.prototype.getRootElement = function() {
  * @return {Object|djs.model.Root} new root element
  */
 Canvas.prototype.setRootElement = function(element, override) {
+  var activePlane = this._activePlane;
+
+  if (activePlane) {
+    return this.setRootElementForPlane(element, activePlane, override);
+  } else {
+    var basePlane = this.createPlane(BASE_LAYER, element);
+
+    this.setActivePlane(basePlane);
+
+    return basePlane.rootElement;
+  }
+};
+
+
+/**
+ * Sets a given element as the new root element for the canvas
+ * and returns the new root element.
+ *
+ * @param {Object|djs.model.Root} element
+ * @param {Object|djs.model.Root} plane
+ * @param {boolean} [override] whether to override the current root element, if any
+ *
+ * @return {Object|djs.model.Root} new root element
+ */
+Canvas.prototype.setRootElementForPlane = function(element, plane, override) {
+
+  if (typeof plane === 'string') {
+    plane = this.getPlane(plane);
+  }
 
   if (element) {
     this._ensureValid('root', element);
   }
 
-  var currentRoot = this._rootElement,
+  var currentRoot = plane.rootElement,
       elementRegistry = this._elementRegistry,
       eventBus = this._eventBus;
 
@@ -30411,22 +30618,25 @@ Canvas.prototype.setRootElement = function(element, override) {
   }
 
   if (element) {
-    var gfx = this.getDefaultLayer();
+    var gfx = plane.layer;
 
     // resemble element add event sequence
     eventBus.fire('root.add', { element: element });
 
-    elementRegistry.add(element, gfx, this._svg);
+    elementRegistry.add(element, gfx);
 
     eventBus.fire('root.added', { element: element, gfx: gfx });
+
+    // associate SVG with root element when active
+    if (plane === this._activePlane) {
+      this._elementRegistry.updateGraphics(element, this._svg, true);
+    }
   }
 
-  this._rootElement = element;
+  plane.rootElement = element;
 
   return element;
 };
-
-
 
 // add functionality //////////////////////
 
@@ -30733,9 +30943,10 @@ Canvas.prototype.viewbox = function(box) {
   if (!box) {
 
     // compute the inner box based on the
-    // diagrams default layer. This allows us to exclude
+    // diagrams active plane. This allows us to exclude
     // external components, such as overlays
-    innerBox = this.getDefaultLayer().getBBox();
+
+    innerBox = (this._activePlane && this._activePlane.layer.getBBox()) || {};
 
     transform = Object(tiny_svg__WEBPACK_IMPORTED_MODULE_4__["transform"])(viewport);
     matrix = transform ? transform.matrix : Object(tiny_svg__WEBPACK_IMPORTED_MODULE_4__["createMatrix"])();
@@ -30751,10 +30962,10 @@ Canvas.prototype.viewbox = function(box) {
       height: outerBox.height / scale,
       scale: scale,
       inner: {
-        width: innerBox.width,
-        height: innerBox.height,
-        x: innerBox.x,
-        y: innerBox.y
+        width: innerBox.width || 0,
+        height: innerBox.height || 0,
+        x: innerBox.x || 0,
+        y: innerBox.y || 0
       },
       outer: outerBox
     };
@@ -30807,12 +31018,23 @@ Canvas.prototype.scroll = function(delta) {
  * Scrolls the viewbox to contain the given element.
  * Optionally specify a padding to be applied to the edges.
  *
- * @param {Object} [element] the element to scroll to.
+ * @param {Object|String} [element] the element to scroll to.
  * @param {Object|Number} [padding=100] the padding to be applied. Can also specify top, bottom, left and right.
  *
  */
 Canvas.prototype.scrollToElement = function(element, padding) {
   var defaultPadding = 100;
+
+  if (typeof element === 'string') {
+    element = this._elementRegistry.get(element);
+  }
+
+  // switch to correct Plane
+  var targetPlane = this.findPlane(element);
+  if (targetPlane !== this._activePlane) {
+    this.setActivePlane(targetPlane);
+  }
+
   if (!padding) {
     padding = {};
   }
@@ -30833,7 +31055,7 @@ Canvas.prototype.scrollToElement = function(element, padding) {
       zoom = this.zoom(),
       dx, dy;
 
-  // Shrink viewboxBounds with padding
+  // shrink viewboxBounds with padding
   viewboxBounds.y += padding.top / zoom;
   viewboxBounds.x += padding.left / zoom;
   viewboxBounds.width -= (padding.right + padding.left) / zoom;
@@ -31230,6 +31452,29 @@ ElementRegistry.prototype.updateId = function(element, newId) {
   element.id = newId;
 
   this.add(element, gfx, secondaryGfx);
+};
+
+/**
+ * Update the graphics of an element
+ *
+ * @param {djs.model.Base} element
+ * @param {SVGElement} gfx
+ * @param {boolean} [secondary=false] whether to update the secondary connected element
+ */
+ElementRegistry.prototype.updateGraphics = function(filter, gfx, secondary) {
+  var id = filter.id || filter;
+
+  var container = this._elements[id];
+
+  if (secondary) {
+    container.secondaryGfx = gfx;
+  } else {
+    container.gfx = gfx;
+  }
+
+  Object(tiny_svg__WEBPACK_IMPORTED_MODULE_0__["attr"])(gfx, ELEMENT_ID, id);
+
+  return gfx;
 };
 
 /**
@@ -31758,12 +32003,11 @@ EventBus.prototype._invokeListener = function(event, args, listener) {
     if (returnValue === false) {
       event.preventDefault();
     }
-  } catch (e) {
-    if (!this.handleError(e)) {
-      console.error('unhandled error in event listener');
-      console.error(e.stack);
+  } catch (error) {
+    if (!this.handleError(error)) {
+      console.error('unhandled error in event listener', error);
 
-      throw e;
+      throw error;
     }
   }
 
@@ -32215,13 +32459,14 @@ function BaseRenderer(eventBus, renderPriority) {
   eventBus.on([ 'render.shape', 'render.connection' ], renderPriority, function(evt, context) {
     var type = evt.type,
         element = context.element,
-        visuals = context.gfx;
+        visuals = context.gfx,
+        attrs = context.attrs;
 
     if (self.canRender(element)) {
       if (type === 'render.shape') {
-        return self.drawShape(visuals, element);
+        return self.drawShape(visuals, element, attrs);
       } else {
-        return self.drawConnection(visuals, element);
+        return self.drawConnection(visuals, element, attrs);
       }
     }
   });
@@ -32303,7 +32548,10 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _BaseRenderer__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./BaseRenderer */ "./node_modules/diagram-js/lib/draw/BaseRenderer.js");
 /* harmony import */ var _util_RenderUtil__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../util/RenderUtil */ "./node_modules/diagram-js/lib/util/RenderUtil.js");
 /* harmony import */ var tiny_svg__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! tiny-svg */ "./node_modules/tiny-svg/dist/index.esm.js");
-/* harmony import */ var _util_Elements__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../util/Elements */ "./node_modules/diagram-js/lib/util/Elements.js");
+/* harmony import */ var min_dash__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! min-dash */ "./node_modules/min-dash/dist/index.esm.js");
+/* harmony import */ var _util_Elements__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../util/Elements */ "./node_modules/diagram-js/lib/util/Elements.js");
+
+
 
 
 
@@ -32341,7 +32589,7 @@ DefaultRenderer.prototype.canRender = function() {
   return true;
 };
 
-DefaultRenderer.prototype.drawShape = function drawShape(visuals, element) {
+DefaultRenderer.prototype.drawShape = function drawShape(visuals, element, attrs) {
   var rect = Object(tiny_svg__WEBPACK_IMPORTED_MODULE_3__["create"])('rect');
 
   Object(tiny_svg__WEBPACK_IMPORTED_MODULE_3__["attr"])(rect, {
@@ -32351,10 +32599,10 @@ DefaultRenderer.prototype.drawShape = function drawShape(visuals, element) {
     height: element.height || 0
   });
 
-  if (Object(_util_Elements__WEBPACK_IMPORTED_MODULE_4__["isFrameElement"])(element)) {
-    Object(tiny_svg__WEBPACK_IMPORTED_MODULE_3__["attr"])(rect, this.FRAME_STYLE);
+  if (Object(_util_Elements__WEBPACK_IMPORTED_MODULE_5__["isFrameElement"])(element)) {
+    Object(tiny_svg__WEBPACK_IMPORTED_MODULE_3__["attr"])(rect, Object(min_dash__WEBPACK_IMPORTED_MODULE_4__["assign"])({}, this.FRAME_STYLE, attrs || {}));
   } else {
-    Object(tiny_svg__WEBPACK_IMPORTED_MODULE_3__["attr"])(rect, this.SHAPE_STYLE);
+    Object(tiny_svg__WEBPACK_IMPORTED_MODULE_3__["attr"])(rect, Object(min_dash__WEBPACK_IMPORTED_MODULE_4__["assign"])({}, this.SHAPE_STYLE, attrs || {}));
   }
 
   Object(tiny_svg__WEBPACK_IMPORTED_MODULE_3__["append"])(visuals, rect);
@@ -32362,9 +32610,9 @@ DefaultRenderer.prototype.drawShape = function drawShape(visuals, element) {
   return rect;
 };
 
-DefaultRenderer.prototype.drawConnection = function drawConnection(visuals, connection) {
+DefaultRenderer.prototype.drawConnection = function drawConnection(visuals, connection, attrs) {
 
-  var line = Object(_util_RenderUtil__WEBPACK_IMPORTED_MODULE_2__["createLine"])(connection.waypoints, this.CONNECTION_STYLE);
+  var line = Object(_util_RenderUtil__WEBPACK_IMPORTED_MODULE_2__["createLine"])(connection.waypoints, Object(min_dash__WEBPACK_IMPORTED_MODULE_4__["assign"])({}, this.CONNECTION_STYLE, attrs || {}));
   Object(tiny_svg__WEBPACK_IMPORTED_MODULE_3__["append"])(visuals, line);
 
   return line;
@@ -32677,7 +32925,7 @@ AlignElements.prototype._alignmentPosition = function(type, sortedElements) {
 /**
  * Executes the alignment of a selection of elements
  *
- * @param  {Array} elements [description]
+ * @param  {Array} elements
  * @param  {string} type left|right|center|top|bottom|middle
  */
 AlignElements.prototype.trigger = function(elements, type) {
@@ -36526,7 +36774,7 @@ ConnectionPreview.prototype.createConnectionPreviewGfx = function() {
 
   Object(tiny_svg__WEBPACK_IMPORTED_MODULE_0__["classes"])(gfx).add(MARKER_CONNECTION_PREVIEW);
 
-  Object(tiny_svg__WEBPACK_IMPORTED_MODULE_0__["append"])(this._canvas.getDefaultLayer(), gfx);
+  Object(tiny_svg__WEBPACK_IMPORTED_MODULE_0__["append"])(this._canvas.getActiveLayer(), gfx);
 
   return gfx;
 };
@@ -38105,13 +38353,13 @@ function CreatePreview(
       dragGroup = context.dragGroup = createDragGroup(elements);
     }
 
-    var defaultLayer;
+    var activeLayer;
 
     if (hover) {
       if (!dragGroup.parentNode) {
-        defaultLayer = canvas.getDefaultLayer();
+        activeLayer = canvas.getActiveLayer();
 
-        Object(tiny_svg__WEBPACK_IMPORTED_MODULE_2__["append"])(defaultLayer, dragGroup);
+        Object(tiny_svg__WEBPACK_IMPORTED_MODULE_2__["append"])(activeLayer, dragGroup);
       }
 
       Object(_util_SvgTransformUtil__WEBPACK_IMPORTED_MODULE_0__["translate"])(dragGroup, event.x, event.y);
@@ -38257,8 +38505,8 @@ DistributeElements.prototype.registerFilter = function(filterFn) {
 /**
  * Distributes the elements with a given orientation
  *
- * @param  {Array} elements    [description]
- * @param  {string} orientation [description]
+ * @param  {Array} elements
+ * @param  {string} orientation
  */
 DistributeElements.prototype.trigger = function(elements, orientation) {
   var modeling = this._modeling;
@@ -38392,11 +38640,11 @@ DistributeElements.prototype._hasIntersection = function(rangeA, rangeB) {
 /**
  * Returns the min and max values for an element
  *
- * @param  {[type]} element   [description]
- * @param  {[type]} axis      [description]
- * @param  {[type]} dimension [description]
+ * @param  {Bounds} element
+ * @param  {string} axis
+ * @param  {string} dimension
  *
- * @return {[type]}           [description]
+ * @return {{ min: number, max: number }}
  */
 DistributeElements.prototype._findRange = function(element) {
   var axis = element[this._axis],
@@ -41297,8 +41545,9 @@ __webpack_require__.r(__webpack_exports__);
 var KEYDOWN_EVENT = 'keyboard.keydown',
     KEYUP_EVENT = 'keyboard.keyup';
 
-var DEFAULT_PRIORITY = 1000;
+var HANDLE_MODIFIER_ATTRIBUTE = 'input-handle-modified-keys';
 
+var DEFAULT_PRIORITY = 1000;
 
 /**
  * A keyboard abstraction that may be activated and
@@ -41369,10 +41618,9 @@ Keyboard.prototype._keyupHandler = function(event) {
 };
 
 Keyboard.prototype._keyHandler = function(event, type) {
-  var target = event.target,
-      eventBusResult;
+  var eventBusResult;
 
-  if (isInput(target)) {
+  if (this._isEventIgnored(event)) {
     return;
   }
 
@@ -41385,6 +41633,29 @@ Keyboard.prototype._keyHandler = function(event, type) {
   if (eventBusResult) {
     event.preventDefault();
   }
+};
+
+Keyboard.prototype._isEventIgnored = function(event) {
+  return isInput(event.target) && this._isModifiedKeyIgnored(event);
+};
+
+Keyboard.prototype._isModifiedKeyIgnored = function(event) {
+  if (!Object(_KeyboardUtil__WEBPACK_IMPORTED_MODULE_2__["isCmd"])(event)) {
+    return true;
+  }
+
+  var allowedModifiers = this._getAllowedModifiers(event.target);
+  return !allowedModifiers.includes(event.key);
+};
+
+Keyboard.prototype._getAllowedModifiers = function(element) {
+  var modifierContainer = Object(min_dom__WEBPACK_IMPORTED_MODULE_1__["closest"])(element, '[' + HANDLE_MODIFIER_ATTRIBUTE + ']', true);
+
+  if (!modifierContainer || (this._node && !this._node.contains(modifierContainer))) {
+    return [];
+  }
+
+  return modifierContainer.getAttribute(HANDLE_MODIFIER_ATTRIBUTE).split(',');
 };
 
 Keyboard.prototype.bind = function(node) {
@@ -41986,7 +42257,7 @@ function LassoTool(
   var visuals = {
 
     create: function(context) {
-      var container = canvas.getDefaultLayer(),
+      var container = canvas.getActiveLayer(),
           frame;
 
       frame = context.frame = Object(tiny_svg__WEBPACK_IMPORTED_MODULE_3__["create"])('rect');
@@ -45640,9 +45911,9 @@ function MovePreview(
 
       Object(tiny_svg__WEBPACK_IMPORTED_MODULE_2__["attr"])(dragGroup, styles.cls('djs-drag-group', [ 'no-events' ]));
 
-      var defaultLayer = canvas.getDefaultLayer();
+      var activeLayer = canvas.getActiveLayer();
 
-      Object(tiny_svg__WEBPACK_IMPORTED_MODULE_2__["append"])(defaultLayer, dragGroup);
+      Object(tiny_svg__WEBPACK_IMPORTED_MODULE_2__["append"])(activeLayer, dragGroup);
 
       context.dragGroup = dragGroup;
     }
@@ -46546,6 +46817,13 @@ Overlays.prototype._addOverlay = function(overlay) {
     Object(min_dom__WEBPACK_IMPORTED_MODULE_1__["classes"])(htmlContainer).add('djs-overlay-' + overlay.type);
   }
 
+  var plane = this._canvas.findPlane(element);
+  var activePlane = this._canvas.getActivePlane();
+  overlay.plane = plane;
+  if (plane !== activePlane) {
+    setVisible(htmlContainer, false);
+  }
+
   overlay.htmlContainer = htmlContainer;
 
   overlayContainer.overlays.push(overlay);
@@ -46560,21 +46838,25 @@ Overlays.prototype._addOverlay = function(overlay) {
 
 Overlays.prototype._updateOverlayVisibilty = function(overlay, viewbox) {
   var show = overlay.show,
+      plane = overlay.plane,
       minZoom = show && show.minZoom,
       maxZoom = show && show.maxZoom,
       htmlContainer = overlay.htmlContainer,
+      activePlane = this._canvas.getActivePlane(),
       visible = true;
 
-  if (show) {
+  if (plane !== activePlane) {
+    visible = false;
+  } else if (show) {
     if (
       (Object(min_dash__WEBPACK_IMPORTED_MODULE_0__["isDefined"])(minZoom) && minZoom > viewbox.scale) ||
       (Object(min_dash__WEBPACK_IMPORTED_MODULE_0__["isDefined"])(maxZoom) && maxZoom < viewbox.scale)
     ) {
       visible = false;
     }
-
-    setVisible(htmlContainer, visible);
   }
+
+  setVisible(htmlContainer, visible);
 
   this._updateOverlayScale(overlay, viewbox);
 };
@@ -46699,6 +46981,12 @@ Overlays.prototype._init = function() {
   });
 
 
+  eventBus.on('plane.set', function(e) {
+    Object(min_dash__WEBPACK_IMPORTED_MODULE_0__["forEach"])(self._overlays, function(el) {
+      setVisible(el.htmlContainer, el.plane === e.plane);
+    });
+  });
+
   // clear overlays with diagram
 
   eventBus.on('diagram.clear', this.clear, this);
@@ -46777,7 +47065,9 @@ var TOGGLE_SELECTOR = '.djs-palette-toggle',
     ENTRY_SELECTOR = '.entry',
     ELEMENT_SELECTOR = TOGGLE_SELECTOR + ', ' + ENTRY_SELECTOR;
 
-var PALETTE_OPEN_CLS = 'open',
+var PALETTE_PREFIX = 'djs-palette-',
+    PALETTE_SHOWN_CLS = 'shown',
+    PALETTE_OPEN_CLS = 'open',
     PALETTE_TWO_COLUMN_CLS = 'two-column';
 
 var DEFAULT_PRIORITY = 1000;
@@ -46895,6 +47185,7 @@ Palette.prototype._init = function() {
   var container = this._container = Object(min_dom__WEBPACK_IMPORTED_MODULE_1__["domify"])(Palette.HTML_MARKUP);
 
   parentContainer.appendChild(container);
+  Object(min_dom__WEBPACK_IMPORTED_MODULE_1__["classes"])(parentContainer).add(PALETTE_PREFIX + PALETTE_SHOWN_CLS);
 
   min_dom__WEBPACK_IMPORTED_MODULE_1__["delegate"].bind(container, ELEMENT_SELECTOR, 'click', function(event) {
 
@@ -46952,7 +47243,8 @@ Palette.prototype._toggleState = function(state) {
 
   var twoColumn;
 
-  var cls = Object(min_dom__WEBPACK_IMPORTED_MODULE_1__["classes"])(container);
+  var cls = Object(min_dom__WEBPACK_IMPORTED_MODULE_1__["classes"])(container),
+      parentCls = Object(min_dom__WEBPACK_IMPORTED_MODULE_1__["classes"])(parent);
 
   if ('twoColumn' in state) {
     twoColumn = state.twoColumn;
@@ -46962,9 +47254,11 @@ Palette.prototype._toggleState = function(state) {
 
   // always update two column
   cls.toggle(PALETTE_TWO_COLUMN_CLS, twoColumn);
+  parentCls.toggle(PALETTE_PREFIX + PALETTE_TWO_COLUMN_CLS, twoColumn);
 
   if ('open' in state) {
     cls.toggle(PALETTE_OPEN_CLS, state.open);
+    parentCls.toggle(PALETTE_PREFIX + PALETTE_OPEN_CLS, state.open);
   }
 
   eventBus.fire('palette.changed', {
@@ -48747,7 +49041,7 @@ function ResizePreview(eventBus, canvas, previewSupport) {
         frame = context.frame;
 
     if (!frame) {
-      frame = context.frame = previewSupport.addFrame(shape, canvas.getDefaultLayer());
+      frame = context.frame = previewSupport.addFrame(shape, canvas.getActiveLayer());
 
       canvas.addMarker(shape, MARKER_RESIZING);
     }
@@ -49873,9 +50167,10 @@ __webpack_require__.r(__webpack_exports__);
  *
  * @param {EventBus} eventBus the event bus
  */
-function Selection(eventBus) {
+function Selection(eventBus, canvas) {
 
   this._eventBus = eventBus;
+  this._canvas = canvas;
 
   this._selectedElements = [];
 
@@ -49886,12 +50181,12 @@ function Selection(eventBus) {
     self.deselect(element);
   });
 
-  eventBus.on([ 'diagram.clear' ], function(e) {
+  eventBus.on([ 'diagram.clear', 'plane.set' ], function(e) {
     self.select(null);
   });
 }
 
-Selection.$inject = [ 'eventBus' ];
+Selection.$inject = [ 'eventBus', 'canvas' ];
 
 
 Selection.prototype.deselect = function(element) {
@@ -49936,6 +50231,14 @@ Selection.prototype.select = function(elements, add) {
   if (!Object(min_dash__WEBPACK_IMPORTED_MODULE_0__["isArray"])(elements)) {
     elements = elements ? [ elements ] : [];
   }
+
+  var canvas = this._canvas;
+
+  elements = elements.filter(function(element) {
+    var plane = canvas.findPlane(element);
+
+    return plane === canvas.getActivePlane();
+  });
 
   // selection may be cleared by passing an empty array or null
   // to the method
@@ -51760,7 +52063,7 @@ function SpaceToolPreview(
       var dragGroup = Object(tiny_svg__WEBPACK_IMPORTED_MODULE_1__["create"])('g');
       Object(tiny_svg__WEBPACK_IMPORTED_MODULE_1__["attr"])(dragGroup, styles.cls('djs-drag-group', [ 'no-events' ]));
 
-      Object(tiny_svg__WEBPACK_IMPORTED_MODULE_1__["append"])(canvas.getDefaultLayer(), dragGroup);
+      Object(tiny_svg__WEBPACK_IMPORTED_MODULE_1__["append"])(canvas.getActiveLayer(), dragGroup);
 
       // shapes
       addPreviewGfx(movingShapes, dragGroup);
@@ -51822,7 +52125,7 @@ function SpaceToolPreview(
       var frameGroup = Object(tiny_svg__WEBPACK_IMPORTED_MODULE_1__["create"])('g');
       Object(tiny_svg__WEBPACK_IMPORTED_MODULE_1__["attr"])(frameGroup, styles.cls('djs-frame-group', [ 'no-events' ]));
 
-      Object(tiny_svg__WEBPACK_IMPORTED_MODULE_1__["append"])(canvas.getDefaultLayer(), frameGroup);
+      Object(tiny_svg__WEBPACK_IMPORTED_MODULE_1__["append"])(canvas.getActiveLayer(), frameGroup);
 
       var frames = [];
 
@@ -52910,14 +53213,23 @@ function TouchInteractionEvents(
   // the touch recognizer
   var recognizer;
 
-  function handler(type) {
+  function handler(type, buttonType) {
 
     return function(event) {
       log('element', type, event);
 
-      interactionEvents.fire(type, event);
+      var gfx = getGfx(event.target),
+          element = gfx && elementRegistry.get(gfx);
+
+      // translate into an actual mouse click event
+      if (buttonType) {
+        event.srcEvent.button = buttonType;
+      }
+
+      return interactionEvents.fire(type, event, element);
     };
   }
+
 
   function getGfx(target) {
     var node = Object(min_dom__WEBPACK_IMPORTED_MODULE_1__["closest"])(target, 'svg, .djs-element', true);
@@ -52928,10 +53240,6 @@ function TouchInteractionEvents(
 
     // touch recognizer
     recognizer = createTouchRecognizer(svg);
-
-    recognizer.on('doubletap', handler('element.dblclick'));
-
-    recognizer.on('tap', handler('element.click'));
 
     function startGrabCanvas(event) {
 
@@ -53008,6 +53316,9 @@ function TouchInteractionEvents(
       recognizer.on('pinchend', end);
       recognizer.on('pinchcancel', end);
     }
+
+    recognizer.on('tap', handler('element.click'));
+    recognizer.on('doubletap', handler('element.dblclick', 1));
 
     recognizer.on('panstart', startGrab);
     recognizer.on('press', startGrab);
@@ -72162,7 +72473,7 @@ function sortBy(collection, extractor) {
  *
  * const matcher = matchPattern({ id: 1 });
  *
- * var element = find(elements, matcher);
+ * let element = find(elements, matcher);
  *
  * @param  {Object} pattern
  *
@@ -72198,8 +72509,11 @@ function toNum(arg) {
 }
 
 /**
- * Debounce fn, calling it only once if
- * the given time elapsed between calls.
+ * Debounce fn, calling it only once if the given time
+ * elapsed between calls.
+ *
+ * Lodash-style the function exposes methods to `#clear`
+ * and `#flush` to control internal behavior.
  *
  * @param  {Function} fn
  * @param  {Number} timeout
@@ -72212,23 +72526,39 @@ function debounce(fn, timeout) {
   var lastThis;
   var lastNow;
 
-  function fire() {
+  function fire(force) {
     var now = Date.now();
-    var scheduledDiff = lastNow + timeout - now;
+    var scheduledDiff = force ? 0 : lastNow + timeout - now;
 
     if (scheduledDiff > 0) {
       return schedule(scheduledDiff);
     }
 
     fn.apply(lastThis, lastArgs);
-    timer = lastNow = lastArgs = lastThis = undefined;
+    clear();
   }
 
   function schedule(timeout) {
     timer = setTimeout(fire, timeout);
   }
 
-  return function () {
+  function clear() {
+    if (timer) {
+      clearTimeout(timer);
+    }
+
+    timer = lastNow = lastArgs = lastThis = undefined;
+  }
+
+  function flush() {
+    if (timer) {
+      fire(true);
+    }
+
+    clear();
+  }
+
+  function callback() {
     lastNow = Date.now();
 
     for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
@@ -72241,7 +72571,11 @@ function debounce(fn, timeout) {
     if (!timer) {
       schedule(timeout);
     }
-  };
+  }
+
+  callback.flush = flush;
+  callback.cancel = clear;
+  return callback;
 }
 /**
  * Throttle fn, calling at most once
@@ -72278,6 +72612,22 @@ function throttle(fn, interval) {
 
 function bind(fn, target) {
   return fn.bind(target);
+}
+
+function _typeof(obj) {
+  "@babel/helpers - typeof";
+
+  if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") {
+    _typeof = function (obj) {
+      return typeof obj;
+    };
+  } else {
+    _typeof = function (obj) {
+      return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj;
+    };
+  }
+
+  return _typeof(obj);
 }
 
 function _extends() {
@@ -72327,6 +72677,14 @@ function assign(target) {
 function set(target, path, value) {
   var currentTarget = target;
   forEach(path, function (key, idx) {
+    if (typeof key !== 'number' && typeof key !== 'string') {
+      throw new Error('illegal key type: ' + _typeof(key) + '. Key should be of type number or string.');
+    }
+
+    if (key === 'constructor') {
+      throw new Error('illegal key: constructor');
+    }
+
     if (key === '__proto__') {
       throw new Error('illegal key: __proto__');
     }
@@ -74924,6 +75282,20 @@ Properties.prototype.get = function(target, name) {
  * @param  {Object} options
  */
 Properties.prototype.define = function(target, name, options) {
+
+  if (!options.writable) {
+
+    var value = options.value;
+
+    // use getters for read-only variables to support ES6 proxies
+    // cf. https://github.com/bpmn-io/internal-docs/issues/386
+    options = Object(min_dash__WEBPACK_IMPORTED_MODULE_0__["assign"])({}, options, {
+      get: function() { return value; }
+    });
+
+    delete options.value;
+  }
+
   Object.defineProperty(target, name, options);
 };
 
@@ -78485,6 +78857,7 @@ var isFunction = __webpack_require__(/*! min-dash */ "./node_modules/min-dash/di
 
 var WILDCARD = '*';
 
+const zeebeServiceTaskProperties = [ 'zeebe:TaskDefinition', 'zeebe:Subscription', 'zeebe:TaskHeaders','zeebe:LoopCharacteristics','zeebe:Input' ];
 
 function ZeebeModdleExtension(eventBus) {
 
@@ -78502,11 +78875,29 @@ ZeebeModdleExtension.$inject = [ 'eventBus' ];
 
 ZeebeModdleExtension.prototype.canCopyProperty = function(property, parent) {
 
-  // check if property is allowed in parent
+  // (1) check if property is allowed in parent
   if (isObject(property) && !isAllowedInParent(property, parent)) {
-
     return false;
   }
+
+  // (2) check for specific scenarios
+  if (!this.canHostServiceTaskLikeProperties(property, parent)) {
+    return false;
+  }
+};
+
+ZeebeModdleExtension.prototype.canHostServiceTaskLikeProperties = function(property, parent) {
+
+  if (isAllowedInZeebeServiceTask(property)) {
+
+    var serviceTaskLike = getParent(parent, 'bpmn:IntermediateThrowEvent') || getParent(parent, 'bpmn:EndEvent');
+
+    if (serviceTaskLike) {
+      return isMessageEvent(serviceTaskLike);
+    }
+  }
+
+  return true;
 };
 
 module.exports = ZeebeModdleExtension;
@@ -78554,6 +78945,21 @@ function isWildcard(allowedIn) {
   return allowedIn.indexOf(WILDCARD) !== -1;
 }
 
+function isMessageEvent(event) {
+  const eventDefinitions = event.get('eventDefinitions');
+
+  return eventDefinitions.some(function(def) {
+    return is(def, 'bpmn:MessageEventDefinition');
+  });
+}
+
+// check if property is allowed in ZeebeServiceTask but not for none events
+function isAllowedInZeebeServiceTask(property) {
+  return zeebeServiceTaskProperties.some(function(propertyType) {
+    return is(property, propertyType);
+  });
+}
+
 /***/ }),
 
 /***/ "./node_modules/zeebe-bpmn-moddle/lib/index.js":
@@ -78581,7 +78987,7 @@ module.exports = {
 /*! exports provided: name, prefix, uri, xml, associations, types, default */
 /***/ (function(module) {
 
-module.exports = JSON.parse("{\"name\":\"zeebe\",\"prefix\":\"zeebe\",\"uri\":\"http://camunda.org/schema/zeebe/1.0\",\"xml\":{\"tagAlias\":\"lowerCase\"},\"associations\":[],\"types\":[{\"name\":\"ZeebeServiceTask\",\"extends\":[\"bpmn:ServiceTask\",\"bpmn:BusinessRuleTask\",\"bpmn:ScriptTask\",\"bpmn:SendTask\"],\"properties\":[{\"name\":\"retryCounter\",\"type\":\"String\",\"isAttr\":true}]},{\"name\":\"IoMapping\",\"superClass\":[\"Element\"],\"properties\":[{\"name\":\"ioMapping\",\"type\":\"IoMapping\"},{\"name\":\"inputParameters\",\"isMany\":true,\"type\":\"Input\"},{\"name\":\"outputParameters\",\"isMany\":true,\"type\":\"Output\"}],\"meta\":{\"allowedIn\":[\"bpmn:CallActivity\",\"bpmn:Event\",\"bpmn:ReceiveTask\",\"zeebe:ZeebeServiceTask\",\"bpmn:SubProcess\"]}},{\"name\":\"InputOutputParameter\",\"properties\":[{\"name\":\"source\",\"isAttr\":true,\"type\":\"String\"},{\"name\":\"target\",\"isAttr\":true,\"type\":\"String\"}]},{\"name\":\"Subscription\",\"superClass\":[\"Element\"],\"properties\":[{\"name\":\"correlationKey\",\"isAttr\":true,\"type\":\"String\"}]},{\"name\":\"Input\",\"superClass\":[\"InputOutputParameter\"],\"meta\":{\"allowedIn\":[\"bpmn:CallActivity\",\"zeebe:ZeebeServiceTask\",\"bpmn:SubProcess\"]}},{\"name\":\"Output\",\"superClass\":[\"InputOutputParameter\"],\"meta\":{\"allowedIn\":[\"bpmn:CallActivity\",\"bpmn:Event\",\"bpmn:ReceiveTask\",\"zeebe:ZeebeServiceTask\",\"bpmn:SubProcess\"]}},{\"name\":\"TaskHeaders\",\"superClass\":[\"Element\"],\"meta\":{\"allowedIn\":[\"zeebe:ZeebeServiceTask\"]},\"properties\":[{\"name\":\"values\",\"type\":\"Header\",\"isMany\":true}]},{\"name\":\"Header\",\"superClass\":[\"Element\"],\"properties\":[{\"name\":\"id\",\"type\":\"String\",\"isAttr\":true},{\"name\":\"key\",\"type\":\"String\",\"isAttr\":true},{\"name\":\"value\",\"type\":\"String\",\"isAttr\":true}]},{\"name\":\"TaskDefinition\",\"superClass\":[\"Element\"],\"properties\":[{\"name\":\"type\",\"type\":\"String\",\"isAttr\":true},{\"name\":\"retries\",\"type\":\"String\",\"isAttr\":true}]},{\"name\":\"LoopCharacteristics\",\"superClass\":[\"Element\"],\"meta\":{\"allowedIn\":[\"zeebe:ZeebeServiceTask\",\"bpmn:ReceiveTask\",\"bpmn:SubProcess\"]},\"properties\":[{\"name\":\"inputCollection\",\"type\":\"String\",\"isAttr\":true},{\"name\":\"inputElement\",\"type\":\"String\",\"isAttr\":true},{\"name\":\"outputCollection\",\"type\":\"String\",\"isAttr\":true},{\"name\":\"outputElement\",\"type\":\"String\",\"isAttr\":true}]},{\"name\":\"CalledElement\",\"superClass\":[\"Element\"],\"meta\":{\"allowedIn\":[\"bpmn:CallActivity\"]},\"properties\":[{\"name\":\"processId\",\"type\":\"String\",\"isAttr\":true},{\"name\":\"processIdExpression\",\"type\":\"String\",\"isAttr\":true},{\"name\":\"propagateAllChildVariables\",\"isAttr\":true,\"type\":\"Boolean\"}]},{\"name\":\"UserTaskForm\",\"superClass\":[\"Element\"],\"meta\":{\"allowedIn\":[\"bpmn:Process\"]},\"properties\":[{\"name\":\"id\",\"type\":\"String\",\"isAttr\":true},{\"name\":\"body\",\"type\":\"String\",\"isBody\":true}]},{\"name\":\"FormDefinition\",\"superClass\":[\"Element\"],\"meta\":{\"allowedIn\":[\"bpmn:UserTask\"]},\"properties\":[{\"name\":\"formKey\",\"type\":\"String\",\"isAttr\":true}]}]}");
+module.exports = JSON.parse("{\"name\":\"zeebe\",\"prefix\":\"zeebe\",\"uri\":\"http://camunda.org/schema/zeebe/1.0\",\"xml\":{\"tagAlias\":\"lowerCase\"},\"associations\":[],\"types\":[{\"name\":\"ZeebeServiceTask\",\"extends\":[\"bpmn:ServiceTask\",\"bpmn:BusinessRuleTask\",\"bpmn:ScriptTask\",\"bpmn:SendTask\",\"bpmn:EndEvent\",\"bpmn:IntermediateThrowEvent\"],\"properties\":[{\"name\":\"retryCounter\",\"type\":\"String\",\"isAttr\":true}]},{\"name\":\"IoMapping\",\"superClass\":[\"Element\"],\"properties\":[{\"name\":\"ioMapping\",\"type\":\"IoMapping\"},{\"name\":\"inputParameters\",\"isMany\":true,\"type\":\"Input\"},{\"name\":\"outputParameters\",\"isMany\":true,\"type\":\"Output\"}],\"meta\":{\"allowedIn\":[\"bpmn:CallActivity\",\"bpmn:Event\",\"bpmn:ReceiveTask\",\"zeebe:ZeebeServiceTask\",\"bpmn:SubProcess\"]}},{\"name\":\"InputOutputParameter\",\"properties\":[{\"name\":\"source\",\"isAttr\":true,\"type\":\"String\"},{\"name\":\"target\",\"isAttr\":true,\"type\":\"String\"}]},{\"name\":\"Subscription\",\"superClass\":[\"Element\"],\"properties\":[{\"name\":\"correlationKey\",\"isAttr\":true,\"type\":\"String\"}]},{\"name\":\"Input\",\"superClass\":[\"InputOutputParameter\"],\"meta\":{\"allowedIn\":[\"bpmn:CallActivity\",\"zeebe:ZeebeServiceTask\",\"bpmn:SubProcess\"]}},{\"name\":\"Output\",\"superClass\":[\"InputOutputParameter\"],\"meta\":{\"allowedIn\":[\"bpmn:CallActivity\",\"bpmn:Event\",\"bpmn:ReceiveTask\",\"zeebe:ZeebeServiceTask\",\"bpmn:SubProcess\"]}},{\"name\":\"TaskHeaders\",\"superClass\":[\"Element\"],\"meta\":{\"allowedIn\":[\"zeebe:ZeebeServiceTask\"]},\"properties\":[{\"name\":\"values\",\"type\":\"Header\",\"isMany\":true}]},{\"name\":\"Header\",\"superClass\":[\"Element\"],\"properties\":[{\"name\":\"id\",\"type\":\"String\",\"isAttr\":true},{\"name\":\"key\",\"type\":\"String\",\"isAttr\":true},{\"name\":\"value\",\"type\":\"String\",\"isAttr\":true}]},{\"name\":\"TaskDefinition\",\"superClass\":[\"Element\"],\"meta\":{\"allowedIn\":[\"zeebe:ZeebeServiceTask\"]},\"properties\":[{\"name\":\"type\",\"type\":\"String\",\"isAttr\":true},{\"name\":\"retries\",\"type\":\"String\",\"isAttr\":true}]},{\"name\":\"LoopCharacteristics\",\"superClass\":[\"Element\"],\"meta\":{\"allowedIn\":[\"zeebe:ZeebeServiceTask\",\"bpmn:ReceiveTask\",\"bpmn:SubProcess\"]},\"properties\":[{\"name\":\"inputCollection\",\"type\":\"String\",\"isAttr\":true},{\"name\":\"inputElement\",\"type\":\"String\",\"isAttr\":true},{\"name\":\"outputCollection\",\"type\":\"String\",\"isAttr\":true},{\"name\":\"outputElement\",\"type\":\"String\",\"isAttr\":true}]},{\"name\":\"CalledElement\",\"superClass\":[\"Element\"],\"meta\":{\"allowedIn\":[\"bpmn:CallActivity\"]},\"properties\":[{\"name\":\"processId\",\"type\":\"String\",\"isAttr\":true},{\"name\":\"processIdExpression\",\"type\":\"String\",\"isAttr\":true},{\"name\":\"propagateAllChildVariables\",\"isAttr\":true,\"type\":\"Boolean\"}]},{\"name\":\"UserTaskForm\",\"superClass\":[\"Element\"],\"meta\":{\"allowedIn\":[\"bpmn:Process\"]},\"properties\":[{\"name\":\"id\",\"type\":\"String\",\"isAttr\":true},{\"name\":\"body\",\"type\":\"String\",\"isBody\":true}]},{\"name\":\"FormDefinition\",\"superClass\":[\"Element\"],\"meta\":{\"allowedIn\":[\"bpmn:UserTask\"]},\"properties\":[{\"name\":\"formKey\",\"type\":\"String\",\"isAttr\":true}]},{\"name\":\"CalledDecision\",\"superClass\":[\"Element\"],\"meta\":{\"allowedIn\":[\"bpmn:BusinessRuleTask\"]},\"properties\":[{\"name\":\"decisionId\",\"type\":\"String\",\"isAttr\":true},{\"name\":\"resultVariable\",\"type\":\"String\",\"isAttr\":true}]},{\"name\":\"AssignmentDefinition\",\"superClass\":[\"Element\"],\"meta\":{\"allowedIn\":[\"bpmn:UserTask\"]},\"properties\":[{\"name\":\"assignee\",\"type\":\"String\",\"isAttr\":true},{\"name\":\"candidateGroups\",\"type\":\"String\",\"isAttr\":true}]},{\"name\":\"TemplateSupported\",\"isAbstract\":true,\"extends\":[\"bpmn:Collaboration\",\"bpmn:Process\",\"bpmn:FlowElement\"],\"properties\":[{\"name\":\"modelerTemplate\",\"isAttr\":true,\"type\":\"String\"},{\"name\":\"modelerTemplateVersion\",\"isAttr\":true,\"type\":\"Integer\"}]}]}");
 
 /***/ })
 

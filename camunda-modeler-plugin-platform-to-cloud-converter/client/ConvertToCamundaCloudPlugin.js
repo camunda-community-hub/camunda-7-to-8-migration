@@ -278,22 +278,42 @@ function convertServiceTask(element) {
  * # https://docs.camunda.org/manual/7.15/reference/bpmn20/tasks/user-task/
  * ##################
  */
+function assignments(element) {
+  return addExtensionElement(element, moddle.create("zeebe:AssignmentDefinition"));
+}
 function convertUserTask(element) {
   var hints = [];
   console.log("------------ User Task -----------------");
 
   // Assignment
-  if (element.businessObject.humanPerformer) {unsupportedElement(hints, "User Task", "humanPerformer");}
-  if (element.businessObject.potentialOwner) {unsupportedElement(hints, "User Task", "potentialOwner");}
-  if (element.businessObject.assignee) {unsupportedAttribute(hints, "User Task", "assignee");}
+  if (element.businessObject.assignee) {
+    assignments(element).assignee = element.businessObject.assignee;
+    element.businessObject.assignee = null;
+  }
+  if (element.businessObject.humanPerformer) {
+    assignments(element).assignee = element.businessObject.humanPerformer;
+    element.businessObject.humanPerformer = null;
+  }
+  if (element.businessObject.candidateGroups) {
+    assignments(element).candidateGroups = element.businessObject.candidateGroups;    
+    element.businessObject.candidateGroups = null;
+  }
+  if (element.businessObject.potentialOwner) {
+    assignments(element).candidateGroups = element.businessObject.potentialOwner;    
+    element.businessObject.potentialOwner = null;
+  }
   if (element.businessObject.candidateUsers) {unsupportedAttribute(hints, "User Task", "candidateUsers");}
-  if (element.businessObject.candidateGroups) {unsupportedAttribute(hints, "User Task", "candidateGroups");}
 
   // Forms TODO: Think about form migration
-  if (element.businessObject.formKey) {unsupportedAttribute(hints, "User Task", "formKey");}
+  if (element.businessObject.formRef) {
+    addExtensionElement(element, moddle.create("zeebe:FormDefinition")).formKey = element.businessObject.formRef;
+    element.businessObject.formRef = null;
+    hints.push("Forms work slightly differently in Camunda Cloud, please check your form definition and reference");
+  }
   if (element.businessObject.formHandlerClass) {unsupportedAttribute(hints, "User Task", "formHandlerClass");}
-  if (readExtensionElement(element, "formData")) {unsupportedExtensionElement(hints, "Service Task", "formData");}
-  if (readExtensionElement(element, "formProperty")) {unsupportedExtensionElement(hints, "Service Task", "formData");}
+  if (readExtensionElement(element, "formKey")) {unsupportedExtensionElement(hints, "User Task", "formKey");}
+  if (readExtensionElement(element, "formData")) {unsupportedExtensionElement(hints, "User Task", "formData");}
+  if (readExtensionElement(element, "formProperty")) {unsupportedExtensionElement(hints, "User Task", "formData");}
 
   if (element.businessObject.dueDate) {unsupportedAttribute(hints, "User Task", "dueDate");}
   if (element.businessObject.followUpDate) {unsupportedAttribute(hints, "User Task", "followUpDate");}

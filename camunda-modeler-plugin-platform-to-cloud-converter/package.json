@@ -35,6 +35,6 @@
     "watchify": "^3.9.0",
     "webpack": "^4.39.2",
     "webpack-cli": "^3.3.7",
-    "zeebe-bpmn-moddle": "^0.7.0"
+    "zeebe-bpmn-moddle": "^0.11.0"
   }
 }
