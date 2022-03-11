@@ -1,11 +1,10 @@
 .migration-hint {
   z-index: 0;
-  background: lightgray;
+  background: rgb(236, 248, 129);
   border-radius: 15px;
-  width: 150px;
   height: 50px;
   padding: 15px;
-  box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
+  box-shadow: rgba(236, 248, 129, 0.2) 0px 8px 24px;
 }
 
 .migration-hint-text {
