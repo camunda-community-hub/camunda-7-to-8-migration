@@ -469,15 +469,18 @@ function convertScriptTask(element) {
     // used like a service task
     convertServiceTask(element);
   } else {
-    // used for specific DMN integration
-    createTaskDefinition(element, "DMN");
-    addTaskHeader(element, "decisionRef", element.businessObject.decisionRef);
+    // DMN engine
+    var calledDecision = addExtensionElement(element, moddle.create("zeebe:CalledDecision"));
+    calledDecision.decisionId = element.businessObject.decisionRef;
+    calledDecision.resultVariable = element.businessObject.resultVariable;
+
+    element.businessObject.decisionRef=null;
+    element.businessObject.resultVariable=null;
 
     if (element.businessObject.decisionRefBinding) {unsupportedAttribute(hints, "Business Rule Task", "decisionRefBinding");}
     if (element.businessObject.decisionRefVersion) {unsupportedAttribute(hints, "Business Rule Task", "decisionRefVersion");}
     if (element.businessObject.decisionRefVersionTag) {unsupportedAttribute(hints, "Business Rule Task", "decisionRefVersionTag");}
     if (element.businessObject.mapDecisionResult) {unsupportedAttribute(hints, "Business Rule Task", "mapDecisionResult");}
-    if (element.businessObject.resultVariable) {unsupportedAttribute(hints, "Business Rule Task", "resultVariable");}
     if (element.businessObject.decisionRefTenantId) {unsupportedAttribute(hints, "Business Rule Task", "decisionRefTenantId");}
 
     if (!element.businessObject.asyncBefore || !element.businessObject.asyncAfter) {hints.push("Tasks are all 'async' in Camunda Cloud");}
