@@ -1,6 +1,6 @@
 # Camunda Platform 7 To Camunda Cloud Migration Tooling
 
-[![Community Extension](https://img.shields.io/badge/Community%20Extension-An%20open%20source%20community%20maintained%20project-FF4700)](https://github.com/camunda-community-hub/community)
+[![Community Extension](https://img.shields.io/badge/Community%20Extension-An%20open%20source%20community%20maintained%20project-FF4700)](https://github.com/camunda-community-hub/community) ![](https://img.shields.io/badge/Compatible%20with-Camunda%20Platform%207-26d07c)
 
 This tool helps with migration of process solutions from Camunda Platform 7 to Camunda Cloud. This is described in the [migration guide](https://docs.camunda.io/docs/guides/migrating-from-Camunda-Platform/)
 
