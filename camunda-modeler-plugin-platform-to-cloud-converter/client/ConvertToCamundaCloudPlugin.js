@@ -107,14 +107,6 @@ function addOverlay(overlays, element, text) {
           <div class="migration-hint-text" id="${ tooltipId }">${ text }</div>
       </div>`
   });
-  addListener(element, tooltipId);
-}
-function addListener(element, tooltipId) {
-  $('[data-element-id="' + element.id + '"]')
-    .hover(
-      function () { $('#' + tooltipId).show(); },
-      function () { $('#' + tooltipId).hide(); }
-    );
 }
 
 function addExtensionElement(element, extensionElement) {
@@ -198,10 +190,10 @@ function addTaskHeader(element, key, value) {
     hints.push("Element " + extensionAttribute + " of " + elementType + " not supported");
   }
   function unsupportedAttribute(hints, elementType, extensionAttribute) {
-    hints.push("Attribute " + extensionAttribute + " of " + elementType + " not supported (what does it do? See https://docs.camunda.org/manual/latest/reference/bpmn20/custom-extensions/extension-attributes/#"+extensionAttribute+")");
+    hints.push("Attribute " + extensionAttribute + " of " + elementType + ` not supported (what does it do? See the <a href="https://docs.camunda.org/manual/latest/reference/bpmn20/custom-extensions/extension-attributes/#${extensionAttribute}">docs<a/>.`);
   }
   function unsupportedExtensionElement(hints, elementType, extensionElement) {
-    hints.push("Element " + extensionElement + " of " + elementType + " not supported (what does it do? See https://docs.camunda.org/manual/latest/reference/bpmn20/custom-extensions/extension-elements/#"+extensionElement+")");
+    hints.push("Element " + extensionElement + " of " + elementType + ` not supported (what does it do? See the <a href="https://docs.camunda.org/manual/latest/reference/bpmn20/custom-extensions/extension-elements/#${extensionElement}">docs<a/>.`);
   }
 
 

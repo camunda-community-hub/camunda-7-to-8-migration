@@ -2,19 +2,21 @@
   z-index: 0;
   background: rgb(236, 248, 129);
   border-radius: 15px;
-  height: 50px;
   padding: 15px;
   box-shadow: rgba(236, 248, 129, 0.2) 0px 8px 24px;
 }
 
 .migration-hint-text {
   visibility: hidden;
+  display: none;
 }
 
 .migration-hint:hover .migration-hint-text {
   visibility: visible;
+  display: block;
 }
 
 .migration-hint:hover {
   height: auto;
+  min-width: 200px;
 }
