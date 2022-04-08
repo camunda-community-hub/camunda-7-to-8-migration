@@ -5,7 +5,7 @@
 
 import { PureComponent } from 'camunda-modeler-plugin-helpers/react';
 
-import ConvertToCamundaCloudPlugin from './ConvertToCamundaCloudPluginIndex';
+import ConvertToCamundaCloudPlugin from '../ConvertToCamundaCloudPluginIndex';
 
 
 /**
@@ -17,7 +17,7 @@ import ConvertToCamundaCloudPlugin from './ConvertToCamundaCloudPluginIndex';
  * - hook into <tab.saved> to perform a post-safe action
  *
  */
-export default class ConvertToCamundaCloudClientExtension extends PureComponent {
+export default class ConvertDmnToCamundaCloudExtension extends PureComponent {
 
   constructor(props) {
 
@@ -28,7 +28,7 @@ export default class ConvertToCamundaCloudClientExtension extends PureComponent 
       triggerAction
     } = props;
 
-    subscribe('bpmn.modeler.configure', (event) => {
+    subscribe('dmn.modeler.configure', (event) => {
 
       const {
         tab,
@@ -41,7 +41,7 @@ export default class ConvertToCamundaCloudClientExtension extends PureComponent 
     });
 
 
-    subscribe('bpmn.modeler.created', (event) => {
+    subscribe('dmn.modeler.created', (event) => {
 
       const {
         tab,
@@ -106,14 +106,17 @@ function addModule(extensionModule) {
 
   return (config) => {
 
-    const additionalModules = config.additionalModules || [];
+    const newConfig = { ...config };
 
-    return {
-      ...config,
-      additionalModules: [
+      newConfig.drd = newConfig.drd || {};
+
+      const additionalModules = (newConfig.drd.additionalModules) || [];
+
+      newConfig.drd.additionalModules = [
         ...additionalModules,
         extensionModule
-      ]
-    };
+      ];
+
+    return newConfig;
   };
 }
