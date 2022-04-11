@@ -16,7 +16,7 @@ This plugin also migrates simple JUEL expressions of Camunda Platfom into FEEL e
 
 # How to install and use
 
-**Download the plugin** from the [release page](releases/latest). 
+**Download the plugin** from the [release page](https://github.com/camunda-community-hub/camunda-7-to-8-migration/releases/latest). 
 
 Pick the `modeler-plugin-7-to-8-converter.zip` file and extract it into
 
