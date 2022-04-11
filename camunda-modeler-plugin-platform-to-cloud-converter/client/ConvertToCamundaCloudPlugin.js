@@ -37,8 +37,11 @@ export default function ConvertToCamundaCloudPlugin(elementRegistry, editorActio
   };
 
   editorActions.register({
-    convertToCamundaCloud: function() {
-      self.convertToCamundaCloud();
+    convertBpmnToCamundaCloud: function() {
+      self.convertBpmnToCamundaCloud();
+    },
+    convertDmnToCamundaCloud: function() {
+      self.convertDmnToCamundaCloud();
     }
   });
 
@@ -55,7 +58,32 @@ function finishModelConvertion() {
   // this._eventBus.fire('saveTab');
 }
 
-ConvertToCamundaCloudPlugin.prototype.convertToCamundaCloud = function() {
+ConvertToCamundaCloudPlugin.prototype.convertDmnToCamundaCloud = function() {
+  var self = this;
+
+  convertDefinitions(self._canvas.getRootElement(), "dmn");
+
+  var elements = self._elementRegistry._elements;
+
+  Object.keys(elements).forEach(function(key) {
+    var element = elements[key].element;
+    var hints;
+
+
+  if (element.type == "dmn:Decision") {
+    hints = convertDecision(element);
+  } 
+
+  if (hints && hints.length > 0) {
+    addOverlay(self._overlays, element, hints.join("<br />"));
+  }
+
+})
+  self._commandStack.execute('finish.model.convertion', {});
+
+}
+
+ConvertToCamundaCloudPlugin.prototype.convertBpmnToCamundaCloud = function() {
   var self = this;
 
   convertDefinitions(self._canvas.getRootElement());
@@ -95,7 +123,7 @@ ConvertToCamundaCloudPlugin.prototype.convertToCamundaCloud = function() {
     }
   });
 
-  self._commandStack.execute('finish.model.convertion');
+  self._commandStack.execute('finish.model.convertion', {});
 };
 
 function addOverlay(overlays, element, text) {
@@ -107,14 +135,6 @@ function addOverlay(overlays, element, text) {
           <div class="migration-hint-text" id="${ tooltipId }">${ text }</div>
       </div>`
   });
-  addListener(element, tooltipId);
-}
-function addListener(element, tooltipId) {
-  $('[data-element-id="' + element.id + '"]')
-    .hover(
-      function () { $('#' + tooltipId).show(); },
-      function () { $('#' + tooltipId).hide(); }
-    );
 }
 
 function addExtensionElement(element, extensionElement) {
@@ -198,12 +218,14 @@ function addTaskHeader(element, key, value) {
     hints.push("Element " + extensionAttribute + " of " + elementType + " not supported");
   }
   function unsupportedAttribute(hints, elementType, extensionAttribute) {
-    hints.push("Attribute " + extensionAttribute + " of " + elementType + " not supported (what does it do? See https://docs.camunda.org/manual/latest/reference/bpmn20/custom-extensions/extension-attributes/#"+extensionAttribute+")");
+    hints.push("Attribute " + extensionAttribute + " of " + elementType + ` not supported (what does it do? See the <a href="https://docs.camunda.org/manual/latest/reference/bpmn20/custom-extensions/extension-attributes/#${extensionAttribute}">docs<a/>.`);
   }
   function unsupportedExtensionElement(hints, elementType, extensionElement) {
-    hints.push("Element " + extensionElement + " of " + elementType + " not supported (what does it do? See https://docs.camunda.org/manual/latest/reference/bpmn20/custom-extensions/extension-elements/#"+extensionElement+")");
+    hints.push("Element " + extensionElement + " of " + elementType + ` not supported (what does it do? See the <a href="https://docs.camunda.org/manual/latest/reference/bpmn20/custom-extensions/extension-elements/#${extensionElement}">docs<a/>.`);
   }
-
+  function unsupportedAttributeDmn(hints, elementType, extensionAttribute) {
+    hints.push("Attribute " + extensionAttribute + " of " + elementType + ` not supported (what does it do? See the <a href="https://docs.camunda.org/manual/latest/reference/dmn/custom-extensions/camunda-attributes/#${extensionAttribute}">docs</a>.`);
+  }
 
 /**
  * ###############################################
@@ -211,8 +233,8 @@ function addTaskHeader(element, key, value) {
  * ###############################################
  */
 
-function convertDefinitions(rootElement) {
-  var definitionsElement = rootElement.businessObject.$parent;
+function convertDefinitions(rootElement, diagram) {
+  var definitionsElement = diagram === "dmn" ? rootElement.businessObject: rootElement.businessObject.$parent;
   definitionsElement.set('modeler:executionPlatform', 'Camunda Cloud')
   definitionsElement.set('modeler:executionPlatformVersion', '1.1.0')
 }
@@ -519,5 +541,65 @@ function convertReceiveTask(element) {
  * #
  * ##################
  */
+
+
+/**
+ * ##################
+ * # Decision
+ * #
+ * ##################
+ */
+function convertDecision(element) {
+  var hints = [];
+    console.log("------------ Decision -----------------");
+    if(element.businessObject.versionTag) {unsupportedAttributeDmn(hints, "Decision", "versionTag");}
+    if(element.businessObject.historyTimeToLive) {unsupportedAttributeDmn(hints, "Decision", "historyTimeToLive");}
+
+    const decisionLogic = element.businessObject.decisionLogic;
+    
+    if(decisionLogic.$type == "dmn:DecisionTable") {
+      convertDecisionTable(decisionLogic);
+    } else if (decisionLogic.$type == "dmn:LiteralExpression") {
+      convertLiteralExpression(decisionLogic);
+    }
+
+    console.log(element);
+
+    console.log("------------ ---------- -----------------");
+    return hints;
+}
+
+
+function convertDecisionTable(decisionTable) {
+
+  // convert inputs
+  if(decisionTable.input) {
+    decisionTable.input.forEach(function(input) {
+      convertEntryTypes(input.inputExpression);
+      convertLiteralExpression(input.inputExpression);
+    })
+  }
+  // convert outputs
+  if(decisionTable.output) {
+    decisionTable.output.forEach(function(output) {
+      convertEntryTypes(output);
+    })
+  }
+}
+
+function convertLiteralExpression(literalExpression) {
+  if(literalExpression.expressionLanguage === 'juel') {
+    literalExpression.text = convertJuel(literalExpression.text).feelExpression;
+    literalExpression.expressionLanguage = "feel";
+  }
+}
+
+function convertEntryTypes(inputOuput) {
+  const type = inputOuput.typeRef;
+        
+  if(type == "integer" || type == "long" || type == "double") {
+    inputOuput.typeRef = "number";
+  }
+}
 
 ConvertToCamundaCloudPlugin.$inject = [ 'elementRegistry', 'editorActions', 'canvas', 'modeling', 'eventBus', 'commandStack', 'overlays']; // 'bpmnjs'

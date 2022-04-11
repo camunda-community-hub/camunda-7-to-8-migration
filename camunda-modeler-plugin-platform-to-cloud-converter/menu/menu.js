@@ -6,10 +6,14 @@ module.exports = function(electronApp, menuState) {
     accelerator: 'CommandOrControl+Shift+C', 
     enabled: function() {
       // only enabled for BPMN diagrams
-      return menuState.bpmn;
+      return menuState.bpmn || menuState.dmn;
     },
     action: function() {
-      electronApp.emit('menu:action', 'convertToCamundaCloud');
+      if (menuState.bpmn) {
+        electronApp.emit('menu:action', 'convertBpmnToCamundaCloud');
+      } else {
+        electronApp.emit('menu:action', 'convertDmnToCamundaCloud');
+      }
     }
   }];
 };

@@ -1,5 +1,7 @@
 import { registerClientExtension } from 'camunda-modeler-plugin-helpers';
 
-import ConvertToCamundaCloudClientExtension from './ConvertToCamundaCloudClientExtension';
+import ConvertBpmnToCamundaCloudExtension from './bpmn/ConvertBpmnToCamundaCloudExtension';
+import ConvertDmnToCamundaCloudExtension from './dmn/ConvertDmnToCamundaCloudExtension';
 
-registerClientExtension(ConvertToCamundaCloudClientExtension);
+registerClientExtension(ConvertBpmnToCamundaCloudExtension);
+registerClientExtension(ConvertDmnToCamundaCloudExtension);

@@ -86,142 +86,6 @@
 /************************************************************************/
 /******/ ({
 
-/***/ "./client/ConvertToCamundaCloudClientExtension.js":
-/*!********************************************************!*\
-  !*** ./client/ConvertToCamundaCloudClientExtension.js ***!
-  \********************************************************/
-/*! exports provided: default */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return ConvertToCamundaCloudClientExtension; });
-/* harmony import */ var camunda_modeler_plugin_helpers_react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! camunda-modeler-plugin-helpers/react */ "./node_modules/camunda-modeler-plugin-helpers/react.js");
-/* harmony import */ var camunda_modeler_plugin_helpers_react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(camunda_modeler_plugin_helpers_react__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _ConvertToCamundaCloudPluginIndex__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./ConvertToCamundaCloudPluginIndex */ "./client/ConvertToCamundaCloudPluginIndex.js");
-/**
- * A client plugin is required to hook into the modeler lifecycles itself,
- * e.g. to save a file, see https://forum.bpmn.io/t/trigger-a-model-file-save-from-within-a-camunda-modeler-plugin/6423/2
- */
-
-
-
-
-
-
-/**
- * An extension that shows how to hook into
- * editor events to accomplish the following:
- *
- * - hook into <bpmn.modeler.configure> to provide a bpmn.modeler extension
- * - hook into <bpmn.modeler.created> to register for bpmn.modeler events
- * - hook into <tab.saved> to perform a post-safe action
- *
- */
-class ConvertToCamundaCloudClientExtension extends camunda_modeler_plugin_helpers_react__WEBPACK_IMPORTED_MODULE_0__["PureComponent"] {
-
-  constructor(props) {
-
-    super(props);
-
-    const {
-      subscribe,
-      triggerAction
-    } = props;
-
-    subscribe('bpmn.modeler.configure', (event) => {
-
-      const {
-        tab,
-        middlewares
-      } = event;
-
-      log('Creating editor for tab', tab);
-
-      middlewares.push(addModule(_ConvertToCamundaCloudPluginIndex__WEBPACK_IMPORTED_MODULE_1__["default"]));
-    });
-
-
-    subscribe('bpmn.modeler.created', (event) => {
-
-      const {
-        tab,
-        modeler,
-      } = event;
-
-      log('Modeler created for tab', tab);
-
-      modeler.on('saveTab', (event) => {
-        triggerAction('save')
-          .then(tab => {
-            if (!tab) {
-              return this._displayNotification({ title: 'Failed to save' });
-            } else {
-              console.log("saved");
-            }
-          });
-      });
-      modeler.on('saveXML.start', (event) => {
-
-        const {
-          definitions
-        } = event;
-
-        log('Saving XML with definitions', definitions, tab);
-      });
-
-    });
-
-
-    subscribe('tab.saved', (event) => {
-      const {
-        tab
-      } = event;
-
-      log('Tab saved', tab);
-    });
-
-  }
-
-  render() {
-    return null;
-  }
-}
-
-
-// helpers //////////////
-
-function log(...args) {
-  console.log('[TestEditorEvents]', ...args);
-}
-
-/**
- * Returns a bpmn.modeler.configure middleware
- * that adds the specific module.
- *
- * @param {didi.Module} extensionModule
- *
- * @return {Function}
- */
-function addModule(extensionModule) {
-
-  return (config) => {
-
-    const additionalModules = config.additionalModules || [];
-
-    return {
-      ...config,
-      additionalModules: [
-        ...additionalModules,
-        extensionModule
-      ]
-    };
-  };
-}
-
-
-/***/ }),
-
 /***/ "./client/ConvertToCamundaCloudClientExtensionIndex.js":
 /*!*************************************************************!*\
   !*** ./client/ConvertToCamundaCloudClientExtensionIndex.js ***!
@@ -232,12 +96,15 @@ function addModule(extensionModule) {
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var camunda_modeler_plugin_helpers__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! camunda-modeler-plugin-helpers */ "./node_modules/camunda-modeler-plugin-helpers/index.js");
-/* harmony import */ var _ConvertToCamundaCloudClientExtension__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./ConvertToCamundaCloudClientExtension */ "./client/ConvertToCamundaCloudClientExtension.js");
+/* harmony import */ var _bpmn_ConvertBpmnToCamundaCloudExtension__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./bpmn/ConvertBpmnToCamundaCloudExtension */ "./client/bpmn/ConvertBpmnToCamundaCloudExtension.js");
+/* harmony import */ var _dmn_ConvertDmnToCamundaCloudExtension__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./dmn/ConvertDmnToCamundaCloudExtension */ "./client/dmn/ConvertDmnToCamundaCloudExtension.js");
 
 
 
 
-Object(camunda_modeler_plugin_helpers__WEBPACK_IMPORTED_MODULE_0__["registerClientExtension"])(_ConvertToCamundaCloudClientExtension__WEBPACK_IMPORTED_MODULE_1__["default"]);
+
+Object(camunda_modeler_plugin_helpers__WEBPACK_IMPORTED_MODULE_0__["registerClientExtension"])(_bpmn_ConvertBpmnToCamundaCloudExtension__WEBPACK_IMPORTED_MODULE_1__["default"]);
+Object(camunda_modeler_plugin_helpers__WEBPACK_IMPORTED_MODULE_0__["registerClientExtension"])(_dmn_ConvertDmnToCamundaCloudExtension__WEBPACK_IMPORTED_MODULE_2__["default"]);
 
 /***/ }),
 
@@ -301,8 +168,11 @@ function ConvertToCamundaCloudPlugin(elementRegistry, editorActions, canvas, mod
   };
 
   editorActions.register({
-    convertToCamundaCloud: function() {
-      self.convertToCamundaCloud();
+    convertBpmnToCamundaCloud: function() {
+      self.convertBpmnToCamundaCloud();
+    },
+    convertDmnToCamundaCloud: function() {
+      self.convertDmnToCamundaCloud();
     }
   });
 
@@ -319,7 +189,32 @@ function finishModelConvertion() {
   // this._eventBus.fire('saveTab');
 }
 
-ConvertToCamundaCloudPlugin.prototype.convertToCamundaCloud = function() {
+ConvertToCamundaCloudPlugin.prototype.convertDmnToCamundaCloud = function() {
+  var self = this;
+
+  convertDefinitions(self._canvas.getRootElement(), "dmn");
+
+  var elements = self._elementRegistry._elements;
+
+  Object.keys(elements).forEach(function(key) {
+    var element = elements[key].element;
+    var hints;
+
+
+  if (element.type == "dmn:Decision") {
+    hints = convertDecision(element);
+  } 
+
+  if (hints && hints.length > 0) {
+    addOverlay(self._overlays, element, hints.join("<br />"));
+  }
+
+})
+  self._commandStack.execute('finish.model.convertion', {});
+
+}
+
+ConvertToCamundaCloudPlugin.prototype.convertBpmnToCamundaCloud = function() {
   var self = this;
 
   convertDefinitions(self._canvas.getRootElement());
@@ -359,7 +254,7 @@ ConvertToCamundaCloudPlugin.prototype.convertToCamundaCloud = function() {
     }
   });
 
-  self._commandStack.execute('finish.model.convertion');
+  self._commandStack.execute('finish.model.convertion', {});
 };
 
 function addOverlay(overlays, element, text) {
@@ -371,14 +266,6 @@ function addOverlay(overlays, element, text) {
           <div class="migration-hint-text" id="${ tooltipId }">${ text }</div>
       </div>`
   });
-  addListener(element, tooltipId);
-}
-function addListener(element, tooltipId) {
-  $('[data-element-id="' + element.id + '"]')
-    .hover(
-      function () { $('#' + tooltipId).show(); },
-      function () { $('#' + tooltipId).hide(); }
-    );
 }
 
 function addExtensionElement(element, extensionElement) {
@@ -462,12 +349,14 @@ function addTaskHeader(element, key, value) {
     hints.push("Element " + extensionAttribute + " of " + elementType + " not supported");
   }
   function unsupportedAttribute(hints, elementType, extensionAttribute) {
-    hints.push("Attribute " + extensionAttribute + " of " + elementType + " not supported (what does it do? See https://docs.camunda.org/manual/latest/reference/bpmn20/custom-extensions/extension-attributes/#"+extensionAttribute+")");
+    hints.push("Attribute " + extensionAttribute + " of " + elementType + ` not supported (what does it do? See the <a href="https://docs.camunda.org/manual/latest/reference/bpmn20/custom-extensions/extension-attributes/#${extensionAttribute}">docs<a/>.`);
   }
   function unsupportedExtensionElement(hints, elementType, extensionElement) {
-    hints.push("Element " + extensionElement + " of " + elementType + " not supported (what does it do? See https://docs.camunda.org/manual/latest/reference/bpmn20/custom-extensions/extension-elements/#"+extensionElement+")");
+    hints.push("Element " + extensionElement + " of " + elementType + ` not supported (what does it do? See the <a href="https://docs.camunda.org/manual/latest/reference/bpmn20/custom-extensions/extension-elements/#${extensionElement}">docs<a/>.`);
   }
-
+  function unsupportedAttributeDmn(hints, elementType, extensionAttribute) {
+    hints.push("Attribute " + extensionAttribute + " of " + elementType + ` not supported (what does it do? See the <a href="https://docs.camunda.org/manual/latest/reference/dmn/custom-extensions/camunda-attributes/#${extensionAttribute}">docs</a>.`);
+  }
 
 /**
  * ###############################################
@@ -475,8 +364,8 @@ function addTaskHeader(element, key, value) {
  * ###############################################
  */
 
-function convertDefinitions(rootElement) {
-  var definitionsElement = rootElement.businessObject.$parent;
+function convertDefinitions(rootElement, diagram) {
+  var definitionsElement = diagram === "dmn" ? rootElement.businessObject: rootElement.businessObject.$parent;
   definitionsElement.set('modeler:executionPlatform', 'Camunda Cloud')
   definitionsElement.set('modeler:executionPlatformVersion', '1.1.0')
 }
@@ -784,6 +673,66 @@ function convertReceiveTask(element) {
  * ##################
  */
 
+
+/**
+ * ##################
+ * # Decision
+ * #
+ * ##################
+ */
+function convertDecision(element) {
+  var hints = [];
+    console.log("------------ Decision -----------------");
+    if(element.businessObject.versionTag) {unsupportedAttributeDmn(hints, "Decision", "versionTag");}
+    if(element.businessObject.historyTimeToLive) {unsupportedAttributeDmn(hints, "Decision", "historyTimeToLive");}
+
+    const decisionLogic = element.businessObject.decisionLogic;
+    
+    if(decisionLogic.$type == "dmn:DecisionTable") {
+      convertDecisionTable(decisionLogic);
+    } else if (decisionLogic.$type == "dmn:LiteralExpression") {
+      convertLiteralExpression(decisionLogic);
+    }
+
+    console.log(element);
+
+    console.log("------------ ---------- -----------------");
+    return hints;
+}
+
+
+function convertDecisionTable(decisionTable) {
+
+  // convert inputs
+  if(decisionTable.input) {
+    decisionTable.input.forEach(function(input) {
+      convertEntryTypes(input.inputExpression);
+      convertLiteralExpression(input.inputExpression);
+    })
+  }
+  // convert outputs
+  if(decisionTable.output) {
+    decisionTable.output.forEach(function(output) {
+      convertEntryTypes(output);
+    })
+  }
+}
+
+function convertLiteralExpression(literalExpression) {
+  if(literalExpression.expressionLanguage === 'juel') {
+    literalExpression.text = convertJuel(literalExpression.text).feelExpression;
+    literalExpression.expressionLanguage = "feel";
+  }
+}
+
+function convertEntryTypes(inputOuput) {
+  const type = inputOuput.typeRef;
+        
+  if(type == "integer" || type == "long" || type == "double") {
+    inputOuput.typeRef = "number";
+  }
+}
+
 ConvertToCamundaCloudPlugin.$inject = [ 'elementRegistry', 'editorActions', 'canvas', 'modeling', 'eventBus', 'commandStack', 'overlays']; // 'bpmnjs'
 
 
@@ -862,6 +811,281 @@ function convertJuel(juelExpression) {
 }
 
 module.exports = convertJuel;
+
+/***/ }),
+
+/***/ "./client/bpmn/ConvertBpmnToCamundaCloudExtension.js":
+/*!***********************************************************!*\
+  !*** ./client/bpmn/ConvertBpmnToCamundaCloudExtension.js ***!
+  \***********************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return ConvertBpmnToCamundaCloudExtension; });
+/* harmony import */ var camunda_modeler_plugin_helpers_react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! camunda-modeler-plugin-helpers/react */ "./node_modules/camunda-modeler-plugin-helpers/react.js");
+/* harmony import */ var camunda_modeler_plugin_helpers_react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(camunda_modeler_plugin_helpers_react__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _ConvertToCamundaCloudPluginIndex__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../ConvertToCamundaCloudPluginIndex */ "./client/ConvertToCamundaCloudPluginIndex.js");
+/**
+ * A client plugin is required to hook into the modeler lifecycles itself,
+ * e.g. to save a file, see https://forum.bpmn.io/t/trigger-a-model-file-save-from-within-a-camunda-modeler-plugin/6423/2
+ */
+
+
+
+
+
+
+/**
+ * An extension that shows how to hook into
+ * editor events to accomplish the following:
+ *
+ * - hook into <bpmn.modeler.configure> to provide a bpmn.modeler extension
+ * - hook into <bpmn.modeler.created> to register for bpmn.modeler events
+ * - hook into <tab.saved> to perform a post-safe action
+ *
+ */
+class ConvertBpmnToCamundaCloudExtension extends camunda_modeler_plugin_helpers_react__WEBPACK_IMPORTED_MODULE_0__["PureComponent"] {
+
+  constructor(props) {
+
+    super(props);
+
+    const {
+      subscribe,
+      triggerAction
+    } = props;
+
+    subscribe('bpmn.modeler.configure', (event) => {
+
+      const {
+        tab,
+        middlewares
+      } = event;
+
+      log('Creating editor for tab', tab);
+
+      middlewares.push(addModule(_ConvertToCamundaCloudPluginIndex__WEBPACK_IMPORTED_MODULE_1__["default"]));
+    });
+
+
+    subscribe('bpmn.modeler.created', (event) => {
+
+      const {
+        tab,
+        modeler,
+      } = event;
+
+      log('Modeler created for tab', tab);
+
+      modeler.on('saveTab', (event) => {
+        triggerAction('save')
+          .then(tab => {
+            if (!tab) {
+              return this._displayNotification({ title: 'Failed to save' });
+            } else {
+              console.log("saved");
+            }
+          });
+      });
+      modeler.on('saveXML.start', (event) => {
+
+        const {
+          definitions
+        } = event;
+
+        log('Saving XML with definitions', definitions, tab);
+      });
+
+    });
+
+
+    subscribe('tab.saved', (event) => {
+      const {
+        tab
+      } = event;
+
+      log('Tab saved', tab);
+    });
+
+  }
+
+  render() {
+    return null;
+  }
+}
+
+
+// helpers //////////////
+
+function log(...args) {
+  console.log('[TestEditorEvents]', ...args);
+}
+
+/**
+ * Returns a bpmn.modeler.configure middleware
+ * that adds the specific module.
+ *
+ * @param {didi.Module} extensionModule
+ *
+ * @return {Function}
+ */
+function addModule(extensionModule) {
+
+  return (config) => {
+
+    const additionalModules = config.additionalModules || [];
+
+    return {
+      ...config,
+      additionalModules: [
+        ...additionalModules,
+        extensionModule
+      ]
+    };
+  };
+}
+
+
+/***/ }),
+
+/***/ "./client/dmn/ConvertDmnToCamundaCloudExtension.js":
+/*!*********************************************************!*\
+  !*** ./client/dmn/ConvertDmnToCamundaCloudExtension.js ***!
+  \*********************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return ConvertDmnToCamundaCloudExtension; });
+/* harmony import */ var camunda_modeler_plugin_helpers_react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! camunda-modeler-plugin-helpers/react */ "./node_modules/camunda-modeler-plugin-helpers/react.js");
+/* harmony import */ var camunda_modeler_plugin_helpers_react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(camunda_modeler_plugin_helpers_react__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _ConvertToCamundaCloudPluginIndex__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../ConvertToCamundaCloudPluginIndex */ "./client/ConvertToCamundaCloudPluginIndex.js");
+/**
+ * A client plugin is required to hook into the modeler lifecycles itself,
+ * e.g. to save a file, see https://forum.bpmn.io/t/trigger-a-model-file-save-from-within-a-camunda-modeler-plugin/6423/2
+ */
+
+
+
+
+
+
+/**
+ * An extension that shows how to hook into
+ * editor events to accomplish the following:
+ *
+ * - hook into <bpmn.modeler.configure> to provide a bpmn.modeler extension
+ * - hook into <bpmn.modeler.created> to register for bpmn.modeler events
+ * - hook into <tab.saved> to perform a post-safe action
+ *
+ */
+class ConvertDmnToCamundaCloudExtension extends camunda_modeler_plugin_helpers_react__WEBPACK_IMPORTED_MODULE_0__["PureComponent"] {
+
+  constructor(props) {
+
+    super(props);
+
+    const {
+      subscribe,
+      triggerAction
+    } = props;
+
+    subscribe('dmn.modeler.configure', (event) => {
+
+      const {
+        tab,
+        middlewares
+      } = event;
+
+      log('Creating editor for tab', tab);
+
+      middlewares.push(addModule(_ConvertToCamundaCloudPluginIndex__WEBPACK_IMPORTED_MODULE_1__["default"]));
+    });
+
+
+    subscribe('dmn.modeler.created', (event) => {
+
+      const {
+        tab,
+        modeler,
+      } = event;
+
+      log('Modeler created for tab', tab);
+
+      modeler.on('saveTab', (event) => {
+        triggerAction('save')
+          .then(tab => {
+            if (!tab) {
+              return this._displayNotification({ title: 'Failed to save' });
+            } else {
+              console.log("saved");
+            }
+          });
+      });
+      modeler.on('saveXML.start', (event) => {
+
+        const {
+          definitions
+        } = event;
+
+        log('Saving XML with definitions', definitions, tab);
+      });
+
+    });
+
+
+    subscribe('tab.saved', (event) => {
+      const {
+        tab
+      } = event;
+
+      log('Tab saved', tab);
+    });
+
+  }
+
+  render() {
+    return null;
+  }
+}
+
+
+// helpers //////////////
+
+function log(...args) {
+  console.log('[TestEditorEvents]', ...args);
+}
+
+/**
+ * Returns a bpmn.modeler.configure middleware
+ * that adds the specific module.
+ *
+ * @param {didi.Module} extensionModule
+ *
+ * @return {Function}
+ */
+function addModule(extensionModule) {
+
+  return (config) => {
+
+    const newConfig = { ...config };
+
+      newConfig.drd = newConfig.drd || {};
+
+      const additionalModules = (newConfig.drd.additionalModules) || [];
+
+      newConfig.drd.additionalModules = [
+        ...additionalModules,
+        extensionModule
+      ];
+
+    return newConfig;
+  };
+}
+
 
 /***/ }),
 
