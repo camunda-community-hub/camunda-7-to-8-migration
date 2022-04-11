@@ -3,7 +3,7 @@
 
 	<groupId>org.camunda.community.migration</groupId>
 	<artifactId>camunda-7-adapter</artifactId>
-	<version>0.1.0-SNAPSHOT</version>
+	<version>0.1.1-SNAPSHOT</version>
 	<packaging>jar</packaging>
 
 	<parent>
