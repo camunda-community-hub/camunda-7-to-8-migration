@@ -27,9 +27,9 @@
       <version>1.3.4</version>
     </dependency>
     <dependency>
-    	<groupId>org.camunda.community.cloud.migration</groupId>
-      <artifactId>camunda-platform-to-cloud-adapter</artifactId>
-      <version>0.0.4</version>
+    	<groupId>org.camunda.community.migration</groupId>
+      <artifactId>camunda-7-adapter</artifactId>
+      <version>0.1.0</version>
     </dependency>
   </dependencies>
 

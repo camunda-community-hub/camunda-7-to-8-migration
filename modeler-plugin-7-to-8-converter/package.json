@@ -1,0 +1,40 @@
+{
+  "name": "modeler-plugin-7-to-8-converter",
+  "version": "0.0.1",
+  "main": "index.js",
+  "scripts": {
+    "all": "run-s bundle",
+    "bundle": "webpack",
+    "dev": "webpack -w",
+    "prepublishOnly": "run-s bundle",
+    "test": "jest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/camunda-community-hub/camunda-7-to-8-migration"
+  },
+  "keywords": [
+    "camunda",
+    "modeler",
+    "plugin"
+  ],
+  "author": "Bernd Ruecker",
+  "license": "MIT",
+  "devDependencies": {
+    "bpmn-js": "^8.7.1",
+    "browserify": "^14.1.0",
+    "camunda-bpmn-moddle": "^5.0.0",
+    "camunda-modeler-plugin-helpers": "^3.4.0-alpha.0",
+    "inherits": "^2.0.3",
+    "jest": "^27.0.6",
+    "jquery": "^3.5.1",
+    "lodash": "^3.10.1",
+    "min-dom": "^0.2.0",
+    "modeler-moddle": "^0.1.0",
+    "npm-run-all": "^4.1.5",
+    "watchify": "^3.9.0",
+    "webpack": "^4.39.2",
+    "webpack-cli": "^3.3.7",
+    "zeebe-bpmn-moddle": "^0.11.0"
+  }
+}

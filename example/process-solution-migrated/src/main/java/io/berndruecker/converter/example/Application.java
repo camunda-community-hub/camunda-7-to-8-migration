@@ -3,7 +3,7 @@ package io.berndruecker.converter.example;
 import io.camunda.zeebe.client.ZeebeClient;
 import io.camunda.zeebe.spring.client.EnableZeebeClient;
 import io.camunda.zeebe.spring.client.annotation.ZeebeDeployment;
-import org.camunda.community.cloud.migration.CamundaPlatformToCloudAdapterConfig;
+import org.camunda.community.migration.CamundaPlatform7AdapterConfig;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ConfigurableApplicationContext;
@@ -13,7 +13,7 @@ import java.util.Collections;
 
 @SpringBootApplication
 @EnableZeebeClient
-@Import(CamundaPlatformToCloudAdapterConfig.class)
+@Import(CamundaPlatform7AdapterConfig.class)
 @ZeebeDeployment(resources = "classpath:*.bpmn")
 public class Application {
 

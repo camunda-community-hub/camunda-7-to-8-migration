@@ -1,0 +1,61 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<groupId>org.camunda.community.migration</groupId>
+	<artifactId>camunda-7-adapter</artifactId>
+	<version>0.1.0-SNAPSHOT</version>
+	<packaging>jar</packaging>
+
+	<parent>
+		<groupId>org.camunda.community</groupId>
+		<artifactId>community-hub-release-parent</artifactId>
+		<version>1.2.2</version>
+	</parent>	
+
+	<properties>
+		<maven.compiler.source>1.8</maven.compiler.source>
+		<maven.compiler.target>1.8</maven.compiler.target>
+		<version.zeebe>8.0.0-alpha1</version.zeebe>
+		<version.camunda.platform>7.17.0</version.camunda.platform>
+	</properties>
+
+	<dependencies>
+		<dependency>
+			<groupId>io.camunda</groupId>
+			<artifactId>spring-zeebe-starter</artifactId>
+			<version>${version.zeebe}</version>
+		</dependency>	
+		<dependency>
+			<groupId>org.camunda.bpm</groupId>
+			<artifactId>camunda-engine</artifactId>
+			<version>${version.camunda.platform}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.camunda.bpm</groupId>
+			<artifactId>camunda-engine-spring</artifactId>
+			<version>${version.camunda.platform}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.camunda.bpm</groupId>
+			<artifactId>camunda-external-task-client</artifactId>
+			<version>${version.camunda.platform}</version>
+		</dependency>		
+		<!-- copied code from https://github.com/camunda-consulting/on-demand-call-activity/tree/master/abstract-delegate-execution
+		into this project for simplicity
+		<dependency>
+  			<groupId>org.camunda.bpm.extension.engine.delegate.abstract</groupId>
+  			<artifactId>abstract-delegate-execution</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+		</dependency>
+		-->
+		
+		<dependency>
+			<groupId>javax</groupId>
+			<artifactId>javaee-api</artifactId>
+			<version>8.0.1</version>
+			<scope>provided</scope>
+		</dependency>	
+		
+	</dependencies>
+
+</project>

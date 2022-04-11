@@ -24,7 +24,7 @@ jobs:
           gpg-private-key: ${{ secrets.MAVEN_CENTRAL_GPG_SIGNING_KEY_SEC }}
           gpg-passphrase: MAVEN_CENTRAL_GPG_PASSPHRASE
       - name: Deploy SNAPSHOT / Release
-        uses: camunda-community-hub/community-action-maven-release@v1.0.5
+        uses: camunda-community-hub/community-action-maven-release@v1
         with:
           release-version: ${{ github.event.release.tag_name }}
           release-profile: community-action-maven-release
@@ -34,8 +34,8 @@ jobs:
           maven-psw: ${{ secrets.MAVEN_CENTRAL_DEPLOYMENT_PSW }}
           maven-gpg-passphrase: ${{ secrets.MAVEN_CENTRAL_GPG_SIGNING_KEY_PASSPHRASE }}
           github-token: ${{ secrets.GITHUB_TOKEN }}
-          artifacts-pattern: ./camunda-platform-to-cloud-adapter/target/nexus-staging/**/*.jar
-          maven-additional-options: -f camunda-platform-to-cloud-adapter/pom.xml
+          artifacts-pattern: ./camunda-7-adapter/target/nexus-staging/**/*.jar
+          maven-additional-options: -f camunda-7-adapter/pom.xml
         id: release
       - if: github.event.release
         name: Attach artifacts to GitHub Release (Release only)
@@ -45,7 +45,7 @@ jobs:
         with:
           upload_url: ${{ github.event.release.upload_url }}
           asset_path: ${{ steps.release.outputs.artifacts_archive_path }}
-          asset_name: camunda-platform-to-cloud-adapter.zip
+          asset_name: camunda-7-adapter.zip
           asset_content_type: application/zip
   publish-modeler-plugin:
     runs-on: ubuntu-latest
@@ -54,14 +54,14 @@ jobs:
       - name: Archive Plugin
         uses: thedoctor0/zip-release@master
         with:
-          path: 'camunda-modeler-plugin-platform-to-cloud-converter'
+          path: 'modeler-plugin-7-to-8-converter'
           type: 'zip'
-          filename: 'camunda-modeler-plugin-platform-to-cloud-converter.zip'
+          filename: 'modeler-plugin-7-to-8-converter.zip'
           exclusions: '*.git* /*node_modules/*'
       - if: github.event.release
         name: Upload Release
         uses: ncipollo/release-action@v1
         with:
-          artifacts: "camunda-modeler-plugin-platform-to-cloud-converter.zip"
+          artifacts: "modeler-plugin-7-to-8-converter.zip"
           allowUpdates: true
           token: ${{ secrets.GITHUB_TOKEN }}
