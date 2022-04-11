@@ -11,7 +11,7 @@
     <bpmn:sequenceFlow id="Flow_1qovl9n" sourceRef="Activity_1ufc7m0" targetRef="Event_09ordlq" />
     <bpmn:sendTask id="Activity_1ufc7m0" name="Java Delegate Expression" camunda:delegateExpression="#{sampleJavaDelegate}">
       <bpmn:extensionElements>
-        <zeebe:taskDefinition type="camunda-platform-to-cloud-migration" />
+        <zeebe:taskDefinition type="camunda-7-adapter" />
         <zeebe:taskHeaders>
           <zeebe:header key="delegateExpression" value="#{sampleJavaDelegate}" />
         </zeebe:taskHeaders>

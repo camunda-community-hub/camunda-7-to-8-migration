@@ -236,7 +236,7 @@ function addTaskHeader(element, key, value) {
 function convertDefinitions(rootElement, diagram) {
   var definitionsElement = diagram === "dmn" ? rootElement.businessObject: rootElement.businessObject.$parent;
   definitionsElement.set('modeler:executionPlatform', 'Camunda Cloud')
-  definitionsElement.set('modeler:executionPlatformVersion', '1.1.0')
+  definitionsElement.set('modeler:executionPlatformVersion', '8.0.0')
 }
 
 /**
@@ -250,15 +250,15 @@ function convertServiceTask(element) {
   console.log("------------ Service Task -----------------");
 
   if (element.businessObject.class) { // ```camunda:class```
-    createTaskDefinition(element, "camunda-platform-to-cloud-migration");
+    createTaskDefinition(element, "camunda-7-adapter");
     addTaskHeader(element, "class", element.businessObject.class);
     element.businessObject.class = null;
   } else if (element.businessObject.delegateExpression) { // ```camunda:delegateExpression```
-    createTaskDefinition(element, "camunda-platform-to-cloud-migration");
+    createTaskDefinition(element, "camunda-7-adapter");
     addTaskHeader(element, "delegateExpression", element.businessObject.delegateExpression);
     element.businessObject.delegateExpression = null;
   } else if (element.businessObject.expression) { // ```camunda:expression```
-    createTaskDefinition(element, "camunda-platform-to-cloud-migration");
+    createTaskDefinition(element, "camunda-7-adapter");
     addTaskHeader(element, "expression", element.businessObject.expression);
     addTaskHeader(element, "resultVariable", element.businessObject.resultVariable);
     element.businessObject.expression = null;
@@ -268,8 +268,8 @@ function convertServiceTask(element) {
     element.businessObject.topic = null;
   }
 
-  if (!element.businessObject.asyncBefore || !element.businessObject.asyncAfter) {hints.push("Service tasks are all 'async' in Camunda Cloud");}
-  // if (element.businessObject.exclusive) Exclusive is ignored - as all jobs are automatically exclusive in Camunda Cloud
+  if (!element.businessObject.asyncBefore || !element.businessObject.asyncAfter) {hints.push("Service tasks are all 'async' in Camunda 8");}
+  // if (element.businessObject.exclusive) Exclusive is ignored - as all jobs are automatically exclusive in Camunda 8
   if (element.businessObject.jobPriority) {unsupportedAttribute(hints, "Service Task", "jobPriority");}
   if (element.businessObject.taskPriority) {unsupportedAttribute(hints, "Service Task", "taskPriority");}
   if (element.businessObject.type) {unsupportedAttribute(hints, "Service Task", "type");}
@@ -330,7 +330,7 @@ function convertUserTask(element) {
   if (element.businessObject.formRef) {
     addExtensionElement(element, moddle.create("zeebe:FormDefinition")).formKey = element.businessObject.formRef;
     element.businessObject.formRef = null;
-    hints.push("Forms work slightly differently in Camunda Cloud, please check your form definition and reference");
+    hints.push("Forms work slightly differently in Camunda 8, please check your form definition and reference");
   }
   if (element.businessObject.formHandlerClass) {unsupportedAttribute(hints, "User Task", "formHandlerClass");}
   if (readExtensionElement(element, "formKey")) {unsupportedExtensionElement(hints, "User Task", "formKey");}
@@ -383,7 +383,7 @@ function convertCallActivity(element) {
 
   var inMapping = readExtensionElement(element, "camunda:In");
   if (inMapping) {
-    // Ignore variables all - this is the default in CamundaCloud
+    // Ignore variables all - this is the default in Camunda 8
     //inMapping.variables;
 
     var zeebeInput = moddle.create('zeebe:Input', {});
@@ -505,8 +505,8 @@ function convertScriptTask(element) {
     if (element.businessObject.mapDecisionResult) {unsupportedAttribute(hints, "Business Rule Task", "mapDecisionResult");}
     if (element.businessObject.decisionRefTenantId) {unsupportedAttribute(hints, "Business Rule Task", "decisionRefTenantId");}
 
-    if (!element.businessObject.asyncBefore || !element.businessObject.asyncAfter) {hints.push("Tasks are all 'async' in Camunda Cloud");}
-    // if (element.businessObject.exclusive) Exclusive is ignored - as all jobs are automatically exclusive in Camunda Cloud
+    if (!element.businessObject.asyncBefore || !element.businessObject.asyncAfter) {hints.push("Tasks are all 'async' in Camunda 8");}
+    // if (element.businessObject.exclusive) Exclusive is ignored - as all jobs are automatically exclusive in Camunda 8
     if (element.businessObject.jobPriority) {unsupportedAttribute(hints, "Business Rule Task", "jobPriority");}
     if (element.businessObject.taskPriority) {unsupportedAttribute(hints, "Business Rule Task", "taskPriority");}
     if (element.businessObject.type) {unsupportedAttribute(hints, "Business Rule Task", "type");}

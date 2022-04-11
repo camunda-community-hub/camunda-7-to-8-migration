@@ -16,7 +16,7 @@
     <bpmn:sequenceFlow id="Flow_133deh1" sourceRef="Activity_0gzk3kq" targetRef="Activity_065ruya" />
     <bpmn:serviceTask id="Activity_0gzk3kq" name="Java Delegate" camunda:class="io.berndruecker.converter.example.SampleJavaDelegate">
       <bpmn:extensionElements>
-        <zeebe:taskDefinition type="camunda-platform-to-cloud-migration" />
+        <zeebe:taskDefinition type="camunda-7-adapter" />
         <zeebe:taskHeaders>
           <zeebe:header key="class" value="io.berndruecker.converter.example.SampleJavaDelegate" />
         </zeebe:taskHeaders>
@@ -27,7 +27,7 @@
     <bpmn:sequenceFlow id="Flow_1yz9a8i" sourceRef="Activity_065ruya" targetRef="main-process" />
     <bpmn:serviceTask id="Activity_065ruya" name="Expression Language" camunda:expression="#{sampleBean.someMethod(y)}">
       <bpmn:extensionElements>
-        <zeebe:taskDefinition type="camunda-platform-to-cloud-migration" />
+        <zeebe:taskDefinition type="camunda-7-adapter" />
         <zeebe:taskHeaders>
           <zeebe:header key="expression" value="#{sampleBean.someMethod(y)}" />
           <zeebe:header key="resultVariable" value="theAnswer" />
