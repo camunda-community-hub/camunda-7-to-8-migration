@@ -18,6 +18,9 @@ test("Simple Expressions", () => {
 
     expect(convertJuel('#{true}').feelExpression).toBe('=true');
 
+    // TODO
+    //expect(convertJuel('#{false}').feelExpression).toBe('=false');
+    //expect(convertJuel('#{!x}').feelExpression).toBe('=x = false');
     // https://camunda.github.io/feel-scala/docs/reference/builtin-functions/feel-built-in-functions-boolean#not
     //expect(convertJuel('#{!true}').feelExpression).toBe('=not(true');    
     //expect(convertJuel('#{not(x>5)}').feelExpression).toBe('=not(x>5)');
