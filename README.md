@@ -12,4 +12,4 @@ This projects contains:
 
 The following video walks you through the migration process:
 
-<a href="http://www.youtube.com/watch?feature=player_embedded&v=qyLgXVubL1Q" target="_blank"><img src="http://img.youtube.com/vi/qyLgXVubL1Q/0.jpg" alt="Walkthrough" width="240" height="180" border="10" /></a>
+<a href="http://www.youtube.com/watch?feature=player_embedded&v=yS0wAO0KgBc" target="_blank"><img src="http://img.youtube.com/vi/yS0wAO0KgBc/0.jpg" alt="Walkthrough" width="240" height="180" border="10" /></a>
