@@ -15,7 +15,7 @@
 	<properties>
 		<maven.compiler.source>1.8</maven.compiler.source>
 		<maven.compiler.target>1.8</maven.compiler.target>
-		<version.zeebe>8.0.0</version.zeebe>
+		<version.zeebe>8.0.4</version.zeebe>
 		<version.camunda.platform>7.17.0</version.camunda.platform>
 	</properties>
 
@@ -24,11 +24,22 @@
 			<groupId>io.camunda</groupId>
 			<artifactId>spring-zeebe-starter</artifactId>
 			<version>${version.zeebe}</version>
-		</dependency>	
+		</dependency>
+		<dependency>
+			<groupId>io.camunda</groupId>
+			<artifactId>spring-zeebe-test-testcontainer</artifactId>
+			<version>${version.zeebe}</version>
+		</dependency>
 		<dependency>
 			<groupId>org.camunda.bpm</groupId>
 			<artifactId>camunda-engine</artifactId>
 			<version>${version.camunda.platform}</version>
+			<exclusions>
+				<exclusion>
+					<groupId>org.springframework</groupId>
+					<artifactId>spring-beans</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 		<dependency>
 			<groupId>org.camunda.bpm</groupId>
@@ -58,4 +69,20 @@
 		
 	</dependencies>
 
+	<build>
+		<plugins>
+			<plugin>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<configuration>
+					<source>1.8</source>
+					<target>1.8</target>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<version>3.0.0-M6</version>
+			</plugin>
+		</plugins>
+	</build>
 </project>

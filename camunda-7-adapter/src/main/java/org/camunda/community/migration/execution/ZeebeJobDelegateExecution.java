@@ -16,6 +16,7 @@ public class ZeebeJobDelegateExecution extends AbstractDelegateExecution {
 
   public ZeebeJobDelegateExecution(ActivatedJob job) {
     super(job.getVariablesAsMap());
+    this.job = job;
   }
 
   @Override
