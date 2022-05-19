@@ -18,7 +18,7 @@ Add the dependency to the adapter library (double-check for the latest version):
 <dependency>
     <groupId>org.camunda.community.migration</groupId>
     <artifactId>camunda-7-adapter</artifactId>
-    <version>0.1.0</version>
+    <version>0.1.1</version>
     <exclusions>
       <exclusion>
         <groupId>org.springframework</groupId>
