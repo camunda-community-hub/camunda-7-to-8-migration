@@ -24,7 +24,7 @@ Pick the `modeler-plugin-7-to-8-converter.zip` file and extract it into
 * ```C:\Users\{user_name}\AppData\Roaming\camunda-modeler\plugins``` (Windows) or
 * ```/Users/{user_name}/Library/Application Support/camunda-modeler/plugins``` (Mac OS)
 
-The latter ways preserve the plugins when the modeler installation is replaced with a new version and allows to use the plugins from several installed versions. See also [Camunda Desktop Modeler plugins docs](https://github.com/camunda/camunda-modeler/tree/master/docs/plugins#plugging-into-the-camunda-modeler)
+The latter ways preserve the plugins when the modeler installation is replaced with a new version and allows to use the plugins from several installed versions. See also [Camunda Desktop Modeler plugins docs](https://docs.camunda.io/docs/components/modeler/desktop-modeler/plugins/)
 
 **Restart your Camunda Modeler**
 
