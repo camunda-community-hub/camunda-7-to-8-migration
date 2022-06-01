@@ -22,6 +22,7 @@ import org.camunda.bpm.model.bpmn.instance.FlowElement;
 public abstract class AbstractDelegateExecution extends SimpleVariableScope implements DelegateExecution {
 
   private static final long serialVersionUID = 1L;
+  public static final String VARIABLE_NAME_BUSINESS_KEY = "businessKey";
 
   protected RepositoryService repositoryService;
 
@@ -46,24 +47,15 @@ public abstract class AbstractDelegateExecution extends SimpleVariableScope impl
   @Override
   public BpmnModelInstance getBpmnModelInstance() {
     throw new UnsupportedOperationException();
-    // TODO get XML from file in classpath 
-    // see BPMN Model API https://github.com/camunda/camunda-bpmn-model
-//    return repositoryService.getBpmnModelInstance(getProcessDefinitionId());
   }
 
   @Override
   public ProcessEngineServices getProcessEngineServices() {
     throw new UnsupportedOperationException();
-    // TODO return own wrapper that talks to REST API for selected operations
   }
 
-  /**
-   * @since 7.10.0
-   */
-//  @Override
   public ProcessEngine getProcessEngine() {
     throw new UnsupportedOperationException();
-    // TODO return own wrapper that talks to REST API for selected operations
   }
 
   @Override
@@ -79,7 +71,6 @@ public abstract class AbstractDelegateExecution extends SimpleVariableScope impl
   @Override
   public String getEventName() {
     throw new UnsupportedOperationException("This DelegateExecution implementation is not meant to be used for ExecutionListeners");
-    // TODO add support for ExecutionListeners
   }
 
   @Override
@@ -102,31 +93,16 @@ public abstract class AbstractDelegateExecution extends SimpleVariableScope impl
     throw new UnsupportedOperationException();
   }
 
-  /**
-   * @since 7.8.0
-   */
-//  @Override
   public Incident createIncident(String incidentType, String configuration) {
     throw new UnsupportedOperationException();
-    // TODO via REST
   }
 
-  /**
-   * @since 7.8.0
-   */
-//  @Override
   public Incident createIncident(String incidentType, String configuration, String message) {
     throw new UnsupportedOperationException();
-    // TODO via REST
   }
 
-  /**
-   * @since 7.8.0
-   */
-//  @Override
   public void resolveIncident(String incidentId) {
     throw new UnsupportedOperationException();
-    // TODO via REST
   }
 
   @Override
@@ -136,16 +112,11 @@ public abstract class AbstractDelegateExecution extends SimpleVariableScope impl
 
   @Override
   public String getProcessBusinessKey() {
-    throw new UnsupportedOperationException();
+    return (String) getVariable(VARIABLE_NAME_BUSINESS_KEY);
   }
 
-  /**
-   * @since 7.10.0
-   */
-//  @Override
   public void setProcessBusinessKey(String businessKey) {
-    throw new UnsupportedOperationException();
-    // TODO via REST API, if that is supported by Camunda one day
+    setVariable(VARIABLE_NAME_BUSINESS_KEY, businessKey);
   }
 
   @Override

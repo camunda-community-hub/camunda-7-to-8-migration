@@ -45,6 +45,6 @@ public class CamundaPlatform7AdapterTest {
 
         assertTrue(SampleDelegate.executed);
         assertEquals("value", SampleDelegate.capturedVariable);
-
+        assertEquals("42", SampleDelegate.capturedBusinessKey);
     }
 }

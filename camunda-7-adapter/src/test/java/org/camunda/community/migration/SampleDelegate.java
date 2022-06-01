@@ -11,12 +11,15 @@ public class SampleDelegate implements JavaDelegate {
 
     public static boolean executed = false;
     public static String capturedVariable = null;
+    public static String capturedBusinessKey = null;
 
     @Override
     public void execute(DelegateExecution execution) throws Exception {
         LOG.info("Called from process instance {}", execution.getProcessInstanceId());
 
         capturedVariable = (String) execution.getVariable("someVariable");
+        execution.setProcessBusinessKey("42");
+        capturedBusinessKey = execution.getProcessBusinessKey();
         executed = true;
     }
 }
