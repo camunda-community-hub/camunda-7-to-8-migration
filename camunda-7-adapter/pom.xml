@@ -50,7 +50,7 @@
 			<groupId>org.camunda.bpm</groupId>
 			<artifactId>camunda-external-task-client</artifactId>
 			<version>${version.camunda.platform}</version>
-		</dependency>		
+		</dependency>
 		<!-- copied code from https://github.com/camunda-consulting/on-demand-call-activity/tree/master/abstract-delegate-execution
 		into this project for simplicity
 		<dependency>
