@@ -48,7 +48,7 @@
 		</dependency>
 		<dependency>
 			<groupId>org.camunda.bpm</groupId>
-			<artifactId>camunda-external-task-client</artifactId>
+			<artifactId>camunda-external-task-client-spring</artifactId>
 			<version>${version.camunda.platform}</version>
 		</dependency>
 		<!-- copied code from https://github.com/camunda-consulting/on-demand-call-activity/tree/master/abstract-delegate-execution

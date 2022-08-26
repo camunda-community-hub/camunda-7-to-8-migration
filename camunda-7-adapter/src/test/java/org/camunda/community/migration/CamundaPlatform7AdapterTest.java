@@ -119,4 +119,31 @@ public class CamundaPlatform7AdapterTest {
     assertEquals("value", SampleDelegate.capturedVariable);
     assertEquals("42", SampleDelegate.capturedBusinessKey);
   }
+
+  @Test
+  public void testExternalTaskHandlerWrapper(){
+    BpmnModelInstance bpmn = Bpmn
+        .createExecutableProcess("test")
+        .startEvent()
+        .serviceTask()
+        .zeebeJobType("test-topic")
+        .endEvent()
+        .done();
+
+    zeebeClient
+        .newDeployResourceCommand()
+        .addProcessModel(bpmn, "test.bpmn")
+        .send()
+        .join();
+
+    ProcessInstanceEvent processInstance = zeebeClient
+        .newCreateInstanceCommand()
+        .bpmnProcessId("test")
+        .latestVersion()
+        .variables(Collections.singletonMap("someVariable", "value"))
+        .send()
+        .join();
+
+    waitForProcessInstanceCompleted(processInstance);
+  }
 }
