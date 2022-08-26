@@ -133,4 +133,31 @@ public class CamundaPlatform7AdapterTest {
     waitForProcessInstanceCompleted(processInstance, Duration.ofSeconds(60));
     assertEquals("value", SampleExternalTaskHandler.someVariable);
   }
+
+  @Test
+  public void testExternalTaskHandlerWrapper(){
+    BpmnModelInstance bpmn = Bpmn
+        .createExecutableProcess("test")
+        .startEvent()
+        .serviceTask()
+        .zeebeJobType("test-topic")
+        .endEvent()
+        .done();
+
+    zeebeClient
+        .newDeployResourceCommand()
+        .addProcessModel(bpmn, "test.bpmn")
+        .send()
+        .join();
+
+    ProcessInstanceEvent processInstance = zeebeClient
+        .newCreateInstanceCommand()
+        .bpmnProcessId("test")
+        .latestVersion()
+        .variables(Collections.singletonMap("someVariable", "value"))
+        .send()
+        .join();
+
+    waitForProcessInstanceCompleted(processInstance);
+  }
 }
