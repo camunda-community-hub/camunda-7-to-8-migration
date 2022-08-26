@@ -19,7 +19,30 @@
 		<version.camunda.platform>7.17.0</version.camunda.platform>
 	</properties>
 
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>org.camunda.bpm</groupId>
+				<artifactId>camunda-bom</artifactId>
+				<version>${version.camunda.platform}</version>
+				<scope>import</scope>
+				<type>pom</type>
+			</dependency>
+			<dependency>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-dependencies</artifactId>
+				<version>2.6.11</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
+
 	<dependencies>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter</artifactId>
+		</dependency>
 		<dependency>
 			<groupId>io.camunda</groupId>
 			<artifactId>spring-zeebe-starter</artifactId>
@@ -29,27 +52,15 @@
 			<groupId>io.camunda</groupId>
 			<artifactId>spring-zeebe-test-testcontainer</artifactId>
 			<version>${version.zeebe}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.camunda.bpm</groupId>
-			<artifactId>camunda-engine</artifactId>
-			<version>${version.camunda.platform}</version>
-			<exclusions>
-				<exclusion>
-					<groupId>org.springframework</groupId>
-					<artifactId>spring-beans</artifactId>
-				</exclusion>
-			</exclusions>
+			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.camunda.bpm</groupId>
 			<artifactId>camunda-engine-spring</artifactId>
-			<version>${version.camunda.platform}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.camunda.bpm</groupId>
 			<artifactId>camunda-external-task-client-spring</artifactId>
-			<version>${version.camunda.platform}</version>
 		</dependency>
 		<!-- copied code from https://github.com/camunda-consulting/on-demand-call-activity/tree/master/abstract-delegate-execution
 		into this project for simplicity
@@ -59,13 +70,6 @@
 			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
 		-->
-		
-		<dependency>
-			<groupId>javax</groupId>
-			<artifactId>javaee-api</artifactId>
-			<version>8.0.1</version>
-			<scope>provided</scope>
-		</dependency>	
 		
 	</dependencies>
 
