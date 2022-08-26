@@ -1,42 +1,14 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
-	<groupId>org.camunda.community.migration</groupId>
 	<artifactId>camunda-7-adapter</artifactId>
-	<version>0.1.2-SNAPSHOT</version>
 	<packaging>jar</packaging>
 
 	<parent>
-		<groupId>org.camunda.community</groupId>
-		<artifactId>community-hub-release-parent</artifactId>
-		<version>1.2.2</version>
-	</parent>	
-
-	<properties>
-		<maven.compiler.source>1.8</maven.compiler.source>
-		<maven.compiler.target>1.8</maven.compiler.target>
-		<version.zeebe>8.0.4</version.zeebe>
-		<version.camunda.platform>7.17.0</version.camunda.platform>
-	</properties>
-
-	<dependencyManagement>
-		<dependencies>
-			<dependency>
-				<groupId>org.camunda.bpm</groupId>
-				<artifactId>camunda-bom</artifactId>
-				<version>${version.camunda.platform}</version>
-				<scope>import</scope>
-				<type>pom</type>
-			</dependency>
-			<dependency>
-				<groupId>org.springframework.boot</groupId>
-				<artifactId>spring-boot-dependencies</artifactId>
-				<version>2.6.11</version>
-				<type>pom</type>
-				<scope>import</scope>
-			</dependency>
-		</dependencies>
-	</dependencyManagement>
+		<groupId>org.camunda.community.migration</groupId>
+		<artifactId>camunda-7-to-8-migration</artifactId>
+		<version>0.1.2-SNAPSHOT</version>
+	</parent>
 
 	<dependencies>
 		<dependency>
@@ -46,12 +18,10 @@
 		<dependency>
 			<groupId>io.camunda</groupId>
 			<artifactId>spring-zeebe-starter</artifactId>
-			<version>${version.zeebe}</version>
 		</dependency>
 		<dependency>
 			<groupId>io.camunda</groupId>
 			<artifactId>spring-zeebe-test-testcontainer</artifactId>
-			<version>${version.zeebe}</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
@@ -75,13 +45,6 @@
 
 	<build>
 		<plugins>
-			<plugin>
-				<artifactId>maven-compiler-plugin</artifactId>
-				<configuration>
-					<source>1.8</source>
-					<target>1.8</target>
-				</configuration>
-			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-surefire-plugin</artifactId>
