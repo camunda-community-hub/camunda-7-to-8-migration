@@ -15,7 +15,8 @@ public class ExternalTaskHandlerWrapper implements JobHandler {
   private final ExternalTaskHandler externalTaskHandler;
   private final Optional<String> businessKeyVariableName;
 
-  public ExternalTaskHandlerWrapper(ExternalTaskHandler externalTaskHandler, Optional<String> businessKeyVariableName) {
+  public ExternalTaskHandlerWrapper(
+      ExternalTaskHandler externalTaskHandler, Optional<String> businessKeyVariableName) {
     this.externalTaskHandler = externalTaskHandler;
     this.businessKeyVariableName = businessKeyVariableName;
   }
@@ -23,7 +24,8 @@ public class ExternalTaskHandlerWrapper implements JobHandler {
   @Override
   public void handle(JobClient client, ActivatedJob job) {
     ExternalTask externalTask = new JobWrappingExternalTask(job, businessKeyVariableName);
-    ExternalTaskService externalTaskService = new JobClientWrappingExternalTaskService(client, externalTask);
+    ExternalTaskService externalTaskService =
+        new JobClientWrappingExternalTaskService(client, externalTask);
     externalTaskHandler.execute(externalTask, externalTaskService);
   }
 }

@@ -102,9 +102,7 @@ public class JobWrappingExternalTask implements ExternalTask {
 
   @Override
   public <T> T getVariable(String s) {
-    return (T) job
-        .getVariablesAsMap()
-        .get(s);
+    return (T) job.getVariablesAsMap().get(s);
   }
 
   @Override
@@ -141,9 +139,7 @@ public class JobWrappingExternalTask implements ExternalTask {
 
   @Override
   public String getExtensionProperty(String s) {
-    return job
-        .getCustomHeaders()
-        .get(s);
+    return job.getCustomHeaders().get(s);
   }
 
   @Override

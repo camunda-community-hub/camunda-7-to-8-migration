@@ -1,7 +1,5 @@
 package org.camunda.community.migration.execution;
 
-import java.util.Map;
-
 import org.camunda.bpm.engine.ProcessEngine;
 import org.camunda.bpm.engine.ProcessEngineServices;
 import org.camunda.bpm.engine.RepositoryService;
@@ -10,16 +8,19 @@ import org.camunda.bpm.engine.runtime.Incident;
 import org.camunda.bpm.model.bpmn.BpmnModelInstance;
 import org.camunda.bpm.model.bpmn.instance.FlowElement;
 
+import java.util.Map;
+
 /**
- * Abstract DelegateExecution that can be used for as base for DelegateExecution
- * implementations for executing a JavaDelegate.
- * 
- * It contains all methods that have to be implemented with additional REST API
- * calls or wrapper classes that emulate the Camunda Java API. 
+ * Abstract DelegateExecution that can be used for as base for DelegateExecution implementations for
+ * executing a JavaDelegate.
+ *
+ * <p>It contains all methods that have to be implemented with additional REST API calls or wrapper
+ * classes that emulate the Camunda Java API.
  *
  * @author Falko Menge (Camunda)
  */
-public abstract class AbstractDelegateExecution extends SimpleVariableScope implements DelegateExecution {
+public abstract class AbstractDelegateExecution extends SimpleVariableScope
+    implements DelegateExecution {
 
   private static final long serialVersionUID = 1L;
   public static final String VARIABLE_NAME_BUSINESS_KEY = "businessKey";
@@ -70,12 +71,14 @@ public abstract class AbstractDelegateExecution extends SimpleVariableScope impl
 
   @Override
   public String getEventName() {
-    throw new UnsupportedOperationException("This DelegateExecution implementation is not meant to be used for ExecutionListeners");
+    throw new UnsupportedOperationException(
+        "This DelegateExecution implementation is not meant to be used for ExecutionListeners");
   }
 
   @Override
   public String getCurrentTransitionId() {
-    throw new UnsupportedOperationException("This DelegateExecution implementation is not meant to be used for ExecutionListeners");
+    throw new UnsupportedOperationException(
+        "This DelegateExecution implementation is not meant to be used for ExecutionListeners");
   }
 
   @Override
@@ -123,5 +126,4 @@ public abstract class AbstractDelegateExecution extends SimpleVariableScope impl
   public void setVariable(String variableName, Object value, String activityId) {
     throw new UnsupportedOperationException();
   }
-
 }

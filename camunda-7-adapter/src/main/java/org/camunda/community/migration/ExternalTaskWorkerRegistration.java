@@ -1,4 +1,4 @@
-package org.camunda.community.migration.worker;
+package org.camunda.community.migration;
 
 import io.camunda.zeebe.client.ZeebeClient;
 import io.camunda.zeebe.client.api.worker.JobWorkerBuilderStep1.JobWorkerBuilderStep3;
@@ -6,6 +6,7 @@ import io.camunda.zeebe.spring.client.bean.ClassInfo;
 import io.camunda.zeebe.spring.client.config.processor.BeanInfoPostProcessor;
 import org.camunda.bpm.client.spring.impl.client.ClientConfiguration;
 import org.camunda.bpm.client.spring.impl.subscription.SpringTopicSubscriptionImpl;
+import org.camunda.community.migration.worker.ExternalTaskHandlerWrapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -17,9 +18,7 @@ public class ExternalTaskWorkerRegistration extends BeanInfoPostProcessor {
   private static final Logger LOG = LoggerFactory.getLogger(ExternalTaskWorkerRegistration.class);
   private final ClientConfiguration clientConfiguration;
 
-  public ExternalTaskWorkerRegistration(
-      ClientConfiguration clientConfiguration
-  ) {
+  public ExternalTaskWorkerRegistration(ClientConfiguration clientConfiguration) {
     this.clientConfiguration = clientConfiguration;
   }
 
@@ -36,20 +35,22 @@ public class ExternalTaskWorkerRegistration extends BeanInfoPostProcessor {
     LOG.info("Registering Zeebe worker(s) of bean: {}", beanInfo.getBean());
     SpringTopicSubscriptionImpl bean = (SpringTopicSubscriptionImpl) beanInfo.getBean();
     return zeebeClient -> {
-      JobWorkerBuilderStep3 builder = zeebeClient
-          .newWorker()
-          .jobType(bean.getTopicName())
-          .handler(new ExternalTaskHandlerWrapper(bean.getExternalTaskHandler(), Optional.empty()))
-          .name(beanInfo.getBeanName());
+      JobWorkerBuilderStep3 builder =
+          zeebeClient
+              .newWorker()
+              .jobType(bean.getTopicName())
+              .handler(
+                  new ExternalTaskHandlerWrapper(bean.getExternalTaskHandler(), Optional.empty()))
+              .name(beanInfo.getBeanName());
       setIfPresent(calculateLockDuration(bean), builder::timeout);
       setIfPresent(clientConfiguration.getMaxTasks(), builder::maxJobsActive);
-      setIfPresent(clientConfiguration.getAsyncResponseTimeout(),
-          timeout -> builder.pollInterval(Duration.ofMillis(timeout))
-      );
+      setIfPresent(
+          clientConfiguration.getAsyncResponseTimeout(),
+          timeout -> builder.pollInterval(Duration.ofMillis(timeout)));
       setIfPresent(bean.getVariableNames(), builder::fetchVariables);
-      setIfPresent(clientConfiguration.getAsyncResponseTimeout(),
-          timeout -> builder.requestTimeout(Duration.ofMillis(timeout))
-      );
+      setIfPresent(
+          clientConfiguration.getAsyncResponseTimeout(),
+          timeout -> builder.requestTimeout(Duration.ofMillis(timeout)));
       builder.open();
     };
   }
@@ -62,13 +63,7 @@ public class ExternalTaskWorkerRegistration extends BeanInfoPostProcessor {
 
   @Override
   public boolean test(ClassInfo classInfo) {
-    LOG.info("Checking {}",
-        classInfo
-            .getBean()
-            .getClass()
-    );
-    return SpringTopicSubscriptionImpl.class.isAssignableFrom(classInfo
-        .getBean()
-        .getClass());
+    LOG.info("Checking {}", classInfo.getBean().getClass());
+    return SpringTopicSubscriptionImpl.class.isAssignableFrom(classInfo.getBean().getClass());
   }
 }

@@ -27,12 +27,18 @@ import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 public class JobClientExternalTaskServiceTest {
-  @Mock
-  ZeebeClient client;
+  @Mock ZeebeClient client;
 
-  @Mock
-  ExternalTask externalTask;
+  @Mock ExternalTask externalTask;
   JobClientWrappingExternalTaskService service;
+
+  private static Map<String, Object> testVariables() {
+    return Collections.singletonMap("globalValue", "xyz");
+  }
+
+  private static Map<String, Object> testLocalVariables() {
+    return Collections.singletonMap("localValue", "abc");
+  }
 
   @BeforeEach
   public void setup() {
@@ -44,7 +50,8 @@ public class JobClientExternalTaskServiceTest {
   @Test
   public void testLock() {
     when(externalTask.getId()).thenReturn("123");
-    assertThrows(UnsupportedOperationException.class, () -> service.lock(externalTask.getId(), 123L));
+    assertThrows(
+        UnsupportedOperationException.class, () -> service.lock(externalTask.getId(), 123L));
     assertThrows(UnsupportedOperationException.class, () -> service.lock(externalTask, 123L));
   }
 
@@ -104,14 +111,14 @@ public class JobClientExternalTaskServiceTest {
     String errorDetails = "errorDetails";
     service.handleFailure(externalTask, errorMessage, errorDetails, 2, 2000L);
     service.handleFailure(externalTask.getId(), errorMessage, errorDetails, 2, 2000L);
-    service.handleFailure(externalTask.getId(),
+    service.handleFailure(
+        externalTask.getId(),
         errorMessage,
         errorDetails,
         2,
         2000L,
         testVariables(),
-        testLocalVariables()
-    );
+        testLocalVariables());
   }
 
   @Test
@@ -139,8 +146,10 @@ public class JobClientExternalTaskServiceTest {
 
   @Test
   public void testExtendLock() {
-    assertThrows(UnsupportedOperationException.class, () -> service.extendLock(externalTask, 2000L));
-    assertThrows(UnsupportedOperationException.class, () -> service.extendLock(externalTask.getId(), 2000L));
+    assertThrows(
+        UnsupportedOperationException.class, () -> service.extendLock(externalTask, 2000L));
+    assertThrows(
+        UnsupportedOperationException.class, () -> service.extendLock(externalTask.getId(), 2000L));
   }
 
   private void setupSetVariablesCommand() {
@@ -152,13 +161,5 @@ public class JobClientExternalTaskServiceTest {
     when(setVariablesCommandStep1.variables(anyMap())).thenReturn(setVariablesCommandStep2);
     when(setVariablesCommandStep2.local(anyBoolean())).thenReturn(setVariablesCommandStep2);
     when(setVariablesCommandStep2.send()).thenReturn(future);
-  }
-
-  private static Map<String, Object> testVariables() {
-    return Collections.singletonMap("globalValue", "xyz");
-  }
-
-  private static Map<String, Object> testLocalVariables() {
-    return Collections.singletonMap("localValue", "abc");
   }
 }

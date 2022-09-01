@@ -44,11 +44,13 @@ public class JobClientWrappingExternalTaskService implements ExternalTaskService
     setVariables(Optional.ofNullable(processInstanceId), false, variables);
   }
 
-  private void setVariables(Optional<String> processInstanceId, boolean local, Map<String, Object> variables) {
+  private void setVariables(
+      Optional<String> processInstanceId, boolean local, Map<String, Object> variables) {
     if (variables != null && !variables.isEmpty()) {
       if (client instanceof ZeebeClient) {
         ((ZeebeClient) client)
-            .newSetVariablesCommand(Long.parseLong(processInstanceId.orElse(task.getProcessInstanceId())))
+            .newSetVariablesCommand(
+                Long.parseLong(processInstanceId.orElse(task.getProcessInstanceId())))
             .variables(variables)
             .local(local)
             .send()
@@ -70,34 +72,41 @@ public class JobClientWrappingExternalTaskService implements ExternalTaskService
   }
 
   @Override
-  public void complete(ExternalTask externalTask, Map<String, Object> variables, Map<String, Object> localVariables) {
+  public void complete(
+      ExternalTask externalTask,
+      Map<String, Object> variables,
+      Map<String, Object> localVariables) {
     complete(externalTask.getId(), variables, localVariables);
   }
 
   @Override
-  public void complete(String externalTaskId, Map<String, Object> variables, Map<String, Object> localVariables) {
+  public void complete(
+      String externalTaskId, Map<String, Object> variables, Map<String, Object> localVariables) {
 
     if (localVariables != null && !localVariables.isEmpty()) {
       setVariables(Optional.empty(), true, localVariables);
     }
-    client
-        .newCompleteCommand(Long.parseLong(externalTaskId))
-        .variables(variables)
-        .send()
-        .join();
+    client.newCompleteCommand(Long.parseLong(externalTaskId)).variables(variables).send().join();
   }
 
   @Override
   public void handleFailure(
-      ExternalTask externalTask, String errorMessage, String errorDetails, int retries, long retryTimeout
-  ) {
-    handleFailure(externalTask.getId(), errorMessage, errorDetails, retries, retryTimeout, null, null);
+      ExternalTask externalTask,
+      String errorMessage,
+      String errorDetails,
+      int retries,
+      long retryTimeout) {
+    handleFailure(
+        externalTask.getId(), errorMessage, errorDetails, retries, retryTimeout, null, null);
   }
 
   @Override
   public void handleFailure(
-      String externalTaskId, String errorMessage, String errorDetails, int retries, long retryTimeout
-  ) {
+      String externalTaskId,
+      String errorMessage,
+      String errorDetails,
+      int retries,
+      long retryTimeout) {
     handleFailure(externalTaskId, errorMessage, errorDetails, retries, retryTimeout, null, null);
   }
 
@@ -109,8 +118,7 @@ public class JobClientWrappingExternalTaskService implements ExternalTaskService
       int retries,
       long retryTimeout,
       Map<String, Object> variables,
-      Map<String, Object> localVariables
-  ) {
+      Map<String, Object> localVariables) {
     String composedErrorMessage = errorMessage + "\n\n" + errorDetails;
     setVariables(Optional.empty(), false, variables);
     setVariables(Optional.empty(), true, localVariables);
@@ -135,8 +143,10 @@ public class JobClientWrappingExternalTaskService implements ExternalTaskService
 
   @Override
   public void handleBpmnError(
-      ExternalTask externalTask, String errorCode, String errorMessage, Map<String, Object> variables
-  ) {
+      ExternalTask externalTask,
+      String errorCode,
+      String errorMessage,
+      Map<String, Object> variables) {
     if (variables != null) {
       setVariables(externalTask, variables);
     }
@@ -145,8 +155,7 @@ public class JobClientWrappingExternalTaskService implements ExternalTaskService
 
   @Override
   public void handleBpmnError(
-      String externalTaskId, String errorCode, String errorMessage, Map<String, Object> variables
-  ) {
+      String externalTaskId, String errorCode, String errorMessage, Map<String, Object> variables) {
     setVariables(Optional.empty(), false, variables);
     client
         .newThrowErrorCommand(Long.parseLong(externalTaskId))

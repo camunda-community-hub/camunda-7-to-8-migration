@@ -4,8 +4,10 @@ import org.camunda.bpm.engine.delegate.DelegateExecution;
 import org.camunda.bpm.engine.delegate.JavaDelegate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
 
-public class SampleDelegate implements JavaDelegate {
+@Component("delegateBean")
+public class SampleDelegateBean implements JavaDelegate {
 
   private static final Logger LOG = LoggerFactory.getLogger(SampleDelegate.class);
 

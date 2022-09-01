@@ -35,10 +35,33 @@ public class JobWrappingExternalTaskTest {
   private static final String ZEEBE_TEST_KEY_STRING = String.valueOf(ZEEBE_TEST_KEY);
   private static final String TEST_ID = "abc-123-xyz";
   private static final String BUSINESS_KEY_VAR_NAME = "businessKey";
-  @Mock
-  ActivatedJob job;
+  @Mock ActivatedJob job;
 
   JobWrappingExternalTask externalTask;
+
+  private static Function<Entry<String, Object>, String> displayNameGenerator() {
+    return Entry::getKey;
+  }
+
+  private static Stream<Entry<String, Object>> inputStream() {
+    return variables().entrySet().stream();
+  }
+
+  private static Map<String, Object> variables() {
+    ObjectMapper objectMapper = new ObjectMapper();
+    try {
+      return objectMapper.readValue(
+          Resources.getResource("test-variables.json"),
+          new TypeReference<Map<String, Object>>() {});
+    } catch (IOException e) {
+      throw new RuntimeException(e);
+    }
+  }
+
+  private static Stream<DynamicTest> dynamicTest(
+      ThrowingConsumer<Entry<String, Object>> testFunction) {
+    return DynamicTest.stream(inputStream(), displayNameGenerator(), testFunction);
+  }
 
   @BeforeEach
   public void setup() {
@@ -113,7 +136,8 @@ public class JobWrappingExternalTaskTest {
 
   @Test
   public void testProcessDefinitionVersionTag() {
-    assertThrows(UnsupportedOperationException.class, () -> externalTask.getProcessDefinitionVersionTag());
+    assertThrows(
+        UnsupportedOperationException.class, () -> externalTask.getProcessDefinitionVersionTag());
   }
 
   @Test
@@ -161,19 +185,21 @@ public class JobWrappingExternalTaskTest {
   @TestFactory
   public Stream<DynamicTest> testVariable() {
     when(job.getVariablesAsMap()).thenReturn(variables());
-    return dynamicTest(e -> {
-      Object variable = externalTask.getVariable(e.getKey());
-      assertThat(variable).isEqualTo(e.getValue());
-    });
+    return dynamicTest(
+        e -> {
+          Object variable = externalTask.getVariable(e.getKey());
+          assertThat(variable).isEqualTo(e.getValue());
+        });
   }
 
   @TestFactory
   public Stream<DynamicTest> testVariableTyped() {
     when(job.getVariablesAsMap()).thenReturn(variables());
-    return dynamicTest(e -> {
-      TypedValue variable = externalTask.getVariableTyped(e.getKey());
-      assertThat(variable.getValue()).isEqualTo(e.getValue());
-    });
+    return dynamicTest(
+        e -> {
+          TypedValue variable = externalTask.getVariableTyped(e.getKey());
+          assertThat(variable.getValue()).isEqualTo(e.getValue());
+        });
   }
 
   @Test
@@ -208,34 +234,6 @@ public class JobWrappingExternalTaskTest {
   public void testExtensionProperties() {
     when(job.getCustomHeaders()).thenReturn(Collections.singletonMap("key", "value"));
     Map<String, String> extensionProperties = externalTask.getExtensionProperties();
-    assertThat(extensionProperties)
-        .hasFieldOrProperty("key")
-        .hasSize(1)
-        .containsValue("value");
-  }
-
-  private static Function<Entry<String, Object>, String> displayNameGenerator() {
-    return Entry::getKey;
-  }
-
-  private static Stream<Entry<String, Object>> inputStream() {
-    return variables()
-        .entrySet()
-        .stream();
-  }
-
-  private static Map<String, Object> variables() {
-    ObjectMapper objectMapper = new ObjectMapper();
-    try {
-      return objectMapper.readValue(Resources.getResource("test-variables.json"),
-          new TypeReference<Map<String, Object>>() {}
-      );
-    } catch (IOException e) {
-      throw new RuntimeException(e);
-    }
-  }
-
-  private static Stream<DynamicTest> dynamicTest(ThrowingConsumer<Entry<String, Object>> testFunction) {
-    return DynamicTest.stream(inputStream(), displayNameGenerator(), testFunction);
+    assertThat(extensionProperties).hasFieldOrProperty("key").hasSize(1).containsValue("value");
   }
 }

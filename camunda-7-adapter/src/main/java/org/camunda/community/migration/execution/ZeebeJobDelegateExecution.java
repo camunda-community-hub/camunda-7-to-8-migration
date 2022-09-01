@@ -48,5 +48,4 @@ public class ZeebeJobDelegateExecution extends AbstractDelegateExecution {
   public String getId() {
     return getProcessInstanceId();
   }
-
 }
