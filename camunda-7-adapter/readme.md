@@ -1,6 +1,6 @@
 # Spring Boot Adapter to re-use Java Delegates, Delegate Expressions, Expressions or External Tasks from Camunda Platform 7 in Camunda Platform 8
 
-This library allows to reuse Java delegates, Delegate Expressions, Expressions or External Tasks from process solutions developed for Camunda Platform (with Spring/Spring Boot) within Camunda Platform 8.
+This library allows to reuse Java delegates, Delegate Expressions, Expressions or External Tasks from process solutions developed for Camunda Platform 7 (with Spring/Spring Boot) within Camunda Platform 8.
 
 The adapter requires to use Spring Boot.
 

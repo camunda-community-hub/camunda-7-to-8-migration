@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 @Component("delegateBean")
 public class SampleDelegateBean implements JavaDelegate {
 
-  private static final Logger LOG = LoggerFactory.getLogger(SampleDelegate.class);
+  private static final Logger LOG = LoggerFactory.getLogger(SampleDelegateBean.class);
 
   public static boolean executed = false;
   public static String capturedVariable = null;
