@@ -5,30 +5,44 @@ import org.camunda.bpm.engine.delegate.BaseDelegateExecution;
 import org.camunda.bpm.engine.delegate.VariableScope;
 import org.camunda.bpm.engine.impl.el.ExpressionManager;
 import org.camunda.bpm.engine.impl.el.JuelExpression;
-import org.camunda.bpm.engine.impl.javax.el.*;
+import org.camunda.bpm.engine.impl.javax.el.ELContext;
+import org.camunda.bpm.engine.impl.javax.el.ELException;
+import org.camunda.bpm.engine.impl.javax.el.MethodNotFoundException;
+import org.camunda.bpm.engine.impl.javax.el.PropertyNotFoundException;
+import org.camunda.bpm.engine.impl.javax.el.ValueExpression;
 
 public class EnginelessJuelExpression extends JuelExpression {
 
-    public EnginelessJuelExpression(ValueExpression valueExpression, ExpressionManager expressionManager, String expressionText) {
-        super(valueExpression, expressionManager, expressionText);
-    }
+  public EnginelessJuelExpression(
+      ValueExpression valueExpression, ExpressionManager expressionManager, String expressionText
+  ) {
+    super(valueExpression, expressionManager, expressionText);
+  }
 
-    @Override
-    public Object getValue(VariableScope variableScope, BaseDelegateExecution contextExecution) {
-        ELContext elContext = expressionManager.getElContext(variableScope);
-        try {
-            return valueExpression.getValue(elContext);
-//            ExpressionGetInvocation invocation = new ExpressionGetInvocation(valueExpression, elContext, contextExecution);
-//            new DefaultDelegateInterceptor().handleInvocation(invocation);
-//            return invocation.getInvocationResult();
-        } catch (PropertyNotFoundException pnfe) {
-            throw new ProcessEngineException("Unknown property used in expression: " + expressionText+". Cause: "+pnfe.getMessage(), pnfe);
-        } catch (MethodNotFoundException mnfe) {
-            throw new ProcessEngineException("Unknown method used in expression: " + expressionText+". Cause: "+mnfe.getMessage(), mnfe);
-        } catch(ELException ele) {
-            throw new ProcessEngineException("Error while evaluating expression: " + expressionText+". Cause: "+ele.getMessage(), ele);
-        } catch (Exception e) {
-            throw new ProcessEngineException("Error while evaluating expression: " + expressionText+". Cause: "+e.getMessage(), e);
-        }
+  @Override
+  public Object getValue(VariableScope variableScope, BaseDelegateExecution contextExecution) {
+    variableScope.setVariable("execution", contextExecution);
+    ELContext elContext = expressionManager.getElContext(variableScope);
+    try {
+      return valueExpression.getValue(elContext);
+    } catch (PropertyNotFoundException pnfe) {
+      throw new ProcessEngineException("Unknown property used in expression: " + expressionText + ". Cause: " + pnfe.getMessage(),
+          pnfe
+      );
+    } catch (MethodNotFoundException mnfe) {
+      throw new ProcessEngineException("Unknown method used in expression: " + expressionText + ". Cause: " + mnfe.getMessage(),
+          mnfe
+      );
+    } catch (ELException ele) {
+      throw new ProcessEngineException("EL Error while evaluating expression: " + expressionText + ". Cause: " + ele.getMessage(),
+          ele
+      );
+    } catch (Exception e) {
+      throw new ProcessEngineException("Error while evaluating expression: " + expressionText + ". Cause: " + e.getMessage(),
+          e
+      );
+    } finally {
+      variableScope.removeVariable("execution");
     }
+  }
 }
