@@ -16,20 +16,19 @@ public class JuelExpressionResolver {
   private final ELContext elContext;
 
   public JuelExpressionResolver(
-      ExpressionManager expressionManager, ExpressionFactory expressionFactory, ELContext elContext
-  ) {
+      ExpressionManager expressionManager,
+      ExpressionFactory expressionFactory,
+      ELContext elContext) {
     this.expressionManager = expressionManager;
     this.elContext = elContext;
     this.expressionFactory = expressionFactory;
   }
 
-  public Object evaluate(String expressionString, VariableScope variableScope, DelegateExecution execution) {
-    ValueExpression valueExpression = expressionFactory.createValueExpression(elContext,
-        expressionString,
-        Object.class
-    );
-    return new EnginelessJuelExpression(valueExpression, expressionManager, expressionString).getValue(variableScope,
-        execution
-    );
+  public Object evaluate(
+      String expressionString, VariableScope variableScope, DelegateExecution execution) {
+    ValueExpression valueExpression =
+        expressionFactory.createValueExpression(elContext, expressionString, Object.class);
+    return new EnginelessJuelExpression(valueExpression, expressionManager, expressionString)
+        .getValue(variableScope, execution);
   }
 }

@@ -114,7 +114,7 @@ ConvertToCamunda8Plugin.prototype.convertBpmnToCamunda8 = function() {
     } else if (element.type == "bpmn:BusinessRuleTask") {
       hints = convertBusinessRuleTask(element);
     }
-
+    // TODO show a hint for each other element that it is currently unsupported
 
   ///////////////////////////////////////////////////////////////////////////
 
@@ -266,8 +266,8 @@ function convertServiceTask(element) {
   } else if (element.businessObject.topic) { // External Tasks
     createTaskDefinition(element, element.businessObject.topic);
     element.businessObject.topic = null;
-  }
-
+  } 
+  
   if (!element.businessObject.asyncBefore || !element.businessObject.asyncAfter) {hints.push("Service tasks are all 'async' in Camunda 8");}
   // if (element.businessObject.exclusive) Exclusive is ignored - as all jobs are automatically exclusive in Camunda 8
   if (element.businessObject.jobPriority) {unsupportedAttribute(hints, "Service Task", "jobPriority");}
@@ -275,7 +275,7 @@ function convertServiceTask(element) {
   if (element.businessObject.type) {unsupportedAttribute(hints, "Service Task", "type");}
 
   if (readExtensionElement(element, "failedJobRetryTimeCycle")) {unsupportedExtensionElement(hints, "Service Task", "failedJobRetryTimeCycle");}
-  if (readExtensionElement(element, "connector")) {unsupportedExtensionElement(hints, "Service Task", "connector");}
+  if (readExtensionElement(element, "camunda:Connector")) {unsupportedExtensionElement(hints, "Service Task", "connector");}
   //if (errorEventDefinition = readExtensionElement(element, "errorEventDefinition")) {
     // TODO handle errorEventDefinition
   //}

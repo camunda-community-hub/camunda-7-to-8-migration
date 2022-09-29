@@ -1,5 +1,7 @@
 package org.camunda.community.migration;
 
+import org.camunda.bpm.client.spring.annotation.EnableExternalTaskClient;
+import org.camunda.bpm.client.spring.impl.client.ClientConfiguration;
 import org.camunda.bpm.engine.ArtifactFactory;
 import org.camunda.bpm.engine.impl.el.ExpressionManager;
 import org.camunda.bpm.engine.impl.el.ProcessEngineElContext;
@@ -20,7 +22,15 @@ import java.util.Set;
 
 @Configuration
 @ComponentScan("org.camunda.community.migration")
+@EnableExternalTaskClient(baseUrl = "http://localhost", disableAutoFetching = true)
 public class CamundaPlatform7AdapterConfig {
+
+  @Bean
+  public ExternalTaskWorkerRegistration workerRegistration() {
+    ClientConfiguration configuration = new ClientConfiguration();
+    configuration.setBaseUrl("http://localhost");
+    return new ExternalTaskWorkerRegistration(configuration);
+  }
 
   @Bean
   @ConditionalOnMissingBean

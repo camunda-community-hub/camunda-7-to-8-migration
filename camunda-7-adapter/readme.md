@@ -1,6 +1,6 @@
-# Spring Boot Adapter to re-use Java Delegates or expressions from Camunda Platform in Camunda Cloud
+# Spring Boot Adapter to re-use Java Delegates, Delegate Expressions, Expressions or External Tasks from Camunda Platform 7 in Camunda Platform 8
 
-This library allows to reuse Java delegates or Spring expressions from process solutions developed for Camunda Platform within Camunda Cloud. 
+This library allows to reuse Java delegates, Delegate Expressions, Expressions or External Tasks from process solutions developed for Camunda Platform 7 (with Spring/Spring Boot) within Camunda Platform 8.
 
 The adapter requires to use Spring Boot.
 
@@ -15,46 +15,78 @@ Details on how service tasks are adapted are described in this [migration guide]
 Add the dependency to the adapter library (double-check for the latest version):
 
 ```xml
+
 <dependency>
-    <groupId>org.camunda.community.migration</groupId>
-    <artifactId>camunda-7-adapter</artifactId>
-    <version>0.1.1</version>
-    <exclusions>
-      <exclusion>
-        <groupId>org.springframework</groupId>
-        <artifactId>spring-beans</artifactId>
-      </exclusion>
-    </exclusions>
+  <groupId>org.camunda.community.migration</groupId>
+  <artifactId>camunda-7-adapter</artifactId>
+  <version>0.1.1</version>
 </dependency>
 ```
-
-The exclusion makes sure, your own Spring dependency version is used and no conflicts occur. 
 
 ## Import adapter
 
 Import the adapter into your Spring Boot application as shown in the [example application](../example/process-solution-migrated/src/main/java/io/berndruecker/converter/example/Application.java):
 
 ```java
+
 @SpringBootApplication
 @EnableZeebeClient
-@Import(CamundaPlatform7AdapterConfig.class)
+@EnableCamunda7Adapter
 @ZeebeDeployment(resources = "classpath:*.bpmn")
 public class Application {
+  // start off here
+}
 ```
 
-This will also start a job worker that subscribes to `camunda-7-adapter`.
+This will start a job worker that subscribes to `camunda-7-adapter` as well as workers for each `@ExternalTaskSubscription` with Zeebe Task Type equal to External Task Topic Name.
 
 ## Using migration worker
 
-To use that worker, add the `taskType=camunda-7-adapter` to your service task and add task headers for a java delegate class or expression, e.g.:
+To use that worker, add the `taskType="camunda-7-adapter"` to your service task and add task headers for a java delegate class, delegate expression or expression, e.g.:
 
 ```xml
+
 <bpmn:serviceTask id="task1" name="Java Delegate">
   <bpmn:extensionElements>
-    <zeebe:taskDefinition type="camunda-7-adapter" />
+    <zeebe:taskDefinition type="camunda-7-adapter"/>
     <zeebe:taskHeaders>
-      <zeebe:header key="class" value="io.berndruecker.converter.example.SampleJavaDelegate" />
+      <zeebe:header key="class" value="io.berndruecker.converter.example.SampleJavaDelegate"/>
     </zeebe:taskHeaders>
+  </bpmn:extensionElements>
+</bpmn:serviceTask>
+```
+
+```xml
+
+<bpmn:serviceTask id="task2" name="Delegate Expression">
+  <bpmn:extensionElements>
+    <zeebe:taskDefinition type="camunda-7-adapter"/>
+    <zeebe:taskHeaders>
+      <zeebe:header key="delegateExpression" value="${myAwesomeJavaDelegateBean}"/>
+    </zeebe:taskHeaders>
+  </bpmn:extensionElements>
+</bpmn:serviceTask>
+```
+
+```xml
+
+<bpmn:serviceTask id="task3" name="Expression">
+  <bpmn:extensionElements>
+    <zeebe:taskDefinition type="camunda-7-adapter"/>
+    <zeebe:taskHeaders>
+      <zeebe:header key="expression" value="${someBean.awesomeMethod(execution, someVar)}"/>
+    </zeebe:taskHeaders>
+  </bpmn:extensionElements>
+</bpmn:serviceTask>
+```
+
+The external task workers can be mapped by using the `taskType` and insert the `topicName` there.
+
+```xml
+
+<bpmn:serviceTask id="task4" name="External Task Worker">
+  <bpmn:extensionElements>
+    <zeebe:taskDefinition type="my-awesome-topic"/>
   </bpmn:extensionElements>
 </bpmn:serviceTask>
 ```
