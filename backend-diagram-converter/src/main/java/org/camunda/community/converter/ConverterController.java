@@ -1,7 +1,5 @@
 package org.camunda.community.converter;
 
-import java.io.IOException;
-import java.io.InputStream;
 import org.camunda.bpm.model.bpmn.Bpmn;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ByteArrayResource;
@@ -13,6 +11,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
+import java.io.InputStream;
 
 @RestController
 public class ConverterController {
@@ -34,8 +35,8 @@ public class ConverterController {
 
   @PostMapping("/convert")
   public ResponseEntity<Resource> getFile(@RequestBody BpmnDiagramCheckResult result) {
-    Resource file =
-        new ByteArrayResource(Bpmn.convertToString(bpmnConverter.convert(result)).getBytes());
+    String bpmnXml = bpmnConverter.printXml(bpmnConverter.convert(result).getDocument(),true);
+    Resource file = new ByteArrayResource(bpmnXml.getBytes());
     return ResponseEntity.ok()
         .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"converted.bpmn\"")
         .body(file);
