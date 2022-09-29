@@ -1,5 +1,7 @@
 package org.camunda.community.migration;
 
+import java.util.ArrayList;
+import java.util.Set;
 import org.camunda.bpm.client.spring.annotation.EnableExternalTaskClient;
 import org.camunda.bpm.client.spring.impl.client.ClientConfiguration;
 import org.camunda.bpm.engine.ArtifactFactory;
@@ -16,9 +18,6 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
-
-import java.util.ArrayList;
-import java.util.Set;
 
 @Configuration
 @ComponentScan("org.camunda.community.migration")

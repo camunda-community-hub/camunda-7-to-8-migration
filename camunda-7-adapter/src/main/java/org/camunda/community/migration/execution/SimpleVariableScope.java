@@ -1,5 +1,8 @@
 package org.camunda.community.migration.execution;
 
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 import org.camunda.bpm.engine.impl.core.variable.CoreVariableInstance;
 import org.camunda.bpm.engine.impl.core.variable.scope.AbstractVariableScope;
 import org.camunda.bpm.engine.impl.core.variable.scope.SimpleVariableInstance;
@@ -7,10 +10,6 @@ import org.camunda.bpm.engine.impl.core.variable.scope.SimpleVariableInstance.Si
 import org.camunda.bpm.engine.impl.core.variable.scope.VariableInstanceFactory;
 import org.camunda.bpm.engine.impl.core.variable.scope.VariableInstanceLifecycleListener;
 import org.camunda.bpm.engine.impl.core.variable.scope.VariableStore;
-
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
 
 /**
  * Simple VariableScope implementation that can be initialized with a Map and provides all variable

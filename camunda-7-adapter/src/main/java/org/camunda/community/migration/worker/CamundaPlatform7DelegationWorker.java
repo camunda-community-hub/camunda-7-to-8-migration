@@ -4,6 +4,8 @@ import io.camunda.zeebe.client.api.command.CompleteJobCommandStep1;
 import io.camunda.zeebe.client.api.response.ActivatedJob;
 import io.camunda.zeebe.client.api.worker.JobClient;
 import io.camunda.zeebe.spring.client.annotation.ZeebeWorker;
+import java.util.HashMap;
+import java.util.Map;
 import org.camunda.bpm.engine.ArtifactFactory;
 import org.camunda.bpm.engine.delegate.DelegateExecution;
 import org.camunda.bpm.engine.delegate.JavaDelegate;
@@ -11,9 +13,6 @@ import org.camunda.bpm.engine.delegate.VariableScope;
 import org.camunda.community.migration.execution.ZeebeJobDelegateExecution;
 import org.camunda.community.migration.juel.JuelExpressionResolver;
 import org.springframework.stereotype.Component;
-
-import java.util.HashMap;
-import java.util.Map;
 
 @Component
 public class CamundaPlatform7DelegationWorker {

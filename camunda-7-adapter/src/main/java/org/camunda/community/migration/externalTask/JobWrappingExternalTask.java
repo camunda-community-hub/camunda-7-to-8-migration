@@ -1,15 +1,14 @@
 package org.camunda.community.migration.externalTask;
 
 import io.camunda.zeebe.client.api.response.ActivatedJob;
-import org.camunda.bpm.client.task.ExternalTask;
-import org.camunda.bpm.engine.variable.VariableMap;
-import org.camunda.bpm.engine.variable.impl.VariableMapImpl;
-import org.camunda.bpm.engine.variable.value.TypedValue;
-
 import java.time.Instant;
 import java.util.Date;
 import java.util.Map;
 import java.util.Optional;
+import org.camunda.bpm.client.task.ExternalTask;
+import org.camunda.bpm.engine.variable.VariableMap;
+import org.camunda.bpm.engine.variable.impl.VariableMapImpl;
+import org.camunda.bpm.engine.variable.value.TypedValue;
 
 public class JobWrappingExternalTask implements ExternalTask {
   private final ActivatedJob job;

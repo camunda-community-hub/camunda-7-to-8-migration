@@ -4,15 +4,14 @@ import io.camunda.zeebe.client.ZeebeClient;
 import io.camunda.zeebe.client.api.worker.JobWorkerBuilderStep1.JobWorkerBuilderStep3;
 import io.camunda.zeebe.spring.client.bean.ClassInfo;
 import io.camunda.zeebe.spring.client.config.processor.BeanInfoPostProcessor;
+import java.time.Duration;
+import java.util.Optional;
+import java.util.function.Consumer;
 import org.camunda.bpm.client.spring.impl.client.ClientConfiguration;
 import org.camunda.bpm.client.spring.impl.subscription.SpringTopicSubscriptionImpl;
 import org.camunda.community.migration.worker.ExternalTaskHandlerWrapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.time.Duration;
-import java.util.Optional;
-import java.util.function.Consumer;
 
 public class ExternalTaskWorkerRegistration extends BeanInfoPostProcessor {
   private static final Logger LOG = LoggerFactory.getLogger(ExternalTaskWorkerRegistration.class);
