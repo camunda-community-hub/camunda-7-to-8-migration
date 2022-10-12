@@ -263,6 +263,11 @@
     </bpmn:endEvent>
     <bpmn:sequenceFlow id="Flow_1pwntzu" sourceRef="Activity_0he1pic" targetRef="Event_0jybch8" />
     <bpmn:scriptTask id="Activity_0he1pic" name="External script" scriptFormat="js" camunda:resource="classpath://script.js">
+      <bpmn:extensionElements>
+        <camunda:executionListener event="start">
+          <camunda:script scriptFormat="kt" resource="classpath://script.kt" />
+        </camunda:executionListener>
+      </bpmn:extensionElements>
       <bpmn:incoming>Flow_0mmg9pw</bpmn:incoming>
       <bpmn:outgoing>Flow_1pwntzu</bpmn:outgoing>
     </bpmn:scriptTask>
