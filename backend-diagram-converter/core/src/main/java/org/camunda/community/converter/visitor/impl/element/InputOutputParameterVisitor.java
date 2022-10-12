@@ -23,7 +23,7 @@ public abstract class InputOutputParameterVisitor extends AbstractCamundaElement
     String name = element.getAttribute("name");
     MappingDirection direction = findMappingDirection(element);
     if (isNotStringOrExpression(element)) {
-      return "'" + name + "': Only strings or expressions are supported in Zeebe";
+      return "'" + name + "': Only strings or expressions are supported as input/output in Zeebe";
     }
     if (isNoTraversingExpression(element)) {
       return "'"
