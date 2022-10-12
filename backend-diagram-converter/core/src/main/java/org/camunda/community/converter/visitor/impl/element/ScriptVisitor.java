@@ -11,7 +11,21 @@ public class ScriptVisitor extends AbstractCamundaElementVisitor {
 
   @Override
   protected String visitCamundaElement(DomElementVisitorContext context) {
-    return "Scripts can only be written in FEEL in Zeebe. Please review";
+    String response = "";
+    String scriptFormat = context.getElement().getAttribute("scriptFormat");
+    if (scriptFormat == null || scriptFormat.trim().length() == 0) {
+      response += "No script format could be detected, ";
+    } else {
+      response += "Script format is '" + scriptFormat + "', ";
+    }
+    String resource = context.getElement().getAttribute("resource");
+    if (resource == null) {
+      String script = context.getElement().getTextContent();
+      response += "script is: '" + script + "'";
+    } else {
+      response += "script resource is '" + resource + "'";
+    }
+    return response;
   }
 
   @Override
