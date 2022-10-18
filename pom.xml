@@ -63,7 +63,5 @@
   </build>
   <modules>
     <module>camunda-7-adapter</module>
-    <module>example/process-solution-camunda-7</module>
-    <module>example/process-solution-migrated</module>
   </modules>
 </project>
