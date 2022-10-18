@@ -3,7 +3,7 @@ package org.camunda.community.migration.worker;
 import io.camunda.zeebe.client.api.command.CompleteJobCommandStep1;
 import io.camunda.zeebe.client.api.response.ActivatedJob;
 import io.camunda.zeebe.client.api.worker.JobClient;
-import io.camunda.zeebe.spring.client.annotation.ZeebeWorker;
+import io.camunda.zeebe.spring.client.annotation.JobWorker;
 import java.util.HashMap;
 import java.util.Map;
 import org.camunda.bpm.engine.ArtifactFactory;
@@ -26,7 +26,7 @@ public class CamundaPlatform7DelegationWorker {
     this.artifactFactory = artifactFactory;
   }
 
-  @ZeebeWorker(type = "camunda-7-adapter")
+  @JobWorker(type = "camunda-7-adapter", autoComplete = false)
   public void delegateToCamundaPlatformCode(final JobClient client, final ActivatedJob job)
       throws Exception {
     // Read config

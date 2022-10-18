@@ -3,8 +3,8 @@ package org.camunda.community.migration.juel;
 import org.camunda.bpm.engine.ProcessEngineException;
 import org.camunda.bpm.engine.delegate.BaseDelegateExecution;
 import org.camunda.bpm.engine.delegate.VariableScope;
-import org.camunda.bpm.engine.impl.el.ExpressionManager;
 import org.camunda.bpm.engine.impl.el.JuelExpression;
+import org.camunda.bpm.engine.impl.el.JuelExpressionManager;
 import org.camunda.bpm.engine.impl.javax.el.ELContext;
 import org.camunda.bpm.engine.impl.javax.el.ELException;
 import org.camunda.bpm.engine.impl.javax.el.MethodNotFoundException;
@@ -14,7 +14,9 @@ import org.camunda.bpm.engine.impl.javax.el.ValueExpression;
 public class EnginelessJuelExpression extends JuelExpression {
 
   public EnginelessJuelExpression(
-      ValueExpression valueExpression, ExpressionManager expressionManager, String expressionText) {
+      ValueExpression valueExpression,
+      JuelExpressionManager expressionManager,
+      String expressionText) {
     super(valueExpression, expressionManager, expressionText);
   }
 

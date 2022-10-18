@@ -1,16 +1,13 @@
 package org.camunda.community.migration;
 
-import java.util.ArrayList;
-import java.util.Set;
 import org.camunda.bpm.client.spring.annotation.EnableExternalTaskClient;
 import org.camunda.bpm.client.spring.impl.client.ClientConfiguration;
 import org.camunda.bpm.engine.ArtifactFactory;
-import org.camunda.bpm.engine.impl.el.ExpressionManager;
-import org.camunda.bpm.engine.impl.el.ProcessEngineElContext;
+import org.camunda.bpm.engine.impl.el.JuelExpressionManager;
 import org.camunda.bpm.engine.impl.javax.el.ELContext;
 import org.camunda.bpm.engine.impl.javax.el.ExpressionFactory;
-import org.camunda.bpm.engine.impl.javax.el.FunctionMapper;
 import org.camunda.bpm.engine.impl.juel.ExpressionFactoryImpl;
+import org.camunda.bpm.engine.impl.juel.SimpleContext;
 import org.camunda.bpm.engine.spring.SpringArtifactFactory;
 import org.camunda.bpm.engine.spring.SpringExpressionManager;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
@@ -39,13 +36,13 @@ public class CamundaPlatform7AdapterConfig {
 
   @Bean
   @ConditionalOnMissingBean
-  public ELContext elContext(Set<FunctionMapper> functionMappers) {
-    return new ProcessEngineElContext(new ArrayList<>(functionMappers));
+  public ELContext elContext() {
+    return new SimpleContext();
   }
 
   @Bean
   @ConditionalOnMissingBean
-  public ExpressionManager expressionManager(ApplicationContext applicationContext) {
+  public JuelExpressionManager expressionManager(ApplicationContext applicationContext) {
     return new SpringExpressionManager(applicationContext);
   }
 

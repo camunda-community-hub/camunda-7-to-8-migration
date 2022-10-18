@@ -2,7 +2,7 @@ package org.camunda.community.migration.juel;
 
 import org.camunda.bpm.engine.delegate.DelegateExecution;
 import org.camunda.bpm.engine.delegate.VariableScope;
-import org.camunda.bpm.engine.impl.el.ExpressionManager;
+import org.camunda.bpm.engine.impl.el.JuelExpressionManager;
 import org.camunda.bpm.engine.impl.javax.el.ELContext;
 import org.camunda.bpm.engine.impl.javax.el.ExpressionFactory;
 import org.camunda.bpm.engine.impl.javax.el.ValueExpression;
@@ -11,12 +11,12 @@ import org.springframework.stereotype.Component;
 @Component
 public class JuelExpressionResolver {
 
-  private final ExpressionManager expressionManager;
+  private final JuelExpressionManager expressionManager;
   private final ExpressionFactory expressionFactory;
   private final ELContext elContext;
 
   public JuelExpressionResolver(
-      ExpressionManager expressionManager,
+      JuelExpressionManager expressionManager,
       ExpressionFactory expressionFactory,
       ELContext elContext) {
     this.expressionManager = expressionManager;
