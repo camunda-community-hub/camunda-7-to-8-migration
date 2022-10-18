@@ -38,9 +38,9 @@ jobs:
           nexus-psw: ${{ secrets.NEXUS_PSW }}
           maven-usr: ${{ secrets.MAVEN_CENTRAL_DEPLOYMENT_USR }}
           maven-psw: ${{ secrets.MAVEN_CENTRAL_DEPLOYMENT_PSW }}
+          maven-url: oss.sonatype.org
           maven-gpg-passphrase: ${{ secrets.MAVEN_CENTRAL_GPG_SIGNING_KEY_PASSPHRASE }}
           github-token: ${{ secrets.GITHUB_TOKEN }}
-          artifacts-pattern: ./camunda-7-adapter/target/nexus-staging/**/*.jar
         id: release
       - if: github.event.release
         name: Attach artifacts to GitHub Release (Release only)
