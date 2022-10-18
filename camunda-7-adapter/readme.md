@@ -94,4 +94,3 @@ The external task workers can be mapped by using the `taskType` and insert the `
 ## Example
 
 Check out [the full example](../example/process-solution-migrated/src/main/resources/process.bpmn) for more details.
-

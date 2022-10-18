@@ -3,13 +3,12 @@ package org.camunda.community.migration.worker;
 import io.camunda.zeebe.client.api.response.ActivatedJob;
 import io.camunda.zeebe.client.api.worker.JobClient;
 import io.camunda.zeebe.client.api.worker.JobHandler;
+import java.util.Optional;
 import org.camunda.bpm.client.task.ExternalTask;
 import org.camunda.bpm.client.task.ExternalTaskHandler;
 import org.camunda.bpm.client.task.ExternalTaskService;
 import org.camunda.community.migration.externalTask.JobClientWrappingExternalTaskService;
 import org.camunda.community.migration.externalTask.JobWrappingExternalTask;
-
-import java.util.Optional;
 
 public class ExternalTaskHandlerWrapper implements JobHandler {
   private final ExternalTaskHandler externalTaskHandler;

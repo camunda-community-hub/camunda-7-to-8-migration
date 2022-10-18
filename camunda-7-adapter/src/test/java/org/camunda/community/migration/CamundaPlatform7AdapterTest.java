@@ -1,19 +1,18 @@
 package org.camunda.community.migration;
 
+import static io.camunda.zeebe.spring.test.ZeebeTestThreadSupport.*;
+import static org.junit.jupiter.api.Assertions.*;
+
 import io.camunda.zeebe.client.ZeebeClient;
 import io.camunda.zeebe.client.api.response.ProcessInstanceEvent;
 import io.camunda.zeebe.model.bpmn.Bpmn;
 import io.camunda.zeebe.model.bpmn.BpmnModelInstance;
 import io.camunda.zeebe.spring.test.ZeebeSpringTest;
+import java.time.Duration;
+import java.util.Collections;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-
-import java.time.Duration;
-import java.util.Collections;
-
-import static io.camunda.zeebe.spring.test.ZeebeTestThreadSupport.*;
-import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest(classes = CamundaPlatform7AdapterConfig.class)
 @ZeebeSpringTest
@@ -43,7 +42,7 @@ public class CamundaPlatform7AdapterTest {
             .send()
             .join();
 
-    waitForProcessInstanceCompleted(processInstance);
+    waitForProcessInstanceCompleted(processInstance, Duration.ofSeconds(60));
 
     assertTrue(SampleDelegate.executed);
     assertFalse(SampleDelegate.canReachExecutionVariable);
@@ -73,7 +72,7 @@ public class CamundaPlatform7AdapterTest {
             .send()
             .join();
 
-    waitForProcessInstanceCompleted(processInstance);
+    waitForProcessInstanceCompleted(processInstance, Duration.ofSeconds(60));
 
     assertTrue(SampleDelegateBean.executed);
     assertFalse(SampleDelegateBean.canReachExecutionVariable);
@@ -103,7 +102,7 @@ public class CamundaPlatform7AdapterTest {
             .send()
             .join();
 
-    waitForProcessInstanceCompleted(processInstance);
+    waitForProcessInstanceCompleted(processInstance, Duration.ofSeconds(60));
 
     assertTrue(SampleBean.executionReceived);
     assertTrue(SampleBean.someVariableReceived);

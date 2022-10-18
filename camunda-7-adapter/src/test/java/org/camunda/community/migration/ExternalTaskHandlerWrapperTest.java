@@ -1,22 +1,21 @@
 package org.camunda.community.migration;
 
+import static org.assertj.core.api.Assertions.*;
+import static org.mockito.Mockito.*;
+
 import com.google.common.io.Resources;
 import io.camunda.zeebe.client.api.response.ActivatedJob;
 import io.camunda.zeebe.client.api.worker.JobClient;
 import io.camunda.zeebe.client.impl.ZeebeObjectMapper;
 import io.camunda.zeebe.client.impl.response.ActivatedJobImpl;
 import io.camunda.zeebe.gateway.protocol.GatewayOuterClass;
-import org.camunda.bpm.engine.variable.value.TypedValue;
-import org.camunda.community.migration.worker.ExternalTaskHandlerWrapper;
-import org.junit.jupiter.api.Test;
-
 import java.nio.charset.Charset;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-
-import static org.assertj.core.api.Assertions.*;
-import static org.mockito.Mockito.*;
+import org.camunda.bpm.engine.variable.value.TypedValue;
+import org.camunda.community.migration.worker.ExternalTaskHandlerWrapper;
+import org.junit.jupiter.api.Test;
 
 public class ExternalTaskHandlerWrapperTest {
 
