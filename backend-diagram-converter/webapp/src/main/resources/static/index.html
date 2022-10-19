@@ -117,7 +117,7 @@
         }
         const formData = new FormData();
         formData.append("file", fileUpload.files[0]);
-        formData.append("appendDocumentation", appendDocumentation.value)
+        formData.append("appendDocumentation", appendDocumentation.checked)
         return formData;
     }
 
@@ -151,7 +151,6 @@
             const contentDisposition = response.headers.get("Content-Disposition");
             const targetFileName = contentDisposition.substring(contentDisposition.indexOf("\"") + 1, contentDisposition.lastIndexOf("\""));
             response.blob().then(data => {
-                console.log(data);
                 const a = document.createElement("a");
                 a.href = window.URL.createObjectURL(data);
                 a.download = targetFileName;
