@@ -27,9 +27,3 @@ jobs:
         password: ${{ secrets.GITHUB_TOKEN }}
     - name: Build
       run: mvn verify -PcheckFormat
-    - name: Export Maven Project Version
-      run: echo "maven_project_version=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)" >> $GITHUB_ENV
-    - name: Push Worker Image (latest)
-      run: docker push ghcr.io/camunda-community-hub/camunda-7-to-8-migration/diagram-converter:latest
-    - name: Push Worker Image (tag)
-      run: docker push ghcr.io/camunda-community-hub/camunda-7-to-8-migration/diagram-converter:${{ env.maven_project_version }}
