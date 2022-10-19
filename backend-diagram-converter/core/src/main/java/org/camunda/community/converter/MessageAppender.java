@@ -1,11 +1,10 @@
 package org.camunda.community.converter;
 
+import java.util.Comparator;
+import java.util.List;
 import org.camunda.bpm.model.xml.instance.DomDocument;
 import org.camunda.bpm.model.xml.instance.DomElement;
 import org.camunda.community.converter.BpmnDiagramCheckResult.BpmnElementCheckMessage;
-
-import java.util.Comparator;
-import java.util.List;
 
 public class MessageAppender {
   public void appendMessages(
