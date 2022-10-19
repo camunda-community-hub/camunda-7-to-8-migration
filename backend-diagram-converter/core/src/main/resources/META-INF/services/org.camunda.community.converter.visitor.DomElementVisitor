@@ -47,7 +47,8 @@ org.camunda.community.converter.visitor.impl.attribute.VariableMappingDelegateEx
 org.camunda.community.converter.visitor.impl.attribute.CandidateUsersVisitor
 org.camunda.community.converter.visitor.impl.attribute.ExclusiveVisitor
 org.camunda.community.converter.visitor.impl.activity.BusinessRuleTaskVisitor
-org.camunda.community.converter.visitor.impl.attribute.ResultVariableVisitor
+org.camunda.community.converter.visitor.impl.attribute.ResultVariableVisitor$ResultVariableOnBusinessRuleTaskVisitor
+org.camunda.community.converter.visitor.impl.attribute.ResultVariableVisitor$ResultVariableOnRestVisitor
 org.camunda.community.converter.visitor.impl.attribute.DecisionRefVisitor
 org.camunda.community.converter.visitor.impl.attribute.JobPriorityVisitor
 org.camunda.community.converter.visitor.impl.attribute.ResourceVisitor
