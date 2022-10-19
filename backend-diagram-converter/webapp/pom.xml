@@ -33,9 +33,30 @@
         </configuration>
         <executions>
           <execution>
+            <id>build-version</id>
             <goals>
-              <goal>repackage</goal>
+              <goal>build-image</goal>
             </goals>
+            <phase>deploy</phase>
+            <configuration>
+              <image>
+                <name>ghcr.io/camunda-community-hub/diagram-converter:${project.version}</name>
+                <publish>true</publish>
+              </image>
+            </configuration>
+          </execution>
+          <execution>
+            <id>build-latest</id>
+            <goals>
+              <goal>build-image</goal>
+            </goals>
+            <phase>deploy</phase>
+            <configuration>
+              <image>
+                <name>ghcr.io/camunda-community-hub/diagram-converter</name>
+                <publish>true</publish>
+              </image>
+            </configuration>
           </execution>
         </executions>
       </plugin>
