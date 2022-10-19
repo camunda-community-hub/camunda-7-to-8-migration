@@ -37,7 +37,7 @@
             <goals>
               <goal>build-image</goal>
             </goals>
-            <phase>install</phase>
+            <phase>deploy</phase>
             <configuration>
               <image>
                 <name>ghcr.io/camunda-community-hub/diagram-converter:${project.version}</name>
@@ -50,7 +50,7 @@
             <goals>
               <goal>build-image</goal>
             </goals>
-            <phase>install</phase>
+            <phase>deploy</phase>
             <configuration>
               <image>
                 <name>ghcr.io/camunda-community-hub/diagram-converter</name>
