@@ -29,6 +29,8 @@ jobs:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Export Maven Project Version
+        run: echo "maven_project_version=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)" >> $GITHUB_ENV
       - name: Deploy SNAPSHOT / Release
         uses: camunda-community-hub/community-action-maven-release@v1
         with:
@@ -42,6 +44,10 @@ jobs:
           maven-gpg-passphrase: ${{ secrets.MAVEN_CENTRAL_GPG_SIGNING_KEY_PASSPHRASE }}
           github-token: ${{ secrets.GITHUB_TOKEN }}
         id: release
+      - name: Push Worker Image (latest)
+        run: docker push ghcr.io/camunda-community-hub/camunda-7-to-8-migration/diagram-converter:latest
+      - name: Push Worker Image (tag)
+        run: docker push ghcr.io/camunda-community-hub/camunda-7-to-8-migration/diagram-converter:${{ env.maven_project_version }}
       - if: github.event.release
         name: Attach artifacts to GitHub Release (Release only)
         uses: actions/upload-release-asset@v1
