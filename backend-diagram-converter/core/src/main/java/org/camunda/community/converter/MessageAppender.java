@@ -1,5 +1,6 @@
 package org.camunda.community.converter;
 
+import java.util.Comparator;
 import java.util.List;
 import org.camunda.bpm.model.xml.instance.DomDocument;
 import org.camunda.bpm.model.xml.instance.DomElement;
@@ -10,6 +11,7 @@ public class MessageAppender {
       DomElement element, List<BpmnElementCheckMessage> messages, boolean appendDocumentation) {
     if (!messages.isEmpty()) {
       DomElement extensionElements = getExtensionElements(element);
+      messages.sort(Comparator.comparingInt(message -> message.getSeverity().ordinal()));
       messages.forEach(
           message -> extensionElements.appendChild(createMessage(message, element.getDocument())));
       if (appendDocumentation) {

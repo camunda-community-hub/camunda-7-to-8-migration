@@ -11,9 +11,9 @@ public class BpmnDiagramCheckResult {
   }
 
   public enum Severity {
-    INFO,
     WARNING,
-    TASK
+    TASK,
+    INFO,
   }
 
   public static class BpmnElementCheckResult {
