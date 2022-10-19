@@ -41,7 +41,6 @@
             <configuration>
               <image>
                 <name>ghcr.io/camunda-community-hub/camunda-7-to-8-migration/diagram-converter:${project.version}</name>
-                <publish>true</publish>
               </image>
             </configuration>
           </execution>
@@ -54,7 +53,6 @@
             <configuration>
               <image>
                 <name>ghcr.io/camunda-community-hub/camunda-7-to-8-migration/diagram-converter</name>
-                <publish>true</publish>
               </image>
             </configuration>
           </execution>
