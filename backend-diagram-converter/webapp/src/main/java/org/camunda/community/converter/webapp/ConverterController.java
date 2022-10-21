@@ -1,10 +1,7 @@
 package org.camunda.community.converter.webapp;
 
-import java.io.IOException;
-import java.io.InputStream;
 import org.camunda.bpm.model.bpmn.Bpmn;
 import org.camunda.bpm.model.bpmn.BpmnModelInstance;
-import org.camunda.community.converter.BpmnConverter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
@@ -16,12 +13,15 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.io.InputStream;
+
 @RestController
 public class ConverterController {
-  private final BpmnConverter bpmnConverter;
+  private final BpmnConverterService bpmnConverter;
 
   @Autowired
-  public ConverterController(BpmnConverter bpmnConverter) {
+  public ConverterController(BpmnConverterService bpmnConverter) {
     this.bpmnConverter = bpmnConverter;
   }
 
@@ -31,6 +31,8 @@ public class ConverterController {
       return ResponseEntity.ok(bpmnConverter.check(Bpmn.readModelFromStream(in), false));
     } catch (IOException e) {
       return ResponseEntity.badRequest().body(e.getMessage());
+    } catch (Exception e) {
+      return ResponseEntity.internalServerError().body(e.getMessage());
     }
   }
 
@@ -51,6 +53,8 @@ public class ConverterController {
           .body(file);
     } catch (IOException e) {
       return ResponseEntity.badRequest().body(e.getMessage());
+    } catch (Exception e) {
+      return ResponseEntity.internalServerError().body(e.getMessage());
     }
   }
 }
