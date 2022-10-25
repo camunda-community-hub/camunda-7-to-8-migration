@@ -30,7 +30,9 @@ public class ConvertCommand implements Callable<Integer> {
   @Parameters(index = "0", description = "The file or directory to search for")
   File file;
 
-  @Option(names = {"-d", "--documentation"})
+  @Option(
+      names = {"-d", "--documentation"},
+      description = "If enabled, messages are also appended to documentation")
   boolean documentation;
 
   @Override
@@ -47,6 +49,7 @@ public class ConvertCommand implements Callable<Integer> {
         files.add(file);
       } else {
         System.err.println("The selected file is no .bpmn file");
+        return 1;
       }
     }
     return handleFiles(files).orElse(0);
@@ -57,17 +60,15 @@ public class ConvertCommand implements Callable<Integer> {
   }
 
   private int handleFile(File file) {
-    System.out.println();
-    System.out.println("Handling " + file.getAbsolutePath());
     File newFile = new File(file.getParentFile(), "converted-c8-" + file.getName());
     BpmnModelInstance modelInstance = Bpmn.readModelFromFile(file);
     try {
       converter.convert(modelInstance, documentation);
     } catch (Exception e) {
-      System.err.println("- A problem occurred while converting: " + e.getMessage());
+      System.err.println("Problem while converting: " + e.getMessage());
       return 1;
     }
-    System.out.println("- Converting " + file.getAbsolutePath() + " and writing to " + newFile);
+    System.out.println("Created " + newFile);
     Bpmn.writeModelToFile(newFile, modelInstance);
     return 0;
   }
