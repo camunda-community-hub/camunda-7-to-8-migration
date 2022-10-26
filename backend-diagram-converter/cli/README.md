@@ -18,6 +18,6 @@ To get a functioning `.jar` file, run
 mvn clean package
 ```
 
-The file can then be found in `target` with the `-jar-with-dependencies` in the name.
+The file can then be found in `target` with the name `camunda-convert.jar`.
 
 Then you can run this `.jar` file with the location of the files to convert in the args. For help, please use `-h` or `--help`.
