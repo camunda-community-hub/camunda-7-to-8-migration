@@ -1,6 +1,8 @@
 package org.camunda.community.converter.cli;
 
 import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.OptionalInt;
@@ -69,7 +71,12 @@ public class ConvertCommand implements Callable<Integer> {
       return 1;
     }
     System.out.println("Created " + newFile);
-    Bpmn.writeModelToFile(newFile, modelInstance);
+    try (FileWriter fw = new FileWriter(newFile)) {
+      converter.printXml(modelInstance.getDocument(), true, fw);
+      fw.flush();
+    } catch (IOException e) {
+      throw new RuntimeException(e);
+    }
     return 0;
   }
 

@@ -1,5 +1,7 @@
 package org.camunda.community.converter.webapp;
 
+import java.io.IOException;
+import java.io.StringWriter;
 import org.camunda.bpm.model.bpmn.BpmnModelInstance;
 import org.camunda.bpm.model.xml.instance.DomDocument;
 import org.camunda.community.converter.BpmnConverter;
@@ -35,6 +37,11 @@ public class BpmnConverterService {
   }
 
   public String printXml(DomDocument document, boolean b) {
-    return bpmnConverter.printXml(document, b);
+    try (StringWriter sw = new StringWriter()) {
+      bpmnConverter.printXml(document, b, sw);
+      return sw.toString();
+    } catch (IOException e) {
+      throw new RuntimeException(e);
+    }
   }
 }
