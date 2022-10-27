@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_148xe6q" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.4.2" modeler:executionPlatform="Camunda Platform" modeler:executionPlatformVersion="7.18.0">
+  <bpmn:collaboration id="Collaboration_1vf4mb0">
+    <bpmn:participant id="CallingProcessParticipant" name="Calling process" processRef="CallingProcess" />
+    <bpmn:participant id="AnotherProcessParticipant" name="Another process" processRef="AnotherProcess" />
+  </bpmn:collaboration>
+  <bpmn:process id="CallingProcess" name="Calling process" isExecutable="true">
+    <bpmn:startEvent id="ProcessStartedStartEvent" name="process started">
+      <bpmn:outgoing>Flow_1xqdlk1</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:sequenceFlow id="Flow_1xqdlk1" sourceRef="ProcessStartedStartEvent" targetRef="CallAnotherProcessCallActivity" />
+    <bpmn:sequenceFlow id="Flow_1xpypmp" sourceRef="CallAnotherProcessCallActivity" targetRef="DoSomethingElseTask" />
+    <bpmn:callActivity id="CallAnotherProcessCallActivity" name="Call another process" calledElement="AnotherProcess">
+      <bpmn:extensionElements>
+        <camunda:in variables="all" />
+        <camunda:out variables="all" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_1xqdlk1</bpmn:incoming>
+      <bpmn:outgoing>Flow_1xpypmp</bpmn:outgoing>
+    </bpmn:callActivity>
+    <bpmn:endEvent id="ProcessEndedEndEvent" name="Process ended">
+      <bpmn:incoming>Flow_18h2zh0</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_18h2zh0" sourceRef="DoSomethingElseTask" targetRef="ProcessEndedEndEvent" />
+    <bpmn:serviceTask id="DoSomethingElseTask" name="Do something else" camunda:type="external" camunda:topic="do-something-else">
+      <bpmn:incoming>Flow_1xpypmp</bpmn:incoming>
+      <bpmn:outgoing>Flow_18h2zh0</bpmn:outgoing>
+    </bpmn:serviceTask>
+  </bpmn:process>
+  <bpmn:process id="AnotherProcess" name="Another process" isExecutable="true">
+    <bpmn:startEvent id="AnotherProcessStartedStartEvent" name="Another process started">
+      <bpmn:outgoing>Flow_16xyzmj</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:sequenceFlow id="Flow_16xyzmj" sourceRef="AnotherProcessStartedStartEvent" targetRef="DoSomethingTask" />
+    <bpmn:serviceTask id="DoSomethingTask" name="Do something" camunda:type="external" camunda:topic="do-something">
+      <bpmn:incoming>Flow_16xyzmj</bpmn:incoming>
+      <bpmn:outgoing>Flow_0d2ms0q</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:endEvent id="AnotherProcessEndedEndEvent" name="Another process ended">
+      <bpmn:incoming>Flow_0d2ms0q</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_0d2ms0q" sourceRef="DoSomethingTask" targetRef="AnotherProcessEndedEndEvent" />
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Collaboration_1vf4mb0">
+      <bpmndi:BPMNShape id="Participant_00kpsyi_di" bpmnElement="CallingProcessParticipant" isHorizontal="true">
+        <dc:Bounds x="129" y="52" width="600" height="250" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="ProcessStartedStartEvent">
+        <dc:Bounds x="179" y="159" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="159" y="202" width="76" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1kquqq3_di" bpmnElement="CallAnotherProcessCallActivity">
+        <dc:Bounds x="270" y="137" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_10mowol_di" bpmnElement="ProcessEndedEndEvent">
+        <dc:Bounds x="622" y="159" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="603" y="202" width="74" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_112ebsp_di" bpmnElement="DoSomethingElseTask">
+        <dc:Bounds x="450" y="137" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_1xqdlk1_di" bpmnElement="Flow_1xqdlk1">
+        <di:waypoint x="215" y="177" />
+        <di:waypoint x="270" y="177" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1xpypmp_di" bpmnElement="Flow_1xpypmp">
+        <di:waypoint x="370" y="177" />
+        <di:waypoint x="450" y="177" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_18h2zh0_di" bpmnElement="Flow_18h2zh0">
+        <di:waypoint x="550" y="177" />
+        <di:waypoint x="622" y="177" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="Participant_052wzib_di" bpmnElement="AnotherProcessParticipant" isHorizontal="true">
+        <dc:Bounds x="129" y="370" width="600" height="250" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1enm1ts_di" bpmnElement="AnotherProcessStartedStartEvent">
+        <dc:Bounds x="202" y="482" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="180" y="525" width="81" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0kbxhl5_di" bpmnElement="DoSomethingTask">
+        <dc:Bounds x="290" y="460" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_04frdrs_di" bpmnElement="AnotherProcessEndedEndEvent">
+        <dc:Bounds x="442" y="482" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="420" y="525" width="81" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_16xyzmj_di" bpmnElement="Flow_16xyzmj">
+        <di:waypoint x="238" y="500" />
+        <di:waypoint x="290" y="500" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0d2ms0q_di" bpmnElement="Flow_0d2ms0q">
+        <di:waypoint x="390" y="500" />
+        <di:waypoint x="442" y="500" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>
