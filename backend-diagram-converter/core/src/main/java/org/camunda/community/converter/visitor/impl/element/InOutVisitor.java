@@ -25,7 +25,7 @@ public abstract class InOutVisitor extends AbstractCamundaElementVisitor {
   @Override
   public boolean canBeTransformed(DomElementVisitorContext context) {
     DomElement element = context.getElement();
-    return !(isIn(element) && isAll(element)) && !isBusinessKey(element);
+    return !isBusinessKey(element);
   }
 
   @Override
@@ -66,7 +66,8 @@ public abstract class InOutVisitor extends AbstractCamundaElementVisitor {
   private Optional<String> handleIfAll(DomElement element, DomElementVisitorContext result) {
     if (isAll(element)) {
       if (isIn(element)) {
-        return Optional.of("Cannot propagate all variables into call activity");
+        return Optional.of(
+            "To propagate all variables to the child process, make sure to not define any inputs. Yet, it is not recommended");
       } else if (isOut(element)) {
         result.addConversion(
             CallActivityConvertible.class,
