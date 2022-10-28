@@ -31,7 +31,7 @@ public class BpmnConverterTest {
     BpmnConverter converter = new BpmnConverter(visitors, conversions);
     BpmnModelInstance modelInstance =
         Bpmn.readModelFromStream(this.getClass().getClassLoader().getResourceAsStream(bpmnFile));
-    BpmnDiagramCheckResult result = converter.check(modelInstance, true);
+    BpmnDiagramCheckResult result = converter.check(bpmnFile, modelInstance, true);
     result =
         objectMapper.readValue(
             objectMapper.writeValueAsString(result), BpmnDiagramCheckResult.class);
