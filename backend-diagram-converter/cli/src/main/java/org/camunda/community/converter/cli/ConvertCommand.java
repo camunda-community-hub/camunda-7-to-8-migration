@@ -1,5 +1,12 @@
 package org.camunda.community.converter.cli;
 
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.OptionalInt;
+import java.util.concurrent.Callable;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.camunda.bpm.model.bpmn.Bpmn;
@@ -9,14 +16,6 @@ import org.camunda.community.converter.BpmnConverterFactory;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
 import picocli.CommandLine.Parameters;
-
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.OptionalInt;
-import java.util.concurrent.Callable;
 
 @Command(
     name = "camunda-convert",
