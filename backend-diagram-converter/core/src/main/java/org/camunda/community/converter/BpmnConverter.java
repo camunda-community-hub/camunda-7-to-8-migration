@@ -40,13 +40,14 @@ public class BpmnConverter {
   }
 
   public void convert(BpmnModelInstance modelInstance, boolean appendDocumentation) {
-    check(modelInstance, appendDocumentation);
+    check(null, modelInstance, appendDocumentation);
   }
 
   public BpmnDiagramCheckResult check(
-      BpmnModelInstance modelInstance, boolean appendDocumentation) {
+      String filename, BpmnModelInstance modelInstance, boolean appendDocumentation) {
     LOG.info("Start check");
     BpmnDiagramCheckResult result = new BpmnDiagramCheckResult();
+    result.setFilename(filename);
     BpmnDiagramCheckContext context = new BpmnDiagramCheckContext();
     traverse(modelInstance.getDocument().getRootElement(), result, context);
     LOG.info("Done check");
