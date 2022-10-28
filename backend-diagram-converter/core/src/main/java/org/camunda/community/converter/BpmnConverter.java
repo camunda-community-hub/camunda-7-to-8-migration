@@ -3,7 +3,7 @@ package org.camunda.community.converter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.StringWriter;
+import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -86,9 +86,8 @@ public class BpmnConverter {
         .orElseGet(ArrayList::new);
   }
 
-  public String printXml(DomDocument document, boolean prettyPrint) {
-    StringWriter stringWriter = new StringWriter();
-    StreamResult result = new StreamResult(stringWriter);
+  public void printXml(DomDocument document, boolean prettyPrint, Writer writer) {
+    StreamResult result = new StreamResult(writer);
     TransformerFactory transformerFactory = TransformerFactory.newInstance();
     try (InputStream in = getClass().getClassLoader().getResourceAsStream("prettyprint.xsl")) {
       Transformer transformer =
@@ -108,7 +107,6 @@ public class BpmnConverter {
     } catch (IOException e) {
       throw new RuntimeException(e);
     }
-    return stringWriter.toString();
   }
 
   private void traverse(

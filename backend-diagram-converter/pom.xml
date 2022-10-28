@@ -11,5 +11,6 @@
   <modules>
     <module>core</module>
     <module>webapp</module>
+    <module>cli</module>
   </modules>
 </project>

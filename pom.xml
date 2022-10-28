@@ -24,6 +24,8 @@
     <version.camunda.platform>7.18.0</version.camunda.platform>
     <version.jsoup>1.15.3</version.jsoup>
     <version.spring-boot>2.7.5</version.spring-boot>
+    <version.picocli>4.6.3</version.picocli>
+    <version.commons-io>2.11.0</version.commons-io>
 
     <plugin.version.function-maven-plugin>0.10.1</plugin.version.function-maven-plugin>
     <plugin.version.maven-enforcer-plugin>3.1.0</plugin.version.maven-enforcer-plugin>
@@ -32,6 +34,9 @@
     <plugin.version.maven-shade-plugin>3.4.1</plugin.version.maven-shade-plugin>
     <plugin.version.maven-surefire-plugin>3.0.0-M7</plugin.version.maven-surefire-plugin>
     <plugin.version.spotless-maven-plugin>2.27.2</plugin.version.spotless-maven-plugin>
+    <plugin.version.maven-compiler-plugin>3.10.1</plugin.version.maven-compiler-plugin>
+    <plugin.version.native-maven-plugin>0.9.16</plugin.version.native-maven-plugin>
+    <plugin.version.maven-depdendency-plugin>3.3.0</plugin.version.maven-depdendency-plugin>
   </properties>
 
   <dependencyManagement>
@@ -49,6 +54,21 @@
         <version>${version.spring-boot}</version>
         <type>pom</type>
         <scope>import</scope>
+      </dependency>
+      <dependency>
+        <groupId>info.picocli</groupId>
+        <artifactId>picocli</artifactId>
+        <version>${version.picocli}</version>
+      </dependency>
+      <dependency>
+        <groupId>info.picocli</groupId>
+        <artifactId>picocli-codegen</artifactId>
+        <version>${version.picocli}</version>
+      </dependency>
+      <dependency>
+        <groupId>commons-io</groupId>
+        <artifactId>commons-io</artifactId>
+        <version>${version.commons-io}</version>
       </dependency>
       <dependency>
         <groupId>io.camunda</groupId>
@@ -87,6 +107,21 @@
   <build>
     <pluginManagement>
       <plugins>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-dependency-plugin</artifactId>
+          <version>${plugin.version.maven-depdendency-plugin}</version>
+        </plugin>
+        <plugin>
+          <groupId>org.graalvm.buildtools</groupId>
+          <artifactId>native-maven-plugin</artifactId>
+          <version>${plugin.version.native-maven-plugin}</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-compiler-plugin</artifactId>
+          <version>${plugin.version.maven-compiler-plugin}</version>
+        </plugin>
         <plugin>
           <groupId>org.springframework.boot</groupId>
           <artifactId>spring-boot-maven-plugin</artifactId>

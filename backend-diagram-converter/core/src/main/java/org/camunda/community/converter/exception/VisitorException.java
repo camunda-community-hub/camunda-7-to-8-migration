@@ -22,9 +22,7 @@ public class VisitorException extends RuntimeException {
         + exceptionCausingVisitor.getName()
         + " while visiting element "
         + buildPath(element)
-        + ": "
-        + super.getMessage()
-        + ", caused by: "
+        + " caused by: "
         + getCause().getMessage();
   }
 
