@@ -1,25 +1,22 @@
 package org.camunda.community.converter.cli;
 
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.FilenameUtils;
+import org.camunda.bpm.model.bpmn.Bpmn;
+import org.camunda.bpm.model.bpmn.BpmnModelInstance;
+import org.camunda.community.converter.BpmnConverter;
+import org.camunda.community.converter.BpmnConverterFactory;
+import picocli.CommandLine.Command;
+import picocli.CommandLine.Option;
+import picocli.CommandLine.Parameters;
+
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.OptionalInt;
-import java.util.Set;
 import java.util.concurrent.Callable;
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.FilenameUtils;
-import org.camunda.bpm.model.bpmn.Bpmn;
-import org.camunda.bpm.model.bpmn.BpmnModelInstance;
-import org.camunda.community.converter.BpmnConverter;
-import org.camunda.community.converter.ConversionFactory;
-import org.camunda.community.converter.DomElementVisitorFactory;
-import org.camunda.community.converter.conversion.Conversion;
-import org.camunda.community.converter.visitor.DomElementVisitor;
-import picocli.CommandLine.Command;
-import picocli.CommandLine.Option;
-import picocli.CommandLine.Parameters;
 
 @Command(
     name = "camunda-convert",
@@ -27,9 +24,7 @@ import picocli.CommandLine.Parameters;
     description = "Converts the diagrams from the given directory or file")
 public class ConvertCommand implements Callable<Integer> {
   private static final String DEFAULT_PREFIX = "converted-c8-";
-  private final Set<DomElementVisitor> visitors = DomElementVisitorFactory.getInstance().get();
-  private final Set<Conversion> conversions = ConversionFactory.getInstance().get();
-  private final BpmnConverter converter = new BpmnConverter(visitors, conversions);
+  private final BpmnConverter converter = BpmnConverterFactory.getInstance().get();
 
   @Parameters(index = "0", description = "The file or directory to search for")
   File file;
