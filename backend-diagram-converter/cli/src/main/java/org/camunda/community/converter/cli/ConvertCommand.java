@@ -9,6 +9,7 @@ import java.util.OptionalInt;
 import java.util.Set;
 import java.util.concurrent.Callable;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.FilenameUtils;
 import org.camunda.bpm.model.bpmn.Bpmn;
 import org.camunda.bpm.model.bpmn.BpmnModelInstance;
 import org.camunda.community.converter.BpmnConverter;
@@ -25,6 +26,7 @@ import picocli.CommandLine.Parameters;
     mixinStandardHelpOptions = true,
     description = "Converts the diagrams from the given directory or file")
 public class ConvertCommand implements Callable<Integer> {
+  private static final String DEFAULT_PREFIX = "converted-c8-";
   private final Set<DomElementVisitor> visitors = DomElementVisitorFactory.getInstance().get();
   private final Set<Conversion> conversions = ConversionFactory.getInstance().get();
   private final BpmnConverter converter = new BpmnConverter(visitors, conversions);
@@ -37,6 +39,22 @@ public class ConvertCommand implements Callable<Integer> {
       description = "If enabled, messages are also appended to documentation")
   boolean documentation;
 
+  @Option(
+      names = {"-p", "--prefix"},
+      description = "Prefix for the name of the generated file",
+      defaultValue = DEFAULT_PREFIX)
+  String prefix = DEFAULT_PREFIX;
+
+  @Option(
+      names = {"-o", "--override"},
+      description = "If enabled, existing files are overridden")
+  boolean override;
+
+  @Option(
+      names = {"-nr", "--not-recursive"},
+      description = "If enabled, recursive search will not be performed")
+  boolean notRecursive;
+
   @Override
   public Integer call() throws Exception {
     if (!file.exists()) {
@@ -45,7 +63,7 @@ public class ConvertCommand implements Callable<Integer> {
     }
     Collection<File> files = new ArrayList<>();
     if (file.isDirectory()) {
-      files.addAll(FileUtils.listFiles(file, new String[] {"bpmn"}, true));
+      files.addAll(FileUtils.listFiles(file, new String[] {"bpmn"}, !notRecursive));
     } else {
       if (isBpmnFile(file)) {
         files.add(file);
@@ -62,7 +80,20 @@ public class ConvertCommand implements Callable<Integer> {
   }
 
   private int handleFile(File file) {
-    File newFile = new File(file.getParentFile(), "converted-c8-" + file.getName());
+    File newFile = new File(file.getParentFile(), prefix + file.getName());
+    int counter = 0;
+    while (!override && newFile.exists()) {
+      counter++;
+      newFile =
+          new File(
+              file.getParentFile(),
+              prefix
+                  + FilenameUtils.getBaseName(file.getName())
+                  + " ("
+                  + counter
+                  + ")."
+                  + FilenameUtils.getExtension(file.getName()));
+    }
     BpmnModelInstance modelInstance = Bpmn.readModelFromFile(file);
     try {
       converter.convert(modelInstance, documentation);
