@@ -126,7 +126,7 @@
         }
         const formData = new FormData();
         for (let i = 0; i < fileUpload.files.length; i++) {
-            formData.append("files", fileUpload.files[i])
+            formData.append("files", fileUpload.files[i], fileUpload.files[i].name)
         }
         formData.append("appendDocumentation", appendDocumentation.checked)
         return formData;
