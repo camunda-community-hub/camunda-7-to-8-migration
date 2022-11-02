@@ -1,7 +1,6 @@
 package org.camunda.community.converter.visitor;
 
 import org.camunda.community.converter.DomElementVisitorContext;
-import org.camunda.community.converter.NotificationServiceFactory;
 import org.camunda.community.converter.exception.VisitorException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,9 +16,10 @@ public abstract class AbstractFilteringVisitor implements DomElementVisitor {
         visitFilteredElement(context);
       }
     } catch (Exception e) {
-      NotificationServiceFactory.getInstance()
-          .get()
-          .notify(new VisitorException(this.getClass(), context.getElement(), e));
+      VisitorException visitorException =
+          new VisitorException(this.getClass(), context.getElement(), e);
+      context.notify(visitorException);
+      LOG.error("Exception while visiting an element", visitorException);
     }
   }
 

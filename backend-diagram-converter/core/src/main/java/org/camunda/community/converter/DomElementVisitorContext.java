@@ -51,16 +51,28 @@ public interface DomElementVisitorContext {
    */
   <T extends Convertible> void addConversion(Class<T> convertibleType, Consumer<T> operation);
 
+  /**
+   * Notifies external units of something that happened. This will not appear in the result.
+   *
+   * @param object the object to notify about
+   */
+  void notify(Object object);
+
   class DefaultDomElementVisitorContext implements DomElementVisitorContext {
     private final DomElement element;
     private final BpmnDiagramCheckContext context;
     private final BpmnDiagramCheckResult result;
+    private final NotificationService notificationService;
 
     public DefaultDomElementVisitorContext(
-        DomElement element, BpmnDiagramCheckContext context, BpmnDiagramCheckResult result) {
+        DomElement element,
+        BpmnDiagramCheckContext context,
+        BpmnDiagramCheckResult result,
+        NotificationService notificationService) {
       this.element = element;
       this.context = context;
       this.result = result;
+      this.notificationService = notificationService;
     }
 
     @Override
@@ -92,6 +104,11 @@ public interface DomElementVisitorContext {
     public <T extends Convertible> void addConversion(
         Class<T> convertibleType, Consumer<T> operation) {
       addConversion(element, convertibleType, operation);
+    }
+
+    @Override
+    public void notify(Object object) {
+      notificationService.notify(object);
     }
 
     private void addMessage(DomElement element, Severity severity, String message) {

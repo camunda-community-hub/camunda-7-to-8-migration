@@ -10,6 +10,8 @@ public class BpmnConverterFactory extends AbstractFactory<BpmnConverter> {
   @Override
   protected BpmnConverter createInstance() {
     return new BpmnConverter(
-        DomElementVisitorFactory.getInstance().get(), ConversionFactory.getInstance().get());
+        DomElementVisitorFactory.getInstance().get(),
+        ConversionFactory.getInstance().get(),
+        NotificationServiceFactory.getInstance().get());
   }
 }

@@ -33,10 +33,15 @@ public class BpmnConverter {
   private static final Logger LOG = LoggerFactory.getLogger(BpmnConverter.class);
   private final Set<DomElementVisitor> visitors;
   private final Set<Conversion> conversions;
+  private final NotificationService notificationService;
 
-  public BpmnConverter(Set<DomElementVisitor> visitors, Set<Conversion> conversions) {
+  public BpmnConverter(
+      Set<DomElementVisitor> visitors,
+      Set<Conversion> conversions,
+      NotificationService notificationService) {
     this.visitors = visitors;
     this.conversions = conversions;
+    this.notificationService = notificationService;
   }
 
   public void convert(BpmnModelInstance modelInstance, boolean appendDocumentation) {
@@ -113,7 +118,7 @@ public class BpmnConverter {
   private void traverse(
       DomElement element, BpmnDiagramCheckResult result, BpmnDiagramCheckContext context) {
     DomElementVisitorContext elementContext =
-        new DefaultDomElementVisitorContext(element, context, result);
+        new DefaultDomElementVisitorContext(element, context, result, notificationService);
     visitors.stream()
         .sorted(
             Comparator.comparingInt(
