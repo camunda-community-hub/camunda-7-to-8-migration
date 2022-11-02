@@ -78,7 +78,7 @@ public class ConverterController {
       Resource file = new ByteArrayResource(bo.toByteArray());
       return ResponseEntity.ok()
           .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"conversionResult.zip\"")
-          .contentType(MediaType.TEXT_XML)
+          .contentType(MediaType.APPLICATION_OCTET_STREAM)
           .body(file);
     } else {
       return ResponseEntity.badRequest()
