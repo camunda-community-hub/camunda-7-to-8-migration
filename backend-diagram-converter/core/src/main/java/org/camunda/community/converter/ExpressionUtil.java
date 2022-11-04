@@ -1,47 +1,81 @@
 package org.camunda.community.converter;
 
-import java.util.Optional;
+import java.util.Arrays;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 public class ExpressionUtil {
   private static final ExpressionUtil INSTANCE = new ExpressionUtil();
 
   private ExpressionUtil() {}
 
-  public static Optional<String> transform(String possibleExpression, boolean createExpression) {
-    if (possibleExpression == null) {
-      return Optional.empty();
-    }
-    if (isExpression(possibleExpression)) {
-      return INSTANCE.transformExpression(possibleExpression);
-    }
-    if (createExpression) {
-      return Optional.of("=" + possibleExpression);
-    }
-    return Optional.of(possibleExpression);
+  public static String transform(String expression) {
+    return INSTANCE.doTransform(expression);
   }
 
-  public static boolean isExpression(String textContent) {
-    return (textContent.startsWith("${") || textContent.startsWith("#{"))
-        && textContent.endsWith("}");
-  }
-
-  public static boolean isTraversingExpression(String expression) {
-    return isExpression(expression)
-        && !INSTANCE.getUndeclaredExpression(expression).contains("(")
-        && !INSTANCE.getUndeclaredExpression(expression).contains(")");
-  }
-
-  private Optional<String> transformExpression(String expression) {
-    String undeclaredExpression = getUndeclaredExpression(expression);
-    if (isTraversingExpression(expression) && !isExpression(undeclaredExpression)) {
-      return Optional.of("=" + undeclaredExpression);
+  private String doTransform(String expression) {
+    if (expression == null) {
+      return null;
     }
-    return Optional.empty();
+    // split into expressions and non-expressions
+    List<String> nonExpressions =
+        Arrays.stream(expression.split("(#|\\$)\\{.*}"))
+            .map(String::trim)
+            .filter(s -> s.length() > 0)
+            .collect(Collectors.toList());
+    if (nonExpressions.size() == 1
+        && expression.trim().length() == nonExpressions.get(0).length()) {
+      System.out.println(expression);
+      return expression;
+    }
+    List<String> expressions =
+        Arrays.stream(expression.split("(#|\\$)\\{|}"))
+            .map(String::trim)
+            .filter(s -> s.length() > 0)
+            .map(s -> nonExpressions.contains(s) ? "\"" + s + "\"" : handleExpression(s))
+            .collect(Collectors.toList());
+    String result = "=" + String.join(" + ", expressions);
+    System.out.println(result);
+    return result;
   }
 
-  private String getUndeclaredExpression(String expression) {
-    return expression.substring(
-        Math.max(expression.indexOf("${"), expression.indexOf("#{")) + 2,
-        expression.lastIndexOf("}"));
+  private String handleExpression(String expression) {
+    // replace operators globally
+    String replaced =
+        expression
+            .replaceAll("not ", "!")
+            .replaceAll("\\[\"", ".")
+            .replaceAll("\"\\]", "")
+            .replaceAll(" gt ", " > ")
+            .replaceAll(" lt ", " < ")
+            .replaceAll("==", "=")
+            .replaceAll(" eq ", " = ")
+            .replaceAll(" ne ", " != ")
+            .replaceAll("!\\(", "not(")
+            .replaceAll(" && ", " and ")
+            .replaceAll(" \\|\\| ", " or ");
+    // increment all indexes
+    Pattern pattern = Pattern.compile("\\[(\\d*)\\]");
+    Matcher m = pattern.matcher(replaced);
+    while (m.find()) {
+      String oldIndex = "[" + Long.parseLong(m.group(1)) + "]";
+      String newIndex = "[" + (Long.parseLong(m.group(1)) + 1) + "]";
+      replaced = replaced.replace(oldIndex, newIndex);
+    }
+    // replace block-wise
+    List<String> blocks =
+        Arrays.stream(replaced.split(" "))
+            .map(
+                s ->
+                    Pattern.compile("^!(?!=)").matcher(s).lookingAt()
+                        ? s.replaceAll("^!(?!=)", "not(") + ")"
+                        : s)
+            .collect(Collectors.toList());
+    // increment all explicit array element pointers
+
+    System.out.println(blocks);
+    return String.join(" ", blocks);
   }
 }
