@@ -12,7 +12,7 @@ public class CompletionConditionVisitor extends AbstractElementVisitor {
   @Override
   protected void visitFilteredElement(DomElementVisitorContext context) {
     String textContent = context.getElement().getTextContent();
-    String completionCondition = ExpressionUtil.transform(textContent, true).orElse(textContent);
+    String completionCondition = ExpressionUtil.transform(textContent, context);
     context.addConversion(
         AbstractActivityConvertible.class,
         conversion ->

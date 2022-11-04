@@ -14,7 +14,7 @@ public class CollectionVisitor extends AbstractSupportedAttributeVisitor {
 
   @Override
   protected String visitSupportedAttribute(DomElementVisitorContext context, String attribute) {
-    String inputCollection = ExpressionUtil.transform(attribute, true).orElse(attribute);
+    String inputCollection = ExpressionUtil.transform(attribute, context);
     context.addConversion(
         AbstractActivityConvertible.class,
         AbstractActivityConvertible::initializeLoopCharacteristics);

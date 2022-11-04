@@ -26,8 +26,7 @@ public class CallActivityVisitor extends AbstractActivityVisitor {
   @Override
   protected void postCreationVisitor(DomElementVisitorContext context) {
     String calledElement =
-        ExpressionUtil.transform(context.getElement().getAttribute("calledElement"), false)
-            .orElse(context.getElement().getAttribute("calledElement"));
+        ExpressionUtil.transform(context.getElement().getAttribute("calledElement"), context);
     if (calledElement == null) {
       context.addMessage(
           Severity.WARNING,

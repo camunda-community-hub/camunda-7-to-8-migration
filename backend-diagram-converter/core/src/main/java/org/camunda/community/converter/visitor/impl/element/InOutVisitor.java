@@ -104,8 +104,7 @@ public abstract class InOutVisitor extends AbstractCamundaElementVisitor {
     String sourceExpression = element.getAttribute("sourceExpression");
     String target = element.getAttribute("target");
     if (sourceExpression != null) {
-      String translatedSourceExpression =
-          ExpressionUtil.transform(sourceExpression, true).orElse(sourceExpression);
+      String translatedSourceExpression = ExpressionUtil.transform(sourceExpression, result);
       result.addConversion(
           AbstractDataMapperConvertible.class,
           conversion ->

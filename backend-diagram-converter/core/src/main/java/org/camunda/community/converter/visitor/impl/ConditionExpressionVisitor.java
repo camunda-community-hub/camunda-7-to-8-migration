@@ -21,8 +21,7 @@ public class ConditionExpressionVisitor extends AbstractElementVisitor {
   @Override
   protected void visitFilteredElement(DomElementVisitorContext context) {
     String transformedExpression =
-        ExpressionUtil.transform(context.getElement().getTextContent(), true)
-            .orElse(context.getElement().getTextContent());
+        ExpressionUtil.transform(context.getElement().getTextContent(), context);
     context.addConversion(
         SequenceFlowConvertible.class,
         conversion -> conversion.setConditionExpression(transformedExpression));

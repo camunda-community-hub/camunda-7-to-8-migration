@@ -54,7 +54,7 @@ public class ExpressionUtilTest {
   }
 
   private void testExpression(ExpressionTestDataSet test) {
-    String result = ExpressionUtil.transform(test.expression);
+    String result = ExpressionUtil.transform(test.expression, null);
     assertEquals(test.expectedResult, result);
     System.out.println(test.expression + " => " + result);
   }

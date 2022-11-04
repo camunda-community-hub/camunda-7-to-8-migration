@@ -5,17 +5,24 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
+import org.camunda.community.converter.BpmnDiagramCheckResult.Severity;
 
 public class ExpressionUtil {
   private static final ExpressionUtil INSTANCE = new ExpressionUtil();
 
   private ExpressionUtil() {}
 
-  public static String transform(String expression) {
-    return INSTANCE.doTransform(expression);
+  public static String transform(final String expression, DomElementVisitorContext context) {
+    String transform = INSTANCE.doTransform(expression);
+    if (context != null) {
+      context.addMessage(
+          Severity.TASK,
+          "Please review transformed expression: '" + expression + "' -> '" + transform + "'");
+    }
+    return transform;
   }
 
-  private String doTransform(String expression) {
+  private String doTransform(final String expression) {
     if (expression == null) {
       return null;
     }

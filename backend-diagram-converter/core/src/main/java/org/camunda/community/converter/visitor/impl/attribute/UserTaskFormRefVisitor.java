@@ -13,7 +13,7 @@ public class UserTaskFormRefVisitor extends AbstractSupportedAttributeVisitor {
 
   @Override
   protected String visitSupportedAttribute(DomElementVisitorContext context, String attribute) {
-    String formRef = ExpressionUtil.transform(attribute, false).orElse(attribute);
+    String formRef = ExpressionUtil.transform(attribute, context);
     context.addConversion(
         UserTaskConvertible.class,
         conversion -> conversion.getZeebeFormDefinition().setFormKey(formRef));

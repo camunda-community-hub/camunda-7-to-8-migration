@@ -14,7 +14,7 @@ public class AssigneeVisitor extends AbstractSupportedAttributeVisitor {
 
   @Override
   protected String visitSupportedAttribute(DomElementVisitorContext context, String attribute) {
-    String assignee = ExpressionUtil.transform(attribute, false).orElse(attribute);
+    String assignee = ExpressionUtil.transform(attribute, context);
     context.addConversion(
         UserTaskConvertible.class,
         userTaskConversion ->

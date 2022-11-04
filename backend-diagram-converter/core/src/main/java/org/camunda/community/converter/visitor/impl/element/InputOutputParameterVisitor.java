@@ -13,8 +13,7 @@ public abstract class InputOutputParameterVisitor extends AbstractCamundaElement
 
   @Override
   public boolean canBeTransformed(DomElementVisitorContext context) {
-    return !isNotStringOrExpression(context.getElement())
-        && !isNoTraversingExpression(context.getElement());
+    return !isNotStringOrExpression(context.getElement());
   }
 
   @Override
@@ -25,24 +24,12 @@ public abstract class InputOutputParameterVisitor extends AbstractCamundaElement
     if (isNotStringOrExpression(element)) {
       return "'" + name + "': Only strings or expressions are supported as input/output in Zeebe";
     }
-    if (isNoTraversingExpression(element)) {
-      return "'"
-          + name
-          + "': Only simple traversing expressions are supported for conversion, is: '"
-          + element.getTextContent()
-          + "'";
-    }
-    String source = createSource(element);
+    String source = createSource(element, context);
     context.addConversion(
         AbstractDataMapperConvertible.class,
         abstractTaskConversion ->
             abstractTaskConversion.addZeebeIoMapping(direction, source, name));
     return "'" + name + "': Please review source '" + source + "' of " + direction + " " + name;
-  }
-
-  private boolean isNoTraversingExpression(DomElement element) {
-    return (!ExpressionUtil.isTraversingExpression(element.getTextContent())
-        && ExpressionUtil.isExpression(element.getTextContent()));
   }
 
   private MappingDirection findMappingDirection(DomElement element) {
@@ -55,9 +42,8 @@ public abstract class InputOutputParameterVisitor extends AbstractCamundaElement
     throw new IllegalStateException("Must be input or output!");
   }
 
-  private String createSource(DomElement element) {
-    return ExpressionUtil.transform(element.getTextContent(), false)
-        .orElse(element.getTextContent());
+  private String createSource(DomElement element, DomElementVisitorContext context) {
+    return ExpressionUtil.transform(element.getTextContent(), context);
   }
 
   private boolean isNotStringOrExpression(DomElement element) {

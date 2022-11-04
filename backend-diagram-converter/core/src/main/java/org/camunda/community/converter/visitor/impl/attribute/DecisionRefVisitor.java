@@ -13,7 +13,7 @@ public class DecisionRefVisitor extends AbstractSupportedAttributeVisitor {
 
   @Override
   protected String visitSupportedAttribute(DomElementVisitorContext context, String attribute) {
-    String decisionId = ExpressionUtil.transform(attribute, false).orElse(attribute);
+    String decisionId = ExpressionUtil.transform(attribute, context);
     context.addConversion(
         BusinessRuleTaskConvertible.class,
         conversion -> conversion.getZeebeCalledDecision().setDecisionId(decisionId));

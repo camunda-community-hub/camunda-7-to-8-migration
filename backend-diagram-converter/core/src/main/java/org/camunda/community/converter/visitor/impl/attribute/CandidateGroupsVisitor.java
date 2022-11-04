@@ -14,7 +14,7 @@ public class CandidateGroupsVisitor extends AbstractSupportedAttributeVisitor {
 
   @Override
   protected String visitSupportedAttribute(DomElementVisitorContext context, String attribute) {
-    String candidateGroups = ExpressionUtil.transform(attribute, false).orElse(attribute);
+    String candidateGroups = ExpressionUtil.transform(attribute, context);
     context.addConversion(
         UserTaskConvertible.class,
         userTaskConversion ->
