@@ -1,5 +1,7 @@
 package org.camunda.community.converter.cli;
 
+import static org.camunda.community.converter.cli.Main.*;
+
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -59,7 +61,7 @@ public class ConvertCommand implements Callable<Integer> {
   @Override
   public Integer call() {
     if (!file.exists()) {
-      System.err.println("File " + file.getAbsolutePath() + " does not exist");
+      LOG_CLI.error("File {} does not exist", file.getAbsolutePath());
       return 1;
     }
     Collection<File> files = new ArrayList<>();
@@ -69,7 +71,7 @@ public class ConvertCommand implements Callable<Integer> {
       if (isBpmnFile(file)) {
         files.add(file);
       } else {
-        System.err.println("The selected file is no .bpmn file");
+        LOG_CLI.error("The selected file is no bpmn file");
         return 1;
       }
     }
@@ -99,10 +101,10 @@ public class ConvertCommand implements Callable<Integer> {
     try {
       converter.convert(modelInstance, documentation);
     } catch (Exception e) {
-      System.err.println("Problem while converting: " + e.getMessage());
+      LOG_CLI.error("Problem while converting: {}", e.getMessage());
       return 1;
     }
-    System.out.println("Created " + newFile);
+    LOG_CLI.info("Created {}", newFile);
     try (FileWriter fw = new FileWriter(newFile)) {
       converter.printXml(modelInstance.getDocument(), true, fw);
       fw.flush();
