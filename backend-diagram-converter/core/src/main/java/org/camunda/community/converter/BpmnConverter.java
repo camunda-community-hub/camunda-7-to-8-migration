@@ -7,7 +7,6 @@ import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Set;
 import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerConfigurationException;
@@ -25,19 +24,18 @@ import org.camunda.community.converter.DomElementVisitorContext.DefaultDomElemen
 import org.camunda.community.converter.conversion.Conversion;
 import org.camunda.community.converter.visitor.AbstractProcessElementVisitor;
 import org.camunda.community.converter.visitor.DomElementVisitor;
-import org.camunda.community.converter.visitor.impl.LoggingVisitor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class BpmnConverter {
   private static final Logger LOG = LoggerFactory.getLogger(BpmnConverter.class);
-  private final Set<DomElementVisitor> visitors;
-  private final Set<Conversion> conversions;
+  private final List<DomElementVisitor> visitors;
+  private final List<Conversion> conversions;
   private final NotificationService notificationService;
 
   public BpmnConverter(
-      Set<DomElementVisitor> visitors,
-      Set<Conversion> conversions,
+      List<DomElementVisitor> visitors,
+      List<Conversion> conversions,
       NotificationService notificationService) {
     this.visitors = visitors;
     this.conversions = conversions;
@@ -120,12 +118,7 @@ public class BpmnConverter {
     DomElementVisitorContext elementContext =
         new DefaultDomElementVisitorContext(element, context, result, notificationService);
     visitors.stream()
-        .sorted(
-            Comparator.comparingInt(
-                v ->
-                    v instanceof LoggingVisitor
-                        ? 1
-                        : v instanceof AbstractProcessElementVisitor ? 2 : 3))
+        .sorted(Comparator.comparingInt(v -> v instanceof AbstractProcessElementVisitor ? 2 : 3))
         .forEach(visitor -> visitor.visit(elementContext));
     element.getChildElements().forEach(child -> traverse(child, result, context));
   }
