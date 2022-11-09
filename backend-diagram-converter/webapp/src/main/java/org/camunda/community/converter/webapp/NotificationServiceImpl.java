@@ -8,23 +8,20 @@ import java.io.StringWriter;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Collections;
+import org.camunda.community.converter.NotificationService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
-public class NotificationService {
-  private static final Logger LOG = LoggerFactory.getLogger(NotificationService.class);
+public class NotificationServiceImpl implements NotificationService {
+  private static final Logger LOG = LoggerFactory.getLogger(NotificationServiceImpl.class);
   private final NotificationProperties notificationProperties;
 
   @Autowired
-  public NotificationService(NotificationProperties notificationProperties) {
+  public NotificationServiceImpl(NotificationProperties notificationProperties) {
     this.notificationProperties = notificationProperties;
-  }
-
-  public void notify(Exception e) {
-    notifySlack(e);
   }
 
   private void notifySlack(Exception e) {
@@ -72,5 +69,12 @@ public class NotificationService {
     e.printStackTrace(pw);
     String stacktrace = sw.toString();
     return "```\n" + stacktrace + "\n```";
+  }
+
+  @Override
+  public void notify(Object object) {
+    if (object instanceof Exception) {
+      notifySlack((Exception) object);
+    }
   }
 }

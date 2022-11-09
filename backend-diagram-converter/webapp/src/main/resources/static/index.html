@@ -22,8 +22,8 @@
     </div>
     <div class="row">
         <div class="mb-3">
-            <label for="formFile" class="form-label">Camunda 7 BPMN file</label>
-            <input class="form-control" type="file" id="formFile">
+            <label for="formFile" class="form-label">Camunda 7 BPMN files</label>
+            <input class="form-control" type="file" id="formFile" multiple>
         </div>
         <div class="mb-3">
             <input class="form-check-input" type="checkbox" id="appendDocumentation">
@@ -95,39 +95,53 @@
         "TASK": "text-bg-secondary"
     }
 
-    const el = (tagName, classes, children) => {
+    const el = (tagName, attributes, children) => {
         const element = document.createElement(tagName);
-        element.className = classes;
+        Object.keys(attributes).forEach(key => element[key] = attributes[key]);
         element.append(...children);
         return element;
     };
 
     const createFormattedResult = result => {
         if (result.messages.length) {
-            arrangedResultsArea.append(
-                el("div", "card mb-3", [
-                    el("div", "card-header", [result.elementType + " ", el("code", "", result.elementId), ` ${result.elementName || ""}`]), createFormattedMessages(result.messages)
-                ]));
+            return el("div", {className: "card m-3"}, [
+                el("div", {className: "card-header"}, [result.elementType + " ", el("code", {}, result.elementId), ` ${result.elementName || ""}`]),
+                createFormattedMessages(result.messages)
+            ]);
         }
     };
 
     const createFormattedMessages = messages => {
-        return el("ul", "list-group list-group-flush", messages.map(createFormattedMessage));
+        return el("ul", {className: "list-group list-group-flush"}, messages.map(createFormattedMessage));
     };
 
     const createFormattedMessage = message => {
-        return el("li", `list-group-item ${severityClasses[message.severity]}`, `${message.severity}: ${message.message}`);
+        return el("li", {className: `list-group-item ${severityClasses[message.severity]}`}, `${message.severity}: ${message.message}`);
     };
 
     const createFormData = () => {
-        if (fileUpload.files.length !== 1) {
+        if (fileUpload.files.length === 0) {
             alert("Please select a .bpmn file");
             return null;
         }
         const formData = new FormData();
-        formData.append("file", fileUpload.files[0]);
+        for (let i = 0; i < fileUpload.files.length; i++) {
+            formData.append("files", fileUpload.files[i], fileUpload.files[i].name)
+        }
         formData.append("appendDocumentation", appendDocumentation.checked)
         return formData;
+    }
+    const createFormattedResultWrapper = files => {
+        arrangedResultsArea.append(...files.map(createFormattedResultForFile));
+    }
+
+    const createFormattedResultForFile = file => {
+        console.log(file);
+        return el("div", {className: "card mb-3"}, [
+            el("div", {className: "card-header"}, [file.filename]),
+            el("ul", {className: "list-group list-group-flush"}, file.results.map(createFormattedResult).filter(e => e !== undefined))
+        ]);
+
     }
 
     check.addEventListener("click", () => {
@@ -140,9 +154,9 @@
             method: "POST"
         }).then(response => {
             response.json().then(json => {
-                checkContainer.innerHTML = JSON.stringify(json.results, null, 2);
+                checkContainer.innerHTML = JSON.stringify(json, null, 2);
                 arrangedResultsArea.innerHTML = "";
-                json.results.forEach(createFormattedResult)
+                createFormattedResultWrapper(json);
                 resultArea.hidden = false;
             })
         });

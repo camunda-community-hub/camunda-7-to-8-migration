@@ -4,10 +4,19 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class BpmnDiagramCheckResult {
+  private String filename;
   private final List<BpmnElementCheckResult> results = new ArrayList<>();
 
   public List<BpmnElementCheckResult> getResults() {
     return results;
+  }
+
+  public String getFilename() {
+    return filename;
+  }
+
+  public void setFilename(String filename) {
+    this.filename = filename;
   }
 
   public enum Severity {

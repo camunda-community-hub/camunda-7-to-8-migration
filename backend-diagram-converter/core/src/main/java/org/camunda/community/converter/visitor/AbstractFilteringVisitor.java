@@ -16,7 +16,10 @@ public abstract class AbstractFilteringVisitor implements DomElementVisitor {
         visitFilteredElement(context);
       }
     } catch (Exception e) {
-      throw new VisitorException(this.getClass(), context.getElement(), e);
+      VisitorException visitorException =
+          new VisitorException(this.getClass(), context.getElement(), e);
+      context.notify(visitorException);
+      LOG.error("Exception while visiting an element", visitorException);
     }
   }
 

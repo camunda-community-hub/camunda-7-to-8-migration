@@ -6,23 +6,23 @@ This webapp uses the diagram converter to check and convert diagrams. It allows 
 
 ### Frontend
 
-The frontend is self-explanatory. You upload a .bpmn File and then click either **check** or **convert**.
+The frontend is self-explanatory. You upload .bpmn Files and then click either **check** or **convert**.
 
 **check** will allow you to review all infos, tasks and warnings directly in the browser.
 
-**convert** will download you a converted .bpmn File that consists of all the infos, tasks and warnings you have seen in the browser as well.
+**convert** will download you the converted .bpmn Files that consists of all the infos, tasks and warnings you have seen in the browser as well.
 
 ### Rest API
 
 The API offers 2 methods:
 
-`POST /check`: Requires the usage of `FormData`. The formdata needs to consist of a field `file` which is the .bpmn File. It will return:
+`POST /check`: Requires the usage of `FormData`. The formdata needs to consist of fields `files` which are the .bpmn Files. It will return:
 
-`200`: Everything fine. The body contains the [check result](./../core/src/main/java/org/camunda/community/converter/BpmnDiagramCheckResult.java).
+`200`: Everything fine. The body contains a list of [check results](./../core/src/main/java/org/camunda/community/converter/BpmnDiagramCheckResult.java).
 
-`POST /convert`: Requires the usage of `FormData`. The formdata needs to consist of a field `file` which is the .bpmn File plus a field `appendDocumentation` which is a boolean and controls whether the messages are also appended to the documentation section of each BPMN element. It will return:
+`POST /convert`: Requires the usage of `FormData`. The formdata needs to consist of fields `files` which are the .bpmn Files plus a field `appendDocumentation` which is a boolean and controls whether the messages are also appended to the documentation section of each BPMN element. It will return:
 
-`200`: Everything fine. The body contains a `Blob` which can be saved as a file and is your converted BPMN diagram.
+`200`: Everything fine. The body contains a zipped `Blob` which can be saved as a file and is a zip archive containing your converted BPMN diagrams.
 
 These error can occur on both endpoints:
 
