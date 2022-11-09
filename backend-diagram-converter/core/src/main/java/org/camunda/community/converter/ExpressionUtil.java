@@ -52,15 +52,19 @@ public class ExpressionUtil {
     // replace operators globally
     String replaced =
         expression
-            .replaceAll("not ", "!")
-            .replaceAll("\\[\"", ".")
-            .replaceAll("\"\\]", "")
+            // replace all !x with not(x)
+            .replaceAll("!(?![\\(=])([\\w-^]*)", "not($1)")
+            // replace all not x with not(x)
+            .replaceAll("not (?![\\(=])([\\w-^]*)", "not($1)")
+            // replace all x["y"] with x.y
+            .replaceAll("\\[\\\"(\\D[^\\]\\[]*)\\\"]",".$1")
             .replaceAll(" gt ", " > ")
             .replaceAll(" lt ", " < ")
             .replaceAll("==", "=")
             .replaceAll(" eq ", " = ")
             .replaceAll(" ne ", " != ")
-            .replaceAll("!\\(", "not(")
+            // replace all !(x and y) with not(x and y)
+            .replaceAll("!\\(([^\\(\\)]*)\\)", "not($1)")
             .replaceAll(" && ", " and ")
             .replaceAll(" \\|\\| ", " or ");
     // increment all indexes
@@ -71,18 +75,6 @@ public class ExpressionUtil {
       String newIndex = "[" + (Long.parseLong(m.group(1)) + 1) + "]";
       replaced = replaced.replace(oldIndex, newIndex);
     }
-    // replace block-wise
-    List<String> blocks =
-        Arrays.stream(replaced.split(" "))
-            .map(
-                s ->
-                    Pattern.compile("^!(?!=)").matcher(s).lookingAt()
-                        ? s.replaceAll("^!(?!=)", "not(") + ")"
-                        : s)
-            .collect(Collectors.toList());
-    // increment all explicit array element pointers
-
-    System.out.println(blocks);
-    return String.join(" ", blocks);
+    return replaced;
   }
 }
