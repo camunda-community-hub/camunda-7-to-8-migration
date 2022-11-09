@@ -57,7 +57,7 @@ public class ExpressionUtil {
             // replace all not x with not(x)
             .replaceAll("not (?![\\(=])([\\w-^]*)", "not($1)")
             // replace all x["y"] with x.y
-            .replaceAll("\\[\\\"(\\D[^\\]\\[]*)\\\"]",".$1")
+            .replaceAll("\\[\\\"(\\D[^\\]\\[]*)\\\"]", ".$1")
             .replaceAll(" gt ", " > ")
             .replaceAll(" lt ", " < ")
             .replaceAll("==", "=")
