@@ -24,7 +24,7 @@ import picocli.CommandLine.Parameters;
     versionProvider = MavenVersionProvider.class)
 public class ConvertCommand implements Callable<Integer> {
   private static final String DEFAULT_PREFIX = "converted-c8-";
-  private final BpmnConverter converter = BpmnConverterFactory.getInstance().get();
+  private final BpmnConverter converter;
 
   @Parameters(index = "0", description = "The file or directory to search for")
   File file;
@@ -49,6 +49,12 @@ public class ConvertCommand implements Callable<Integer> {
       names = {"-nr", "--not-recursive"},
       description = "If enabled, recursive search will not be performed")
   boolean notRecursive;
+
+  public ConvertCommand() {
+    BpmnConverterFactory factory = BpmnConverterFactory.getInstance();
+    factory.getNotificationServiceFactory().setInstance(new PrintNotificationServiceImpl());
+    converter = factory.get();
+  }
 
   @Override
   public Integer call() {
