@@ -18,7 +18,6 @@ org.camunda.community.converter.visitor.impl.element.FailedJobRetryTimeCycleVisi
 org.camunda.community.converter.visitor.impl.attribute.UserTaskFormKeyVisitor
 org.camunda.community.converter.visitor.impl.element.InputOutputParameterVisitor$InputParameterVisitor
 org.camunda.community.converter.visitor.impl.element.InputOutputParameterVisitor$OutputParameterVisitor
-org.camunda.community.converter.visitor.impl.LoggingVisitor
 org.camunda.community.converter.visitor.impl.element.ScriptVisitor
 org.camunda.community.converter.visitor.impl.activity.ServiceTaskVisitor
 org.camunda.community.converter.visitor.impl.event.StartEventVisitor
