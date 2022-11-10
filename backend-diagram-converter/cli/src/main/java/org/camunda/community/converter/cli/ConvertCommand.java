@@ -20,7 +20,8 @@ import picocli.CommandLine.Parameters;
 @Command(
     name = "camunda-convert",
     mixinStandardHelpOptions = true,
-    description = "Converts the diagrams from the given directory or file")
+    description = "Converts the diagrams from the given directory or file",
+    versionProvider = MavenVersionProvider.class)
 public class ConvertCommand implements Callable<Integer> {
   private static final String DEFAULT_PREFIX = "converted-c8-";
   private final BpmnConverter converter = BpmnConverterFactory.getInstance().get();
