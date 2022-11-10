@@ -51,7 +51,7 @@ public class ConvertCommand implements Callable<Integer> {
   boolean notRecursive;
 
   @Override
-  public Integer call() throws Exception {
+  public Integer call() {
     if (!file.exists()) {
       System.err.println("File " + file.getAbsolutePath() + " does not exist");
       return 1;
