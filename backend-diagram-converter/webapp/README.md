@@ -6,11 +6,11 @@ This webapp uses the diagram converter to check and convert diagrams. It allows 
 
 ### Frontend
 
-The frontend is self-explanatory. You upload .bpmn Files and then click either **check** or **convert**.
+The frontend is self-explanatory. You upload .bpmn Files and then click either **Check** or **Convert and download**.
 
-**check** will allow you to review all infos, tasks and warnings directly in the browser.
+**Check** will allow you to review all infos, tasks and warnings directly in the browser.
 
-**convert** will download you the converted .bpmn Files that consists of all the infos, tasks and warnings you have seen in the browser as well.
+**Convert and download** will download you the converted .bpmn Files that consists of all the infos, tasks and warnings you have seen in the browser as well.
 
 ### Rest API
 
