@@ -1,5 +1,7 @@
 package org.camunda.community.converter.cli;
 
+import static org.camunda.community.converter.cli.Main.*;
+
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -24,7 +26,7 @@ import picocli.CommandLine.Parameters;
     versionProvider = MavenVersionProvider.class)
 public class ConvertCommand implements Callable<Integer> {
   private static final String DEFAULT_PREFIX = "converted-c8-";
-  private final BpmnConverter converter = BpmnConverterFactory.getInstance().get();
+  private final BpmnConverter converter;
 
   @Parameters(index = "0", description = "The file or directory to search for")
   File file;
@@ -50,10 +52,16 @@ public class ConvertCommand implements Callable<Integer> {
       description = "If enabled, recursive search will not be performed")
   boolean notRecursive;
 
+  public ConvertCommand() {
+    BpmnConverterFactory factory = BpmnConverterFactory.getInstance();
+    factory.getNotificationServiceFactory().setInstance(new PrintNotificationServiceImpl());
+    converter = factory.get();
+  }
+
   @Override
   public Integer call() {
     if (!file.exists()) {
-      System.err.println("File " + file.getAbsolutePath() + " does not exist");
+      LOG_CLI.error("File {} does not exist", file.getAbsolutePath());
       return 1;
     }
     Collection<File> files = new ArrayList<>();
@@ -63,7 +71,7 @@ public class ConvertCommand implements Callable<Integer> {
       if (isBpmnFile(file)) {
         files.add(file);
       } else {
-        System.err.println("The selected file is no .bpmn file");
+        LOG_CLI.error("The selected file is no bpmn file");
         return 1;
       }
     }
@@ -93,10 +101,10 @@ public class ConvertCommand implements Callable<Integer> {
     try {
       converter.convert(modelInstance, documentation);
     } catch (Exception e) {
-      System.err.println("Problem while converting: " + e.getMessage());
+      LOG_CLI.error("Problem while converting: {}", e.getMessage());
       return 1;
     }
-    System.out.println("Created " + newFile);
+    LOG_CLI.info("Created {}", newFile);
     try (FileWriter fw = new FileWriter(newFile)) {
       converter.printXml(modelInstance.getDocument(), true, fw);
       fw.flush();

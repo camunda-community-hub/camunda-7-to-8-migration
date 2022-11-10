@@ -8,6 +8,8 @@ import java.util.stream.Stream;
 import org.camunda.bpm.model.bpmn.Bpmn;
 import org.camunda.bpm.model.bpmn.BpmnModelInstance;
 import org.camunda.bpm.model.xml.impl.util.IoUtil;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -35,5 +37,14 @@ public class BpmnConverterTest {
     System.out.println(processModel);
     ByteArrayInputStream stream = new ByteArrayInputStream(processModel.getBytes());
     io.camunda.zeebe.model.bpmn.Bpmn.readModelFromStream(stream);
+  }
+
+  @Test
+  public void shouldNotConvertC8() {
+    BpmnConverter converter = BpmnConverterFactory.getInstance().get();
+    BpmnModelInstance modelInstance =
+        Bpmn.readModelFromStream(
+            this.getClass().getClassLoader().getResourceAsStream("c8_simple.bpmn"));
+    Assertions.assertThrows(RuntimeException.class, () -> converter.convert(modelInstance, false));
   }
 }
