@@ -81,11 +81,6 @@
         <version>${version.zeebe}</version>
       </dependency>
       <dependency>
-        <groupId>org.fusesource.jansi</groupId>
-        <artifactId>jansi</artifactId>
-        <version>${version.jansi}</version>
-      </dependency>
-      <dependency>
         <groupId>io.camunda</groupId>
         <artifactId>spring-zeebe-test-testcontainer</artifactId>
         <version>${version.zeebe}</version>
