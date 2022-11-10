@@ -26,6 +26,7 @@
     <version.spring-boot>2.7.5</version.spring-boot>
     <version.picocli>4.7.0</version.picocli>
     <version.commons-io>2.11.0</version.commons-io>
+    <version.jansi>2.4.0</version.jansi>
 
     <plugin.version.function-maven-plugin>0.10.1</plugin.version.function-maven-plugin>
     <plugin.version.maven-enforcer-plugin>3.1.0</plugin.version.maven-enforcer-plugin>
@@ -79,6 +80,11 @@
         <groupId>io.camunda</groupId>
         <artifactId>zeebe-bpmn-model</artifactId>
         <version>${version.zeebe}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.fusesource.jansi</groupId>
+        <artifactId>jansi</artifactId>
+        <version>${version.jansi}</version>
       </dependency>
       <dependency>
         <groupId>io.camunda</groupId>
