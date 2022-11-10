@@ -1,8 +1,9 @@
 package org.camunda.community.converter.visitor.impl.attribute;
 
 import org.camunda.community.converter.DomElementVisitorContext;
-import org.camunda.community.converter.ExpressionUtil;
 import org.camunda.community.converter.convertible.BusinessRuleTaskConvertible;
+import org.camunda.community.converter.expression.ExpressionTransformationResult;
+import org.camunda.community.converter.expression.ExpressionTransformer;
 import org.camunda.community.converter.visitor.AbstractSupportedAttributeVisitor;
 
 public class DecisionRefVisitor extends AbstractSupportedAttributeVisitor {
@@ -13,10 +14,14 @@ public class DecisionRefVisitor extends AbstractSupportedAttributeVisitor {
 
   @Override
   protected String visitSupportedAttribute(DomElementVisitorContext context, String attribute) {
-    String decisionId = ExpressionUtil.transform(attribute, false).orElse(attribute);
+    ExpressionTransformationResult transformationResult =
+        ExpressionTransformer.transform(attribute);
     context.addConversion(
         BusinessRuleTaskConvertible.class,
-        conversion -> conversion.getZeebeCalledDecision().setDecisionId(decisionId));
-    return "Decision ref was transferred: '" + decisionId + "'. Please review possible expression";
+        conversion ->
+            conversion
+                .getZeebeCalledDecision()
+                .setDecisionId(transformationResult.getNewExpression()));
+    return transformationResult.getHint();
   }
 }

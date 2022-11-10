@@ -2,9 +2,10 @@ package org.camunda.community.converter.visitor.impl.element;
 
 import org.camunda.bpm.model.xml.instance.DomElement;
 import org.camunda.community.converter.DomElementVisitorContext;
-import org.camunda.community.converter.ExpressionUtil;
 import org.camunda.community.converter.convertible.AbstractDataMapperConvertible;
 import org.camunda.community.converter.convertible.AbstractDataMapperConvertible.MappingDirection;
+import org.camunda.community.converter.expression.ExpressionTransformationResult;
+import org.camunda.community.converter.expression.ExpressionTransformer;
 import org.camunda.community.converter.visitor.AbstractCamundaElementVisitor;
 
 public abstract class InputOutputParameterVisitor extends AbstractCamundaElementVisitor {
@@ -13,8 +14,7 @@ public abstract class InputOutputParameterVisitor extends AbstractCamundaElement
 
   @Override
   public boolean canBeTransformed(DomElementVisitorContext context) {
-    return !isNotStringOrExpression(context.getElement())
-        && !isNoTraversingExpression(context.getElement());
+    return !isNotStringOrExpression(context.getElement());
   }
 
   @Override
@@ -25,24 +25,14 @@ public abstract class InputOutputParameterVisitor extends AbstractCamundaElement
     if (isNotStringOrExpression(element)) {
       return "'" + name + "': Only strings or expressions are supported as input/output in Zeebe";
     }
-    if (isNoTraversingExpression(element)) {
-      return "'"
-          + name
-          + "': Only simple traversing expressions are supported for conversion, is: '"
-          + element.getTextContent()
-          + "'";
-    }
-    String source = createSource(element);
+    ExpressionTransformationResult transformationResult =
+        ExpressionTransformer.transform(element.getTextContent());
     context.addConversion(
         AbstractDataMapperConvertible.class,
         abstractTaskConversion ->
-            abstractTaskConversion.addZeebeIoMapping(direction, source, name));
-    return "'" + name + "': Please review source '" + source + "' of " + direction + " " + name;
-  }
-
-  private boolean isNoTraversingExpression(DomElement element) {
-    return (!ExpressionUtil.isTraversingExpression(element.getTextContent())
-        && ExpressionUtil.isExpression(element.getTextContent()));
+            abstractTaskConversion.addZeebeIoMapping(
+                direction, transformationResult.getNewExpression(), name));
+    return "'" + direction + "':'" + name + "': " + transformationResult.getHint();
   }
 
   private MappingDirection findMappingDirection(DomElement element) {
@@ -53,11 +43,6 @@ public abstract class InputOutputParameterVisitor extends AbstractCamundaElement
       return MappingDirection.OUTPUT;
     }
     throw new IllegalStateException("Must be input or output!");
-  }
-
-  private String createSource(DomElement element) {
-    return ExpressionUtil.transform(element.getTextContent(), false)
-        .orElse(element.getTextContent());
   }
 
   private boolean isNotStringOrExpression(DomElement element) {

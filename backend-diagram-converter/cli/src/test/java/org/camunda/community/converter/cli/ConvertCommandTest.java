@@ -7,7 +7,6 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
@@ -39,8 +38,6 @@ public class ConvertCommandTest {
   }
 
   @Test
-  @Disabled
-  // TODO enable as soon as bugfix for CLI is merged
   public void shouldNotConvert(@TempDir File tempDir) {
     setupDir("c8.bpmn", tempDir);
     ConvertCommand command = new ConvertCommand();

@@ -4,10 +4,11 @@ import java.util.Optional;
 import org.camunda.bpm.model.xml.instance.DomElement;
 import org.camunda.community.converter.BpmnDiagramCheckResult.Severity;
 import org.camunda.community.converter.DomElementVisitorContext;
-import org.camunda.community.converter.ExpressionUtil;
 import org.camunda.community.converter.convertible.AbstractDataMapperConvertible;
 import org.camunda.community.converter.convertible.AbstractDataMapperConvertible.MappingDirection;
 import org.camunda.community.converter.convertible.CallActivityConvertible;
+import org.camunda.community.converter.expression.ExpressionTransformationResult;
+import org.camunda.community.converter.expression.ExpressionTransformer;
 import org.camunda.community.converter.visitor.AbstractCamundaElementVisitor;
 
 public abstract class InOutVisitor extends AbstractCamundaElementVisitor {
@@ -104,26 +105,14 @@ public abstract class InOutVisitor extends AbstractCamundaElementVisitor {
     String sourceExpression = element.getAttribute("sourceExpression");
     String target = element.getAttribute("target");
     if (sourceExpression != null) {
-      String translatedSourceExpression =
-          ExpressionUtil.transform(sourceExpression, true).orElse(sourceExpression);
+      ExpressionTransformationResult transformationResult =
+          ExpressionTransformer.transform(sourceExpression);
       result.addConversion(
           AbstractDataMapperConvertible.class,
           conversion ->
               conversion.addZeebeIoMapping(
-                  MappingDirection.INPUT, translatedSourceExpression, target));
-      if (translatedSourceExpression.equals(sourceExpression)) {
-        return Optional.of(
-            "Could not translate expression '"
-                + translatedSourceExpression
-                + "' on mapping '"
-                + target
-                + "'. Please provide a proper translation");
-      } else {
-        return Optional.of(
-            "Call Activity mapping '"
-                + target
-                + "' was translated to mapping using an expression. Please review the mappings");
-      }
+                  MappingDirection.INPUT, transformationResult.getNewExpression(), target));
+      return Optional.of(transformationResult.getHint());
     } else {
       return Optional.empty();
     }
