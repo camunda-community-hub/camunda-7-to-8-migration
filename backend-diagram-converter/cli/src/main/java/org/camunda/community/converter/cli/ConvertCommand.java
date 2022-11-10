@@ -28,7 +28,7 @@ import picocli.CommandLine.Parameters;
 public class ConvertCommand implements Callable<Integer> {
   private static final String DEFAULT_PREFIX = "converted-c8-";
   private static final String[] FILE_ENDINGS = new String[] {"bpmn", "bpmn20.xml"};
-  
+
   private final BpmnConverter converter;
 
   @Parameters(index = "0", description = "The file or directory to search for")
