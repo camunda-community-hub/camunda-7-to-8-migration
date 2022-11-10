@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.OptionalInt;
 import java.util.concurrent.Callable;
@@ -24,6 +25,7 @@ import picocli.CommandLine.Parameters;
     versionProvider = MavenVersionProvider.class)
 public class ConvertCommand implements Callable<Integer> {
   private static final String DEFAULT_PREFIX = "converted-c8-";
+  private static final String[] FILE_ENDINGS = new String[] {"bpmn", "bpmn20.xml"};
   private final BpmnConverter converter = BpmnConverterFactory.getInstance().get();
 
   @Parameters(index = "0", description = "The file or directory to search for")
@@ -58,7 +60,7 @@ public class ConvertCommand implements Callable<Integer> {
     }
     Collection<File> files = new ArrayList<>();
     if (file.isDirectory()) {
-      files.addAll(FileUtils.listFiles(file, new String[] {"bpmn"}, !notRecursive));
+      files.addAll(FileUtils.listFiles(file, FILE_ENDINGS, !notRecursive));
     } else {
       if (isBpmnFile(file)) {
         files.add(file);
@@ -107,6 +109,6 @@ public class ConvertCommand implements Callable<Integer> {
   }
 
   private boolean isBpmnFile(File file) {
-    return file.getName().endsWith(".bpmn");
+    return Arrays.stream(FILE_ENDINGS).anyMatch(ending -> file.getName().endsWith(ending));
   }
 }

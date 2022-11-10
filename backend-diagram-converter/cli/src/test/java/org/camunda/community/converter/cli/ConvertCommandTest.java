@@ -30,6 +30,15 @@ public class ConvertCommandTest {
   }
 
   @Test
+  public void shouldConvertLegacy(@TempDir File tempDir) {
+    setupDir("c7.bpmn20.xml", tempDir);
+    ConvertCommand command = new ConvertCommand();
+    command.file = tempDir;
+    Integer call = command.call();
+    assertEquals(0, call);
+  }
+
+  @Test
   @Disabled
   // TODO enable as soon as bugfix for CLI is merged
   public void shouldNotConvert(@TempDir File tempDir) {
