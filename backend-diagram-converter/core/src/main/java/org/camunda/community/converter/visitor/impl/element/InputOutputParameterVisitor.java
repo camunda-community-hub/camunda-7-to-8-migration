@@ -2,9 +2,10 @@ package org.camunda.community.converter.visitor.impl.element;
 
 import org.camunda.bpm.model.xml.instance.DomElement;
 import org.camunda.community.converter.DomElementVisitorContext;
-import org.camunda.community.converter.ExpressionUtil;
 import org.camunda.community.converter.convertible.AbstractDataMapperConvertible;
 import org.camunda.community.converter.convertible.AbstractDataMapperConvertible.MappingDirection;
+import org.camunda.community.converter.expression.ExpressionTransformationResult;
+import org.camunda.community.converter.expression.ExpressionTransformer;
 import org.camunda.community.converter.visitor.AbstractCamundaElementVisitor;
 
 public abstract class InputOutputParameterVisitor extends AbstractCamundaElementVisitor {
@@ -24,12 +25,14 @@ public abstract class InputOutputParameterVisitor extends AbstractCamundaElement
     if (isNotStringOrExpression(element)) {
       return "'" + name + "': Only strings or expressions are supported as input/output in Zeebe";
     }
-    String source = createSource(element, context);
+    ExpressionTransformationResult transformationResult =
+        ExpressionTransformer.transform(element.getTextContent());
     context.addConversion(
         AbstractDataMapperConvertible.class,
         abstractTaskConversion ->
-            abstractTaskConversion.addZeebeIoMapping(direction, source, name));
-    return "'" + name + "': Please review source '" + source + "' of " + direction + " " + name;
+            abstractTaskConversion.addZeebeIoMapping(
+                direction, transformationResult.getNewExpression(), name));
+    return "'" + direction + "':'" + name + "': " + transformationResult.getHint();
   }
 
   private MappingDirection findMappingDirection(DomElement element) {
@@ -40,10 +43,6 @@ public abstract class InputOutputParameterVisitor extends AbstractCamundaElement
       return MappingDirection.OUTPUT;
     }
     throw new IllegalStateException("Must be input or output!");
-  }
-
-  private String createSource(DomElement element, DomElementVisitorContext context) {
-    return ExpressionUtil.transform(element.getTextContent(), context);
   }
 
   private boolean isNotStringOrExpression(DomElement element) {

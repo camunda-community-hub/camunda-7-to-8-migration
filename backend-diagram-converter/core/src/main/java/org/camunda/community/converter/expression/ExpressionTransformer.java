@@ -1,25 +1,27 @@
-package org.camunda.community.converter;
+package org.camunda.community.converter.expression;
 
 import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
-import org.camunda.community.converter.BpmnDiagramCheckResult.Severity;
 
-public class ExpressionUtil {
-  private static final ExpressionUtil INSTANCE = new ExpressionUtil();
+public class ExpressionTransformer {
+  private static final ExpressionTransformer INSTANCE = new ExpressionTransformer();
 
-  private ExpressionUtil() {}
+  private ExpressionTransformer() {}
 
-  public static String transform(final String expression, DomElementVisitorContext context) {
-    String transform = INSTANCE.doTransform(expression);
-    if (context != null) {
-      context.addMessage(
-          Severity.TASK,
-          "Please review transformed expression: '" + expression + "' -> '" + transform + "'");
+  public static ExpressionTransformationResult transform(final String expression) {
+    if (expression == null) {
+      return null;
     }
-    return transform;
+    String transform = INSTANCE.doTransform(expression);
+    ExpressionTransformationResult result = new ExpressionTransformationResult();
+    result.setHint(
+        "Please review transformed expression: '" + expression + "' -> '" + transform + "'");
+    result.setOldExpression(expression);
+    result.setNewExpression(transform);
+    return result;
   }
 
   private String doTransform(final String expression) {

@@ -3,10 +3,15 @@ package org.camunda.community.converter;
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.stream.Stream;
+import org.camunda.community.converter.expression.ExpressionTransformationResult;
+import org.camunda.community.converter.expression.ExpressionTransformer;
 import org.junit.jupiter.api.DynamicTest;
 import org.junit.jupiter.api.TestFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-public class ExpressionUtilTest {
+public class ExpressionTransformerTest {
+  private static final Logger LOG = LoggerFactory.getLogger(ExpressionTransformerTest.class);
 
   private static ExpressionTestDataSet test(String expression, String expectedResult) {
     ExpressionTestDataSet set = new ExpressionTestDataSet();
@@ -54,9 +59,10 @@ public class ExpressionUtilTest {
   }
 
   private void testExpression(ExpressionTestDataSet test) {
-    String result = ExpressionUtil.transform(test.expression, null);
-    assertEquals(test.expectedResult, result);
-    System.out.println(test.expression + " => " + result);
+    ExpressionTransformationResult transformationResult =
+        ExpressionTransformer.transform(test.expression);
+    assertEquals(test.expectedResult, transformationResult.getNewExpression());
+    LOG.debug(transformationResult.getHint());
   }
 
   public static class ExpressionTestDataSet {
