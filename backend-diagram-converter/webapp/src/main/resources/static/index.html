@@ -160,7 +160,6 @@
     }
 
     const createFormattedResultForFile = file => {
-        console.log(file);
         return el("div", {className: "card mb-3"}, [
             el("div", {className: "card-header"}, [file.filename]),
             el("ul", {className: "list-group list-group-flush"}, file.results.map(createFormattedResult).filter(e => e !== undefined))
