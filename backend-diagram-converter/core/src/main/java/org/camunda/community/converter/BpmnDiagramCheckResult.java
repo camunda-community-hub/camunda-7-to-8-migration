@@ -10,9 +10,12 @@ public class BpmnDiagramCheckResult {
   public List<BpmnElementCheckResult> getResults() {
     return results;
   }
-  
+
   public BpmnElementCheckResult getResult(String elementId) {
-    return getResults().stream().filter(element -> element.getElementId().equals(elementId)).findFirst().get();
+    return getResults().stream()
+        .filter(element -> element.getElementId().equals(elementId))
+        .findFirst()
+        .get();
   }
 
   public String getFilename() {
