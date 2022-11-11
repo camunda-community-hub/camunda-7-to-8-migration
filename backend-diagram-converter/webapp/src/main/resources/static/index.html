@@ -7,6 +7,24 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/css/bootstrap.min.css" rel="stylesheet"
           integrity="sha384-iYQeCzEYFbKjA/T2uDLTpkwGzCiq6soy8tYaI1GyVh/UjpbCx/TYkiZhlZB6+fzT" crossorigin="anonymous">
 
+    <!-- required viewer styles -->
+    <link rel="stylesheet" href="https://unpkg.com/bpmn-js@10.2.1/dist/assets/bpmn-js.css">
+
+    <!-- viewer distro (with pan and zoom) -->
+    <script src="https://unpkg.com/bpmn-js@10.2.1/dist/bpmn-navigated-viewer.development.js"></script>
+
+    <!-- needed for this example only -->
+    <script src="https://unpkg.com/jquery@3.3.1/dist/jquery.js"></script>
+
+    <!-- example styles -->
+    <style>
+      html, body, #canvas {
+        height: 250px;
+        padding: 0;
+        margin: 0;
+      }
+    </style>
+
 </head>
 <body>
 <div class="container-fluid">
@@ -41,8 +59,8 @@
         </div>
     </div>
     <div class="row">
-        <div class="mb-3 text-bg-dark rounded">
-
+        <div class="mb-3">
+            <div id="canvas"></div>        
         </div>
     </div>
     <div class="accordion" id="accordionExample" hidden>
@@ -185,6 +203,55 @@
             })
         });
     });
+    
+    // viewer instance
+    var bpmnViewer = new BpmnJS({
+      container: '#canvas'
+    });
+
+    /**
+     * Open diagram in our viewer instance.
+     *
+     * @param {String} bpmnXML diagram to display
+     */
+    async function openDiagram(bpmnXML) {
+
+      // import diagram
+      try {
+
+        await bpmnViewer.importXML(bpmnXML.target.result);
+
+        // access viewer components
+        var canvas = bpmnViewer.get('canvas');
+        var overlays = bpmnViewer.get('overlays');
+
+        // zoom to fit full viewport
+        canvas.zoom('fit-viewport');
+
+        // attach an overlay to a node
+//         overlays.add('SCAN_OK', 'note', {
+//           position: {
+//             bottom: 0,
+//             right: 0
+//           },
+//           html: '<div class="diagram-note">Mixed up the labels?</div>'
+//         });
+      } catch (err) {
+
+        console.error('could not import BPMN 2.0 diagram', err);
+      }
+    }
+
+    // load first diagram from uploaded files
+    const reader = new FileReader();
+    reader.onload = openDiagram;
+    
+    fileUpload.addEventListener("change", () => { 
+		    if (fileUpload.files.length != 0) {
+		        reader.readAsText(fileUpload.files[0]);
+		    }
+    });
+
 </script>
 </body>
 </html>
