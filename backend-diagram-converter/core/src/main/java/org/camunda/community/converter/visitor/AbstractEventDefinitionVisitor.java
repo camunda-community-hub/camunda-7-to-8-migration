@@ -3,6 +3,7 @@ package org.camunda.community.converter.visitor;
 import org.camunda.community.converter.BpmnDiagramCheckResult.Severity;
 import org.camunda.community.converter.DomElementVisitorContext;
 import org.camunda.community.converter.NamespaceUri;
+import org.camunda.community.converter.message.Message;
 
 public abstract class AbstractEventDefinitionVisitor extends AbstractElementVisitor {
   @Override
@@ -15,20 +16,16 @@ public abstract class AbstractEventDefinitionVisitor extends AbstractElementVisi
     visitEventDefinitionElement(context);
     if (canBeConverted(context)) {
       context.addMessage(
-          Severity.INFO,
-          "Element '" + context.getElement().getLocalName() + "' can be used in Zeebe");
+          Severity.INFO, Message.elementCanBeUsed(context.getElement().getLocalName()));
     } else {
       context.addMessage(
-          Severity.WARNING,
-          "Element '"
-              + context.getElement().getLocalName()
-              + "' is currently not supported in Zeebe");
+          Severity.WARNING, Message.elementNotSupported(context.getElement().getLocalName()));
     }
   }
 
   public abstract boolean canBeConverted(DomElementVisitorContext context);
 
   protected void visitEventDefinitionElement(DomElementVisitorContext context) {
-    // by default, nothing happens
+    // do nothing
   }
 }

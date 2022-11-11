@@ -2,6 +2,7 @@ package org.camunda.community.converter.visitor.impl.attribute;
 
 import org.camunda.community.converter.DomElementVisitorContext;
 import org.camunda.community.converter.convertible.AbstractActivityConvertible;
+import org.camunda.community.converter.message.Message;
 import org.camunda.community.converter.visitor.AbstractSupportedAttributeVisitor;
 
 public class ElementVariableVisitor extends AbstractSupportedAttributeVisitor {
@@ -11,7 +12,7 @@ public class ElementVariableVisitor extends AbstractSupportedAttributeVisitor {
   }
 
   @Override
-  protected String visitSupportedAttribute(DomElementVisitorContext context, String attribute) {
+  protected Message visitSupportedAttribute(DomElementVisitorContext context, String attribute) {
     context.addConversion(
         AbstractActivityConvertible.class,
         AbstractActivityConvertible::initializeLoopCharacteristics);
@@ -22,6 +23,6 @@ public class ElementVariableVisitor extends AbstractSupportedAttributeVisitor {
                 .getBpmnMultiInstanceLoopCharacteristics()
                 .getZeebeLoopCharacteristics()
                 .setInputElement(attribute));
-    return "Was set to input element";
+    return Message.elementVariable(attributeLocalName(), context.getElement().getLocalName());
   }
 }

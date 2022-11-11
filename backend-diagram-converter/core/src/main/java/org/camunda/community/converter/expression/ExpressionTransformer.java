@@ -17,8 +17,6 @@ public class ExpressionTransformer {
     }
     String transform = INSTANCE.doTransform(expression);
     ExpressionTransformationResult result = new ExpressionTransformationResult();
-    result.setHint(
-        "Please review transformed expression: '" + expression + "' -> '" + transform + "'");
     result.setOldExpression(expression);
     result.setNewExpression(transform);
     return result;

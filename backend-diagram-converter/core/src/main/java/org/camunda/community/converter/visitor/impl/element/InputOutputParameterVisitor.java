@@ -6,6 +6,7 @@ import org.camunda.community.converter.convertible.AbstractDataMapperConvertible
 import org.camunda.community.converter.convertible.AbstractDataMapperConvertible.MappingDirection;
 import org.camunda.community.converter.expression.ExpressionTransformationResult;
 import org.camunda.community.converter.expression.ExpressionTransformer;
+import org.camunda.community.converter.message.Message;
 import org.camunda.community.converter.visitor.AbstractCamundaElementVisitor;
 
 public abstract class InputOutputParameterVisitor extends AbstractCamundaElementVisitor {
@@ -18,12 +19,12 @@ public abstract class InputOutputParameterVisitor extends AbstractCamundaElement
   }
 
   @Override
-  protected String visitCamundaElement(DomElementVisitorContext context) {
+  protected Message visitCamundaElement(DomElementVisitorContext context) {
     DomElement element = context.getElement();
     String name = element.getAttribute("name");
     MappingDirection direction = findMappingDirection(element);
     if (isNotStringOrExpression(element)) {
-      return "'" + name + "': Only strings or expressions are supported as input/output in Zeebe";
+      return Message.inputOutputParameterIsNoExpression(localName(), name);
     }
     ExpressionTransformationResult transformationResult =
         ExpressionTransformer.transform(element.getTextContent());
@@ -32,7 +33,7 @@ public abstract class InputOutputParameterVisitor extends AbstractCamundaElement
         abstractTaskConversion ->
             abstractTaskConversion.addZeebeIoMapping(
                 direction, transformationResult.getNewExpression(), name));
-    return "'" + direction + "':'" + name + "': " + transformationResult.getHint();
+    return Message.inputOutputParameter(localName(), name, transformationResult);
   }
 
   private MappingDirection findMappingDirection(DomElement element) {

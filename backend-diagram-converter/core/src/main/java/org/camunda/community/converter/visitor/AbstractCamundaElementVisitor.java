@@ -3,6 +3,7 @@ package org.camunda.community.converter.visitor;
 import org.camunda.community.converter.BpmnDiagramCheckResult.Severity;
 import org.camunda.community.converter.DomElementVisitorContext;
 import org.camunda.community.converter.NamespaceUri;
+import org.camunda.community.converter.message.Message;
 
 public abstract class AbstractCamundaElementVisitor extends AbstractElementVisitor {
   @Override
@@ -12,28 +13,18 @@ public abstract class AbstractCamundaElementVisitor extends AbstractElementVisit
 
   @Override
   protected final void visitFilteredElement(DomElementVisitorContext context) {
-    String hint = visitCamundaElement(context);
+    Message message = visitCamundaElement(context);
     if (isSilent()) {
       return;
     }
-    if (!canBeTransformed(context)) {
-      context.addMessage(
-          messageSeverity() == null ? Severity.WARNING : messageSeverity(),
-          "Element '"
-              + context.getElement().getLocalName()
-              + "' is currently not supported in Zeebe. Hint: "
-              + hint);
-    } else {
-      context.addMessage(
-          messageSeverity() == null ? Severity.TASK : messageSeverity(),
-          "Element '"
-              + context.getElement().getLocalName()
-              + "' was transformed, please review. Hint: "
-              + hint);
-    }
+    Severity severity =
+        messageSeverity() != null
+            ? messageSeverity()
+            : canBeTransformed(context) ? Severity.TASK : Severity.WARNING;
+    context.addMessage(severity, message);
   }
 
-  protected abstract String visitCamundaElement(DomElementVisitorContext context);
+  protected abstract Message visitCamundaElement(DomElementVisitorContext context);
 
   public abstract boolean canBeTransformed(DomElementVisitorContext context);
 
