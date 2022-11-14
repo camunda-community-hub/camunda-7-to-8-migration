@@ -1,5 +1,6 @@
 package org.camunda.community.converter.visitor.impl.element;
 
+import java.util.Optional;
 import org.camunda.bpm.model.xml.instance.DomElement;
 import org.camunda.community.converter.BpmnDiagramCheckResult.Severity;
 import org.camunda.community.converter.DomElementVisitorContext;
@@ -10,8 +11,6 @@ import org.camunda.community.converter.expression.ExpressionTransformationResult
 import org.camunda.community.converter.expression.ExpressionTransformer;
 import org.camunda.community.converter.message.Message;
 import org.camunda.community.converter.visitor.AbstractCamundaElementVisitor;
-
-import java.util.Optional;
 
 public abstract class InOutVisitor extends AbstractCamundaElementVisitor {
   private static final String IN = "in";

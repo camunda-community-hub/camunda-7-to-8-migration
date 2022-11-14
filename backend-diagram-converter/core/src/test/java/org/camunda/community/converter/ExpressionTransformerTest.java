@@ -62,7 +62,6 @@ public class ExpressionTransformerTest {
     ExpressionTransformationResult transformationResult =
         ExpressionTransformer.transform(test.expression);
     assertEquals(test.expectedResult, transformationResult.getNewExpression());
-    LOG.debug(transformationResult.getHint());
   }
 
   public static class ExpressionTestDataSet {

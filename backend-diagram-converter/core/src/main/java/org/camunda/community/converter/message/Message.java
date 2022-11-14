@@ -1,9 +1,7 @@
 package org.camunda.community.converter.message;
 
-import org.camunda.community.converter.expression.ExpressionTransformationResult;
-
-import java.util.HashMap;
 import java.util.Map;
+import org.camunda.community.converter.expression.ExpressionTransformationResult;
 
 public interface Message {
   static Message collectionHint() {
@@ -309,6 +307,55 @@ public interface Message {
             .build());
   }
 
+  static Message potentialStarter(String elementLocalName) {
+    return new ComposedMessage(
+        "potential-starter",
+        ContextBuilder.builder().context(elementNotTransformablePrefix(elementLocalName)).build());
+  }
+
+  static Message formKey(String attributeLocalName, String elementLocalName) {
+    return new ComposedMessage(
+        "form-key",
+        ContextBuilder.builder()
+            .context(supportedAttributePrefix(attributeLocalName, elementLocalName))
+            .build());
+  }
+
+  static Message delegateImplementation(
+      String attributeLocalName, String elementLocalName, String binding, String jobType) {
+    return new ComposedMessage(
+        "delegate-implementation",
+        ContextBuilder.builder()
+            .context(supportedAttributePrefix(attributeLocalName, elementLocalName))
+            .entry("binding", binding)
+            .entry("jobType", jobType)
+            .build());
+  }
+
+  static Message fieldContent(String elementLocalName) {
+    return new ComposedMessage(
+        "field-content",
+        ContextBuilder.builder().context(elementNotTransformablePrefix(elementLocalName)).build());
+  }
+
+  static Message inputOutput() {
+    return new ComposedMessage("input-output", ContextBuilder.builder().build());
+  }
+
+  static Message camundaScript(String elementLocalName, String script, String scriptFormat) {
+    return new ComposedMessage(
+        "camunda.script",
+        ContextBuilder.builder()
+            .context(elementNotTransformablePrefix(elementLocalName))
+            .entry("script", script)
+            .entry("scriptFormat", scriptFormat)
+            .build());
+  }
+
+  static Message connectorHint() {
+    return new ComposedMessage("connector-hint", ContextBuilder.builder().build());
+  }
+
   static Map<String, String> attributeNotSupportedPrefix(
       String attributeLocalName, String elementLocalName) {
     return ContextBuilder.builder()
@@ -366,65 +413,4 @@ public interface Message {
   String getMessage();
 
   String getLink();
-
-  class ContextBuilder {
-    private final Map<String, String> context = new HashMap<>();
-
-    static ContextBuilder builder() {
-      return new ContextBuilder();
-    }
-
-    public ContextBuilder entry(String key, String value) {
-      context.put(key, value);
-      return this;
-    }
-
-    public ContextBuilder context(Map<String, String> context) {
-      this.context.putAll(context);
-      return this;
-    }
-
-    public Map<String, String> build() {
-      return context;
-    }
-  }
-
-  class EmptyMessage implements Message {
-
-    @Override
-    public String getMessage() {
-      return "";
-    }
-
-    @Override
-    public String getLink() {
-      return "";
-    }
-  }
-
-  class ComposedMessage implements Message {
-    private static final MessageTemplateProvider MESSAGE_TEMPLATE_PROVIDER =
-        new MessageTemplateProvider();
-    private static final MessageTemplateProcessor MESSAGE_TEMPLATE_DECORATOR =
-        new MessageTemplateProcessor();
-    private static final MessageLinkProvider MESSAGE_LINK_PROVIDER = new MessageLinkProvider();
-    private final String message;
-    private final String link;
-
-    public ComposedMessage(String templateName, Map<String, String> context) {
-      MessageTemplate template = MESSAGE_TEMPLATE_PROVIDER.getMessageTemplate(templateName);
-      this.message = MESSAGE_TEMPLATE_DECORATOR.decorate(template, context);
-      this.link = MESSAGE_LINK_PROVIDER.getMessageLink(templateName);
-    }
-
-    @Override
-    public String getMessage() {
-      return message;
-    }
-
-    @Override
-    public String getLink() {
-      return link;
-    }
-  }
 }

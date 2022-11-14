@@ -1,8 +1,5 @@
 package org.camunda.community.converter.message;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -10,6 +7,8 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class MessageTemplateProcessor {
   private static final Logger LOG = LoggerFactory.getLogger(MessageTemplateProcessor.class);
@@ -21,15 +20,16 @@ public class MessageTemplateProcessor {
   public String decorate(MessageTemplate template, Map<String, String> context) {
     String templateString = template.getTemplate();
     List<String> missingVariables = new ArrayList<>();
-    LOG.debug("Filling template {} with context {}", template, context);
+    LOG.debug("Filling template '{}' with context {}", templateString, context);
     for (String variableName : template.getVariables()) {
       String value = context.get(variableName);
       if (value == null) {
         missingVariables.add(variableName);
       } else {
+        value = value.replaceAll("\\$", "\\\\\\$");
         LOG.debug("Replacing {} with {}", variableName, value);
         templateString = templateString.replaceAll(PREFIX + variableName + SUFFIX, value);
-        LOG.debug("Template after replacement: {}", template);
+        LOG.debug("Template after replacement: {}", templateString);
       }
     }
     if (!missingVariables.isEmpty()) {
@@ -44,11 +44,11 @@ public class MessageTemplateProcessor {
   }
 
   public List<String> extractVariables(String template) {
-    LOG.debug("Extracting variables from {}", template);
+    LOG.debug("Extracting variables from '{}'", template);
     Matcher matcher = PLACEHOLDER.matcher(template);
     List<String> variables = new ArrayList<>();
     while (matcher.find()) {
-      String group = matcher.group().trim();
+      String group = matcher.group(1).trim();
       if (!group.startsWith("templates.")) {
         LOG.debug("Found {}", group);
         variables.add(group);
@@ -65,9 +65,10 @@ public class MessageTemplateProcessor {
       Map<String, String> alteredTemplates = new HashMap<>();
       for (Entry<String, String> templateEntry : templates.entrySet()) {
         String template = templateEntry.getValue();
+        LOG.debug("Replacing templates in '{}'", template);
         Matcher matcher = PLACEHOLDER.matcher(template);
         while (matcher.find()) {
-          String group = matcher.group().trim();
+          String group = matcher.group(1).trim();
           if (group.startsWith(TEMPLATES_PREFIX)) {
             template =
                 template.replaceAll(
@@ -76,7 +77,9 @@ public class MessageTemplateProcessor {
           }
         }
         if (!template.equals(templateEntry.getValue())) {
+          LOG.debug("Found templates to replace, template is now '{}'", template);
           alteredTemplates.put(templateEntry.getKey(), template);
+          templateFound = true;
         }
       }
       templates.putAll(alteredTemplates);
