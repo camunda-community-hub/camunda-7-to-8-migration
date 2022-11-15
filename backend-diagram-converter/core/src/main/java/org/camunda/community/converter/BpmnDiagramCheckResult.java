@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class BpmnDiagramCheckResult {
-  private String filename;
   private final List<BpmnElementCheckResult> results = new ArrayList<>();
+  private String filename;
 
   public List<BpmnElementCheckResult> getResults() {
     return results;
@@ -15,7 +15,7 @@ public class BpmnDiagramCheckResult {
     return getResults().stream()
         .filter(element -> element.getElementId().equals(elementId))
         .findFirst()
-        .get();
+        .orElse(null);
   }
 
   public String getFilename() {
