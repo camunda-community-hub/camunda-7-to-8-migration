@@ -4,6 +4,7 @@ import org.camunda.community.converter.DomElementVisitorContext;
 import org.camunda.community.converter.convertible.AbstractDataMapperConvertible;
 import org.camunda.community.converter.convertible.BusinessRuleTaskConvertible;
 import org.camunda.community.converter.message.Message;
+import org.camunda.community.converter.message.MessageFactory;
 import org.camunda.community.converter.visitor.AbstractSupportedAttributeVisitor;
 
 public abstract class ResultVariableVisitor extends AbstractSupportedAttributeVisitor {
@@ -27,7 +28,7 @@ public abstract class ResultVariableVisitor extends AbstractSupportedAttributeVi
       context.addConversion(
           BusinessRuleTaskConvertible.class,
           conversion -> conversion.getZeebeCalledDecision().setResultVariable(attribute));
-      return Message.resultVariableBusinessRule(
+      return MessageFactory.resultVariableBusinessRule(
           attributeLocalName(), context.getElement().getLocalName());
     }
 
@@ -44,7 +45,7 @@ public abstract class ResultVariableVisitor extends AbstractSupportedAttributeVi
       context.addConversion(
           AbstractDataMapperConvertible.class,
           convertible -> convertible.addZeebeTaskHeader(HEADER_NAME, attribute));
-      return Message.resultVariableRest(
+      return MessageFactory.resultVariableRest(
           attributeLocalName(), context.getElement().getLocalName(), HEADER_NAME);
     }
 

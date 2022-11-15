@@ -2,7 +2,7 @@ package org.camunda.community.converter.visitor;
 
 import org.camunda.community.converter.BpmnDiagramCheckResult.Severity;
 import org.camunda.community.converter.DomElementVisitorContext;
-import org.camunda.community.converter.message.Message;
+import org.camunda.community.converter.message.MessageFactory;
 
 public abstract class AbstractCurrentlyNotSupportedAttributeVisitor
     extends AbstractAttributeVisitor {
@@ -11,6 +11,7 @@ public abstract class AbstractCurrentlyNotSupportedAttributeVisitor
   protected final void visitAttribute(DomElementVisitorContext context, String attribute) {
     context.addMessage(
         Severity.WARNING,
-        Message.attributeNotSupported(attributeLocalName(), context.getElement().getLocalName()));
+        MessageFactory.attributeNotSupported(
+            attributeLocalName(), context.getElement().getLocalName()));
   }
 }

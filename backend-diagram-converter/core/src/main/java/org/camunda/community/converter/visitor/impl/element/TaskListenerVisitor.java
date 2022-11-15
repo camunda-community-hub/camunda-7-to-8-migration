@@ -2,6 +2,7 @@ package org.camunda.community.converter.visitor.impl.element;
 
 import org.camunda.community.converter.DomElementVisitorContext;
 import org.camunda.community.converter.message.Message;
+import org.camunda.community.converter.message.MessageFactory;
 import org.camunda.community.converter.visitor.AbstractCamundaElementVisitor;
 
 public class TaskListenerVisitor extends AbstractCamundaElementVisitor {
@@ -12,7 +13,7 @@ public class TaskListenerVisitor extends AbstractCamundaElementVisitor {
 
   @Override
   protected Message visitCamundaElement(DomElementVisitorContext context) {
-    return Message.taskListener(context.getElement().getLocalName());
+    return MessageFactory.taskListener(context.getElement().getLocalName());
   }
 
   @Override

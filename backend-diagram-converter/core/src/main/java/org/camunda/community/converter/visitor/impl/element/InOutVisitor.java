@@ -10,6 +10,7 @@ import org.camunda.community.converter.convertible.CallActivityConvertible;
 import org.camunda.community.converter.expression.ExpressionTransformationResult;
 import org.camunda.community.converter.expression.ExpressionTransformer;
 import org.camunda.community.converter.message.Message;
+import org.camunda.community.converter.message.MessageFactory;
 import org.camunda.community.converter.visitor.AbstractCamundaElementVisitor;
 
 public abstract class InOutVisitor extends AbstractCamundaElementVisitor {
@@ -51,21 +52,21 @@ public abstract class InOutVisitor extends AbstractCamundaElementVisitor {
         Boolean.getBoolean(
             Optional.ofNullable(element.getAttribute("local")).orElse(Boolean.toString(false)));
     if (local) {
-      context.addMessage(Severity.TASK, Message.localVariablePropagationNotSupported());
+      context.addMessage(Severity.TASK, MessageFactory.localVariablePropagationNotSupported());
     }
     if (isAll(context.getElement())) {
       if (isIn(context.getElement())) {
-        return Message.inAllNotRecommendedHint();
+        return MessageFactory.inAllNotRecommendedHint();
       } else if (isOut(context.getElement())) {
         context.addConversion(
             CallActivityConvertible.class,
             conversion -> conversion.getZeebeCalledElement().setPropagateAllChildVariables(true));
-        return Message.outAllNotRecommendedHint();
+        return MessageFactory.outAllNotRecommendedHint();
       } else {
         throw mustBeInOrOut();
       }
     } else if (isBusinessKey(context.getElement())) {
-      return Message.inOutBusinessKeyNotSupported(context.getElement().getLocalName());
+      return MessageFactory.inOutBusinessKeyNotSupported(context.getElement().getLocalName());
     } else {
       String target = element.getAttribute("target");
       ExpressionTransformationResult transformationResult = createResult(context.getElement());
@@ -76,7 +77,7 @@ public abstract class InOutVisitor extends AbstractCamundaElementVisitor {
                   getDirection(context.getElement()),
                   transformationResult.getNewExpression(),
                   target));
-      return Message.inputOutputParameter(localName(), target, transformationResult);
+      return MessageFactory.inputOutputParameter(localName(), target, transformationResult);
     }
   }
 

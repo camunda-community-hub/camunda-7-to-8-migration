@@ -5,6 +5,7 @@ import org.camunda.community.converter.convertible.BusinessRuleTaskConvertible;
 import org.camunda.community.converter.expression.ExpressionTransformationResult;
 import org.camunda.community.converter.expression.ExpressionTransformer;
 import org.camunda.community.converter.message.Message;
+import org.camunda.community.converter.message.MessageFactory;
 import org.camunda.community.converter.visitor.AbstractSupportedAttributeVisitor;
 
 public class DecisionRefVisitor extends AbstractSupportedAttributeVisitor {
@@ -23,7 +24,7 @@ public class DecisionRefVisitor extends AbstractSupportedAttributeVisitor {
             conversion
                 .getZeebeCalledDecision()
                 .setDecisionId(transformationResult.getNewExpression()));
-    return Message.decisionRef(
+    return MessageFactory.decisionRef(
         attributeLocalName(), context.getElement().getLocalName(), transformationResult);
   }
 }

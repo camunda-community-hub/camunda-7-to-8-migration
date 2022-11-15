@@ -5,6 +5,7 @@ import org.camunda.community.converter.convertible.UserTaskConvertible;
 import org.camunda.community.converter.expression.ExpressionTransformationResult;
 import org.camunda.community.converter.expression.ExpressionTransformer;
 import org.camunda.community.converter.message.Message;
+import org.camunda.community.converter.message.MessageFactory;
 import org.camunda.community.converter.visitor.AbstractSupportedAttributeVisitor;
 
 public class AssigneeVisitor extends AbstractSupportedAttributeVisitor {
@@ -24,7 +25,7 @@ public class AssigneeVisitor extends AbstractSupportedAttributeVisitor {
             userTaskConversion
                 .getZeebeAssignmentDefinition()
                 .setAssignee(transformationResult.getNewExpression()));
-    return Message.assignee(
+    return MessageFactory.assignee(
         attributeLocalName(), context.getElement().getLocalName(), transformationResult);
   }
 }

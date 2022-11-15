@@ -4,7 +4,7 @@ import org.camunda.community.converter.BpmnDiagramCheckResult.Severity;
 import org.camunda.community.converter.DomElementVisitorContext;
 import org.camunda.community.converter.convertible.Convertible;
 import org.camunda.community.converter.convertible.ServiceTaskConvertible;
-import org.camunda.community.converter.message.Message;
+import org.camunda.community.converter.message.MessageFactory;
 import org.camunda.community.converter.visitor.AbstractActivityVisitor;
 
 public class ScriptTaskVisitor extends AbstractActivityVisitor {
@@ -33,9 +33,9 @@ public class ScriptTaskVisitor extends AbstractActivityVisitor {
           ServiceTaskConvertible.class,
           convertible -> convertible.addZeebeTaskHeader(SCRIPT_FORMAT_HEADER_NAME, scriptFormat));
       context.addMessage(
-          Severity.TASK, Message.scriptFormat(SCRIPT_FORMAT_HEADER_NAME, scriptFormat));
+          Severity.TASK, MessageFactory.scriptFormat(SCRIPT_FORMAT_HEADER_NAME, scriptFormat));
     } else {
-      context.addMessage(Severity.TASK, Message.scriptFormatMissing());
+      context.addMessage(Severity.TASK, MessageFactory.scriptFormatMissing());
     }
   }
 }

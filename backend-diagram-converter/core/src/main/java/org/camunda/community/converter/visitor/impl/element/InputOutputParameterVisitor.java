@@ -7,6 +7,7 @@ import org.camunda.community.converter.convertible.AbstractDataMapperConvertible
 import org.camunda.community.converter.expression.ExpressionTransformationResult;
 import org.camunda.community.converter.expression.ExpressionTransformer;
 import org.camunda.community.converter.message.Message;
+import org.camunda.community.converter.message.MessageFactory;
 import org.camunda.community.converter.visitor.AbstractCamundaElementVisitor;
 
 public abstract class InputOutputParameterVisitor extends AbstractCamundaElementVisitor {
@@ -24,7 +25,7 @@ public abstract class InputOutputParameterVisitor extends AbstractCamundaElement
     String name = element.getAttribute("name");
     MappingDirection direction = findMappingDirection(element);
     if (isNotStringOrExpression(element)) {
-      return Message.inputOutputParameterIsNoExpression(localName(), name);
+      return MessageFactory.inputOutputParameterIsNoExpression(localName(), name);
     }
     ExpressionTransformationResult transformationResult =
         ExpressionTransformer.transform(element.getTextContent());
@@ -33,7 +34,7 @@ public abstract class InputOutputParameterVisitor extends AbstractCamundaElement
         abstractTaskConversion ->
             abstractTaskConversion.addZeebeIoMapping(
                 direction, transformationResult.getNewExpression(), name));
-    return Message.inputOutputParameter(localName(), name, transformationResult);
+    return MessageFactory.inputOutputParameter(localName(), name, transformationResult);
   }
 
   private MappingDirection findMappingDirection(DomElement element) {

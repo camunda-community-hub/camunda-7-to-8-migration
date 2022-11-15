@@ -6,6 +6,7 @@ import java.util.stream.Stream;
 import org.camunda.community.converter.DomElementVisitorContext;
 import org.camunda.community.converter.convertible.ServiceTaskConvertible;
 import org.camunda.community.converter.message.Message;
+import org.camunda.community.converter.message.MessageFactory;
 
 public abstract class AbstractDelegateImplementationVisitor
     extends AbstractSupportedAttributeVisitor {
@@ -25,7 +26,7 @@ public abstract class AbstractDelegateImplementationVisitor
         ServiceTaskConvertible.class,
         serviceTaskConversion ->
             serviceTaskConversion.getZeebeTaskDefinition().setType(ADAPTER_JOB_TYPE));
-    return Message.delegateImplementation(
+    return MessageFactory.delegateImplementation(
         attributeLocalName(), context.getElement().getLocalName(), attribute, ADAPTER_JOB_TYPE);
   }
 

@@ -4,7 +4,7 @@ import org.camunda.community.converter.BpmnDiagramCheckResult.Severity;
 import org.camunda.community.converter.DomElementVisitorContext;
 import org.camunda.community.converter.NamespaceUri;
 import org.camunda.community.converter.convertible.AbstractDataMapperConvertible;
-import org.camunda.community.converter.message.Message;
+import org.camunda.community.converter.message.MessageFactory;
 import org.camunda.community.converter.visitor.AbstractElementVisitor;
 
 public class ScriptVisitor extends AbstractElementVisitor {
@@ -24,6 +24,6 @@ public class ScriptVisitor extends AbstractElementVisitor {
     context.addConversion(
         AbstractDataMapperConvertible.class,
         convertible -> convertible.addZeebeTaskHeader("script", script));
-    context.addMessage(Severity.TASK, Message.script());
+    context.addMessage(Severity.TASK, MessageFactory.script());
   }
 }

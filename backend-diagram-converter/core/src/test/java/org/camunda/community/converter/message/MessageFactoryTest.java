@@ -6,7 +6,7 @@ import org.camunda.community.converter.expression.ExpressionTransformationResult
 import org.junit.jupiter.api.Test;
 import org.testcontainers.shaded.org.apache.commons.lang3.RandomStringUtils;
 
-public class MessageTest {
+public class MessageFactoryTest {
 
   private static String random() {
     return RandomStringUtils.randomAlphabetic(10);
@@ -20,323 +20,323 @@ public class MessageTest {
   }
 
   @Test
-  void shouldBuildEmpty() {
-    Message message = Message.empty();
+  void shouldBuildMap() {
+    Message message = MessageFactory.map();
     assertNotNull(message);
     assertNotNull(message.getMessage());
   }
 
   @Test
   void shouldBuildScript() {
-    Message message = Message.script();
+    Message message = MessageFactory.script();
     assertNotNull(message);
     assertNotNull(message.getMessage());
   }
 
   @Test
   void shouldBuildCollection() {
-    Message message = Message.collection(random(), random(), result());
+    Message message = MessageFactory.collection(random(), random(), result());
     assertNotNull(message);
     assertNotNull(message.getMessage());
   }
 
   @Test
   void shouldBuildProperty() {
-    Message message = Message.property(random(), random());
+    Message message = MessageFactory.property(random(), random());
     assertNotNull(message);
     assertNotNull(message.getMessage());
   }
 
   @Test
   void shouldBuildResource() {
-    Message message = Message.resource(random(), random(), random());
+    Message message = MessageFactory.resource(random(), random(), random());
     assertNotNull(message);
     assertNotNull(message.getMessage());
   }
 
   @Test
   void shouldBuildCallActivityNoCalledElementHint() {
-    Message message = Message.callActivityNoCalledElementHint();
+    Message message = MessageFactory.callActivityNoCalledElementHint();
     assertNotNull(message);
     assertNotNull(message.getMessage());
   }
 
   @Test
   void shouldBuildInputOutputParameterIsNoExpression() {
-    Message message = Message.inputOutputParameterIsNoExpression(random(), random());
+    Message message = MessageFactory.inputOutputParameterIsNoExpression(random(), random());
     assertNotNull(message);
     assertNotNull(message.getMessage());
   }
 
   @Test
   void shouldBuildLocalVariablePropagationNotSupported() {
-    Message message = Message.localVariablePropagationNotSupported();
+    Message message = MessageFactory.localVariablePropagationNotSupported();
     assertNotNull(message);
     assertNotNull(message.getMessage());
   }
 
   @Test
   void shouldBuildInOutBusinessKeyNotSupported() {
-    Message message = Message.inOutBusinessKeyNotSupported(random());
+    Message message = MessageFactory.inOutBusinessKeyNotSupported(random());
     assertNotNull(message);
     assertNotNull(message.getMessage());
   }
 
   @Test
   void shouldBuildAssignee() {
-    Message message = Message.assignee(random(), random(), result());
+    Message message = MessageFactory.assignee(random(), random(), result());
     assertNotNull(message);
     assertNotNull(message.getMessage());
   }
 
   @Test
   void shouldBuildTopic() {
-    Message message = Message.topic(random(), random());
+    Message message = MessageFactory.topic(random(), random());
     assertNotNull(message);
     assertNotNull(message.getMessage());
   }
 
   @Test
   void shouldBuildFormRef() {
-    Message message = Message.formRef(random(), random(), result());
+    Message message = MessageFactory.formRef(random(), random(), result());
     assertNotNull(message);
     assertNotNull(message.getMessage());
   }
 
   @Test
   void shouldBuildFormData() {
-    Message message = Message.formData(random());
+    Message message = MessageFactory.formData(random());
     assertNotNull(message);
     assertNotNull(message.getMessage());
   }
 
   @Test
   void shouldBuildFormKey() {
-    Message message = Message.formKey(random(), random());
+    Message message = MessageFactory.formKey(random(), random());
     assertNotNull(message);
     assertNotNull(message.getMessage());
   }
 
   @Test
   void shouldBuildScriptFormat() {
-    Message message = Message.scriptFormat(random(), random());
+    Message message = MessageFactory.scriptFormat(random(), random());
     assertNotNull(message);
     assertNotNull(message.getMessage());
   }
 
   @Test
   void shouldBuildConditionExpression() {
-    Message message = Message.conditionExpression(result());
+    Message message = MessageFactory.conditionExpression(result());
     assertNotNull(message);
     assertNotNull(message.getMessage());
   }
 
   @Test
   void shouldBuildInputOutputParameter() {
-    Message message = Message.inputOutputParameter(random(), random(), result());
+    Message message = MessageFactory.inputOutputParameter(random(), random(), result());
     assertNotNull(message);
     assertNotNull(message.getMessage());
   }
 
   @Test
   void shouldBuildInAllNotRecommendedHint() {
-    Message message = Message.inAllNotRecommendedHint();
+    Message message = MessageFactory.inAllNotRecommendedHint();
     assertNotNull(message);
     assertNotNull(message.getMessage());
   }
 
   @Test
   void shouldBuildOutAllNotRecommendedHint() {
-    Message message = Message.outAllNotRecommendedHint();
+    Message message = MessageFactory.outAllNotRecommendedHint();
     assertNotNull(message);
     assertNotNull(message.getMessage());
   }
 
   @Test
   void shouldBuildElementCanBeUsed() {
-    Message message = Message.elementCanBeUsed(random());
+    Message message = MessageFactory.elementCanBeUsed(random());
     assertNotNull(message);
     assertNotNull(message.getMessage());
   }
 
   @Test
   void shouldBuildElementNotSupported() {
-    Message message = Message.elementNotSupported(random());
+    Message message = MessageFactory.elementNotSupported(random());
     assertNotNull(message);
     assertNotNull(message.getMessage());
   }
 
   @Test
   void shouldBuildLoopCardinality() {
-    Message message = Message.loopCardinality();
+    Message message = MessageFactory.loopCardinality();
     assertNotNull(message);
     assertNotNull(message.getMessage());
   }
 
   @Test
   void shouldBuildScriptFormatMissing() {
-    Message message = Message.scriptFormatMissing();
+    Message message = MessageFactory.scriptFormatMissing();
     assertNotNull(message);
     assertNotNull(message.getMessage());
   }
 
   @Test
   void shouldBuildAttributeNotSupported() {
-    Message message = Message.attributeNotSupported(random(), random());
+    Message message = MessageFactory.attributeNotSupported(random(), random());
     assertNotNull(message);
     assertNotNull(message.getMessage());
   }
 
   @Test
   void shouldBuildAttributeRemoved() {
-    Message message = Message.attributeRemoved(random(), random());
+    Message message = MessageFactory.attributeRemoved(random(), random());
     assertNotNull(message);
     assertNotNull(message.getMessage());
   }
 
   @Test
   void shouldBuildCorrelationKeyHint() {
-    Message message = Message.correlationKeyHint();
+    Message message = MessageFactory.correlationKeyHint();
     assertNotNull(message);
     assertNotNull(message.getMessage());
   }
 
   @Test
   void shouldBuildConnectorId() {
-    Message message = Message.connectorId(random());
+    Message message = MessageFactory.connectorId(random());
     assertNotNull(message);
     assertNotNull(message.getMessage());
   }
 
   @Test
   void shouldBuildResultVariableBusinessRule() {
-    Message message = Message.resultVariableBusinessRule(random(), random());
+    Message message = MessageFactory.resultVariableBusinessRule(random(), random());
     assertNotNull(message);
     assertNotNull(message.getMessage());
   }
 
   @Test
   void shouldBuildResultVariableRest() {
-    Message message = Message.resultVariableRest(random(), random(), random());
+    Message message = MessageFactory.resultVariableRest(random(), random(), random());
     assertNotNull(message);
     assertNotNull(message.getMessage());
   }
 
   @Test
   void shouldBuildElementVariable() {
-    Message message = Message.elementVariable(random(), random());
+    Message message = MessageFactory.elementVariable(random(), random());
     assertNotNull(message);
     assertNotNull(message.getMessage());
   }
 
   @Test
   void shouldBuildFailedJobRetryTimeCycle() {
-    Message message = Message.failedJobRetryTimeCycle(random(), random());
+    Message message = MessageFactory.failedJobRetryTimeCycle(random(), random());
     assertNotNull(message);
     assertNotNull(message.getMessage());
   }
 
   @Test
   void shouldBuildErrorEventDefinition() {
-    Message message = Message.errorEventDefinition(random());
+    Message message = MessageFactory.errorEventDefinition(random());
     assertNotNull(message);
     assertNotNull(message.getMessage());
   }
 
   @Test
   void shouldBuildTaskListener() {
-    Message message = Message.taskListener(random());
+    Message message = MessageFactory.taskListener(random());
     assertNotNull(message);
     assertNotNull(message.getMessage());
   }
 
   @Test
   void shouldBuildPotentialStarter() {
-    Message message = Message.potentialStarter(random());
+    Message message = MessageFactory.potentialStarter(random());
     assertNotNull(message);
     assertNotNull(message.getMessage());
   }
 
   @Test
   void shouldBuildDelegateImplementation() {
-    Message message = Message.delegateImplementation(random(), random(), random(), random());
+    Message message = MessageFactory.delegateImplementation(random(), random(), random(), random());
     assertNotNull(message);
     assertNotNull(message.getMessage());
   }
 
   @Test
   void shouldBuildFieldContent() {
-    Message message = Message.fieldContent(random());
+    Message message = MessageFactory.fieldContent(random());
     assertNotNull(message);
     assertNotNull(message.getMessage());
   }
 
   @Test
   void shouldBuildInputOutput() {
-    Message message = Message.inputOutput();
+    Message message = MessageFactory.inputOutput();
     assertNotNull(message);
     assertNotNull(message.getMessage());
   }
 
   @Test
   void shouldBuildCamundaScript() {
-    Message message = Message.camundaScript(random(), random(), random());
+    Message message = MessageFactory.camundaScript(random(), random(), random());
     assertNotNull(message);
     assertNotNull(message.getMessage());
   }
 
   @Test
   void shouldBuildConnectorHint() {
-    Message message = Message.connectorHint();
+    Message message = MessageFactory.connectorHint();
     assertNotNull(message);
     assertNotNull(message.getMessage());
   }
 
   @Test
   void shouldBuildCandidateGroups() {
-    Message message = Message.candidateGroups(random(), random(), result());
+    Message message = MessageFactory.candidateGroups(random(), random(), result());
     assertNotNull(message);
     assertNotNull(message.getMessage());
   }
 
   @Test
   void shouldBuildCollectionHint() {
-    Message message = Message.collectionHint();
+    Message message = MessageFactory.collectionHint();
     assertNotNull(message);
     assertNotNull(message.getMessage());
   }
 
   @Test
   void shouldBuildCalledElement() {
-    Message message = Message.calledElement(random(), random(), result());
+    Message message = MessageFactory.calledElement(random(), random(), result());
     assertNotNull(message);
     assertNotNull(message.getMessage());
   }
 
   @Test
   void shouldBuildDecisionRef() {
-    Message message = Message.decisionRef(random(), random(), result());
+    Message message = MessageFactory.decisionRef(random(), random(), result());
     assertNotNull(message);
     assertNotNull(message.getMessage());
   }
 
   @Test
   void shouldBuildExecutionListener() {
-    Message message = Message.executionListener(random());
+    Message message = MessageFactory.executionListener(random());
     assertNotNull(message);
     assertNotNull(message.getMessage());
   }
 
   @Test
   void shouldBuildElementNotSupportedHint() {
-    Message message = Message.elementNotSupportedHint(random());
+    Message message = MessageFactory.elementNotSupportedHint(random());
     assertNotNull(message);
     assertNotNull(message.getMessage());
   }
 
   @Test
   void shouldBuildCompletionCondition() {
-    Message message = Message.completionCondition(result());
+    Message message = MessageFactory.completionCondition(result());
     assertNotNull(message);
     assertNotNull(message.getMessage());
   }

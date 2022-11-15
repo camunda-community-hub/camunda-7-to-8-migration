@@ -2,6 +2,7 @@ package org.camunda.community.converter.visitor.impl.element;
 
 import org.camunda.community.converter.DomElementVisitorContext;
 import org.camunda.community.converter.message.Message;
+import org.camunda.community.converter.message.MessageFactory;
 import org.camunda.community.converter.visitor.AbstractCamundaElementVisitor;
 
 public class FailedJobRetryTimeCycleVisitor extends AbstractCamundaElementVisitor {
@@ -10,7 +11,7 @@ public class FailedJobRetryTimeCycleVisitor extends AbstractCamundaElementVisito
   protected Message visitCamundaElement(DomElementVisitorContext context) {
     String timecycle = context.getElement().getTextContent();
 
-    return Message.failedJobRetryTimeCycle(context.getElement().getLocalName(), timecycle);
+    return MessageFactory.failedJobRetryTimeCycle(context.getElement().getLocalName(), timecycle);
   }
 
   @Override

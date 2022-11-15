@@ -6,7 +6,7 @@ import org.camunda.community.converter.convertible.CallActivityConvertible;
 import org.camunda.community.converter.convertible.Convertible;
 import org.camunda.community.converter.expression.ExpressionTransformationResult;
 import org.camunda.community.converter.expression.ExpressionTransformer;
-import org.camunda.community.converter.message.Message;
+import org.camunda.community.converter.message.MessageFactory;
 import org.camunda.community.converter.visitor.AbstractActivityVisitor;
 
 public class CallActivityVisitor extends AbstractActivityVisitor {
@@ -34,7 +34,7 @@ public class CallActivityVisitor extends AbstractActivityVisitor {
     ExpressionTransformationResult transformationResult =
         ExpressionTransformer.transform(context.getElement().getAttribute(CALLED_ELEMENT));
     if (transformationResult == null) {
-      context.addMessage(Severity.WARNING, Message.callActivityNoCalledElementHint());
+      context.addMessage(Severity.WARNING, MessageFactory.callActivityNoCalledElementHint());
     } else {
       context.addConversion(
           CallActivityConvertible.class,
@@ -43,7 +43,8 @@ public class CallActivityVisitor extends AbstractActivityVisitor {
                   .getZeebeCalledElement()
                   .setProcessId(transformationResult.getNewExpression()));
       context.addMessage(
-          Severity.TASK, Message.calledElement(CALLED_ELEMENT, localName(), transformationResult));
+          Severity.TASK,
+          MessageFactory.calledElement(CALLED_ELEMENT, localName(), transformationResult));
     }
   }
 }

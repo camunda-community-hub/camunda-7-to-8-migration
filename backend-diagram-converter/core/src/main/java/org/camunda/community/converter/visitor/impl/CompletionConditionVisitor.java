@@ -6,7 +6,7 @@ import org.camunda.community.converter.NamespaceUri;
 import org.camunda.community.converter.convertible.AbstractActivityConvertible;
 import org.camunda.community.converter.expression.ExpressionTransformationResult;
 import org.camunda.community.converter.expression.ExpressionTransformer;
-import org.camunda.community.converter.message.Message;
+import org.camunda.community.converter.message.MessageFactory;
 import org.camunda.community.converter.visitor.AbstractElementVisitor;
 
 public class CompletionConditionVisitor extends AbstractElementVisitor {
@@ -22,7 +22,7 @@ public class CompletionConditionVisitor extends AbstractElementVisitor {
             conversion
                 .getBpmnMultiInstanceLoopCharacteristics()
                 .setCompletionCondition(transformationResult.getNewExpression()));
-    context.addMessage(Severity.TASK, Message.completionCondition(transformationResult));
+    context.addMessage(Severity.TASK, MessageFactory.completionCondition(transformationResult));
   }
 
   @Override

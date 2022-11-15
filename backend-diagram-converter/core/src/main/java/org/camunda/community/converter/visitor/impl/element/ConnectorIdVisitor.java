@@ -3,6 +3,7 @@ package org.camunda.community.converter.visitor.impl.element;
 import org.camunda.community.converter.DomElementVisitorContext;
 import org.camunda.community.converter.convertible.ServiceTaskConvertible;
 import org.camunda.community.converter.message.Message;
+import org.camunda.community.converter.message.MessageFactory;
 import org.camunda.community.converter.visitor.AbstractCamundaElementVisitor;
 
 public class ConnectorIdVisitor extends AbstractCamundaElementVisitor {
@@ -15,7 +16,7 @@ public class ConnectorIdVisitor extends AbstractCamundaElementVisitor {
             serviceTaskConversion
                 .getZeebeTaskDefinition()
                 .setType(context.getElement().getTextContent()));
-    return Message.connectorId(context.getElement().getLocalName());
+    return MessageFactory.connectorId(context.getElement().getLocalName());
   }
 
   @Override
