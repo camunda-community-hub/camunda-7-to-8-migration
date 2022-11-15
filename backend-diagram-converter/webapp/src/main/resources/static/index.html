@@ -25,7 +25,7 @@
             test any converted diagram.</p>
     </div>
     <div class="row">
-        <div class="mb-3">
+        <div class="mb-3" id="file-select">
             <label for="formFile" class="form-label">Camunda 7 BPMN files</label>
             <input class="form-control" type="file" id="formFile" multiple>
         </div>
@@ -83,8 +83,10 @@
         integrity="sha384-u1OknCvxWvY5kfmNBILK2hRnQC3Pr17a+RTT6rIHI7NnikvbZlHgTPOOmMi466C8"
         crossorigin="anonymous"></script>
 <script>
+    const manifestAwaiter = fetch("/manifest").then(response => response.json());
     const check = document.getElementById("check");
     const convert = document.getElementById("convert");
+    const fileSelect = document.getElementById("file-select");
 
     const fileUpload = document.getElementById("formFile");
     const appendDocumentation = document.getElementById("appendDocumentation");
@@ -98,6 +100,7 @@
         "INFO": "text-bg-info",
         "TASK": "text-bg-secondary"
     }
+
 
     const el = (tagName, attributes, children) => {
         const element = document.createElement(tagName);
@@ -123,14 +126,17 @@
         return el("li", {className: `list-group-item ${severityClasses[message.severity]}`}, `${message.severity}: ${message.message}`);
     };
 
-    const createFormData = () => {
-        if (fileUpload.files.length === 0) {
-            alert("Please select a .bpmn file");
-            return null;
-        }
+    const createFormData = async () => {
+        const manifest = await manifestAwaiter;
         const formData = new FormData();
-        for (let i = 0; i < fileUpload.files.length; i++) {
-            formData.append("files", fileUpload.files[i], fileUpload.files[i].name)
+        if (!manifest.engineEnabled) {
+            if (fileUpload.files.length === 0) {
+                alert("Please select a .bpmn file");
+                return null;
+            }
+            for (let i = 0; i < fileUpload.files.length; i++) {
+                formData.append("files", fileUpload.files[i], fileUpload.files[i].name)
+            }
         }
         formData.append("appendDocumentation", appendDocumentation.checked)
         return formData;
@@ -140,16 +146,16 @@
     }
 
     const createFormattedResultForFile = file => {
-        console.log(file);
         return el("div", {className: "card mb-3"}, [
             el("div", {className: "card-header"}, [file.filename]),
             el("ul", {className: "list-group list-group-flush"}, file.results.map(createFormattedResult).filter(e => e !== undefined))
         ]);
-
     }
 
-    check.addEventListener("click", () => {
-        const formData = createFormData();
+    manifestAwaiter.then(manifest => fileSelect.hidden = manifest.engineEnabled);
+
+    check.addEventListener("click", async () => {
+        const formData = await createFormData();
         if (!formData) {
             return;
         }
@@ -166,8 +172,8 @@
         });
     });
 
-    convert.addEventListener("click", () => {
-        const formData = createFormData();
+    convert.addEventListener("click", async () => {
+        const formData = await createFormData();
         if (!formData) {
             return;
         }
