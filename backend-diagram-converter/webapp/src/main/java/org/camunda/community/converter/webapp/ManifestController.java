@@ -1,5 +1,6 @@
 package org.camunda.community.converter.webapp;
 
+import org.camunda.community.converter.webapp.dto.ConverterManifestDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
@@ -16,8 +17,8 @@ public class ManifestController {
   }
 
   @GetMapping("/manifest")
-  public ResponseEntity<ConverterManifest> getManifest() {
-    ConverterManifest manifest = new ConverterManifest();
+  public ResponseEntity<ConverterManifestDto> getManifest() {
+    ConverterManifestDto manifest = new ConverterManifestDto();
     manifest.setEngineEnabled(engineEnabled);
     return ResponseEntity.ok(manifest);
   }

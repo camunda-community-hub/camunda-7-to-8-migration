@@ -1,6 +1,6 @@
-package org.camunda.community.converter.webapp;
+package org.camunda.community.converter.webapp.dto;
 
-public class ConverterManifest {
+public class ConverterManifestDto {
   private boolean engineEnabled;
 
   public boolean isEngineEnabled() {
