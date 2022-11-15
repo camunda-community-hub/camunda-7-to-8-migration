@@ -1,3 +1,5 @@
-logging:
-  level:
-    root: info
+camunda:
+  bpm:
+    client:
+      enabled: false
+      base-url: http://localhost:8080/engine-rest
