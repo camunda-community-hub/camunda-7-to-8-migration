@@ -31,6 +31,22 @@ The API offers 3 methods:
 `400`: You provided BPMN files although there is an engine connection configured or the other way around. Or there were errors during conversion. These errors would then be appended to the body.
 `500`: There was an exception during parsing the BPMN files.
 
+### Engine connection
+
+The app can be configured to connect to a Camunda Automation Platform REST API.
+
+To use this feature, you need to configure the following:
+
+```yaml
+camunda:
+  bpm:
+    client:
+      enabled: true
+      base-url: <YOUR_REST_API_ENDPOINT>
+```
+
+Currently, there is no way to configure Auth
+
 ### Notifications
 
 The app can be configured to notify people in the background directly. Currently, this is possible via Slack.
