@@ -81,7 +81,7 @@ public class ConverterController {
             ZipEntry entry = new ZipEntry("converted-c8-" + bpmnFile.getOriginalFilename());
             out.putNextEntry(entry);
             out.write(bpmnConverter.printXml(modelInstance.getDocument(), true).getBytes());
-          } catch (Exception e) {
+          } catch (IOException e) {
             exceptions.put(bpmnFile, e);
           }
         }
