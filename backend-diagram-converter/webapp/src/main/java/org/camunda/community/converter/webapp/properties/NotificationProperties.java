@@ -1,5 +1,6 @@
-package org.camunda.community.converter.webapp;
+package org.camunda.community.converter.webapp.properties;
 
+import org.camunda.community.converter.webapp.SlackProperties;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.NestedConfigurationProperty;
 import org.springframework.context.annotation.Configuration;

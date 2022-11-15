@@ -102,11 +102,6 @@
         <artifactId>backend-diagram-converter-core</artifactId>
         <version>${project.version}</version>
       </dependency>
-      <dependency>
-        <groupId>org.camunda.community</groupId>
-        <artifactId>camunda-engine-rest-client-openapi-springboot</artifactId>
-        <version>${version.camunda.platform}</version>
-      </dependency>
     </dependencies>
   </dependencyManagement>
   <build>
