@@ -4,6 +4,7 @@ import org.camunda.community.converter.BpmnDiagramCheckResult.Severity;
 import org.camunda.community.converter.DomElementVisitorContext;
 import org.camunda.community.converter.convertible.Convertible;
 import org.camunda.community.converter.convertible.MessageConvertible;
+import org.camunda.community.converter.message.MessageFactory;
 import org.camunda.community.converter.visitor.AbstractEventReferenceVisitor;
 
 public class MessageVisitor extends AbstractEventReferenceVisitor {
@@ -24,6 +25,6 @@ public class MessageVisitor extends AbstractEventReferenceVisitor {
 
   @Override
   protected void postCreationVisitor(DomElementVisitorContext context) {
-    context.addMessage(Severity.TASK, "Please define a correlation key");
+    context.addMessage(Severity.TASK, MessageFactory.correlationKeyHint());
   }
 }

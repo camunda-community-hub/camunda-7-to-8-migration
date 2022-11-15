@@ -4,6 +4,7 @@ import org.camunda.community.converter.BpmnDiagramCheckResult.Severity;
 import org.camunda.community.converter.DomElementVisitorContext;
 import org.camunda.community.converter.NamespaceUri;
 import org.camunda.community.converter.convertible.Convertible;
+import org.camunda.community.converter.message.MessageFactory;
 
 public abstract class AbstractProcessElementVisitor extends AbstractElementVisitor {
   @Override
@@ -18,9 +19,7 @@ public abstract class AbstractProcessElementVisitor extends AbstractElementVisit
     if (!canBeConverted(context)) {
       context.addMessage(
           Severity.WARNING,
-          "Element '"
-              + context.getElement().getLocalName()
-              + "' is currently not supported in Zeebe");
+          MessageFactory.elementNotSupportedHint(context.getElement().getLocalName()));
     }
   }
 

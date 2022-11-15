@@ -9,6 +9,8 @@ import org.camunda.community.converter.convertible.AbstractDataMapperConvertible
 import org.camunda.community.converter.convertible.CallActivityConvertible;
 import org.camunda.community.converter.expression.ExpressionTransformationResult;
 import org.camunda.community.converter.expression.ExpressionTransformer;
+import org.camunda.community.converter.message.Message;
+import org.camunda.community.converter.message.MessageFactory;
 import org.camunda.community.converter.visitor.AbstractCamundaElementVisitor;
 
 public abstract class InOutVisitor extends AbstractCamundaElementVisitor {
@@ -23,6 +25,20 @@ public abstract class InOutVisitor extends AbstractCamundaElementVisitor {
     return element.getLocalName().equals(OUT);
   }
 
+  private MappingDirection getDirection(DomElement element) {
+    if (isIn(element)) {
+      return MappingDirection.INPUT;
+    } else if (isOut(element)) {
+      return MappingDirection.OUTPUT;
+    } else {
+      throw mustBeInOrOut();
+    }
+  }
+
+  private IllegalStateException mustBeInOrOut() {
+    return new IllegalStateException("Must be in or out");
+  }
+
   @Override
   public boolean canBeTransformed(DomElementVisitorContext context) {
     DomElement element = context.getElement();
@@ -30,29 +46,53 @@ public abstract class InOutVisitor extends AbstractCamundaElementVisitor {
   }
 
   @Override
-  protected String visitCamundaElement(DomElementVisitorContext context) {
+  protected Message visitCamundaElement(DomElementVisitorContext context) {
     DomElement element = context.getElement();
     boolean local =
         Boolean.getBoolean(
             Optional.ofNullable(element.getAttribute("local")).orElse(Boolean.toString(false)));
     if (local) {
-      context.addMessage(
-          Severity.TASK,
-          "Local variable propagation is not supported any more. Please review your variable mapping");
+      context.addMessage(Severity.TASK, MessageFactory.localVariablePropagationNotSupported());
     }
-    StringBuilder builder = new StringBuilder();
-    handleIfAll(element, context).ifPresent(builder::append);
-    handleIfSource(element, context).ifPresent(builder::append);
-    handleIfSourceExpression(element, context).ifPresent(builder::append);
-    handleIfBusinessKey(element).ifPresent(builder::append);
-    return builder.toString();
+    if (isAll(context.getElement())) {
+      if (isIn(context.getElement())) {
+        return MessageFactory.inAllNotRecommendedHint();
+      } else if (isOut(context.getElement())) {
+        context.addConversion(
+            CallActivityConvertible.class,
+            conversion -> conversion.getZeebeCalledElement().setPropagateAllChildVariables(true));
+        return MessageFactory.outAllNotRecommendedHint();
+      } else {
+        throw mustBeInOrOut();
+      }
+    } else if (isBusinessKey(context.getElement())) {
+      return MessageFactory.inOutBusinessKeyNotSupported(context.getElement().getLocalName());
+    } else {
+      String target = element.getAttribute("target");
+      ExpressionTransformationResult transformationResult = createResult(context.getElement());
+      context.addConversion(
+          AbstractDataMapperConvertible.class,
+          conversion ->
+              conversion.addZeebeIoMapping(
+                  getDirection(context.getElement()),
+                  transformationResult.getNewExpression(),
+                  target));
+      return MessageFactory.inputOutputParameter(localName(), target, transformationResult);
+    }
   }
 
-  private Optional<String> handleIfBusinessKey(DomElement element) {
-    if (isBusinessKey(element)) {
-      return Optional.of("Business Keys are not supported in Zeebe");
+  private ExpressionTransformationResult createResult(DomElement element) {
+    String source = element.getAttribute("source");
+    String sourceExpression = element.getAttribute("sourceExpression");
+    if (source != null) {
+      ExpressionTransformationResult transformationResult = new ExpressionTransformationResult();
+      transformationResult.setOldExpression(source);
+      transformationResult.setNewExpression("=" + source);
+      return transformationResult;
+    } else if (sourceExpression != null) {
+      return ExpressionTransformer.transform(sourceExpression);
     } else {
-      return Optional.empty();
+      throw new IllegalStateException("Must have one of: 'source', 'sourceExpression'");
     }
   }
 
@@ -62,60 +102,6 @@ public abstract class InOutVisitor extends AbstractCamundaElementVisitor {
 
   private boolean isBusinessKey(DomElement element) {
     return element.getAttribute("businessKey") != null;
-  }
-
-  private Optional<String> handleIfAll(DomElement element, DomElementVisitorContext result) {
-    if (isAll(element)) {
-      if (isIn(element)) {
-        return Optional.of(
-            "To propagate all variables to the child process, make sure to not define any inputs. Yet, it is not recommended");
-      } else if (isOut(element)) {
-        result.addConversion(
-            CallActivityConvertible.class,
-            conversion -> conversion.getZeebeCalledElement().setPropagateAllChildVariables(true));
-        return Optional.of("Propagating all child values out is not recommended");
-      } else {
-        throw new IllegalStateException("Must be in or out");
-      }
-    } else {
-      return Optional.empty();
-    }
-  }
-
-  private Optional<String> handleIfSource(DomElement element, DomElementVisitorContext result) {
-    String source = element.getAttribute("source");
-    String target = element.getAttribute("target");
-    if (source != null) {
-      String expressionSource = "=" + source;
-      result.addConversion(
-          AbstractDataMapperConvertible.class,
-          conversion ->
-              conversion.addZeebeIoMapping(MappingDirection.INPUT, expressionSource, target));
-      return Optional.of(
-          "Call Activity in mapping '"
-              + target
-              + "' was translated to mapping. Please review the mappings");
-    } else {
-      return Optional.empty();
-    }
-  }
-
-  private Optional<String> handleIfSourceExpression(
-      DomElement element, DomElementVisitorContext result) {
-    String sourceExpression = element.getAttribute("sourceExpression");
-    String target = element.getAttribute("target");
-    if (sourceExpression != null) {
-      ExpressionTransformationResult transformationResult =
-          ExpressionTransformer.transform(sourceExpression);
-      result.addConversion(
-          AbstractDataMapperConvertible.class,
-          conversion ->
-              conversion.addZeebeIoMapping(
-                  MappingDirection.INPUT, transformationResult.getNewExpression(), target));
-      return Optional.of(transformationResult.getHint());
-    } else {
-      return Optional.empty();
-    }
   }
 
   public static class InVisitor extends InOutVisitor {

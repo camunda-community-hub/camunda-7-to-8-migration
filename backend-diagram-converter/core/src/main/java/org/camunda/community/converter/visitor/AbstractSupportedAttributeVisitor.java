@@ -2,22 +2,16 @@ package org.camunda.community.converter.visitor;
 
 import org.camunda.community.converter.BpmnDiagramCheckResult.Severity;
 import org.camunda.community.converter.DomElementVisitorContext;
+import org.camunda.community.converter.message.Message;
 
 public abstract class AbstractSupportedAttributeVisitor extends AbstractAttributeVisitor {
 
   @Override
   protected void visitAttribute(DomElementVisitorContext context, String attribute) {
-    String hint = visitSupportedAttribute(context, attribute);
-    context.addMessage(
-        Severity.TASK,
-        "Attribute '"
-            + attributeLocalName()
-            + "' on '"
-            + context.getElement().getLocalName()
-            + "' was mapped, please review. Hint: "
-            + hint);
+    Message message = visitSupportedAttribute(context, attribute);
+    context.addMessage(Severity.TASK, message);
   }
 
-  protected abstract String visitSupportedAttribute(
+  protected abstract Message visitSupportedAttribute(
       DomElementVisitorContext context, String attribute);
 }

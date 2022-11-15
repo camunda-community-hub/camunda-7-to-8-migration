@@ -17,8 +17,6 @@ public class ExpressionTransformer {
     }
     String transform = INSTANCE.doTransform(expression);
     ExpressionTransformationResult result = new ExpressionTransformationResult();
-    result.setHint(
-        "Please review transformed expression: '" + expression + "' -> '" + transform + "'");
     result.setOldExpression(expression);
     result.setNewExpression(transform);
     return result;
@@ -36,7 +34,6 @@ public class ExpressionTransformer {
             .collect(Collectors.toList());
     if (nonExpressions.size() == 1
         && expression.trim().length() == nonExpressions.get(0).length()) {
-      System.out.println(expression);
       return expression;
     }
     List<String> expressions =
@@ -45,9 +42,7 @@ public class ExpressionTransformer {
             .filter(s -> s.length() > 0)
             .map(s -> nonExpressions.contains(s) ? "\"" + s + "\"" : handleExpression(s))
             .collect(Collectors.toList());
-    String result = "=" + String.join(" + ", expressions);
-    System.out.println(result);
-    return result;
+    return "=" + String.join(" + ", expressions);
   }
 
   private String handleExpression(String expression) {

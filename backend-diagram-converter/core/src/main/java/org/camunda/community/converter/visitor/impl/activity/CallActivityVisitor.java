@@ -6,9 +6,13 @@ import org.camunda.community.converter.convertible.CallActivityConvertible;
 import org.camunda.community.converter.convertible.Convertible;
 import org.camunda.community.converter.expression.ExpressionTransformationResult;
 import org.camunda.community.converter.expression.ExpressionTransformer;
+import org.camunda.community.converter.message.MessageFactory;
 import org.camunda.community.converter.visitor.AbstractActivityVisitor;
 
 public class CallActivityVisitor extends AbstractActivityVisitor {
+
+  public static final String CALLED_ELEMENT = "calledElement";
+
   @Override
   public String localName() {
     return "callActivity";
@@ -28,11 +32,9 @@ public class CallActivityVisitor extends AbstractActivityVisitor {
   protected void postCreationVisitor(DomElementVisitorContext context) {
 
     ExpressionTransformationResult transformationResult =
-        ExpressionTransformer.transform(context.getElement().getAttribute("calledElement"));
+        ExpressionTransformer.transform(context.getElement().getAttribute(CALLED_ELEMENT));
     if (transformationResult == null) {
-      context.addMessage(
-          Severity.WARNING,
-          "There has to be a calledElement present on the call activity. Please keep in mind that CMMN is no supported with Zeebe");
+      context.addMessage(Severity.WARNING, MessageFactory.callActivityNoCalledElementHint());
     } else {
       context.addConversion(
           CallActivityConvertible.class,
@@ -41,7 +43,8 @@ public class CallActivityVisitor extends AbstractActivityVisitor {
                   .getZeebeCalledElement()
                   .setProcessId(transformationResult.getNewExpression()));
       context.addMessage(
-          Severity.TASK, "Called element on callActivity: " + transformationResult.getHint());
+          Severity.TASK,
+          MessageFactory.calledElement(CALLED_ELEMENT, localName(), transformationResult));
     }
   }
 }

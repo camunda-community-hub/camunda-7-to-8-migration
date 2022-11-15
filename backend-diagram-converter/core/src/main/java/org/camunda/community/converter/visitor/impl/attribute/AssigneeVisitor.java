@@ -4,6 +4,8 @@ import org.camunda.community.converter.DomElementVisitorContext;
 import org.camunda.community.converter.convertible.UserTaskConvertible;
 import org.camunda.community.converter.expression.ExpressionTransformationResult;
 import org.camunda.community.converter.expression.ExpressionTransformer;
+import org.camunda.community.converter.message.Message;
+import org.camunda.community.converter.message.MessageFactory;
 import org.camunda.community.converter.visitor.AbstractSupportedAttributeVisitor;
 
 public class AssigneeVisitor extends AbstractSupportedAttributeVisitor {
@@ -14,7 +16,7 @@ public class AssigneeVisitor extends AbstractSupportedAttributeVisitor {
   }
 
   @Override
-  protected String visitSupportedAttribute(DomElementVisitorContext context, String attribute) {
+  protected Message visitSupportedAttribute(DomElementVisitorContext context, String attribute) {
     ExpressionTransformationResult transformationResult =
         ExpressionTransformer.transform(attribute);
     context.addConversion(
@@ -23,6 +25,7 @@ public class AssigneeVisitor extends AbstractSupportedAttributeVisitor {
             userTaskConversion
                 .getZeebeAssignmentDefinition()
                 .setAssignee(transformationResult.getNewExpression()));
-    return transformationResult.getHint();
+    return MessageFactory.assignee(
+        attributeLocalName(), context.getElement().getLocalName(), transformationResult);
   }
 }

@@ -2,6 +2,8 @@ package org.camunda.community.converter.visitor.impl.attribute;
 
 import org.camunda.community.converter.DomElementVisitorContext;
 import org.camunda.community.converter.convertible.UserTaskConvertible;
+import org.camunda.community.converter.message.Message;
+import org.camunda.community.converter.message.MessageFactory;
 import org.camunda.community.converter.visitor.AbstractSupportedAttributeVisitor;
 
 public class UserTaskFormKeyVisitor extends AbstractSupportedAttributeVisitor {
@@ -12,11 +14,11 @@ public class UserTaskFormKeyVisitor extends AbstractSupportedAttributeVisitor {
   }
 
   @Override
-  protected String visitSupportedAttribute(DomElementVisitorContext context, String attribute) {
+  protected Message visitSupportedAttribute(DomElementVisitorContext context, String attribute) {
     context.addConversion(
         UserTaskConvertible.class,
         userTaskConversion -> userTaskConversion.getZeebeFormDefinition().setFormKey(attribute));
-    return "formKey is now set according to zeebe namespace. Please review your form binding";
+    return MessageFactory.formKey(attributeLocalName(), context.getElement().getLocalName());
   }
 
   @Override

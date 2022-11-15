@@ -1,6 +1,8 @@
 package org.camunda.community.converter.visitor.impl.element;
 
 import org.camunda.community.converter.DomElementVisitorContext;
+import org.camunda.community.converter.message.Message;
+import org.camunda.community.converter.message.MessageFactory;
 import org.camunda.community.converter.visitor.AbstractCamundaElementVisitor;
 
 public abstract class GeneratedFormDataVisitor extends AbstractCamundaElementVisitor {
@@ -11,8 +13,8 @@ public abstract class GeneratedFormDataVisitor extends AbstractCamundaElementVis
   }
 
   @Override
-  protected String visitCamundaElement(DomElementVisitorContext context) {
-    return null;
+  protected Message visitCamundaElement(DomElementVisitorContext context) {
+    return MessageFactory.generatedFormData();
   }
 
   @Override
@@ -28,8 +30,8 @@ public abstract class GeneratedFormDataVisitor extends AbstractCamundaElementVis
     }
 
     @Override
-    protected String visitCamundaElement(DomElementVisitorContext context) {
-      return "Generated forms are not supported in Zeebe. Please define a form key instead";
+    protected Message visitCamundaElement(DomElementVisitorContext context) {
+      return MessageFactory.formData(context.getElement().getLocalName());
     }
 
     @Override

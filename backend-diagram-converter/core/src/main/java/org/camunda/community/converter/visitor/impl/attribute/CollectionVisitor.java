@@ -5,6 +5,8 @@ import org.camunda.community.converter.DomElementVisitorContext;
 import org.camunda.community.converter.convertible.AbstractActivityConvertible;
 import org.camunda.community.converter.expression.ExpressionTransformationResult;
 import org.camunda.community.converter.expression.ExpressionTransformer;
+import org.camunda.community.converter.message.Message;
+import org.camunda.community.converter.message.MessageFactory;
 import org.camunda.community.converter.visitor.AbstractSupportedAttributeVisitor;
 
 public class CollectionVisitor extends AbstractSupportedAttributeVisitor {
@@ -14,7 +16,7 @@ public class CollectionVisitor extends AbstractSupportedAttributeVisitor {
   }
 
   @Override
-  protected String visitSupportedAttribute(DomElementVisitorContext context, String attribute) {
+  protected Message visitSupportedAttribute(DomElementVisitorContext context, String attribute) {
     ExpressionTransformationResult transformationResult =
         ExpressionTransformer.transform(attribute);
     context.addConversion(
@@ -27,9 +29,8 @@ public class CollectionVisitor extends AbstractSupportedAttributeVisitor {
                 .getBpmnMultiInstanceLoopCharacteristics()
                 .getZeebeLoopCharacteristics()
                 .setInputCollection(transformationResult.getNewExpression()));
-    context.addMessage(
-        Severity.TASK,
-        "Collecting results in a multi instance is now natively possible with Zeebe. Please review");
-    return transformationResult.getHint();
+    context.addMessage(Severity.TASK, MessageFactory.collectionHint());
+    return MessageFactory.collection(
+        attributeLocalName(), context.getElement().getLocalName(), transformationResult);
   }
 }

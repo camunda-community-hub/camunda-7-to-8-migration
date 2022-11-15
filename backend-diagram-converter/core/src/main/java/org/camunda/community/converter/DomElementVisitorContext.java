@@ -8,6 +8,7 @@ import org.camunda.community.converter.BpmnDiagramCheckResult.BpmnElementCheckMe
 import org.camunda.community.converter.BpmnDiagramCheckResult.BpmnElementCheckResult;
 import org.camunda.community.converter.BpmnDiagramCheckResult.Severity;
 import org.camunda.community.converter.convertible.Convertible;
+import org.camunda.community.converter.message.Message;
 
 public interface DomElementVisitorContext {
   /**
@@ -34,7 +35,7 @@ public interface DomElementVisitorContext {
    * @param severity severity of the message
    * @param message the message to display
    */
-  void addMessage(Severity severity, String message);
+  void addMessage(Severity severity, Message message);
 
   /**
    * Sets the currently handled element as BPMN process element. This element can now hold messages
@@ -91,7 +92,7 @@ public interface DomElementVisitorContext {
     }
 
     @Override
-    public void addMessage(Severity severity, String message) {
+    public void addMessage(Severity severity, Message message) {
       addMessage(element, severity, message);
     }
 
@@ -111,14 +112,15 @@ public interface DomElementVisitorContext {
       notificationService.notify(object);
     }
 
-    private void addMessage(DomElement element, Severity severity, String message) {
+    private void addMessage(DomElement element, Severity severity, Message message) {
       findElementMessages(element).add(createMessage(severity, message));
     }
 
-    private BpmnElementCheckMessage createMessage(Severity severity, String message) {
+    private BpmnElementCheckMessage createMessage(Severity severity, Message message) {
       BpmnElementCheckMessage m = new BpmnElementCheckMessage();
-      m.setMessage(message);
+      m.setMessage(message.getMessage());
       m.setSeverity(severity);
+      m.setLink(message.getLink());
       return m;
     }
 

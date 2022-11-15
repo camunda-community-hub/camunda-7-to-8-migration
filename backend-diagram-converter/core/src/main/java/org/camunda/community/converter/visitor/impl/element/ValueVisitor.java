@@ -1,6 +1,8 @@
 package org.camunda.community.converter.visitor.impl.element;
 
 import org.camunda.community.converter.DomElementVisitorContext;
+import org.camunda.community.converter.message.Message;
+import org.camunda.community.converter.message.MessageFactory;
 import org.camunda.community.converter.visitor.AbstractCamundaElementVisitor;
 
 public class ValueVisitor extends AbstractCamundaElementVisitor {
@@ -10,8 +12,8 @@ public class ValueVisitor extends AbstractCamundaElementVisitor {
   }
 
   @Override
-  protected String visitCamundaElement(DomElementVisitorContext context) {
-    return null;
+  protected Message visitCamundaElement(DomElementVisitorContext context) {
+    return MessageFactory.value();
   }
 
   @Override

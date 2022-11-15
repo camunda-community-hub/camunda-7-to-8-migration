@@ -63,6 +63,7 @@ public class BpmnDiagramCheckResult {
   public static class BpmnElementCheckMessage {
     private Severity severity;
     private String message;
+    private String link;
 
     public Severity getSeverity() {
       return severity;
@@ -78,6 +79,14 @@ public class BpmnDiagramCheckResult {
 
     public void setMessage(String message) {
       this.message = message;
+    }
+
+    public String getLink() {
+      return link;
+    }
+
+    public void setLink(String link) {
+      this.link = link;
     }
   }
 }

@@ -1,13 +1,15 @@
 package org.camunda.community.converter.visitor.impl.element;
 
 import org.camunda.community.converter.DomElementVisitorContext;
+import org.camunda.community.converter.message.Message;
+import org.camunda.community.converter.message.MessageFactory;
 import org.camunda.community.converter.visitor.AbstractCamundaElementVisitor;
 
 public abstract class FieldContentVisitor extends AbstractCamundaElementVisitor {
 
   @Override
-  protected String visitCamundaElement(DomElementVisitorContext context) {
-    return "Field injection does not work any more. Please review your implementation";
+  protected Message visitCamundaElement(DomElementVisitorContext context) {
+    return MessageFactory.fieldContent(context.getElement().getLocalName());
   }
 
   @Override

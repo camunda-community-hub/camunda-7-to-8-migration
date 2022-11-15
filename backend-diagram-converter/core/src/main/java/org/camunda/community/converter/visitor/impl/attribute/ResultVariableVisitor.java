@@ -3,9 +3,13 @@ package org.camunda.community.converter.visitor.impl.attribute;
 import org.camunda.community.converter.DomElementVisitorContext;
 import org.camunda.community.converter.convertible.AbstractDataMapperConvertible;
 import org.camunda.community.converter.convertible.BusinessRuleTaskConvertible;
+import org.camunda.community.converter.message.Message;
+import org.camunda.community.converter.message.MessageFactory;
 import org.camunda.community.converter.visitor.AbstractSupportedAttributeVisitor;
 
 public abstract class ResultVariableVisitor extends AbstractSupportedAttributeVisitor {
+  private static final String HEADER_NAME = "resultVariable";
+
   @Override
   public String attributeLocalName() {
     return "resultVariable";
@@ -20,11 +24,12 @@ public abstract class ResultVariableVisitor extends AbstractSupportedAttributeVi
 
   public static class ResultVariableOnBusinessRuleTaskVisitor extends ResultVariableVisitor {
     @Override
-    protected String visitSupportedAttribute(DomElementVisitorContext context, String attribute) {
+    protected Message visitSupportedAttribute(DomElementVisitorContext context, String attribute) {
       context.addConversion(
           BusinessRuleTaskConvertible.class,
           conversion -> conversion.getZeebeCalledDecision().setResultVariable(attribute));
-      return "Result variable is a simple string";
+      return MessageFactory.resultVariableBusinessRule(
+          attributeLocalName(), context.getElement().getLocalName());
     }
 
     @Override
@@ -36,11 +41,12 @@ public abstract class ResultVariableVisitor extends AbstractSupportedAttributeVi
   public static class ResultVariableOnRestVisitor extends ResultVariableVisitor {
 
     @Override
-    protected String visitSupportedAttribute(DomElementVisitorContext context, String attribute) {
+    protected Message visitSupportedAttribute(DomElementVisitorContext context, String attribute) {
       context.addConversion(
           AbstractDataMapperConvertible.class,
-          convertible -> convertible.addZeebeTaskHeader("resultVariable", attribute));
-      return "Result variable was mapped as header 'resultVariable'";
+          convertible -> convertible.addZeebeTaskHeader(HEADER_NAME, attribute));
+      return MessageFactory.resultVariableRest(
+          attributeLocalName(), context.getElement().getLocalName(), HEADER_NAME);
     }
 
     @Override
