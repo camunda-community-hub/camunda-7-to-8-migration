@@ -12,7 +12,7 @@ import org.junit.jupiter.params.provider.CsvSource;
 public class BpmnConverterTest {
 
   @ParameterizedTest
-  @CsvSource(value = {"example-c7.bpmn", "example-c7_2.bpmn"})
+  @CsvSource(value = {"example-c7.bpmn", "example-c7_2.bpmn", "java-delegate-class-c7.bpmn"})
   public void shouldConvert(String bpmnFile) {
     BpmnConverter converter = BpmnConverterFactory.getInstance().get();
     BpmnModelInstance modelInstance =
