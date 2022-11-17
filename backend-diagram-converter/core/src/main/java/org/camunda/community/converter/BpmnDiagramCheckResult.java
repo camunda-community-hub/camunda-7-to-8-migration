@@ -4,11 +4,18 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class BpmnDiagramCheckResult {
-  private String filename;
   private final List<BpmnElementCheckResult> results = new ArrayList<>();
+  private String filename;
 
   public List<BpmnElementCheckResult> getResults() {
     return results;
+  }
+
+  public BpmnElementCheckResult getResult(String elementId) {
+    return getResults().stream()
+        .filter(element -> element.getElementId().equals(elementId))
+        .findFirst()
+        .orElse(null);
   }
 
   public String getFilename() {
