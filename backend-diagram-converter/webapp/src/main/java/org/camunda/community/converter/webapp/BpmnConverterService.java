@@ -6,7 +6,6 @@ import org.camunda.bpm.model.bpmn.BpmnModelInstance;
 import org.camunda.bpm.model.xml.instance.DomDocument;
 import org.camunda.community.converter.BpmnConverter;
 import org.camunda.community.converter.BpmnDiagramCheckResult;
-import org.camunda.community.converter.ConverterProperties;
 import org.camunda.community.converter.ConverterPropertiesFactory;
 import org.camunda.community.converter.DefaultConverterProperties;
 import org.springframework.beans.factory.annotation.Autowired;
