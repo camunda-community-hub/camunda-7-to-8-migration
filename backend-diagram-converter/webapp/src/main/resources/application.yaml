@@ -3,3 +3,8 @@ camunda:
     client:
       enabled: false
       base-url: http://localhost:8080/engine-rest
+notification:
+  slack:
+    enabled: false
+    token: ""
+    channel-name: ""
