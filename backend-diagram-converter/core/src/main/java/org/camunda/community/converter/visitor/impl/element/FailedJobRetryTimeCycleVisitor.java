@@ -1,6 +1,7 @@
 package org.camunda.community.converter.visitor.impl.element;
 
 import java.util.concurrent.atomic.AtomicReference;
+import org.camunda.community.converter.BpmnDiagramCheckResult.Severity;
 import org.camunda.community.converter.DomElementVisitorContext;
 import org.camunda.community.converter.RetryTimeCycleConverter;
 import org.camunda.community.converter.convertible.Convertible;
@@ -41,5 +42,30 @@ public class FailedJobRetryTimeCycleVisitor extends AbstractCamundaElementVisito
     AtomicReference<Convertible> ref = new AtomicReference<>();
     context.addConversion(Convertible.class, ref::set);
     return ref.get() instanceof ServiceTaskConvertible;
+  }
+
+  public static class FailedJobRetryTimeCycleRemovalVisitor extends FailedJobRetryTimeCycleVisitor {
+    @Override
+    protected boolean canVisit(DomElementVisitorContext context) {
+      return super.canVisit(context) && isNoServiceTask(context);
+    }
+
+    private boolean isNoServiceTask(DomElementVisitorContext context) {
+      AtomicReference<Convertible> ref = new AtomicReference<>();
+      context.addConversion(Convertible.class, ref::set);
+      return !(ref.get() instanceof ServiceTaskConvertible);
+    }
+
+    @Override
+    protected Message visitCamundaElement(DomElementVisitorContext context) {
+      String timecycle = context.getElement().getTextContent();
+      return MessageFactory.failedJobRetryTimeCycleRemoved(
+          context.getElement().getLocalName(), timecycle);
+    }
+
+    @Override
+    protected Severity messageSeverity() {
+      return Severity.INFO;
+    }
   }
 }

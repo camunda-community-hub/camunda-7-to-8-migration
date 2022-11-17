@@ -297,6 +297,15 @@ public class MessageFactory {
             .build());
   }
 
+  public static Message failedJobRetryTimeCycleRemoved(String elementLocalName, String timecycle) {
+    return INSTANCE.composeMessage(
+        "failed-job-retry-time-cycle-removed",
+        ContextBuilder.builder()
+            .context(elementNotTransformablePrefix(elementLocalName))
+            .entry("timecycle", timecycle)
+            .build());
+  }
+
   public static Message errorEventDefinition(String elementLocalName) {
     return INSTANCE.composeMessage(
         "error-event-definition",
