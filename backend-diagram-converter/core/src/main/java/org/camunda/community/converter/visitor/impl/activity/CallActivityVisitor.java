@@ -32,7 +32,10 @@ public class CallActivityVisitor extends AbstractActivityVisitor {
   protected void postCreationVisitor(DomElementVisitorContext context) {
 
     ExpressionTransformationResult transformationResult =
-        ExpressionTransformer.transform(context.getElement().getAttribute(CALLED_ELEMENT));
+        ExpressionTransformer.transform(
+            context
+                .getElement()
+                .getAttribute(context.getProperties().getBpmnNamespace().getUri(), CALLED_ELEMENT));
     if (transformationResult == null) {
       context.addMessage(Severity.WARNING, MessageFactory.callActivityNoCalledElementHint());
     } else {

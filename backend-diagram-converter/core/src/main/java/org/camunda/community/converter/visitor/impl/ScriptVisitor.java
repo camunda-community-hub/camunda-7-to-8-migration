@@ -2,15 +2,14 @@ package org.camunda.community.converter.visitor.impl;
 
 import org.camunda.community.converter.BpmnDiagramCheckResult.Severity;
 import org.camunda.community.converter.DomElementVisitorContext;
-import org.camunda.community.converter.NamespaceUri;
 import org.camunda.community.converter.convertible.AbstractDataMapperConvertible;
 import org.camunda.community.converter.message.MessageFactory;
 import org.camunda.community.converter.visitor.AbstractElementVisitor;
 
 public class ScriptVisitor extends AbstractElementVisitor {
   @Override
-  protected String namespaceUri() {
-    return NamespaceUri.BPMN;
+  protected String namespaceUri(DomElementVisitorContext context) {
+    return context.getProperties().getBpmnNamespace().getUri();
   }
 
   @Override
@@ -23,7 +22,9 @@ public class ScriptVisitor extends AbstractElementVisitor {
     String script = context.getElement().getTextContent();
     context.addConversion(
         AbstractDataMapperConvertible.class,
-        convertible -> convertible.addZeebeTaskHeader("script", script));
+        convertible ->
+            convertible.addZeebeTaskHeader(
+                context.getProperties().getScriptHeader().getName(), script));
     context.addMessage(Severity.TASK, MessageFactory.script());
   }
 }

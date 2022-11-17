@@ -8,7 +8,6 @@ import org.camunda.community.converter.message.MessageFactory;
 import org.camunda.community.converter.visitor.AbstractActivityVisitor;
 
 public class ScriptTaskVisitor extends AbstractActivityVisitor {
-  private static final String SCRIPT_FORMAT_HEADER_NAME = "scriptFormat";
 
   @Override
   public String localName() {
@@ -27,13 +26,20 @@ public class ScriptTaskVisitor extends AbstractActivityVisitor {
 
   @Override
   protected void postCreationVisitor(DomElementVisitorContext context) {
-    String scriptFormat = context.getElement().getAttribute(SCRIPT_FORMAT_HEADER_NAME);
+    String scriptFormat =
+        context
+            .getElement()
+            .getAttribute(context.getProperties().getBpmnNamespace().getUri(), "scriptFormat");
     if (scriptFormat != null && scriptFormat.trim().length() > 0) {
       context.addConversion(
           ServiceTaskConvertible.class,
-          convertible -> convertible.addZeebeTaskHeader(SCRIPT_FORMAT_HEADER_NAME, scriptFormat));
+          convertible ->
+              convertible.addZeebeTaskHeader(
+                  context.getProperties().getScriptFormatHeader().getName(), scriptFormat));
       context.addMessage(
-          Severity.TASK, MessageFactory.scriptFormat(SCRIPT_FORMAT_HEADER_NAME, scriptFormat));
+          Severity.TASK,
+          MessageFactory.scriptFormat(
+              context.getProperties().getScriptFormatHeader().getName(), scriptFormat));
     } else {
       context.addMessage(Severity.TASK, MessageFactory.scriptFormatMissing());
     }
