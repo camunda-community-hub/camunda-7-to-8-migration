@@ -44,10 +44,11 @@ public class BpmnConverterTest {
   public void testDelegateHint() {
     String bpmnFile = "java-delegate-class-c7.bpmn";
     BpmnConverter converter = BpmnConverterFactory.getInstance().get();
+    ConverterProperties properties = ConverterPropertiesFactory.getInstance().get();
     BpmnModelInstance modelInstance =
         Bpmn.readModelFromStream(this.getClass().getClassLoader().getResourceAsStream(bpmnFile));
     BpmnDiagramCheckResult result =
-        converter.check("java-delegate-class-c7.bpmn", modelInstance, false);
+        converter.check("java-delegate-class-c7.bpmn", modelInstance, false, properties);
     BpmnElementCheckResult delegateClassServiceTask = result.getResult("DelegateClassServiceTask");
     assertNotNull(delegateClassServiceTask);
     assertThat(delegateClassServiceTask.getMessages()).hasSize(1);
