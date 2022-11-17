@@ -2,8 +2,6 @@ package org.camunda.community.converter;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Optional;
 import java.util.Properties;
 import java.util.function.Consumer;
@@ -35,8 +33,6 @@ public class ConverterPropertiesFactory extends AbstractFactory<ConverterPropert
       throw new RuntimeException(e);
     }
   }
-
-  private final Map<String, DefaultNamespaceProperties> namespacePropertiesCache = new HashMap<>();
 
   public static ConverterPropertiesFactory getInstance() {
     return INSTANCE;
@@ -118,12 +114,7 @@ public class ConverterPropertiesFactory extends AbstractFactory<ConverterPropert
       Consumer<DefaultNamespaceProperties> setter) {
     String prefix = String.join(DELIMITER, "namespace", namespace);
     DefaultNamespaceProperties namespaceProperties =
-        getOrCreate(
-            getter,
-            DefaultNamespaceProperties.class,
-            () ->
-                namespacePropertiesCache.computeIfAbsent(
-                    namespace, ns -> new DefaultNamespaceProperties()));
+        getOrCreate(getter, DefaultNamespaceProperties.class, DefaultNamespaceProperties::new);
     readDefaultValue(
         String.join(DELIMITER, prefix, "name"),
         namespaceProperties::getName,
