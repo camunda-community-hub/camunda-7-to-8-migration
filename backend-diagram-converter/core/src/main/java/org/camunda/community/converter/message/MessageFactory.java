@@ -286,12 +286,14 @@ public class MessageFactory {
             .build());
   }
 
-  public static Message failedJobRetryTimeCycle(String elementLocalName, String timecycle) {
+  public static Message failedJobRetryTimeCycle(
+      String elementLocalName, String timecycle, int retries) {
     return INSTANCE.composeMessage(
         "failed-job-retry-time-cycle",
         ContextBuilder.builder()
-            .context(elementNotTransformablePrefix(elementLocalName))
+            .context(elementTransformedPrefix(elementLocalName))
             .entry("timecycle", timecycle)
+            .entry("retries", String.valueOf(retries))
             .build());
   }
 

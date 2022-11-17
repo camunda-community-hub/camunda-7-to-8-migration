@@ -238,7 +238,7 @@ public class MessageFactoryTest {
 
   @Test
   void shouldBuildFailedJobRetryTimeCycle() {
-    Message message = MessageFactory.failedJobRetryTimeCycle(random(), random());
+    Message message = MessageFactory.failedJobRetryTimeCycle(random(), random(), 3);
     assertNotNull(message);
     assertNotNull(message.getMessage());
   }
