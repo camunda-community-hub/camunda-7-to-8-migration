@@ -1,3 +1,3 @@
 package org.camunda.community.converter.convertible;
 
-public class IntermediateThrowEventConvertible extends AbstractEventConvertible {}
+public class IntermediateThrowEventConvertible extends ServiceTaskConvertible {}
