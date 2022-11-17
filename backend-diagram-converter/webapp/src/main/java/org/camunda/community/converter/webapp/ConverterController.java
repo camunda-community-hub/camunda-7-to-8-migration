@@ -35,14 +35,19 @@ public class ConverterController {
   }
 
   @PostMapping("/check")
-  public ResponseEntity<?> check(@RequestParam("files") MultipartFile[] bpmnFiles) {
+  public ResponseEntity<?> check(
+      @RequestParam("files") MultipartFile[] bpmnFiles,
+      @RequestParam(value = "adapterJobType", required = false) String adapterJobType) {
     List<BpmnDiagramCheckResult> results =
         Arrays.stream(bpmnFiles)
             .map(
                 bpmnFile -> {
                   try (InputStream in = bpmnFile.getInputStream()) {
                     return bpmnConverter.check(
-                        bpmnFile.getOriginalFilename(), Bpmn.readModelFromStream(in), false);
+                        bpmnFile.getOriginalFilename(),
+                        Bpmn.readModelFromStream(in),
+                        false,
+                        adapterJobType);
                   } catch (IOException e) {
                     BpmnDiagramCheckResult result = new BpmnDiagramCheckResult();
                     result.setFilename(bpmnFile.getOriginalFilename());
@@ -56,14 +61,15 @@ public class ConverterController {
   @PostMapping("/convert")
   public ResponseEntity<?> getFile(
       @RequestParam("files") MultipartFile[] bpmnFiles,
-      @RequestParam("appendDocumentation") boolean appendDocumentation) {
+      @RequestParam("appendDocumentation") boolean appendDocumentation,
+      @RequestParam(value = "adapterJobType", required = false) String adapterJobType) {
     Map<MultipartFile, Exception> exceptions = new HashMap<>();
     ByteArrayOutputStream bo = new ByteArrayOutputStream();
     try (ZipOutputStream out = new ZipOutputStream(bo)) {
       for (MultipartFile bpmnFile : bpmnFiles) {
         try (InputStream in = bpmnFile.getInputStream()) {
           BpmnModelInstance modelInstance = Bpmn.readModelFromStream(in);
-          bpmnConverter.convert(modelInstance, appendDocumentation);
+          bpmnConverter.convert(modelInstance, appendDocumentation, adapterJobType);
           ZipEntry entry = new ZipEntry("converted-c8-" + bpmnFile.getOriginalFilename());
           out.putNextEntry(entry);
           out.write(bpmnConverter.printXml(modelInstance.getDocument(), true).getBytes());
