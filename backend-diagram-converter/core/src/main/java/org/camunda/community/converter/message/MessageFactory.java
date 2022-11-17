@@ -194,6 +194,15 @@ public class MessageFactory {
             .build());
   }
 
+  public static Message scriptJobType(String elementLocalName, String jobType) {
+    return INSTANCE.composeMessage(
+        "script-job-type",
+        ContextBuilder.builder()
+            .context(elementTransformedPrefix(elementLocalName))
+            .entry("jobType", jobType)
+            .build());
+  }
+
   public static Message scriptFormatMissing() {
     return INSTANCE.staticMessage("script-format-missing");
   }

@@ -5,8 +5,8 @@ import java.util.function.Consumer;
 public class DefaultConverterProperties implements ConverterProperties {
   private ZeebeHeaderProperties scriptHeader;
   private ZeebeHeaderProperties resultVariableHeader;
-
-  private ZeebeHeaderProperties adapterJobTypeHeader;
+  private ZeebeJobTypeProperties adapterJobType;
+  private ZeebeJobTypeProperties scriptJobType;
   private ZeebeHeaderProperties resourceHeader;
   private ZeebeHeaderProperties scriptFormatHeader;
   private NamespaceProperties zeebeNamespace;
@@ -25,6 +25,24 @@ public class DefaultConverterProperties implements ConverterProperties {
     DefaultZeebeHeaderProperties header = new DefaultZeebeHeaderProperties();
     header.setName(name);
     setter.accept(header);
+  }
+
+  public static void setZeebeJobType(String type, Consumer<ZeebeJobTypeProperties> setter) {
+    if (type == null) {
+      return;
+    }
+    DefaultZeebeJobTypeProperties jobType = new DefaultZeebeJobTypeProperties();
+    jobType.setType(type);
+    setter.accept(jobType);
+  }
+
+  @Override
+  public ZeebeJobTypeProperties getScriptJobType() {
+    return scriptJobType;
+  }
+
+  public void setScriptJobType(ZeebeJobTypeProperties scriptJobType) {
+    this.scriptJobType = scriptJobType;
   }
 
   @Override
@@ -64,12 +82,12 @@ public class DefaultConverterProperties implements ConverterProperties {
   }
 
   @Override
-  public ZeebeHeaderProperties getAdapterJobTypeHeader() {
-    return adapterJobTypeHeader;
+  public ZeebeJobTypeProperties getAdapterJobType() {
+    return adapterJobType;
   }
 
-  public void setAdapterJobTypeHeader(ZeebeHeaderProperties adapterJobTypeHeader) {
-    this.adapterJobTypeHeader = adapterJobTypeHeader;
+  public void setAdapterJobType(ZeebeJobTypeProperties adapterJobType) {
+    this.adapterJobType = adapterJobType;
   }
 
   @Override
@@ -211,6 +229,19 @@ public class DefaultConverterProperties implements ConverterProperties {
 
     public void setName(String name) {
       this.name = name;
+    }
+  }
+
+  public static class DefaultZeebeJobTypeProperties implements ZeebeJobTypeProperties {
+    private String type;
+
+    @Override
+    public String getType() {
+      return type;
+    }
+
+    public void setType(String type) {
+      this.type = type;
     }
   }
 }
