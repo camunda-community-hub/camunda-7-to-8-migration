@@ -1,15 +1,14 @@
 package org.camunda.community.converter;
 
+import java.util.List;
+import java.util.Objects;
+import java.util.function.Consumer;
 import org.camunda.bpm.model.xml.instance.DomElement;
 import org.camunda.community.converter.BpmnDiagramCheckResult.BpmnElementCheckMessage;
 import org.camunda.community.converter.BpmnDiagramCheckResult.BpmnElementCheckResult;
 import org.camunda.community.converter.BpmnDiagramCheckResult.Severity;
 import org.camunda.community.converter.convertible.Convertible;
 import org.camunda.community.converter.message.Message;
-
-import java.util.List;
-import java.util.Objects;
-import java.util.function.Consumer;
 
 public interface DomElementVisitorContext {
   /**
