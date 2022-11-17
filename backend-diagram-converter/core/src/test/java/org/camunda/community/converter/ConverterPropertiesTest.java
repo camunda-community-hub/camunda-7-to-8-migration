@@ -10,4 +10,15 @@ public class ConverterPropertiesTest {
     ConverterProperties properties = ConverterPropertiesFactory.getInstance().get();
     assertNotNull(properties.getScriptHeader());
   }
+
+  @Test
+  void shouldMergeProperties() {
+    DefaultConverterProperties properties = new DefaultConverterProperties();
+    DefaultConverterProperties.setZeebeJobType("adapter", properties::setAdapterJobType);
+    assertNull(properties.getBpmnNamespace());
+    ConverterProperties converterProperties =
+        ConverterPropertiesFactory.getInstance().merge(properties);
+    assertEquals("adapter", converterProperties.getAdapterJobType().getType());
+    assertNotNull(properties.getBpmnNamespace());
+  }
 }
