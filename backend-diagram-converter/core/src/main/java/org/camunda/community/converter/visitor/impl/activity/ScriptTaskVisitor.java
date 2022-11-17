@@ -36,10 +36,21 @@ public class ScriptTaskVisitor extends AbstractActivityVisitor {
           convertible ->
               convertible.addZeebeTaskHeader(
                   context.getProperties().getScriptFormatHeader().getName(), scriptFormat));
+      context.addConversion(
+          ServiceTaskConvertible.class,
+          convertible ->
+              convertible
+                  .getZeebeTaskDefinition()
+                  .setType(context.getProperties().getScriptJobType().getType()));
       context.addMessage(
           Severity.TASK,
           MessageFactory.scriptFormat(
               context.getProperties().getScriptFormatHeader().getName(), scriptFormat));
+      context.addMessage(
+          Severity.TASK,
+          MessageFactory.scriptJobType(
+              context.getElement().getLocalName(),
+              context.getProperties().getScriptJobType().getType()));
     } else {
       context.addMessage(Severity.TASK, MessageFactory.scriptFormatMissing());
     }

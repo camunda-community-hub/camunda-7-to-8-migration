@@ -25,12 +25,12 @@ public abstract class AbstractDelegateImplementationVisitor
         serviceTaskConversion ->
             serviceTaskConversion
                 .getZeebeTaskDefinition()
-                .setType(context.getProperties().getAdapterJobTypeHeader().getName()));
+                .setType(context.getProperties().getAdapterJobType().getType()));
     return MessageFactory.delegateImplementation(
         attributeLocalName(),
         context.getElement().getLocalName(),
         attribute,
-        context.getProperties().getAdapterJobTypeHeader().getName());
+        context.getProperties().getAdapterJobType().getType());
   }
 
   @Override

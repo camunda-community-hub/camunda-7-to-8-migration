@@ -1,12 +1,13 @@
 package org.camunda.community.converter;
 
 import java.util.concurrent.atomic.AtomicReference;
+import org.camunda.community.converter.DefaultConverterProperties.DefaultNamespaceProperties;
 
 public interface ConverterProperties {
 
   static NamespaceProperties resolveNamespace(String name) {
-    AtomicReference<NamespaceProperties> ref = new AtomicReference<>();
-    ConverterPropertiesFactory.getInstance().readNamespaceProperties(name, ref::set);
+    AtomicReference<DefaultNamespaceProperties> ref = new AtomicReference<>();
+    ConverterPropertiesFactory.getInstance().readNamespaceProperties(name, ref::get, ref::set);
     return ref.get();
   }
 
@@ -14,7 +15,9 @@ public interface ConverterProperties {
 
   ZeebeHeaderProperties getResultVariableHeader();
 
-  ZeebeHeaderProperties getAdapterJobTypeHeader();
+  ZeebeJobTypeProperties getAdapterJobType();
+
+  ZeebeJobTypeProperties getScriptJobType();
 
   ZeebeHeaderProperties getResourceHeader();
 
@@ -52,5 +55,9 @@ public interface ConverterProperties {
 
   interface ZeebeHeaderProperties {
     String getName();
+  }
+
+  interface ZeebeJobTypeProperties {
+    String getType();
   }
 }
