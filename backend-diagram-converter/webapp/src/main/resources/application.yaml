@@ -1,3 +1,8 @@
 logging:
   level:
     root: info
+notification:
+  slack:
+    enabled: false
+    token: ""
+    channel-name: ""
