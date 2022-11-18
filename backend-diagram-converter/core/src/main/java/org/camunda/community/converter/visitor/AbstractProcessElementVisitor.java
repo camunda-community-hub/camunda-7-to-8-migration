@@ -2,13 +2,14 @@ package org.camunda.community.converter.visitor;
 
 import org.camunda.community.converter.BpmnDiagramCheckResult.Severity;
 import org.camunda.community.converter.DomElementVisitorContext;
+import org.camunda.community.converter.NamespaceUri;
 import org.camunda.community.converter.convertible.Convertible;
 import org.camunda.community.converter.message.MessageFactory;
 
 public abstract class AbstractProcessElementVisitor extends AbstractElementVisitor {
   @Override
-  protected String namespaceUri(DomElementVisitorContext context) {
-    return context.getProperties().getBpmnNamespace().getUri();
+  protected String namespaceUri() {
+    return NamespaceUri.BPMN;
   }
 
   @Override

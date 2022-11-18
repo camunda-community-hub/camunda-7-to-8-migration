@@ -2,15 +2,14 @@ package org.camunda.community.converter.conversion;
 
 import org.camunda.bpm.model.xml.instance.DomDocument;
 import org.camunda.bpm.model.xml.instance.DomElement;
-import org.camunda.community.converter.ConverterProperties;
+import org.camunda.community.converter.NamespaceUri;
 import org.camunda.community.converter.convertible.CallActivityConvertible;
 
 public class CallActivityConversion extends AbstractTypedConversion<CallActivityConvertible> {
 
   private DomElement createCalledElement(
-      DomDocument document, CallActivityConvertible convertible, ConverterProperties properties) {
-    DomElement calledElement =
-        document.createElement(properties.getZeebeNamespace().getUri(), "calledElement");
+      DomDocument document, CallActivityConvertible convertible) {
+    DomElement calledElement = document.createElement(NamespaceUri.ZEEBE, "calledElement");
     if (convertible.getZeebeCalledElement().getProcessId() != null) {
       calledElement.setAttribute("processId", convertible.getZeebeCalledElement().getProcessId());
     }
@@ -21,11 +20,9 @@ public class CallActivityConversion extends AbstractTypedConversion<CallActivity
   }
 
   @Override
-  protected void convertTyped(
-      DomElement element, CallActivityConvertible convertible, ConverterProperties properties) {
-    DomElement extensionProperties = getExtensionElements(element, properties);
-    extensionProperties.appendChild(
-        createCalledElement(element.getDocument(), convertible, properties));
+  protected void convertTyped(DomElement element, CallActivityConvertible convertible) {
+    DomElement extensionProperties = getExtensionElements(element);
+    extensionProperties.appendChild(createCalledElement(element.getDocument(), convertible));
   }
 
   @Override

@@ -74,15 +74,14 @@ public class BpmnConverter {
                             attribute -> element.removeAttribute(namespaceUri, attribute))));
     LOG.info("Done remove of old elements");
     LOG.info("Start conversion");
-    MessageAppender messageAppender = new MessageAppender(properties);
+    MessageAppender messageAppender = new MessageAppender();
     context
         .getConvertibles()
         .forEach(
             (element, convertible) -> {
               List<BpmnElementCheckMessage> messages = getMessages(element, result);
               messageAppender.appendMessages(element, messages, appendDocumentation);
-              conversions.forEach(
-                  conversion -> conversion.convert(element, convertible, messages, properties));
+              conversions.forEach(conversion -> conversion.convert(element, convertible, messages));
             });
     LOG.info("Done with conversion");
     return result;

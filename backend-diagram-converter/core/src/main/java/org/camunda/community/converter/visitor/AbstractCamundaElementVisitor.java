@@ -2,12 +2,13 @@ package org.camunda.community.converter.visitor;
 
 import org.camunda.community.converter.BpmnDiagramCheckResult.Severity;
 import org.camunda.community.converter.DomElementVisitorContext;
+import org.camunda.community.converter.NamespaceUri;
 import org.camunda.community.converter.message.Message;
 
 public abstract class AbstractCamundaElementVisitor extends AbstractElementVisitor {
   @Override
-  protected String namespaceUri(DomElementVisitorContext context) {
-    return context.getProperties().getCamundaNamespace().getUri();
+  protected String namespaceUri() {
+    return NamespaceUri.CAMUNDA;
   }
 
   @Override

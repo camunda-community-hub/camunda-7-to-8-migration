@@ -18,11 +18,10 @@ public class ResourceVisitor extends AbstractSupportedAttributeVisitor {
     context.addConversion(
         AbstractDataMapperConvertible.class,
         convertible ->
-            convertible.addZeebeTaskHeader(
-                context.getProperties().getResourceHeader().getName(), attribute));
+            convertible.addZeebeTaskHeader(context.getProperties().getResourceHeader(), attribute));
     return MessageFactory.resource(
         attributeLocalName(),
         context.getElement().getLocalName(),
-        context.getProperties().getResourceHeader().getName());
+        context.getProperties().getResourceHeader());
   }
 }

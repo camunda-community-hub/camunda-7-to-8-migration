@@ -2,6 +2,7 @@ package org.camunda.community.converter.visitor.impl;
 
 import org.camunda.community.converter.BpmnDiagramCheckResult.Severity;
 import org.camunda.community.converter.DomElementVisitorContext;
+import org.camunda.community.converter.NamespaceUri;
 import org.camunda.community.converter.convertible.SequenceFlowConvertible;
 import org.camunda.community.converter.expression.ExpressionTransformationResult;
 import org.camunda.community.converter.expression.ExpressionTransformer;
@@ -10,8 +11,8 @@ import org.camunda.community.converter.visitor.AbstractElementVisitor;
 
 public class ConditionExpressionVisitor extends AbstractElementVisitor {
   @Override
-  protected String namespaceUri(DomElementVisitorContext context) {
-    return context.getProperties().getBpmnNamespace().getUri();
+  protected String namespaceUri() {
+    return NamespaceUri.BPMN;
   }
 
   @Override

@@ -45,11 +45,11 @@ public abstract class ResultVariableVisitor extends AbstractSupportedAttributeVi
           AbstractDataMapperConvertible.class,
           convertible ->
               convertible.addZeebeTaskHeader(
-                  context.getProperties().getResultVariableHeader().getName(), attribute));
+                  context.getProperties().getResultVariableHeader(), attribute));
       return MessageFactory.resultVariableRest(
           attributeLocalName(),
           context.getElement().getLocalName(),
-          context.getProperties().getResultVariableHeader().getName());
+          context.getProperties().getResultVariableHeader());
     }
 
     @Override

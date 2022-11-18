@@ -110,7 +110,7 @@ public class ConvertCommand implements Callable<Integer> {
     BpmnModelInstance modelInstance = Bpmn.readModelFromFile(file);
     try {
       DefaultConverterProperties properties = new DefaultConverterProperties();
-      DefaultConverterProperties.setZeebeJobType(adapterJobType, properties::setAdapterJobType);
+      properties.setAdapterJobType(adapterJobType);
       converter.convert(
           modelInstance, documentation, ConverterPropertiesFactory.getInstance().merge(properties));
     } catch (Exception e) {

@@ -1,34 +1,31 @@
 package org.camunda.community.converter.visitor;
 
 import org.camunda.community.converter.DomElementVisitorContext;
+import org.camunda.community.converter.NamespaceUri;
 
 public abstract class AbstractAttributeVisitor extends AbstractFilteringVisitor {
 
   @Override
   protected void visitFilteredElement(DomElementVisitorContext context) {
-    String attribute =
-        context.getElement().getAttribute(namespaceUri(context), attributeLocalName());
+    String attribute = context.getElement().getAttribute(namespaceUri(), attributeLocalName());
     visitAttribute(context, attribute);
     if (removeAttribute()) {
-      context.addAttributeToRemove(attributeLocalName(), namespaceUri(context));
+      context.addAttributeToRemove(attributeLocalName(), namespaceUri());
     }
   }
 
   private String resolveAttribute(DomElementVisitorContext context) {
-    return context.getElement().getAttribute(namespaceUri(context), attributeLocalName());
+    return context.getElement().getAttribute(namespaceUri(), attributeLocalName());
   }
 
   @Override
   protected boolean canVisit(DomElementVisitorContext context) {
     return resolveAttribute(context) != null
-        && context
-            .getElement()
-            .getNamespaceURI()
-            .equals(context.getProperties().getBpmnNamespace().getUri());
+        && context.getElement().getNamespaceURI().equals(NamespaceUri.BPMN);
   }
 
-  protected String namespaceUri(DomElementVisitorContext context) {
-    return context.getProperties().getCamundaNamespace().getUri();
+  protected String namespaceUri() {
+    return NamespaceUri.CAMUNDA;
   }
 
   public abstract String attributeLocalName();

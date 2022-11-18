@@ -2,6 +2,7 @@ package org.camunda.community.converter.visitor.impl.activity;
 
 import org.camunda.community.converter.BpmnDiagramCheckResult.Severity;
 import org.camunda.community.converter.DomElementVisitorContext;
+import org.camunda.community.converter.NamespaceUri;
 import org.camunda.community.converter.convertible.Convertible;
 import org.camunda.community.converter.convertible.ServiceTaskConvertible;
 import org.camunda.community.converter.message.MessageFactory;
@@ -26,31 +27,27 @@ public class ScriptTaskVisitor extends AbstractActivityVisitor {
 
   @Override
   protected void postCreationVisitor(DomElementVisitorContext context) {
-    String scriptFormat =
-        context
-            .getElement()
-            .getAttribute(context.getProperties().getBpmnNamespace().getUri(), "scriptFormat");
+    String scriptFormat = context.getElement().getAttribute(NamespaceUri.BPMN, "scriptFormat");
     if (scriptFormat != null && scriptFormat.trim().length() > 0) {
       context.addConversion(
           ServiceTaskConvertible.class,
           convertible ->
               convertible.addZeebeTaskHeader(
-                  context.getProperties().getScriptFormatHeader().getName(), scriptFormat));
+                  context.getProperties().getScriptFormatHeader(), scriptFormat));
       context.addConversion(
           ServiceTaskConvertible.class,
           convertible ->
               convertible
                   .getZeebeTaskDefinition()
-                  .setType(context.getProperties().getScriptJobType().getType()));
+                  .setType(context.getProperties().getScriptJobType()));
       context.addMessage(
           Severity.TASK,
           MessageFactory.scriptFormat(
-              context.getProperties().getScriptFormatHeader().getName(), scriptFormat));
+              context.getProperties().getScriptFormatHeader(), scriptFormat));
       context.addMessage(
           Severity.TASK,
           MessageFactory.scriptJobType(
-              context.getElement().getLocalName(),
-              context.getProperties().getScriptJobType().getType()));
+              context.getElement().getLocalName(), context.getProperties().getScriptJobType()));
     } else {
       context.addMessage(Severity.TASK, MessageFactory.scriptFormatMissing());
     }

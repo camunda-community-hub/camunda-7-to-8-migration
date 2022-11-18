@@ -7,11 +7,6 @@ import org.camunda.bpm.model.xml.instance.DomElement;
 import org.camunda.community.converter.BpmnDiagramCheckResult.BpmnElementCheckMessage;
 
 public class MessageAppender {
-  private final ConverterProperties properties;
-
-  public MessageAppender(ConverterProperties properties) {
-    this.properties = properties;
-  }
 
   public void appendMessages(
       DomElement element, List<BpmnElementCheckMessage> messages, boolean appendDocumentation) {
@@ -43,8 +38,7 @@ public class MessageAppender {
   }
 
   private DomElement createMessage(BpmnElementCheckMessage message, DomDocument document) {
-    DomElement messageElement =
-        document.createElement(properties.getConversionNamespace().getUri(), "message");
+    DomElement messageElement = document.createElement(NamespaceUri.CONVERSION, "message");
     messageElement.setAttribute("severity", message.getSeverity().name());
     if (message.getLink() != null) {
       messageElement.setAttribute("link", message.getLink());
@@ -60,10 +54,7 @@ public class MessageAppender {
         .orElseGet(
             () -> {
               DomElement extensionElements =
-                  element
-                      .getDocument()
-                      .createElement(
-                          properties.getBpmnNamespace().getUri(), "bpmn:extensionElements");
+                  element.getDocument().createElement(NamespaceUri.BPMN, "bpmn:extensionElements");
               element.insertChildElementAfter(extensionElements, null);
               return extensionElements;
             });
@@ -76,9 +67,7 @@ public class MessageAppender {
         .orElseGet(
             () -> {
               DomElement extensionElements =
-                  element
-                      .getDocument()
-                      .createElement(properties.getBpmnNamespace().getUri(), "bpmn:documentation");
+                  element.getDocument().createElement(NamespaceUri.BPMN, "bpmn:documentation");
               element.insertChildElementAfter(extensionElements, null);
               return extensionElements;
             });

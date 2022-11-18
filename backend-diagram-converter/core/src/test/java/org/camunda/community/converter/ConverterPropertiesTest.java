@@ -14,11 +14,11 @@ public class ConverterPropertiesTest {
   @Test
   void shouldMergeProperties() {
     DefaultConverterProperties properties = new DefaultConverterProperties();
-    DefaultConverterProperties.setZeebeJobType("adapter", properties::setAdapterJobType);
-    assertNull(properties.getBpmnNamespace());
+    properties.setAdapterJobType("adapter");
+    assertNull(properties.getResourceHeader());
     ConverterProperties converterProperties =
         ConverterPropertiesFactory.getInstance().merge(properties);
-    assertEquals("adapter", converterProperties.getAdapterJobType().getType());
-    assertNotNull(properties.getBpmnNamespace());
+    assertEquals("adapter", converterProperties.getAdapterJobType());
+    assertNotNull(properties.getResourceHeader());
   }
 }

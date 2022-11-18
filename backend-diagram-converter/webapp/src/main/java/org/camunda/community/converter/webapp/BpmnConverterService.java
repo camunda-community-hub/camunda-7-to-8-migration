@@ -23,8 +23,7 @@ public class BpmnConverterService {
   public void convert(
       BpmnModelInstance modelInstance, boolean appendDocumentation, String adapterJobType) {
     DefaultConverterProperties adaptedProperties = new DefaultConverterProperties();
-    DefaultConverterProperties.setZeebeJobType(
-        adapterJobType, adaptedProperties::setAdapterJobType);
+    adaptedProperties.setAdapterJobType(adapterJobType);
     bpmnConverter.convert(
         modelInstance,
         appendDocumentation,
@@ -37,8 +36,7 @@ public class BpmnConverterService {
       boolean appendDocumentation,
       String adapterJobType) {
     DefaultConverterProperties adaptedProperties = new DefaultConverterProperties();
-    DefaultConverterProperties.setZeebeJobType(
-        adapterJobType, adaptedProperties::setAdapterJobType);
+    adaptedProperties.setAdapterJobType(adapterJobType);
     return bpmnConverter.check(
         filename,
         modelInstance,
