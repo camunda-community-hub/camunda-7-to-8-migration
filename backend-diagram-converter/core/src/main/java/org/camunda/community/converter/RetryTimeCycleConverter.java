@@ -1,5 +1,8 @@
 package org.camunda.community.converter;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.time.Duration;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
@@ -7,14 +10,23 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class RetryTimeCycleConverter {
   private static final Logger LOG = LoggerFactory.getLogger(RetryTimeCycleConverter.class);
   private static final Pattern PATTERN = Pattern.compile("R(\\d*)/");
   private static final Pattern DURATION_PATTERN = Pattern.compile("(P.*)");
 
+  /**
+   * Returns all durations of a given timecycle expression as list
+   *
+   * Example:
+   *
+   * timecycle: R3/PT5S
+   * returns ["PT5S","PT5S","PT5S"]
+   *
+   * @param timecycle the timecycle expression from a BPMN failedJobRetryTimeCycle
+   * @return a list containing all given durations from the timecycle
+   */
   public static List<String> convert(String timecycle) {
     // check if more expressions given
     List<String> durations = new ArrayList<>();
