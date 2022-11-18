@@ -6,7 +6,6 @@ import org.camunda.community.converter.NamespaceUri;
 import org.camunda.community.converter.convertible.AbstractFlownodeConvertible;
 import org.camunda.community.converter.convertible.AbstractFlownodeConvertible.ZeebeProperty;
 
-// TODO extract local names from all conversions
 public class FlownodeConversion extends AbstractTypedConversion<AbstractFlownodeConvertible> {
   @Override
   protected Class<AbstractFlownodeConvertible> type() {
