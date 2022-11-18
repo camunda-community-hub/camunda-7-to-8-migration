@@ -13,4 +13,6 @@ public interface ConverterProperties {
   String getResourceHeader();
 
   String getScriptFormatHeader();
+
+  String getPlatformVersion();
 }

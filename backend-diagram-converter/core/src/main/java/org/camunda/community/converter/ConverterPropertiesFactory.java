@@ -50,10 +50,18 @@ public class ConverterPropertiesFactory extends AbstractFactory<ConverterPropert
     readZeebeHeader("resource", properties::getResourceHeader, properties::setResourceHeader);
     readZeebeHeader(
         "script-format", properties::getScriptFormatHeader, properties::setScriptFormatHeader);
+    readZeebePlatformInfo(
+        "version", properties::getPlatformVersion, properties::setPlatformVersion);
   }
 
   private void readZeebeJobType(String jobType, Supplier<String> getter, Consumer<String> setter) {
     String key = String.join(DELIMITER, "zeebe-job-type", jobType);
+    readDefaultValue(key, getter, setter);
+  }
+
+  private void readZeebePlatformInfo(
+      String info, Supplier<String> getter, Consumer<String> setter) {
+    String key = String.join(DELIMITER, "zeebe-platform", info);
     readDefaultValue(key, getter, setter);
   }
 

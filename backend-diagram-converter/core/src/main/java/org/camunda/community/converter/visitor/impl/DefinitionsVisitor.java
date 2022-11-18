@@ -1,7 +1,6 @@
 package org.camunda.community.converter.visitor.impl;
 
 import org.camunda.bpm.model.xml.instance.DomElement;
-import org.camunda.community.converter.ConverterConstants;
 import org.camunda.community.converter.DomElementVisitorContext;
 import org.camunda.community.converter.NamespaceUri;
 import org.camunda.community.converter.visitor.AbstractElementVisitor;
@@ -24,7 +23,7 @@ public class DefinitionsVisitor extends AbstractElementVisitor {
     element.registerNamespace(CONVERSION_NAMESPACE_NAME, NamespaceUri.CONVERSION);
     element.setAttribute(NamespaceUri.MODELER, PLATFORM_HEADER, PLATFORM_VALUE);
     element.setAttribute(
-        NamespaceUri.MODELER, VERSION_HEADER, ConverterConstants.TARGET_PLATFORM_VERSION);
+        NamespaceUri.MODELER, VERSION_HEADER, context.getProperties().getPlatformVersion());
   }
 
   @Override

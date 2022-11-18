@@ -7,6 +7,16 @@ public class DefaultConverterProperties implements ConverterProperties {
   private String scriptJobType;
   private String resourceHeader;
   private String scriptFormatHeader;
+  private String platformVersion;
+
+  @Override
+  public String getPlatformVersion() {
+    return platformVersion;
+  }
+
+  public void setPlatformVersion(String platformVersion) {
+    this.platformVersion = platformVersion;
+  }
 
   @Override
   public String getScriptHeader() {
