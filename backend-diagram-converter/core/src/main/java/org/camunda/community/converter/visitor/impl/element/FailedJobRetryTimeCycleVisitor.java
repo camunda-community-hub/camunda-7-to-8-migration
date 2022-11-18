@@ -1,5 +1,6 @@
 package org.camunda.community.converter.visitor.impl.element;
 
+import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 import org.camunda.community.converter.BpmnDiagramCheckResult.Severity;
 import org.camunda.community.converter.DomElementVisitorContext;
@@ -15,12 +16,20 @@ public class FailedJobRetryTimeCycleVisitor extends AbstractCamundaElementVisito
   @Override
   protected Message visitCamundaElement(DomElementVisitorContext context) {
     String timecycle = context.getElement().getTextContent();
-    int retries = RetryTimeCycleConverter.convert(timecycle);
-    context.addConversion(
-        ServiceTaskConvertible.class,
-        convertible -> convertible.getZeebeTaskDefinition().setRetries(retries));
-    return MessageFactory.failedJobRetryTimeCycle(
-        context.getElement().getLocalName(), timecycle, retries);
+    try {
+      List<String> durations = RetryTimeCycleConverter.convert(timecycle);
+      context.addConversion(
+          ServiceTaskConvertible.class,
+          convertible -> convertible.getZeebeTaskDefinition().setRetries(durations.size()));
+      return MessageFactory.failedJobRetryTimeCycle(
+          context.getElement().getLocalName(),
+          timecycle,
+          durations.size(),
+          String.join("', '", durations));
+    } catch (Exception e) {
+      return MessageFactory.failedJobRetryTimeCycleError(
+          context.getElement().getLocalName(), timecycle);
+    }
   }
 
   @Override

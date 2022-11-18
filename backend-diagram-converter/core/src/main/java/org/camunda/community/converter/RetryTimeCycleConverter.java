@@ -1,25 +1,58 @@
 package org.camunda.community.converter;
 
+import java.time.Duration;
+import java.time.format.DateTimeParseException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class RetryTimeCycleConverter {
+  private static final Logger LOG = LoggerFactory.getLogger(RetryTimeCycleConverter.class);
   private static final Pattern PATTERN = Pattern.compile("R(\\d*)/");
+  private static final Pattern DURATION_PATTERN = Pattern.compile("(P.*)");
 
-  public static int convert(String timecycle) {
+  public static List<String> convert(String timecycle) {
     // check if more expressions given
-    int retries = 0;
-    String[] expressions = timecycle.split(",");
+    List<String> durations = new ArrayList<>();
+    String[] expressions =
+        Arrays.stream(timecycle.split(",")).map(String::trim).toArray(String[]::new);
+    LOG.debug("Found expressions: ['{}']", String.join("','", expressions));
     for (String expression : expressions) {
+      LOG.debug("Handling expression {}", expression);
+      int retries = 0;
       // check if the expression has an R*/
       Matcher matcher = PATTERN.matcher(expression);
       while (matcher.find()) {
-        retries += Integer.parseInt(matcher.group(1));
+        retries = Integer.parseInt(matcher.group(1));
       }
       if (!matcher.lookingAt()) {
         retries++;
       }
+      Matcher duration = DURATION_PATTERN.matcher(expression);
+      int appliedRetries = 0;
+      while (duration.find()) {
+        String group = duration.group(1);
+        try {
+          Duration.parse(group);
+        } catch (DateTimeParseException e) {
+          throw new IllegalStateException(e);
+        }
+        LOG.debug("Duration is {}", group);
+        for (int i = 0; i < retries; i++) {
+          durations.add(group);
+          appliedRetries++;
+        }
+      }
+      LOG.debug("Retries are {}", appliedRetries);
     }
-    return Math.max(1, retries);
+    if (durations.isEmpty()) {
+      throw new IllegalStateException(
+          "Did not find any valid duration expressions in '" + timecycle + "'");
+    }
+    return durations;
   }
 }
