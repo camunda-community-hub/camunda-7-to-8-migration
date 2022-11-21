@@ -85,7 +85,6 @@
 <script>
     const check = document.getElementById("check");
     const convert = document.getElementById("convert");
-    const fileSelect = document.getElementById("file-select");
 
     const fileUpload = document.getElementById("formFile");
     const appendDocumentation = document.getElementById("appendDocumentation");
@@ -126,16 +125,13 @@
     };
 
     const createFormData = async () => {
-        const manifest = await manifestAwaiter;
         const formData = new FormData();
-        if (!manifest.engineEnabled) {
-            if (fileUpload.files.length === 0) {
-                alert("Please select a .bpmn file");
-                return null;
-            }
-            for (let i = 0; i < fileUpload.files.length; i++) {
-                formData.append("files", fileUpload.files[i], fileUpload.files[i].name)
-            }
+        if (fileUpload.files.length === 0) {
+            alert("Please select a .bpmn file");
+            return null;
+        }
+        for (let i = 0; i < fileUpload.files.length; i++) {
+            formData.append("files", fileUpload.files[i], fileUpload.files[i].name)
         }
         formData.append("appendDocumentation", appendDocumentation.checked)
         return formData;
