@@ -11,6 +11,7 @@ public class DefinitionsVisitor extends AbstractElementVisitor {
   private static final String PLATFORM_VALUE = "Camunda Cloud";
   private static final String ZEEBE_NAMESPACE_NAME = "zeebe";
   private static final String CONVERSION_NAMESPACE_NAME = "conversion";
+  private static final String MODELER_NAMESPACE_NAME = "modeler";
 
   @Override
   protected void visitFilteredElement(DomElementVisitorContext context) {
@@ -19,6 +20,7 @@ public class DefinitionsVisitor extends AbstractElementVisitor {
     if (executionPlatform != null && executionPlatform.startsWith("8")) {
       throw new RuntimeException("This diagram is already a Camunda 8 diagram");
     }
+    element.registerNamespace(MODELER_NAMESPACE_NAME, NamespaceUri.MODELER);
     element.registerNamespace(ZEEBE_NAMESPACE_NAME, NamespaceUri.ZEEBE);
     element.registerNamespace(CONVERSION_NAMESPACE_NAME, NamespaceUri.CONVERSION);
     element.setAttribute(NamespaceUri.MODELER, PLATFORM_HEADER, PLATFORM_VALUE);
