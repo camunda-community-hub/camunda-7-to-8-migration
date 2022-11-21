@@ -286,9 +286,30 @@ public class MessageFactory {
             .build());
   }
 
-  public static Message failedJobRetryTimeCycle(String elementLocalName, String timecycle) {
+  public static Message failedJobRetryTimeCycle(
+      String elementLocalName, String timecycle, int retries, String timeout) {
     return INSTANCE.composeMessage(
         "failed-job-retry-time-cycle",
+        ContextBuilder.builder()
+            .context(elementTransformedPrefix(elementLocalName))
+            .entry("timecycle", timecycle)
+            .entry("retries", String.valueOf(retries))
+            .entry("timeout", timeout)
+            .build());
+  }
+
+  public static Message failedJobRetryTimeCycleRemoved(String elementLocalName, String timecycle) {
+    return INSTANCE.composeMessage(
+        "failed-job-retry-time-cycle-removed",
+        ContextBuilder.builder()
+            .context(elementNotTransformablePrefix(elementLocalName))
+            .entry("timecycle", timecycle)
+            .build());
+  }
+
+  public static Message failedJobRetryTimeCycleError(String elementLocalName, String timecycle) {
+    return INSTANCE.composeMessage(
+        "failed-job-retry-time-cycle-error",
         ContextBuilder.builder()
             .context(elementNotTransformablePrefix(elementLocalName))
             .entry("timecycle", timecycle)

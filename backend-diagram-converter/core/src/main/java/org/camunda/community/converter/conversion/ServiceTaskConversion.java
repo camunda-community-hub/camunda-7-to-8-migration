@@ -11,14 +11,20 @@ public class ServiceTaskConversion extends AbstractTypedConversion<ServiceTaskCo
   private DomElement createTaskDefinition(
       DomDocument document, ZeebeTaskDefinition zeebeTaskDefinition) {
     DomElement taskDefinition = document.createElement(NamespaceUri.ZEEBE, "taskDefinition");
-    taskDefinition.setAttribute("type", zeebeTaskDefinition.getType());
+    if (zeebeTaskDefinition.getType() != null) {
+      taskDefinition.setAttribute("type", zeebeTaskDefinition.getType());
+    }
+    if (zeebeTaskDefinition.getRetries() != null) {
+      taskDefinition.setAttribute("retries", zeebeTaskDefinition.getRetries().toString());
+    }
     return taskDefinition;
   }
 
   @Override
   protected void convertTyped(DomElement element, ServiceTaskConvertible convertible) {
     DomElement extensionElements = super.getExtensionElements(element);
-    if (convertible.getZeebeTaskDefinition().getType() != null) {
+    if (convertible.getZeebeTaskDefinition().getType() != null
+        || convertible.getZeebeTaskDefinition().getRetries() != null) {
       extensionElements.appendChild(
           createTaskDefinition(element.getDocument(), convertible.getZeebeTaskDefinition()));
     }

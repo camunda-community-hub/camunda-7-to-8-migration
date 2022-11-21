@@ -9,6 +9,7 @@ public class ServiceTaskConvertible extends AbstractActivityConvertible {
 
   public static class ZeebeTaskDefinition {
     private String type;
+    private Integer retries;
 
     public String getType() {
       return type;
@@ -16,6 +17,14 @@ public class ServiceTaskConvertible extends AbstractActivityConvertible {
 
     public void setType(String type) {
       this.type = type;
+    }
+
+    public Integer getRetries() {
+      return retries;
+    }
+
+    public void setRetries(Integer retries) {
+      this.retries = retries;
     }
   }
 }
