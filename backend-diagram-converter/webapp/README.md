@@ -6,7 +6,7 @@ This webapp uses the diagram converter to check and convert diagrams. It allows 
 
 ### Frontend
 
-The frontend is self-explanatory. In case no engine connection is configured, you upload .bpmn Files and then click either **Check** or **Convert and download**.
+The frontend is self-explanatory. You upload .bpmn Files and then click either **Check** or **Convert and download**.
 
 **Check** will allow you to review all infos, tasks and warnings directly in the browser.
 
@@ -14,38 +14,20 @@ The frontend is self-explanatory. In case no engine connection is configured, yo
 
 ### Rest API
 
-The API offers 3 methods:
+The API offers 2 methods:
 
-`GET /manifest`: The request does not require any further modification. It will return:
+`POST /check`: Requires the usage of `FormData`. The formdata needs to consist of fields `files` which are the .bpmn Files. It will return:
 
-`200`: Everything fine. The body contains the [`ConverterManifest`](./src/main/java/org/camunda/community/converter/webapp/ConverterManifest.java) which exposes information about the app configuration. This information might be required to configure the calls towards other endpoints.
+`200`: Everything fine. The body contains a list of [check results](./../core/src/main/java/org/camunda/community/converter/BpmnDiagramCheckResult.java).
 
-`POST /check`: Requires the usage of `FormData`. In case no engine is configured, the formdata needs to consist of fields `files` which are the .bpmn Files. It will return:
-
-`200`: Everything fine. The body contains a list of [check results](./../core/src/main/java/org/camunda/community/converter/BpmnDiagramCheckResult.java). In case there is a check result that only consists of a filename, there was an error during conversion.
-`400`: You provided BPMN files although there is an engine connection configured or the other way around.
-
-`POST /convert`: Requires the usage of `FormData`. In case no engine is configured, the formdata needs to consist of fields `files` which are the .bpmn Files. In any case, a field `appendDocumentation` has to be present which is a boolean and controls whether the messages are also appended to the documentation section of each BPMN element. It will return:
+`POST /convert`: Requires the usage of `FormData`. The formdata needs to consist of fields `files` which are the .bpmn Files plus a field `appendDocumentation` which is a boolean and controls whether the messages are also appended to the documentation section of each BPMN element. It will return:
 
 `200`: Everything fine. The body contains a zipped `Blob` which can be saved as a file and is a zip archive containing your converted BPMN diagrams.
-`400`: You provided BPMN files although there is an engine connection configured or the other way around. Or there were errors during conversion. These errors would then be appended to the body.
-`500`: There was an exception during parsing the BPMN files.
 
-### Engine connection
+These error can occur on both endpoints:
 
-The app can be configured to connect to a Camunda Automation Platform REST API.
-
-To use this feature, you need to configure the following:
-
-```yaml
-camunda:
-  bpm:
-    client:
-      enabled: true
-      base-url: <YOUR_REST_API_ENDPOINT>
-```
-
-Currently, there is no way to configure Auth
+`4xx`: The file you provided could not be parsed
+`5xx`: There was an exception during parsing or transforming your process.
 
 ### Notifications
 
