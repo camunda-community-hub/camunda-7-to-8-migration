@@ -7,7 +7,6 @@ import org.camunda.community.converter.convertible.AbstractFlownodeConvertible;
 import org.camunda.community.converter.convertible.AbstractFlownodeConvertible.ZeebeProperty;
 
 public class FlownodeConversion extends AbstractTypedConversion<AbstractFlownodeConvertible> {
-
   @Override
   protected Class<AbstractFlownodeConvertible> type() {
     return AbstractFlownodeConvertible.class;

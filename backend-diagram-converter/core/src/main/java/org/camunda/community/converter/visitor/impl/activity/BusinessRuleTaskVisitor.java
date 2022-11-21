@@ -21,14 +21,14 @@ public class BusinessRuleTaskVisitor extends AbstractActivityVisitor {
 
   @Override
   protected Convertible createConvertible(DomElementVisitorContext context) {
-    if (isDmnImplementation(context.getElement())) {
+    if (isDmnImplementation(context.getElement(), context)) {
       return new BusinessRuleTaskConvertible();
     } else {
       return new ServiceTaskConvertible();
     }
   }
 
-  private boolean isDmnImplementation(DomElement element) {
+  private boolean isDmnImplementation(DomElement element, DomElementVisitorContext context) {
     return element.getAttribute(NamespaceUri.CAMUNDA, "decisionRef") != null;
   }
 }

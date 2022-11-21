@@ -8,7 +8,6 @@ import org.camunda.community.converter.message.MessageFactory;
 import org.camunda.community.converter.visitor.AbstractSupportedAttributeVisitor;
 
 public abstract class ResultVariableVisitor extends AbstractSupportedAttributeVisitor {
-  private static final String HEADER_NAME = "resultVariable";
 
   @Override
   public String attributeLocalName() {
@@ -44,9 +43,13 @@ public abstract class ResultVariableVisitor extends AbstractSupportedAttributeVi
     protected Message visitSupportedAttribute(DomElementVisitorContext context, String attribute) {
       context.addConversion(
           AbstractDataMapperConvertible.class,
-          convertible -> convertible.addZeebeTaskHeader(HEADER_NAME, attribute));
+          convertible ->
+              convertible.addZeebeTaskHeader(
+                  context.getProperties().getResultVariableHeader(), attribute));
       return MessageFactory.resultVariableRest(
-          attributeLocalName(), context.getElement().getLocalName(), HEADER_NAME);
+          attributeLocalName(),
+          context.getElement().getLocalName(),
+          context.getProperties().getResultVariableHeader());
     }
 
     @Override

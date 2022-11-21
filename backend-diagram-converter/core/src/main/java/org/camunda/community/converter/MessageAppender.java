@@ -7,6 +7,7 @@ import org.camunda.bpm.model.xml.instance.DomElement;
 import org.camunda.community.converter.BpmnDiagramCheckResult.BpmnElementCheckMessage;
 
 public class MessageAppender {
+
   public void appendMessages(
       DomElement element, List<BpmnElementCheckMessage> messages, boolean appendDocumentation) {
     if (!messages.isEmpty()) {
@@ -39,6 +40,9 @@ public class MessageAppender {
   private DomElement createMessage(BpmnElementCheckMessage message, DomDocument document) {
     DomElement messageElement = document.createElement(NamespaceUri.CONVERSION, "message");
     messageElement.setAttribute("severity", message.getSeverity().name());
+    if (message.getLink() != null) {
+      messageElement.setAttribute("link", message.getLink());
+    }
     messageElement.setTextContent(message.getMessage());
     return messageElement;
   }

@@ -42,17 +42,23 @@ public class BpmnConverter {
     this.notificationService = notificationService;
   }
 
-  public void convert(BpmnModelInstance modelInstance, boolean appendDocumentation) {
-    check(null, modelInstance, appendDocumentation);
+  public void convert(
+      BpmnModelInstance modelInstance,
+      boolean appendDocumentation,
+      ConverterProperties properties) {
+    check(null, modelInstance, appendDocumentation, properties);
   }
 
   public BpmnDiagramCheckResult check(
-      String filename, BpmnModelInstance modelInstance, boolean appendDocumentation) {
+      String filename,
+      BpmnModelInstance modelInstance,
+      boolean appendDocumentation,
+      ConverterProperties properties) {
     LOG.info("Start check");
     BpmnDiagramCheckResult result = new BpmnDiagramCheckResult();
     result.setFilename(filename);
     BpmnDiagramCheckContext context = new BpmnDiagramCheckContext();
-    traverse(modelInstance.getDocument().getRootElement(), result, context);
+    traverse(modelInstance.getDocument().getRootElement(), result, context, properties);
     LOG.info("Done check");
     LOG.info("Start remove of old elements");
     context
@@ -114,12 +120,16 @@ public class BpmnConverter {
   }
 
   private void traverse(
-      DomElement element, BpmnDiagramCheckResult result, BpmnDiagramCheckContext context) {
+      DomElement element,
+      BpmnDiagramCheckResult result,
+      BpmnDiagramCheckContext context,
+      ConverterProperties properties) {
     DomElementVisitorContext elementContext =
-        new DefaultDomElementVisitorContext(element, context, result, notificationService);
+        new DefaultDomElementVisitorContext(
+            element, context, result, notificationService, properties);
     visitors.stream()
         .sorted(Comparator.comparingInt(v -> v instanceof AbstractProcessElementVisitor ? 2 : 3))
         .forEach(visitor -> visitor.visit(elementContext));
-    element.getChildElements().forEach(child -> traverse(child, result, context));
+    element.getChildElements().forEach(child -> traverse(child, result, context, properties));
   }
 }

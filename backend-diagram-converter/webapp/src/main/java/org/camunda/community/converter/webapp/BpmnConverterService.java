@@ -6,6 +6,8 @@ import org.camunda.bpm.model.bpmn.BpmnModelInstance;
 import org.camunda.bpm.model.xml.instance.DomDocument;
 import org.camunda.community.converter.BpmnConverter;
 import org.camunda.community.converter.BpmnDiagramCheckResult;
+import org.camunda.community.converter.ConverterPropertiesFactory;
+import org.camunda.community.converter.DefaultConverterProperties;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -18,13 +20,28 @@ public class BpmnConverterService {
     this.bpmnConverter = bpmnConverter;
   }
 
-  public void convert(BpmnModelInstance modelInstance, boolean appendDocumentation) {
-    bpmnConverter.convert(modelInstance, appendDocumentation);
+  public void convert(
+      BpmnModelInstance modelInstance, boolean appendDocumentation, String adapterJobType) {
+    DefaultConverterProperties adaptedProperties = new DefaultConverterProperties();
+    adaptedProperties.setAdapterJobType(adapterJobType);
+    bpmnConverter.convert(
+        modelInstance,
+        appendDocumentation,
+        ConverterPropertiesFactory.getInstance().merge(adaptedProperties));
   }
 
   public BpmnDiagramCheckResult check(
-      String filename, BpmnModelInstance modelInstance, boolean appendDocumentation) {
-    return bpmnConverter.check(filename, modelInstance, appendDocumentation);
+      String filename,
+      BpmnModelInstance modelInstance,
+      boolean appendDocumentation,
+      String adapterJobType) {
+    DefaultConverterProperties adaptedProperties = new DefaultConverterProperties();
+    adaptedProperties.setAdapterJobType(adapterJobType);
+    return bpmnConverter.check(
+        filename,
+        modelInstance,
+        appendDocumentation,
+        ConverterPropertiesFactory.getInstance().merge(adaptedProperties));
   }
 
   public String printXml(DomDocument document, boolean b) {

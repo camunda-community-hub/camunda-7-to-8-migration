@@ -23,7 +23,8 @@ public class ScriptVisitor extends AbstractElementVisitor {
     String script = context.getElement().getTextContent();
     context.addConversion(
         AbstractDataMapperConvertible.class,
-        convertible -> convertible.addZeebeTaskHeader("script", script));
+        convertible ->
+            convertible.addZeebeTaskHeader(context.getProperties().getScriptHeader(), script));
     context.addMessage(Severity.TASK, MessageFactory.script());
   }
 }

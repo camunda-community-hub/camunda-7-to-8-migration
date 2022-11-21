@@ -2,6 +2,7 @@ package org.camunda.community.converter.visitor.impl.activity;
 
 import org.camunda.community.converter.BpmnDiagramCheckResult.Severity;
 import org.camunda.community.converter.DomElementVisitorContext;
+import org.camunda.community.converter.NamespaceUri;
 import org.camunda.community.converter.convertible.CallActivityConvertible;
 import org.camunda.community.converter.convertible.Convertible;
 import org.camunda.community.converter.expression.ExpressionTransformationResult;
@@ -32,7 +33,8 @@ public class CallActivityVisitor extends AbstractActivityVisitor {
   protected void postCreationVisitor(DomElementVisitorContext context) {
 
     ExpressionTransformationResult transformationResult =
-        ExpressionTransformer.transform(context.getElement().getAttribute(CALLED_ELEMENT));
+        ExpressionTransformer.transform(
+            context.getElement().getAttribute(NamespaceUri.BPMN, CALLED_ELEMENT));
     if (transformationResult == null) {
       context.addMessage(Severity.WARNING, MessageFactory.callActivityNoCalledElementHint());
     } else {

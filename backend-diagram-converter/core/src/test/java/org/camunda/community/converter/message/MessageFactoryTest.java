@@ -20,6 +20,13 @@ public class MessageFactoryTest {
   }
 
   @Test
+  void shouldBuildScriptJobType() {
+    Message message = MessageFactory.scriptJobType(random(), random());
+    assertNotNull(message);
+    assertNotNull(message.getMessage());
+  }
+
+  @Test
   void shouldBuildMap() {
     Message message = MessageFactory.map();
     assertNotNull(message);

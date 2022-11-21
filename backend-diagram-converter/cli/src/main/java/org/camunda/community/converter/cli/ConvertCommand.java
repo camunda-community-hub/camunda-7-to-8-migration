@@ -16,6 +16,8 @@ import org.camunda.bpm.model.bpmn.Bpmn;
 import org.camunda.bpm.model.bpmn.BpmnModelInstance;
 import org.camunda.community.converter.BpmnConverter;
 import org.camunda.community.converter.BpmnConverterFactory;
+import org.camunda.community.converter.ConverterPropertiesFactory;
+import org.camunda.community.converter.DefaultConverterProperties;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
 import picocli.CommandLine.Parameters;
@@ -54,6 +56,11 @@ public class ConvertCommand implements Callable<Integer> {
       names = {"-nr", "--not-recursive"},
       description = "If enabled, recursive search will not be performed")
   boolean notRecursive;
+
+  @Option(
+      names = {"-jt", "--adapter-job-type"},
+      description = "If set, the default value for the adapter job is overridden")
+  String adapterJobType;
 
   public ConvertCommand() {
     BpmnConverterFactory factory = BpmnConverterFactory.getInstance();
@@ -102,7 +109,10 @@ public class ConvertCommand implements Callable<Integer> {
     }
     BpmnModelInstance modelInstance = Bpmn.readModelFromFile(file);
     try {
-      converter.convert(modelInstance, documentation);
+      DefaultConverterProperties properties = new DefaultConverterProperties();
+      properties.setAdapterJobType(adapterJobType);
+      converter.convert(
+          modelInstance, documentation, ConverterPropertiesFactory.getInstance().merge(properties));
     } catch (Exception e) {
       LOG_CLI.error("Problem while converting: {}", e.getMessage());
       return 1;

@@ -20,9 +20,10 @@ public class BpmnConverterTest {
   @CsvSource(value = {"example-c7.bpmn", "example-c7_2.bpmn", "java-delegate-class-c7.bpmn"})
   public void shouldConvert(String bpmnFile) {
     BpmnConverter converter = BpmnConverterFactory.getInstance().get();
+    ConverterProperties properties = ConverterPropertiesFactory.getInstance().get();
     BpmnModelInstance modelInstance =
         Bpmn.readModelFromStream(this.getClass().getClassLoader().getResourceAsStream(bpmnFile));
-    BpmnDiagramCheckResult result = converter.check(bpmnFile, modelInstance, true);
+    BpmnDiagramCheckResult result = converter.check(bpmnFile, modelInstance, true, properties);
     String processModel = IoUtil.convertXmlDocumentToString(modelInstance.getDocument());
     ByteArrayInputStream stream = new ByteArrayInputStream(processModel.getBytes());
     io.camunda.zeebe.model.bpmn.Bpmn.readModelFromStream(stream);
@@ -31,20 +32,23 @@ public class BpmnConverterTest {
   @Test
   public void shouldNotConvertC8() {
     BpmnConverter converter = BpmnConverterFactory.getInstance().get();
+    ConverterProperties properties = ConverterPropertiesFactory.getInstance().get();
     BpmnModelInstance modelInstance =
         Bpmn.readModelFromStream(
             this.getClass().getClassLoader().getResourceAsStream("c8_simple.bpmn"));
-    Assertions.assertThrows(RuntimeException.class, () -> converter.convert(modelInstance, false));
+    Assertions.assertThrows(
+        RuntimeException.class, () -> converter.convert(modelInstance, false, properties));
   }
 
   @Test
   public void testDelegateHint() {
     String bpmnFile = "java-delegate-class-c7.bpmn";
     BpmnConverter converter = BpmnConverterFactory.getInstance().get();
+    ConverterProperties properties = ConverterPropertiesFactory.getInstance().get();
     BpmnModelInstance modelInstance =
         Bpmn.readModelFromStream(this.getClass().getClassLoader().getResourceAsStream(bpmnFile));
     BpmnDiagramCheckResult result =
-        converter.check("java-delegate-class-c7.bpmn", modelInstance, false);
+        converter.check("java-delegate-class-c7.bpmn", modelInstance, false, properties);
     BpmnElementCheckResult delegateClassServiceTask = result.getResult("DelegateClassServiceTask");
     assertNotNull(delegateClassServiceTask);
     assertThat(delegateClassServiceTask.getMessages()).hasSize(1);

@@ -59,21 +59,31 @@ public interface DomElementVisitorContext {
    */
   void notify(Object object);
 
+  /**
+   * Returns the converter properties for the current conversion.
+   *
+   * @return the converter properties for the current conversion
+   */
+  ConverterProperties getProperties();
+
   class DefaultDomElementVisitorContext implements DomElementVisitorContext {
     private final DomElement element;
     private final BpmnDiagramCheckContext context;
     private final BpmnDiagramCheckResult result;
     private final NotificationService notificationService;
+    private final ConverterProperties converterProperties;
 
     public DefaultDomElementVisitorContext(
         DomElement element,
         BpmnDiagramCheckContext context,
         BpmnDiagramCheckResult result,
-        NotificationService notificationService) {
+        NotificationService notificationService,
+        ConverterProperties converterProperties) {
       this.element = element;
       this.context = context;
       this.result = result;
       this.notificationService = notificationService;
+      this.converterProperties = converterProperties;
     }
 
     @Override
@@ -110,6 +120,11 @@ public interface DomElementVisitorContext {
     @Override
     public void notify(Object object) {
       notificationService.notify(object);
+    }
+
+    @Override
+    public ConverterProperties getProperties() {
+      return converterProperties;
     }
 
     private void addMessage(DomElement element, Severity severity, Message message) {

@@ -49,7 +49,7 @@ public class MessageTemplateProcessor {
     List<String> variables = new ArrayList<>();
     while (matcher.find()) {
       String group = matcher.group(1).trim();
-      if (!group.startsWith("templates.")) {
+      if (!group.startsWith("templates.") && !variables.contains(group)) {
         LOG.debug("Found {}", group);
         variables.add(group);
       }
