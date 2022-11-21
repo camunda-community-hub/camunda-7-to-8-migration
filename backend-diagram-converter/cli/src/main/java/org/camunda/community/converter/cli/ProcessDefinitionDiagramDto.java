@@ -1,4 +1,4 @@
-package org.camunda.community.converter.webapp.dto;
+package org.camunda.community.converter.cli;
 
 public class ProcessDefinitionDiagramDto {
   private String bpmn20Xml;

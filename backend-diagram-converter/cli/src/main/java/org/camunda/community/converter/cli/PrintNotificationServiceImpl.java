@@ -1,6 +1,6 @@
 package org.camunda.community.converter.cli;
 
-import static org.camunda.community.converter.cli.Main.*;
+import static org.camunda.community.converter.cli.ConvertCommand.*;
 
 import org.camunda.community.converter.NotificationService;
 

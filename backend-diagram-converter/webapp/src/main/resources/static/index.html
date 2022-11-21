@@ -83,7 +83,6 @@
         integrity="sha384-u1OknCvxWvY5kfmNBILK2hRnQC3Pr17a+RTT6rIHI7NnikvbZlHgTPOOmMi466C8"
         crossorigin="anonymous"></script>
 <script>
-    const manifestAwaiter = fetch("/manifest").then(response => response.json());
     const check = document.getElementById("check");
     const convert = document.getElementById("convert");
     const fileSelect = document.getElementById("file-select");
@@ -152,7 +151,6 @@
         ]);
     }
 
-    manifestAwaiter.then(manifest => fileSelect.hidden = manifest.engineEnabled);
 
     check.addEventListener("click", async () => {
         const formData = await createFormData();
