@@ -46,7 +46,7 @@ public class ConverterController {
   public ResponseEntity<?> check(
       @RequestParam("files") MultipartFile[] bpmnFiles,
       @RequestParam(value = "adapterJobType", required = false) String adapterJobType,
-      @RequestHeader(HttpHeaders.ACCEPT) String contentType) {
+      @RequestHeader(HttpHeaders.ACCEPT) String[] contentType) {
     List<BpmnDiagramCheckResult> results =
         Arrays.stream(bpmnFiles)
             .map(
@@ -64,10 +64,11 @@ public class ConverterController {
                   }
                 })
             .collect(Collectors.toList());
-    if (contentType == null || contentType.equals(MediaType.APPLICATION_JSON_VALUE)) {
+    if (contentType == null
+        || Arrays.asList(contentType).contains(MediaType.APPLICATION_JSON_VALUE)) {
       return ResponseEntity.ok(results);
     }
-    if (contentType.equals("text/csv")) {
+    if (Arrays.asList(contentType).contains("text/csv")) {
       StringWriter sw = new StringWriter();
       csvWriterService.writeCsvFile(results, sw);
       Resource file = new ByteArrayResource(sw.toString().getBytes());
