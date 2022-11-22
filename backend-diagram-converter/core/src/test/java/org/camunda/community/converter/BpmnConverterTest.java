@@ -69,26 +69,26 @@ public class BpmnConverterTest {
     assertThat(javaClassCheckResult.getMessages()).hasSize(1);
     assertThat(javaClassCheckResult.getMessages().get(0).getMessage())
         .isEqualTo(
-            "Element 'taskListener' with value 'com.camunda.consulting.TaskListenerExample' cannot be transformed. Task Listeners do not exist in Zeebe.");
+            "Element 'taskListener' with implementation 'com.camunda.consulting.TaskListenerExample' cannot be transformed. Task Listeners do not exist in Zeebe.");
 
     BpmnElementCheckResult delegateExpressionCheckResult =
         result.getResult("UserTaskUseDelegateExpression");
     assertThat(delegateExpressionCheckResult.getMessages()).hasSize(1);
     assertThat(delegateExpressionCheckResult.getMessages().get(0).getMessage())
         .isEqualTo(
-            "Element 'taskListener' with value '${taskListenerExample}' cannot be transformed. Task Listeners do not exist in Zeebe.");
+            "Element 'taskListener' with implementation '${taskListenerExample}' cannot be transformed. Task Listeners do not exist in Zeebe.");
 
     BpmnElementCheckResult expressionCheckResult = result.getResult("UserTaskUseExpression");
     assertThat(expressionCheckResult.getMessages()).hasSize(1);
     assertThat(expressionCheckResult.getMessages().get(0).getMessage())
         .isEqualTo(
-            "Element 'taskListener' with value '${delegateTask.setName(\"my expression name\")}' cannot be transformed. Task Listeners do not exist in Zeebe.");
+            "Element 'taskListener' with implementation '${delegateTask.setName(\"my expression name\")}' cannot be transformed. Task Listeners do not exist in Zeebe.");
 
     BpmnElementCheckResult inlineScriptCheckResult = result.getResult("UserTaskUseInlineScript");
     assertThat(inlineScriptCheckResult.getMessages()).hasSize(2);
     assertThat(inlineScriptCheckResult.getMessages().get(0).getMessage())
         .isEqualTo(
-            "Element 'taskListener' with value 'javascript' cannot be transformed. Task Listeners do not exist in Zeebe.");
+            "Element 'taskListener' with implementation 'javascript' cannot be transformed. Task Listeners do not exist in Zeebe.");
     assertThat(inlineScriptCheckResult.getMessages().get(1).getMessage())
         .isEqualTo(
             "Element 'script' cannot be transformed. Script 'delegateTask.setName(\"my script name\");' with format 'javascript' on 'taskListener'.");

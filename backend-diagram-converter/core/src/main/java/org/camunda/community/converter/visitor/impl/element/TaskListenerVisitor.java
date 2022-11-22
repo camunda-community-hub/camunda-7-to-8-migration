@@ -14,6 +14,11 @@ public class TaskListenerVisitor extends AbstractCamundaElementVisitor {
 
   @Override
   protected Message visitCamundaElement(DomElementVisitorContext context) {
+    String listenerImplementation = findListenerImplementation(context);
+    return MessageFactory.taskListener(listenerImplementation);
+  }
+
+  protected String findListenerImplementation(DomElementVisitorContext context) {
     String listenerImplementation = context.getElement().getAttribute("delegateExpression");
     if (listenerImplementation == null) {
       listenerImplementation = context.getElement().getAttribute("class");
@@ -30,7 +35,7 @@ public class TaskListenerVisitor extends AbstractCamundaElementVisitor {
               .get(0)
               .getAttribute("scriptFormat");
     }
-    return MessageFactory.taskListener(listenerImplementation);
+    return listenerImplementation;
   }
 
   @Override

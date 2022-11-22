@@ -325,7 +325,7 @@ public class MessageFactory {
   public static Message taskListener(String listenerImplementation) {
     return INSTANCE.composeMessage(
         "task-listener",
-        ContextBuilder.builder().entry("elementValue", listenerImplementation).build());
+        ContextBuilder.builder().entry("implementation", listenerImplementation).build());
   }
 
   public static Message formData(String elementLocalName) {
