@@ -1,5 +1,6 @@
 package org.camunda.community.converter.message;
 
+import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 import org.camunda.community.converter.expression.ExpressionTransformationResult;
@@ -266,9 +267,11 @@ public class MessageFactoryTest {
 
   @Test
   void shouldBuildTaskListener() {
-    Message message = MessageFactory.taskListener(random());
+    Message message = MessageFactory.taskListener("my tasklistener implementation");
     assertNotNull(message);
-    assertNotNull(message.getMessage());
+    assertThat(message.getMessage())
+        .isEqualTo(
+            "Element 'taskListener' with implementation 'my tasklistener implementation' cannot be transformed. Task Listeners do not exist in Zeebe.");
   }
 
   @Test
@@ -301,9 +304,13 @@ public class MessageFactoryTest {
 
   @Test
   void shouldBuildCamundaScript() {
-    Message message = MessageFactory.camundaScript(random(), random(), random());
+    Message message =
+        MessageFactory.camundaScript(
+            "script", "var message = \"hello world\"", "javascript", "taskListener");
     assertNotNull(message);
-    assertNotNull(message.getMessage());
+    assertThat(message.getMessage())
+        .isEqualTo(
+            "Element 'script' cannot be transformed. Script 'var message = \"hello world\"' with format 'javascript' on 'taskListener'.");
   }
 
   @Test

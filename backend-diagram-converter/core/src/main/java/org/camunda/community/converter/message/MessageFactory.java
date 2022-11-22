@@ -322,10 +322,10 @@ public class MessageFactory {
         ContextBuilder.builder().context(elementNotTransformablePrefix(elementLocalName)).build());
   }
 
-  public static Message taskListener(String elementLocalName) {
+  public static Message taskListener(String listenerImplementation) {
     return INSTANCE.composeMessage(
         "task-listener",
-        ContextBuilder.builder().context(elementNotTransformablePrefix(elementLocalName)).build());
+        ContextBuilder.builder().entry("implementation", listenerImplementation).build());
   }
 
   public static Message formData(String elementLocalName) {
@@ -377,13 +377,15 @@ public class MessageFactory {
     return INSTANCE.staticMessage("input-output");
   }
 
-  public static Message camundaScript(String elementLocalName, String script, String scriptFormat) {
+  public static Message camundaScript(
+      String elementLocalName, String script, String scriptFormat, String parentElement) {
     return INSTANCE.composeMessage(
         "camunda.script",
         ContextBuilder.builder()
             .context(elementNotTransformablePrefix(elementLocalName))
             .entry("script", script)
             .entry("scriptFormat", scriptFormat)
+            .entry("parentElement", parentElement)
             .build());
   }
 

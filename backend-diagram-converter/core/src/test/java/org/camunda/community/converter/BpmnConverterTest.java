@@ -47,14 +47,50 @@ public class BpmnConverterTest {
     ConverterProperties properties = ConverterPropertiesFactory.getInstance().get();
     BpmnModelInstance modelInstance =
         Bpmn.readModelFromStream(this.getClass().getClassLoader().getResourceAsStream(bpmnFile));
-    BpmnDiagramCheckResult result =
-        converter.check("java-delegate-class-c7.bpmn", modelInstance, false, properties);
+    BpmnDiagramCheckResult result = converter.check(bpmnFile, modelInstance, false, properties);
     BpmnElementCheckResult delegateClassServiceTask = result.getResult("DelegateClassServiceTask");
     assertNotNull(delegateClassServiceTask);
     assertThat(delegateClassServiceTask.getMessages()).hasSize(1);
     BpmnElementCheckMessage message = delegateClassServiceTask.getMessages().get(0);
-    assertEquals(
-        "Attribute 'class' on 'serviceTask' was mapped. Delegate call to 'com.camunda.consulting.MyDelegate' was transformed to job type 'camunda-7-adapter'. Please review your implementation.",
-        message.getMessage());
+    assertThat(message.getMessage())
+        .isEqualTo(
+            "Attribute 'class' on 'serviceTask' was mapped. Delegate call to 'com.camunda.consulting.MyDelegate' was transformed to job type 'camunda-7-adapter'. Please review your implementation.");
+  }
+
+  @Test
+  public void testTaskListenerHints() {
+    String bpmnFile = "user-task-listener-implementations.bpmn";
+    BpmnConverter converter = BpmnConverterFactory.getInstance().get();
+    ConverterProperties properties = ConverterPropertiesFactory.getInstance().get();
+    BpmnModelInstance modelInstance =
+        Bpmn.readModelFromStream(this.getClass().getClassLoader().getResourceAsStream(bpmnFile));
+    BpmnDiagramCheckResult result = converter.check(bpmnFile, modelInstance, false, properties);
+    BpmnElementCheckResult javaClassCheckResult = result.getResult("UserTaskUseJavaClass");
+    assertThat(javaClassCheckResult.getMessages()).hasSize(1);
+    assertThat(javaClassCheckResult.getMessages().get(0).getMessage())
+        .isEqualTo(
+            "Element 'taskListener' with implementation 'com.camunda.consulting.TaskListenerExample' cannot be transformed. Task Listeners do not exist in Zeebe.");
+
+    BpmnElementCheckResult delegateExpressionCheckResult =
+        result.getResult("UserTaskUseDelegateExpression");
+    assertThat(delegateExpressionCheckResult.getMessages()).hasSize(1);
+    assertThat(delegateExpressionCheckResult.getMessages().get(0).getMessage())
+        .isEqualTo(
+            "Element 'taskListener' with implementation '${taskListenerExample}' cannot be transformed. Task Listeners do not exist in Zeebe.");
+
+    BpmnElementCheckResult expressionCheckResult = result.getResult("UserTaskUseExpression");
+    assertThat(expressionCheckResult.getMessages()).hasSize(1);
+    assertThat(expressionCheckResult.getMessages().get(0).getMessage())
+        .isEqualTo(
+            "Element 'taskListener' with implementation '${delegateTask.setName(\"my expression name\")}' cannot be transformed. Task Listeners do not exist in Zeebe.");
+
+    BpmnElementCheckResult inlineScriptCheckResult = result.getResult("UserTaskUseInlineScript");
+    assertThat(inlineScriptCheckResult.getMessages()).hasSize(2);
+    assertThat(inlineScriptCheckResult.getMessages().get(0).getMessage())
+        .isEqualTo(
+            "Element 'taskListener' with implementation 'javascript' cannot be transformed. Task Listeners do not exist in Zeebe.");
+    assertThat(inlineScriptCheckResult.getMessages().get(1).getMessage())
+        .isEqualTo(
+            "Element 'script' cannot be transformed. Script 'delegateTask.setName(\"my script name\");' with format 'javascript' on 'taskListener'.");
   }
 }
