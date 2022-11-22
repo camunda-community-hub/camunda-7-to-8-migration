@@ -44,9 +44,9 @@ public class BpmnConverterService {
         ConverterPropertiesFactory.getInstance().merge(adaptedProperties));
   }
 
-  public String printXml(DomDocument document, boolean b) {
+  public String printXml(DomDocument document, boolean prettyPrint) {
     try (StringWriter sw = new StringWriter()) {
-      bpmnConverter.printXml(document, b, sw);
+      bpmnConverter.printXml(document, prettyPrint, sw);
       return sw.toString();
     } catch (IOException e) {
       throw new RuntimeException(e);

@@ -25,7 +25,7 @@
             test any converted diagram.</p>
     </div>
     <div class="row">
-        <div class="mb-3">
+        <div class="mb-3" id="file-select">
             <label for="formFile" class="form-label">Camunda 7 BPMN files</label>
             <input class="form-control" type="file" id="formFile" multiple>
         </div>
@@ -99,6 +99,7 @@
         "TASK": "text-bg-secondary"
     }
 
+
     const el = (tagName, attributes, children) => {
         const element = document.createElement(tagName);
         Object.keys(attributes).forEach(key => element[key] = attributes[key]);
@@ -123,12 +124,12 @@
         return el("li", {className: `list-group-item ${severityClasses[message.severity]}`}, `${message.severity}: ${message.message}`);
     };
 
-    const createFormData = () => {
+    const createFormData = async () => {
+        const formData = new FormData();
         if (fileUpload.files.length === 0) {
             alert("Please select a .bpmn file");
             return null;
         }
-        const formData = new FormData();
         for (let i = 0; i < fileUpload.files.length; i++) {
             formData.append("files", fileUpload.files[i], fileUpload.files[i].name)
         }
@@ -140,16 +141,15 @@
     }
 
     const createFormattedResultForFile = file => {
-        console.log(file);
         return el("div", {className: "card mb-3"}, [
             el("div", {className: "card-header"}, [file.filename]),
             el("ul", {className: "list-group list-group-flush"}, file.results.map(createFormattedResult).filter(e => e !== undefined))
         ]);
-
     }
 
-    check.addEventListener("click", () => {
-        const formData = createFormData();
+
+    check.addEventListener("click", async () => {
+        const formData = await createFormData();
         if (!formData) {
             return;
         }
@@ -166,8 +166,8 @@
         });
     });
 
-    convert.addEventListener("click", () => {
-        const formData = createFormData();
+    convert.addEventListener("click", async () => {
+        const formData = await createFormData();
         if (!formData) {
             return;
         }

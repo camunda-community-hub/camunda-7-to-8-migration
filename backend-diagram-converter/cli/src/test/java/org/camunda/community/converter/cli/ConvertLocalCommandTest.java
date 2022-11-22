@@ -10,7 +10,7 @@ import java.nio.file.Files;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
-public class ConvertCommandTest {
+public class ConvertLocalCommandTest {
   private void setupDir(String filename, File tempDir) {
     try (InputStream in = getClass().getClassLoader().getResourceAsStream(filename)) {
       Files.copy(in, new File(tempDir, filename).toPath(), REPLACE_EXISTING);
@@ -20,27 +20,27 @@ public class ConvertCommandTest {
   }
 
   @Test
-  public void shouldConvert(@TempDir File tempDir) {
+  public void shouldConvert(@TempDir File tempDir) throws Exception {
     setupDir("c7.bpmn", tempDir);
-    ConvertCommand command = new ConvertCommand();
+    ConvertLocalCommand command = new ConvertLocalCommand();
     command.file = tempDir;
     Integer call = command.call();
     assertEquals(0, call);
   }
 
   @Test
-  public void shouldConvertLegacy(@TempDir File tempDir) {
+  public void shouldConvertLegacy(@TempDir File tempDir) throws Exception {
     setupDir("c7.bpmn20.xml", tempDir);
-    ConvertCommand command = new ConvertCommand();
+    ConvertLocalCommand command = new ConvertLocalCommand();
     command.file = tempDir;
     Integer call = command.call();
     assertEquals(0, call);
   }
 
   @Test
-  public void shouldNotConvert(@TempDir File tempDir) {
+  public void shouldNotConvert(@TempDir File tempDir) throws Exception {
     setupDir("c8.bpmn", tempDir);
-    ConvertCommand command = new ConvertCommand();
+    ConvertLocalCommand command = new ConvertLocalCommand();
     command.file = tempDir;
     Integer call = command.call();
     assertEquals(1, call);
