@@ -168,7 +168,10 @@
         }
         fetch("/check", {
             body: formData,
-            method: "POST"
+            method: "POST",
+            headers: {
+            	  "Accept": "application/json"
+            }
         }).then(response => {
             response.json().then(json => {
                 checkContainer.innerHTML = JSON.stringify(json, null, 2);
