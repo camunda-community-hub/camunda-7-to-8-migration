@@ -1,0 +1,21 @@
+{
+  "resources": {
+    "includes": [
+      {
+        "pattern": ".*\\.xsd"
+      },
+      {
+        "pattern": ".*\\.properties"
+      },
+      {
+        "pattern": ".*\\.xsl"
+      },
+      {
+        "pattern": ".*\\.xml"
+      },
+      {
+        "pattern": ".*"
+      }
+    ]
+  }
+}
