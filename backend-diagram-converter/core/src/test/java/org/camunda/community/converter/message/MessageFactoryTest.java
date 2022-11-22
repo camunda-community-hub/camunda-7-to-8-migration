@@ -271,7 +271,7 @@ public class MessageFactoryTest {
     assertNotNull(message);
     assertThat(message.getMessage())
         .isEqualTo(
-            "Element 'taskListener' with value 'my tasklistener implementation' cannot be transformed. Task Listeners do not exist in Zeebe.");
+            "Element 'taskListener' with implementation 'my tasklistener implementation' cannot be transformed. Task Listeners do not exist in Zeebe.");
   }
 
   @Test
