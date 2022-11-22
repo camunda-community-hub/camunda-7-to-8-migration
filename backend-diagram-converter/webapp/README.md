@@ -16,9 +16,9 @@ The frontend is self-explanatory. You upload .bpmn Files and then click either *
 
 The API offers 2 methods:
 
-`POST /check`: Requires the usage of `FormData`. The formdata needs to consist of fields `files` which are the .bpmn Files. It will return:
+`POST /check`: Requires the usage of `FormData`. The formdata needs to consist of fields `files` which are the .bpmn Files. In the `Accept` header, you can either set `application/json` or `text/csv`. It will return:
 
-`200`: Everything fine. The body contains a list of [check results](./../core/src/main/java/org/camunda/community/converter/BpmnDiagramCheckResult.java).
+`200`: Everything fine. The body contains a list of [check results](./../core/src/main/java/org/camunda/community/converter/BpmnDiagramCheckResult.java), either in `application/json` format or flattened as `text/csv`.
 
 `POST /convert`: Requires the usage of `FormData`. The formdata needs to consist of fields `files` which are the .bpmn Files plus a field `appendDocumentation` which is a boolean and controls whether the messages are also appended to the documentation section of each BPMN element. It will return:
 
