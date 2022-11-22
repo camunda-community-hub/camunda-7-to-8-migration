@@ -37,6 +37,7 @@
     <plugin.version.maven-compiler-plugin>3.10.1</plugin.version.maven-compiler-plugin>
     <plugin.version.native-maven-plugin>0.9.18</plugin.version.native-maven-plugin>
     <plugin.version.maven-depdendency-plugin>3.3.0</plugin.version.maven-depdendency-plugin>
+    <plugin.version.jpackage-maven-plugin>0.1.5</plugin.version.jpackage-maven-plugin>
   </properties>
 
   <dependencyManagement>
@@ -194,6 +195,11 @@
           <groupId>com.google.cloud.functions</groupId>
           <artifactId>function-maven-plugin</artifactId>
           <version>${plugin.version.function-maven-plugin}</version>
+        </plugin>
+        <plugin>
+          <groupId>com.github.akman</groupId>
+          <artifactId>jpackage-maven-plugin</artifactId>
+          <version>${plugin.version.jpackage-maven-plugin}</version>
         </plugin>
       </plugins>
     </pluginManagement>
