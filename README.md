@@ -14,3 +14,7 @@ This projects contains:
 The following video walks you through the migration process:
 
 <a href="http://www.youtube.com/watch?feature=player_embedded&v=yS0wAO0KgBc" target="_blank"><img src="http://img.youtube.com/vi/yS0wAO0KgBc/0.jpg" alt="Walkthrough" width="240" height="180" border="10" /></a>
+
+## Use Snapshot Versions
+
+Some features you see in the code might not yet be available in a released version. You can find the `SNAPSHOT` versions [here](https://artifacts.camunda.com/ui/repos/tree/General/camunda-bpm-community-extensions-snapshots/org/camunda/community/migration/camunda-7-adapter).
