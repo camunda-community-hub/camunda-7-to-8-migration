@@ -3,6 +3,7 @@ package org.camunda.community.converter.webapp;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.StringWriter;
 import java.util.AbstractMap.SimpleEntry;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -21,6 +22,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
@@ -28,16 +30,23 @@ import org.springframework.web.multipart.MultipartFile;
 @RestController
 public class ConverterController {
   private final BpmnConverterService bpmnConverter;
+  private final CsvWriterService csvWriterService;
 
   @Autowired
-  public ConverterController(BpmnConverterService bpmnConverter) {
+  public ConverterController(
+      BpmnConverterService bpmnConverter, CsvWriterService csvWriterService) {
     this.bpmnConverter = bpmnConverter;
+    this.csvWriterService = csvWriterService;
   }
 
-  @PostMapping("/check")
+  @PostMapping(
+      value = "/check",
+      produces = {MediaType.APPLICATION_JSON_VALUE, "text/csv"},
+      consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
   public ResponseEntity<?> check(
       @RequestParam("files") MultipartFile[] bpmnFiles,
-      @RequestParam(value = "adapterJobType", required = false) String adapterJobType) {
+      @RequestParam(value = "adapterJobType", required = false) String adapterJobType,
+      @RequestHeader(HttpHeaders.ACCEPT) String[] contentType) {
     List<BpmnDiagramCheckResult> results =
         Arrays.stream(bpmnFiles)
             .map(
@@ -55,10 +64,28 @@ public class ConverterController {
                   }
                 })
             .collect(Collectors.toList());
-    return ResponseEntity.ok(results);
+    if (contentType == null
+        || contentType.length == 0
+        || Arrays.asList(contentType).contains(MediaType.APPLICATION_JSON_VALUE)) {
+      return ResponseEntity.ok(results);
+    }
+    if (Arrays.asList(contentType).contains("text/csv")) {
+      StringWriter sw = new StringWriter();
+      csvWriterService.writeCsvFile(results, sw);
+      Resource file = new ByteArrayResource(sw.toString().getBytes());
+      return ResponseEntity.ok()
+          .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"conversionResult.csv\"")
+          .contentType(MediaType.APPLICATION_OCTET_STREAM)
+          .body(file);
+    } else {
+      return ResponseEntity.badRequest().build();
+    }
   }
 
-  @PostMapping("/convert")
+  @PostMapping(
+      value = "/convert",
+      produces = {MediaType.APPLICATION_OCTET_STREAM_VALUE},
+      consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
   public ResponseEntity<?> getFile(
       @RequestParam("files") MultipartFile[] bpmnFiles,
       @RequestParam("appendDocumentation") boolean appendDocumentation,

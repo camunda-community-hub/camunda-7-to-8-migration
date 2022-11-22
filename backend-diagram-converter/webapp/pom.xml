@@ -19,7 +19,10 @@
     <dependency>
       <groupId>com.slack.api</groupId>
       <artifactId>slack-api-client</artifactId>
-      <version>1.27.1</version>
+    </dependency>
+    <dependency>
+      <groupId>com.opencsv</groupId>
+      <artifactId>opencsv</artifactId>
     </dependency>
     <dependency>
       <groupId>org.camunda.community.migration</groupId>
@@ -34,6 +37,11 @@
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-configuration-processor</artifactId>
       <optional>true</optional>
+    </dependency>
+    <dependency>
+      <groupId>io.rest-assured</groupId>
+      <artifactId>rest-assured</artifactId>
+      <scope>test</scope>
     </dependency>
   </dependencies>
 
