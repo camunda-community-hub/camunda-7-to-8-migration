@@ -26,6 +26,8 @@
     <version.spring-boot>2.7.5</version.spring-boot>
     <version.picocli>4.7.0</version.picocli>
     <version.commons-io>2.11.0</version.commons-io>
+    <version.slack-api-client>1.27.1</version.slack-api-client>
+    <version.opencsv>5.7.1</version.opencsv>
 
     <plugin.version.function-maven-plugin>0.10.1</plugin.version.function-maven-plugin>
     <plugin.version.maven-enforcer-plugin>3.1.0</plugin.version.maven-enforcer-plugin>
@@ -96,6 +98,16 @@
         <groupId>org.jsoup</groupId>
         <artifactId>jsoup</artifactId>
         <version>${version.jsoup}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.slack.api</groupId>
+        <artifactId>slack-api-client</artifactId>
+        <version>${version.slack-api-client}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.opencsv</groupId>
+        <artifactId>opencsv</artifactId>
+        <version>${version.opencsv}</version>
       </dependency>
       <dependency>
         <groupId>org.camunda.community.migration</groupId>
