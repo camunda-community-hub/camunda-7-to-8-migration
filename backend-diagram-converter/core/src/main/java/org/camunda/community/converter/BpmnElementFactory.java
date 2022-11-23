@@ -1,91 +1,67 @@
 package org.camunda.community.converter;
 
+import java.util.function.Consumer;
 import org.camunda.bpm.model.xml.instance.DomElement;
 
 public class BpmnElementFactory {
-  public static DomElement getExtensionElements(DomElement element) {
-    return element.getChildElements().stream()
-        .filter(e -> e.getLocalName().equals("extensionElements"))
+
+  private static DomElement getOrCreateBpmnElement(
+      DomElement parent, String localName, Inserter inserter, Consumer<DomElement> childDecorator) {
+    return parent.getChildElements().stream()
+        .filter(e -> e.getLocalName().equals(localName))
+        .filter(e -> e.getNamespaceURI().equals(NamespaceUri.BPMN))
         .findFirst()
         .orElseGet(
             () -> {
-              DomElement extensionElements =
-                  element
+              DomElement child =
+                  parent
                       .getDocument()
-                      .createElement(
-                          NamespaceUri.BPMN, createElementName(element, "extensionElements"));
-              element.insertChildElementAfter(extensionElements, getDocumentation(element));
-              return extensionElements;
+                      .createElement(NamespaceUri.BPMN, createElementName(parent, localName));
+              childDecorator.accept(child);
+              inserter.insert(parent, child);
+              return child;
             });
+  }
+
+  public static DomElement getExtensionElements(DomElement element) {
+    return getOrCreateBpmnElement(
+        element,
+        "extensionElements",
+        (parent, child) -> parent.insertChildElementAfter(child, getDocumentation(element)),
+        child -> {});
   }
 
   public static DomElement getDocumentation(DomElement element) {
-    return element.getChildElements().stream()
-        .filter(e -> e.getLocalName().equals("documentation"))
-        .findFirst()
-        .orElseGet(
-            () -> {
-              DomElement extensionElements =
-                  element
-                      .getDocument()
-                      .createElement(
-                          NamespaceUri.BPMN, createElementName(element, "documentation"));
-              element.insertChildElementAfter(extensionElements, null);
-              return extensionElements;
-            });
+    return getOrCreateBpmnElement(
+        element,
+        "documentation",
+        (parent, child) -> parent.insertChildElementAfter(child, null),
+        child -> {});
   }
 
   public static DomElement getMultiInstanceLoopCharacteristics(DomElement element) {
-    return element.getChildElements().stream()
-        .filter(e -> e.getLocalName().equals("multiInstanceLoopCharacteristics"))
-        .findFirst()
-        .orElseGet(
-            () -> {
-              DomElement mil =
-                  element
-                      .getDocument()
-                      .createElement(
-                          NamespaceUri.BPMN,
-                          createElementName(element, "multiInstanceLoopCharacteristics"));
-              element.appendChild(mil);
-              return mil;
-            });
+    return getOrCreateBpmnElement(
+        element, "multiInstanceLoopCharacteristics", DomElement::appendChild, child -> {});
   }
 
   public static DomElement getCompletionCondition(DomElement element) {
-    return element.getChildElements().stream()
-        .filter(e -> e.getLocalName().equals("completionCondition"))
-        .findFirst()
-        .orElseGet(
-            () -> {
-              DomElement mil =
-                  element
-                      .getDocument()
-                      .createElement(
-                          NamespaceUri.BPMN, createElementName(element, "completionCondition"));
-              mil.setAttribute(
-                  NamespaceUri.XSI, "type", createElementName(element, "tFormalExpression"));
-              element.appendChild(mil);
-              return mil;
-            });
+    return getOrCreateBpmnElement(
+        element,
+        "completionCondition",
+        DomElement::appendChild,
+        BpmnElementFactory::formalExpression);
   }
 
   public static DomElement getConditionExpression(DomElement element) {
-    return element.getChildElements().stream()
-        .filter(e -> e.getLocalName().equals("conditionExpression"))
-        .findFirst()
-        .orElseGet(
-            () -> {
-              DomElement conditionExpressionElement =
-                  element
-                      .getDocument()
-                      .createElement(
-                          NamespaceUri.BPMN, createElementName(element, "conditionExpression"));
-              element.appendChild(conditionExpressionElement);
-              conditionExpressionElement.setAttribute(
-                  NamespaceUri.XSI, "type", createElementName(element, "tFormalExpression"));
-              return conditionExpressionElement;
-            });
+    return getOrCreateBpmnElement(
+        element,
+        "conditionExpression",
+        DomElement::appendChild,
+        BpmnElementFactory::formalExpression);
+  }
+
+  private static void formalExpression(DomElement element) {
+    element.setAttribute(NamespaceUri.XSI, "type", createElementName(element, "tFormalExpression"));
   }
 
   private static String createElementName(DomElement element, String localName) {
@@ -94,5 +70,9 @@ public class BpmnElementFactory {
       return localName;
     }
     return prefix + ":" + localName;
+  }
+
+  private interface Inserter {
+    void insert(DomElement parent, DomElement child);
   }
 }
