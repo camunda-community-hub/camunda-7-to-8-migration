@@ -1,5 +1,7 @@
 package org.camunda.community.converter.conversion;
 
+import static org.camunda.community.converter.BpmnElementFactory.*;
+
 import org.camunda.bpm.model.xml.instance.DomDocument;
 import org.camunda.bpm.model.xml.instance.DomElement;
 import org.camunda.community.converter.NamespaceUri;
@@ -24,29 +26,15 @@ public class ActivityConversion extends AbstractTypedConversion<AbstractActivity
   private void createMultiInstance(
       DomElement element,
       BpmnMultiInstanceLoopCharacteristics bpmnMultiInstanceLoopCharacteristics) {
-    DomElement multiInstanceLoopCharacteristics =
-        element.getChildElements().stream()
-            .filter(e -> e.getLocalName().equals("multiInstanceLoopCharacteristics"))
-            .findFirst()
-            .orElseGet(
-                () -> {
-                  DomElement mil =
-                      element
-                          .getDocument()
-                          .createElement(
-                              NamespaceUri.BPMN, "bpmn:multiInstanceLoopCharacteristics");
-                  element.appendChild(mil);
-                  return mil;
-                });
+    DomElement multiInstanceLoopCharacteristics = getMultiInstanceLoopCharacteristics(element);
     if (bpmnMultiInstanceLoopCharacteristics.isSequential()) {
       multiInstanceLoopCharacteristics.setAttribute("isSequential", Boolean.toString(true));
     }
-
     DomElement extensionElements = getExtensionElements(multiInstanceLoopCharacteristics);
     extensionElements.appendChild(
         createLoopCharacteristics(element.getDocument(), bpmnMultiInstanceLoopCharacteristics));
     if (bpmnMultiInstanceLoopCharacteristics.getCompletionCondition() != null) {
-      getCompletionCondition(
+      createCompletionCondition(
           multiInstanceLoopCharacteristics, bpmnMultiInstanceLoopCharacteristics);
     }
   }
@@ -75,23 +63,10 @@ public class ActivityConversion extends AbstractTypedConversion<AbstractActivity
     return loopCharacteristics;
   }
 
-  private void getCompletionCondition(
+  private void createCompletionCondition(
       DomElement element,
       BpmnMultiInstanceLoopCharacteristics bpmnMultiInstanceLoopCharacteristics) {
-    DomElement completionCondition =
-        element.getChildElements().stream()
-            .filter(e -> e.getLocalName().equals("completionCondition"))
-            .findFirst()
-            .orElseGet(
-                () -> {
-                  DomElement mil =
-                      element
-                          .getDocument()
-                          .createElement(NamespaceUri.BPMN, "bpmn:completionCondition");
-                  mil.setAttribute(NamespaceUri.XSI, "type", "bpmn:tFormalExpression");
-                  element.appendChild(mil);
-                  return mil;
-                });
+    DomElement completionCondition = getCompletionCondition(element);
     completionCondition.setTextContent(
         bpmnMultiInstanceLoopCharacteristics.getCompletionCondition());
   }

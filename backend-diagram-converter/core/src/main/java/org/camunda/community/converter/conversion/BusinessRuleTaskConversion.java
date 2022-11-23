@@ -1,5 +1,7 @@
 package org.camunda.community.converter.conversion;
 
+import static org.camunda.community.converter.BpmnElementFactory.*;
+
 import org.camunda.bpm.model.xml.instance.DomDocument;
 import org.camunda.bpm.model.xml.instance.DomElement;
 import org.camunda.community.converter.NamespaceUri;

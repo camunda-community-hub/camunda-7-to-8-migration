@@ -1,5 +1,7 @@
 package org.camunda.community.converter.conversion;
 
+import static org.camunda.community.converter.BpmnElementFactory.*;
+
 import org.camunda.bpm.model.xml.instance.DomDocument;
 import org.camunda.bpm.model.xml.instance.DomElement;
 import org.camunda.community.converter.NamespaceUri;
@@ -22,7 +24,7 @@ public class ServiceTaskConversion extends AbstractTypedConversion<ServiceTaskCo
 
   @Override
   protected void convertTyped(DomElement element, ServiceTaskConvertible convertible) {
-    DomElement extensionElements = super.getExtensionElements(element);
+    DomElement extensionElements = getExtensionElements(element);
     if (convertible.getZeebeTaskDefinition().getType() != null
         || convertible.getZeebeTaskDefinition().getRetries() != null) {
       extensionElements.appendChild(
