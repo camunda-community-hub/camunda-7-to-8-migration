@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_08rgdcc" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.5.1" modeler:executionPlatform="Camunda Platform" modeler:executionPlatformVersion="7.18.0">
+  <bpmn:collaboration id="Collaboration_0i06mwm">
+    <bpmn:participant id="Participant_15gs8hr" name="Properties Example" processRef="AllPropertiesProcess">
+      <bpmn:documentation>words about the process</bpmn:documentation>
+    </bpmn:participant>
+  </bpmn:collaboration>
+  <bpmn:process id="AllPropertiesProcess" name="All properties process" isExecutable="true">
+    <bpmn:extensionElements>
+      <camunda:executionListener class="com.camunda.StartListener" event="start" />
+      <camunda:executionListener class="com.camunda.EndListener" event="end" />
+      <camunda:properties>
+        <camunda:property name="myProcessProperty" value="my process value" />
+      </camunda:properties>
+    </bpmn:extensionElements>
+    <bpmn:startEvent id="StartEvent_1" name="All properties wanted">
+      <bpmn:extensionElements>
+        <camunda:executionListener class="com.camunda.EndListener" event="end" />
+      </bpmn:extensionElements>
+      <bpmn:outgoing>Flow_0vprg2k</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:serviceTask id="Activity_00zr8kg" name="Service task" camunda:class="com.camunda.MyJavaDelegate">
+      <bpmn:documentation>doc for service task
+With multiple lines</bpmn:documentation>
+      <bpmn:extensionElements>
+        <camunda:executionListener class="com.camunda.StartExecutionListener" event="start" />
+        <camunda:field name="myField">
+          <camunda:expression>${myFieldExpression}</camunda:expression>
+        </camunda:field>
+        <camunda:executionListener class="com.camundaEndExecutionListener" event="end" />
+        <camunda:properties>
+          <camunda:property name="someTaskExtension" value="myValue" />
+        </camunda:properties>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="myLocalVariable">my given value</camunda:inputParameter>
+          <camunda:outputParameter name="myProcessVariable">my process value</camunda:outputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0vprg2k</bpmn:incoming>
+      <bpmn:outgoing>Flow_0ibh83l</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:userTask id="Activity_1l37mn8" name="User task" camunda:candidateGroups="management">
+      <bpmn:documentation>some user task docs.
+With content for the user!</bpmn:documentation>
+      <bpmn:extensionElements>
+        <camunda:taskListener class="com.camunda.CompleteListener" event="complete" />
+        <camunda:taskListener class="com.camunda.CreateListener" event="create" />
+        <camunda:inputOutput>
+          <camunda:inputParameter name="myUserTaskInputVar">some value</camunda:inputParameter>
+          <camunda:outputParameter name="myProcessVariable">user task completed</camunda:outputParameter>
+        </camunda:inputOutput>
+        <camunda:executionListener class="com.camunda.EndListener" event="end" />
+        <camunda:executionListener class="" event="start" />
+        <camunda:properties>
+          <camunda:property name="userTaskName" value="my special name" />
+        </camunda:properties>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0ibh83l</bpmn:incoming>
+      <bpmn:outgoing>Flow_1u4tia9</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:sequenceFlow id="Flow_0vprg2k" sourceRef="StartEvent_1" targetRef="Activity_00zr8kg" />
+    <bpmn:sequenceFlow id="Flow_0ibh83l" sourceRef="Activity_00zr8kg" targetRef="Activity_1l37mn8" />
+    <bpmn:sequenceFlow id="Flow_1u4tia9" sourceRef="Activity_1l37mn8" targetRef="Activity_0vyiyre" />
+    <bpmn:endEvent id="Event_1xazqka" name="All properties used">
+      <bpmn:extensionElements>
+        <camunda:executionListener class="com.camunda.StartListener" event="start" />
+        <camunda:properties>
+          <camunda:property name="MyEndProperty" value="process ends here" />
+        </camunda:properties>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0zgda55</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_0zgda55" sourceRef="Activity_0vyiyre" targetRef="Event_1xazqka" />
+    <bpmn:callActivity id="Activity_0vyiyre" name="Call activity" calledElement="mySubProcess">
+      <bpmn:extensionElements>
+        <camunda:in variables="all" />
+        <camunda:out sourceExpression="${mySubprocessVariable}" target="mySubProcess" />
+        <camunda:in businessKey="#{execution.processBusinessKey}" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_1u4tia9</bpmn:incoming>
+      <bpmn:outgoing>Flow_0zgda55</bpmn:outgoing>
+    </bpmn:callActivity>
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Collaboration_0i06mwm">
+      <bpmndi:BPMNShape id="Participant_15gs8hr_di" bpmnElement="Participant_15gs8hr" isHorizontal="true">
+        <dc:Bounds x="160" y="37" width="708" height="250" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="StartEvent_1">
+        <dc:Bounds x="229" y="142" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="215" y="185" width="64" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_08cukps_di" bpmnElement="Activity_00zr8kg">
+        <dc:Bounds x="320" y="120" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1jg867m_di" bpmnElement="Activity_1l37mn8">
+        <dc:Bounds x="480" y="120" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1xazqka_di" bpmnElement="Event_1xazqka">
+        <dc:Bounds x="782" y="142" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="768" y="185" width="64" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1ni6kbk_di" bpmnElement="Activity_0vyiyre">
+        <dc:Bounds x="630" y="120" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_0vprg2k_di" bpmnElement="Flow_0vprg2k">
+        <di:waypoint x="265" y="160" />
+        <di:waypoint x="320" y="160" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0ibh83l_di" bpmnElement="Flow_0ibh83l">
+        <di:waypoint x="420" y="160" />
+        <di:waypoint x="480" y="160" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1u4tia9_di" bpmnElement="Flow_1u4tia9">
+        <di:waypoint x="580" y="160" />
+        <di:waypoint x="630" y="160" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0zgda55_di" bpmnElement="Flow_0zgda55">
+        <di:waypoint x="730" y="160" />
+        <di:waypoint x="782" y="160" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>
