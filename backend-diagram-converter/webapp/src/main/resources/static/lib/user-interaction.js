@@ -91,6 +91,7 @@ check.addEventListener("click", async () => {
             arrangedResultsArea.innerHTML = "";
             createFormattedResultWrapper(json);
             resultArea.hidden = false;
+            addElementMarkers(json)
         })
     });
 });
@@ -120,9 +121,16 @@ convert.addEventListener("click", async () => {
     }).then(downloadResponse);
 });
 
+async function showBpmn (bpmnXML) {
+  const bpmnViewer = await getBpmnViewer();
+  console.log('viewer loaded')
+  openDiagram(bpmnXML, bpmnViewer);
+  showPropertyInfos(bpmnViewer);
+}
+
 // load first diagram from uploaded files
 const reader = new FileReader();
-reader.onload = openDiagram;
+reader.onload = showBpmn;
 
 if (fileUpload.files.length > 0) {
   reader.readAsText(fileUpload.files[0]);
@@ -133,3 +141,22 @@ fileUpload.addEventListener("change", () => {
         reader.readAsText(fileUpload.files[0]);
     }
 });
+
+async function addElementMarkers(checkResult) {
+  const bpmnViewer = await getBpmnViewer();
+  var canvas = bpmnViewer.get('canvas');
+  checkResult[0].results.forEach(result => {
+    if (result.elementType != 'process' && result.elementType != 'message') {
+      if (result.messages.length > 0) {
+        console.log('marker for ', result.elementId)
+        const isWarning = result.messages.some(message => message.severity === 'WARNING');
+        const isTask = result.messages.some(message => message.severity === 'TASK');
+        if (isWarning) {
+          canvas.addMarker(result.elementId, 'conversion-warning')
+        } else if (isTask) {
+          canvas.addMarker(result.elementId, 'conversion-task')
+        }
+      }
+    }
+  })
+}

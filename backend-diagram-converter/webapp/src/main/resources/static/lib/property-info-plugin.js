@@ -42,44 +42,36 @@ async function getBpmnViewer() {
  *
  * @param {String} bpmnXML diagram to display
  */
-async function openDiagram(bpmnXML) {
+async function openDiagram(bpmnXML, bpmnViewer) {
 
   // import diagram
   try {
 
-    const bpmnViewer = await getBpmnViewer();
-    
     await bpmnViewer.importXML(bpmnXML.target.result);
 
     // access viewer components
     var canvas = bpmnViewer.get('canvas');
-    var overlays = bpmnViewer.get('overlays');
-    var elementRegistry = bpmnViewer.get('elementRegistry');
-
     // zoom to fit full viewport
     canvas.zoom('fit-viewport');
-
-    // attach an overlay to a node
-//         overlays.add('SCAN_OK', 'note', {
-//           position: {
-//             bottom: 0,
-//             right: 0
-//           },
-//           html: '<div class="diagram-note">Mixed up the labels?</div>'
-//         });
     
-        var elements = elementRegistry.getAll();
-        for (var elementCount in elements) {
-            var elementObject = elements[elementCount];
-            if (elementObject.businessObject.$instanceOf('bpmn:FlowNode') || elementObject.businessObject.$instanceOf('bpmn:Participant')) {
-                addStyle(elementObject, overlays);
-            }
-        }
-
     } catch (err) {
         
         console.error('could not import BPMN 2.0 diagram', err);
     }
+}
+
+async function showPropertyInfos() {
+  bpmnViewer = await getBpmnViewer()
+  var overlays = bpmnViewer.get('overlays');
+  var elementRegistry = bpmnViewer.get('elementRegistry');
+  
+  var elements = elementRegistry.getAll();
+  for (var elementCount in elements) {
+      var elementObject = elements[elementCount];
+      if (elementObject.businessObject.$instanceOf('bpmn:FlowNode') || elementObject.businessObject.$instanceOf('bpmn:Participant')) {
+          addStyle(elementObject, overlays);
+      }
+  }
 }
 
 function addStyle(element, overlays) {
