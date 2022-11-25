@@ -5,12 +5,13 @@
 }
 
 /* overwrite bootstrap styling. They use .badge as well */
-.badge {
+.prop-info {
     position:relative;
     padding: 0 0;
+    font-size: 0.75em;
 }
 
-.badge[data-badge]:after {
+.prop-info[data-badge]:after {
     content:attr(data-badge);
     position:absolute;
     top:-8px;
@@ -24,23 +25,23 @@
     box-shadow:0 0 1px #333;
 }
 
-.badge-blue:after {
+.prop-info-blue:after {
     background: #0082D5;
 }
 
-.badge-green:after {
+.prop-info-green:after {
     background: #04BE5B;
 }
 
-.badge-violet:after {
+.prop-info-violet:after {
     background: #A93ABA;
 }
 
-.badge-red:after {
+.prop-info-red:after {
     background: #D2335C;
 }
 
-.badge:empty {
+.prop-info:empty {
 	  display: block
 }
 

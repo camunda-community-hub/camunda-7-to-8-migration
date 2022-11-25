@@ -124,10 +124,10 @@ async function openDiagram(bpmnXML) {
             var extensions = (extensionElements === undefined ? [] : extensionElements.values);
 
             var type = '&#9654;';
-            var background = 'badge-green';
+            var background = 'prop-info-green';
             if(element.businessObject.processRef.isExecutable === false) {
                 type = '&#10074;&#10074;';
-                background = 'badge-red';
+                background = 'prop-info-red';
             }
             badges.push({
                 badgeKey: 'isExecutable',
@@ -163,13 +163,13 @@ async function openDiagram(bpmnXML) {
                         sort = 70;
                     }
                     type = 'L';
-                    background = 'badge-green';
+                    background = 'prop-info-green';
                     break;
                 case 'camunda:Properties':
                     key = 'camunda:Properties';
                     sort = 80;
                     type = 'E';
-                    background = 'badge-violet';
+                    background = 'prop-info-violet';
                     break;
                 case 'camunda:TaskListener':
                     console.log('task listener detected')
@@ -183,30 +183,30 @@ async function openDiagram(bpmnXML) {
                         sort = 71;
                     }
                     type = 'T';
-                    background = 'badge-green';
+                    background = 'prop-info-green';
                     break;
                 case 'camunda:InputOutput':
-                    background = 'badge-blue';
+                    background = 'prop-info-blue';
                     break;
                 case 'camunda:in':
                     type = 'V';
                     key = 'camunda:In';
                     location = 'left';
                     sort = 10;
-                    background = 'badge-blue';
+                    background = 'prop-info-blue';
                     break;
                 case 'camunda:Out':
                     type = 'V';
                     key = 'camunda:Out';
                     location = 'right';
                     sort = 60;
-                    background = 'badge-blue';
+                    background = 'prop-info-blue';
                     break;
                 case 'camunda:field':
                     key = 'camunda:Field';
                     sort = 90;
                     type = 'F';
-                    background = 'badge-red';
+                    background = 'prop-info-red';
                     break;
             }
 
@@ -287,7 +287,7 @@ async function openDiagram(bpmnXML) {
                         bottom: 0,
                         left: leftCounter
                     },
-                    html: '<div class="badge ' + overlayObject.badgeBackground + '" data-badge="' + overlayObject.badgeType + '"></div>'
+                    html: '<div class="prop-info ' + overlayObject.badgeBackground + '" data-badge="' + overlayObject.badgeType + '"></div>'
                 }));
                 leftCounter = leftCounter + 16;
             } else {
@@ -297,7 +297,7 @@ async function openDiagram(bpmnXML) {
                         bottom: 0,
                         right: rightCounter
                     },
-                    html: '<div class="badge ' + overlayObject.badgeBackground + '" data-badge="' + overlayObject.badgeType + '"></div>'
+                    html: '<div class="prop-info ' + overlayObject.badgeBackground + '" data-badge="' + overlayObject.badgeType + '"></div>'
                 }));
                 rightCounter = rightCounter + 16;
             }
