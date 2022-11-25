@@ -141,7 +141,6 @@ async function openDiagram(bpmnXML) {
             var extensions = element.businessObject.extensionElements.values;
         }
 
-
         for (var extension in extensions) {
             var type = '';
             var background = '';
@@ -172,7 +171,6 @@ async function openDiagram(bpmnXML) {
                     background = 'prop-info-violet';
                     break;
                 case 'camunda:TaskListener':
-                    console.log('task listener detected')
                     if (extensions[extension].event === 'create' || extensions[extension].event === 'assignment') {
                         location = 'left';
                         key = 'camunda:TaskListener-start';
@@ -211,7 +209,6 @@ async function openDiagram(bpmnXML) {
             }
 
             if (extensions[extension].$type === 'camunda:InputOutput') {
-                console.log('hasownproperty(inputProperties)', extensions[extension].hasOwnProperty('inputParameters'))
                 
                 if (extensions[extension].hasOwnProperty('inputParameters') &&
                     extensions[extension].inputParameters.length > 0) {
@@ -281,7 +278,6 @@ async function openDiagram(bpmnXML) {
             var overlayObject = sortedBadgeList[overlayCounter];
 
             if (overlayObject.badgeLocation === 'left') {
-                console.log('add left badge')
                 badges.push(overlays.add(element, 'badge', {
                     position: {
                         bottom: 0,
@@ -291,7 +287,6 @@ async function openDiagram(bpmnXML) {
                 }));
                 leftCounter = leftCounter + 16;
             } else {
-                console.log('add right badge')
                 badges.push(overlays.add(element, 'badge', {
                     position: {
                         bottom: 0,
