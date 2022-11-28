@@ -41,6 +41,11 @@ public abstract class AbstractConvertCommand implements Callable<Integer> {
       description = "If enabled, existing files are overridden")
   boolean override;
 
+  @Option(
+      names = {"--platform-version"},
+      description = "Semantic version of the target platform, defaults to latest version")
+  String platformVersion;
+
   public AbstractConvertCommand() {
     BpmnConverterFactory factory = BpmnConverterFactory.getInstance();
     factory.getNotificationServiceFactory().setInstance(new PrintNotificationServiceImpl());
@@ -84,6 +89,7 @@ public abstract class AbstractConvertCommand implements Callable<Integer> {
   protected DefaultConverterProperties converterProperties() {
     DefaultConverterProperties properties = new DefaultConverterProperties();
     properties.setAdapterJobType(adapterJobType);
+    properties.setPlatformVersion(platformVersion);
     return properties;
   }
 
