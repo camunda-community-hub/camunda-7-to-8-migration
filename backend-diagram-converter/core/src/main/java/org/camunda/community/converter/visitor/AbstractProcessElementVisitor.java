@@ -17,9 +17,7 @@ public abstract class AbstractProcessElementVisitor extends AbstractElementVisit
     context.setAsBpmnProcessElement(createConvertible(context));
     postCreationVisitor(context);
     if (!canBeConverted(context)) {
-      context.addMessage(
-          Severity.WARNING,
-          MessageFactory.elementNotSupportedHint(context.getElement().getLocalName()));
+      addCannotBeConvertedMessage(context);
     }
   }
 
@@ -29,5 +27,12 @@ public abstract class AbstractProcessElementVisitor extends AbstractElementVisit
 
   protected void postCreationVisitor(DomElementVisitorContext context) {
     // do nothing
+  }
+
+  protected void addCannotBeConvertedMessage(DomElementVisitorContext context) {
+    context.addMessage(
+        Severity.WARNING,
+        MessageFactory.elementNotSupportedHint(
+            context.getElement().getLocalName(), context.getProperties().getPlatformVersion()));
   }
 }

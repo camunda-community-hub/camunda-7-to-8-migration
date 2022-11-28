@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_1eejmlj" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.5.1" modeler:executionPlatform="Camunda Platform" modeler:executionPlatformVersion="7.18.0">
+  <bpmn:process id="OrGatewaysProcess" name="Or Gateways" isExecutable="true">
+    <bpmn:startEvent id="ORGatewaysWantedStartEvent" name="OR-Gateways wanted">
+      <bpmn:outgoing>Flow_02geyl2</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:sequenceFlow id="Flow_02geyl2" sourceRef="ORGatewaysWantedStartEvent" targetRef="ForkGateway" />
+    <bpmn:sequenceFlow id="Flow_1cpl9tb" sourceRef="ForkGateway" targetRef="N1Task">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${useMe}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_01o13a6" sourceRef="ForkGateway" targetRef="N2Task">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${useMeToo}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_0rigizb" sourceRef="N1Task" targetRef="JoinGateway" />
+    <bpmn:sequenceFlow id="Flow_0k6yurx" sourceRef="N2Task" targetRef="JoinGateway" />
+    <bpmn:endEvent id="ORGatewaysCheckedEndEvent" name="OR-Gateways checked">
+      <bpmn:incoming>Flow_0aeng9g</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_0aeng9g" sourceRef="JoinGateway" targetRef="ORGatewaysCheckedEndEvent" />
+    <bpmn:inclusiveGateway id="ForkGateway">
+      <bpmn:incoming>Flow_02geyl2</bpmn:incoming>
+      <bpmn:outgoing>Flow_1cpl9tb</bpmn:outgoing>
+      <bpmn:outgoing>Flow_01o13a6</bpmn:outgoing>
+    </bpmn:inclusiveGateway>
+    <bpmn:inclusiveGateway id="JoinGateway">
+      <bpmn:incoming>Flow_0rigizb</bpmn:incoming>
+      <bpmn:incoming>Flow_0k6yurx</bpmn:incoming>
+      <bpmn:outgoing>Flow_0aeng9g</bpmn:outgoing>
+    </bpmn:inclusiveGateway>
+    <bpmn:serviceTask id="N1Task" name="1" camunda:class="com.camunda.MyDelegate">
+      <bpmn:incoming>Flow_1cpl9tb</bpmn:incoming>
+      <bpmn:outgoing>Flow_0rigizb</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:serviceTask id="N2Task" name="2" camunda:class="com.camunda.MyDelegate">
+      <bpmn:incoming>Flow_01o13a6</bpmn:incoming>
+      <bpmn:outgoing>Flow_0k6yurx</bpmn:outgoing>
+    </bpmn:serviceTask>
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="OrGatewaysProcess">
+      <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="ORGatewaysWantedStartEvent">
+        <dc:Bounds x="179" y="99" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="162" y="142" width="70" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_039awvs_di" bpmnElement="ORGatewaysCheckedEndEvent">
+        <dc:Bounds x="632" y="99" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="615" y="142" width="70" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_0vsim94_di" bpmnElement="ForkGateway">
+        <dc:Bounds x="265" y="92" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_1fmxi1a_di" bpmnElement="JoinGateway">
+        <dc:Bounds x="525" y="92" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1apcca4_di" bpmnElement="N1Task">
+        <dc:Bounds x="370" y="77" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0tea78s_di" bpmnElement="N2Task">
+        <dc:Bounds x="370" y="190" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_02geyl2_di" bpmnElement="Flow_02geyl2">
+        <di:waypoint x="215" y="117" />
+        <di:waypoint x="265" y="117" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1cpl9tb_di" bpmnElement="Flow_1cpl9tb">
+        <di:waypoint x="315" y="117" />
+        <di:waypoint x="370" y="117" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0rigizb_di" bpmnElement="Flow_0rigizb">
+        <di:waypoint x="470" y="117" />
+        <di:waypoint x="525" y="117" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_01o13a6_di" bpmnElement="Flow_01o13a6">
+        <di:waypoint x="290" y="142" />
+        <di:waypoint x="290" y="230" />
+        <di:waypoint x="370" y="230" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0k6yurx_di" bpmnElement="Flow_0k6yurx">
+        <di:waypoint x="470" y="230" />
+        <di:waypoint x="550" y="230" />
+        <di:waypoint x="550" y="142" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0aeng9g_di" bpmnElement="Flow_0aeng9g">
+        <di:waypoint x="575" y="117" />
+        <di:waypoint x="632" y="117" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

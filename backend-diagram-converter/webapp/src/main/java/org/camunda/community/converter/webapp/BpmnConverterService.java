@@ -21,7 +21,10 @@ public class BpmnConverterService {
   }
 
   public void convert(
-      BpmnModelInstance modelInstance, boolean appendDocumentation, String adapterJobType) {
+      BpmnModelInstance modelInstance,
+      boolean appendDocumentation,
+      String adapterJobType,
+      String platformVersion) {
     DefaultConverterProperties adaptedProperties = new DefaultConverterProperties();
     adaptedProperties.setAdapterJobType(adapterJobType);
     bpmnConverter.convert(
@@ -34,7 +37,8 @@ public class BpmnConverterService {
       String filename,
       BpmnModelInstance modelInstance,
       boolean appendDocumentation,
-      String adapterJobType) {
+      String adapterJobType,
+      String platformVersion) {
     DefaultConverterProperties adaptedProperties = new DefaultConverterProperties();
     adaptedProperties.setAdapterJobType(adapterJobType);
     return bpmnConverter.check(

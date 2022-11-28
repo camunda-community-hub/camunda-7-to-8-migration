@@ -16,17 +16,35 @@ The frontend is self-explanatory. You upload .bpmn Files and then click either *
 
 The API offers 2 methods:
 
-`POST /check`: Requires the usage of `FormData`. The formdata needs to consist of fields `files` which are the .bpmn Files. In the `Accept` header, you can either set `application/json` or `text/csv`. It will return:
+`POST /check`:
 
-`200`: Everything fine. The body contains a list of [check results](./../core/src/main/java/org/camunda/community/converter/BpmnDiagramCheckResult.java), either in `application/json` format or flattened as `text/csv`.
+* Request:
+  * Format: `FormData`
+  * Fields
+    * `files` (`MultipartFile[]`): BPMN files _(mandatory)_
+    * `adapterJobType` (`String`): type of the job all service tasks formerly implemented as delegates or expressions should have. _(optional)_
+    * `platformVersion` (`String`): version of the target platform _(optional)_
+  * Headers
+    * `Accept`: Either `application/json` or `text/csv`
+* Response:
+  * `200`: Everything fine. The body contains a list of [check results](./../core/src/main/java/org/camunda/community/converter/BpmnDiagramCheckResult.java), either in `application/json` format or flattened as `text/csv`.
 
-`POST /convert`: Requires the usage of `FormData`. The formdata needs to consist of fields `files` which are the .bpmn Files plus a field `appendDocumentation` which is a boolean and controls whether the messages are also appended to the documentation section of each BPMN element. It will return:
+`POST /convert`:
 
-`200`: Everything fine. The body contains a zipped `Blob` which can be saved as a file and is a zip archive containing your converted BPMN diagrams.
+* Request:
+  * Format: `FormData`
+  * Fields
+    * `files` (`MultipartFile[]`): BPMN files _(mandatory)_
+    * `appendDocumentation` (`Boolean`): whether the check results should also be added to the documentation of each BPMN element _(default: `false`)_
+    * `adapterJobType` (`String`): type of the job all service tasks formerly implemented as delegates or expressions should have. _(optional)_
+    * `platformVersion` (`String`): version of the target platform _(optional)_
+* Response:
+  * `200`: Everything fine. The body contains a zipped `Blob` which can be saved as a file and is a zip archive containing your converted BPMN diagrams.
 
 These error can occur on both endpoints:
 
-`4xx`: The file you provided could not be parsed
+`4xx`: The request you provided could not be handled
+
 `5xx`: There was an exception during parsing or transforming your process.
 
 ### Notifications

@@ -13,6 +13,10 @@ public class MessageFactory {
 
   private MessageFactory() {}
 
+  public static Message inclusiveGatewayJoin() {
+    return INSTANCE.staticMessage("inclusive-gateway-join");
+  }
+
   public static Message collectionHint() {
     return INSTANCE.staticMessage("collection-hint");
   }
@@ -21,10 +25,12 @@ public class MessageFactory {
     return INSTANCE.staticMessage("call-activity-no-called-element-hint");
   }
 
-  public static Message elementNotSupportedHint(String elementLocalName) {
+  public static Message elementNotSupportedHint(String elementLocalName, String semanticVersion) {
     return INSTANCE.composeMessage(
         "element-not-supported-hint",
-        ContextBuilder.builder().context(elementNotSupportedPrefix(elementLocalName)).build());
+        ContextBuilder.builder()
+            .context(elementNotSupportedPrefix(elementLocalName, semanticVersion))
+            .build());
   }
 
   public static Message completionCondition(ExpressionTransformationResult transformationResult) {
@@ -171,10 +177,12 @@ public class MessageFactory {
         ContextBuilder.builder().context(elementCanBeUsedPrefix(elementLocalName)).build());
   }
 
-  public static Message elementNotSupported(String elementLocalName) {
+  public static Message elementNotSupported(String elementLocalName, String semanticVersion) {
     return INSTANCE.composeMessage(
         "element-not-supported",
-        ContextBuilder.builder().context(elementNotSupportedPrefix(elementLocalName)).build());
+        ContextBuilder.builder()
+            .context(elementNotSupportedPrefix(elementLocalName, semanticVersion))
+            .build());
   }
 
   public static Message script() {
@@ -435,8 +443,12 @@ public class MessageFactory {
         .build();
   }
 
-  private static Map<String, String> elementNotSupportedPrefix(String elementLocalName) {
-    return ContextBuilder.builder().entry("elementLocalName", elementLocalName).build();
+  private static Map<String, String> elementNotSupportedPrefix(
+      String elementLocalName, String semanticVersion) {
+    return ContextBuilder.builder()
+        .entry("elementLocalName", elementLocalName)
+        .entry("semanticVersion", semanticVersion)
+        .build();
   }
 
   private static Map<String, String> elementTransformedPrefix(String elementLocalName) {

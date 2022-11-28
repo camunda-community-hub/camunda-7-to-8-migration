@@ -1,6 +1,8 @@
 package org.camunda.community.converter.visitor.impl.eventDefinition;
 
 import org.camunda.community.converter.DomElementVisitorContext;
+import org.camunda.community.converter.version.SemanticVersion;
+import org.camunda.community.converter.version.VersionComparison;
 import org.camunda.community.converter.visitor.AbstractEventDefinitionVisitor;
 
 public class TerminateEventDefinitionVisitor extends AbstractEventDefinitionVisitor {
@@ -9,9 +11,9 @@ public class TerminateEventDefinitionVisitor extends AbstractEventDefinitionVisi
     return "terminateEventDefinition";
   }
 
-  // TODO this is supported in 8.1
   @Override
   public boolean canBeConverted(DomElementVisitorContext context) {
-    return false;
+    return VersionComparison.isSupported(
+        context.getProperties().getPlatformVersion(), SemanticVersion._8_1_0.toString());
   }
 }

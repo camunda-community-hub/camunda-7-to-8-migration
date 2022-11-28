@@ -20,7 +20,8 @@ public abstract class AbstractEventDefinitionVisitor extends AbstractElementVisi
     } else {
       context.addMessage(
           Severity.WARNING,
-          MessageFactory.elementNotSupported(context.getElement().getLocalName()));
+          MessageFactory.elementNotSupported(
+              context.getElement().getLocalName(), context.getProperties().getPlatformVersion()));
     }
   }
 
