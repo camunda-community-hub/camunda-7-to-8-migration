@@ -5,17 +5,18 @@ import static org.camunda.community.converter.BpmnElementFactory.*;
 import org.camunda.bpm.model.xml.instance.DomDocument;
 import org.camunda.bpm.model.xml.instance.DomElement;
 import org.camunda.community.converter.NamespaceUri;
-import org.camunda.community.converter.convertible.AbstractFlownodeConvertible;
-import org.camunda.community.converter.convertible.AbstractFlownodeConvertible.ZeebeProperty;
+import org.camunda.community.converter.convertible.AbstractProcessElementConvertible;
+import org.camunda.community.converter.convertible.AbstractProcessElementConvertible.ZeebeProperty;
 
-public class FlownodeConversion extends AbstractTypedConversion<AbstractFlownodeConvertible> {
+public class FlownodeConversion extends AbstractTypedConversion<AbstractProcessElementConvertible> {
   @Override
-  protected Class<AbstractFlownodeConvertible> type() {
-    return AbstractFlownodeConvertible.class;
+  protected Class<AbstractProcessElementConvertible> type() {
+    return AbstractProcessElementConvertible.class;
   }
 
   @Override
-  public final void convertTyped(DomElement element, AbstractFlownodeConvertible convertible) {
+  public final void convertTyped(
+      DomElement element, AbstractProcessElementConvertible convertible) {
     DomElement extensionElements = getExtensionElements(element);
     if (convertible.getZeebeProperties() != null && !convertible.getZeebeProperties().isEmpty()) {
       extensionElements.appendChild(createProperties(element.getDocument(), convertible));
@@ -23,7 +24,7 @@ public class FlownodeConversion extends AbstractTypedConversion<AbstractFlownode
   }
 
   private DomElement createProperties(
-      DomDocument document, AbstractFlownodeConvertible convertible) {
+      DomDocument document, AbstractProcessElementConvertible convertible) {
     DomElement properties = document.createElement(NamespaceUri.ZEEBE, "properties");
     convertible
         .getZeebeProperties()
