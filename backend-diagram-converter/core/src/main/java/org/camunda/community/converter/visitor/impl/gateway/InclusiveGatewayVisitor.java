@@ -11,6 +11,7 @@ public class InclusiveGatewayVisitor extends AbstractGatewayVisitor {
     return "inclusiveGateway";
   }
 
+  // TODO this is supported in 8.1 (forking only)
   @Override
   public boolean canBeConverted(DomElementVisitorContext context) {
     return false;

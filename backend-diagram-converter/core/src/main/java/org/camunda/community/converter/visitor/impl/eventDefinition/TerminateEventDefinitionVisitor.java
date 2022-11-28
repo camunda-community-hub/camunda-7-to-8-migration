@@ -9,6 +9,7 @@ public class TerminateEventDefinitionVisitor extends AbstractEventDefinitionVisi
     return "terminateEventDefinition";
   }
 
+  // TODO this is supported in 8.1
   @Override
   public boolean canBeConverted(DomElementVisitorContext context) {
     return false;
