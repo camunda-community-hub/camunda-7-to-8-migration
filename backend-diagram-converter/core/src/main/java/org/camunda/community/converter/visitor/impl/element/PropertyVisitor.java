@@ -17,7 +17,8 @@ public class PropertyVisitor extends AbstractCamundaElementVisitor {
     String name = context.getElement().getAttribute("name");
     String value = context.getElement().getAttribute("value");
     context.addConversion(
-        AbstractProcessElementConvertible.class, conversion -> conversion.addZeebeProperty(name, value));
+        AbstractProcessElementConvertible.class,
+        conversion -> conversion.addZeebeProperty(name, value));
     return MessageFactory.property(context.getElement().getLocalName(), name);
   }
 

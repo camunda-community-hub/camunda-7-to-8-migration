@@ -13,7 +13,8 @@ public class FlownodeConversion extends AbstractTypedConversion<AbstractProcessE
   }
 
   @Override
-  public final void convertTyped(DomElement element, AbstractProcessElementConvertible convertible) {
+  public final void convertTyped(
+      DomElement element, AbstractProcessElementConvertible convertible) {
     DomElement extensionElements = getExtensionElements(element);
     if (convertible.getZeebeProperties() != null && !convertible.getZeebeProperties().isEmpty()) {
       extensionElements.appendChild(createProperties(element.getDocument(), convertible));
