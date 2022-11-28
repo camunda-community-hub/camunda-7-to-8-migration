@@ -1,10 +1,5 @@
 package org.camunda.community.converter;
 
-import static org.assertj.core.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.*;
-
-import java.io.ByteArrayInputStream;
-import java.io.StringWriter;
 import org.camunda.bpm.model.bpmn.Bpmn;
 import org.camunda.bpm.model.bpmn.BpmnModelInstance;
 import org.camunda.community.converter.BpmnDiagramCheckResult.BpmnElementCheckMessage;
@@ -15,6 +10,12 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.io.ByteArrayInputStream;
+import java.io.StringWriter;
+
+import static org.assertj.core.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class BpmnConverterTest {
   private static final Logger LOG = LoggerFactory.getLogger(BpmnConverterTest.class);
@@ -113,5 +114,46 @@ public class BpmnConverterTest {
     assertThat(inlineScriptCheckResult.getMessages().get(1).getMessage())
         .isEqualTo(
             "Element 'script' cannot be transformed. Script 'delegateTask.setName(\"my script name\");' with format 'javascript' on 'taskListener'.");
+  }
+
+  @Test
+  void testOrGateways() {
+    BpmnConverter converter = BpmnConverterFactory.getInstance().get();
+    BpmnModelInstance modelInstance =
+        Bpmn.readModelFromStream(
+            getClass().getClassLoader().getResourceAsStream("or-gateways.bpmn"));
+    DefaultConverterProperties properties = new DefaultConverterProperties();
+    properties.setPlatformVersion("8.0.0");
+    BpmnDiagramCheckResult result =
+        converter.check(
+            "or-gateways.bpmn",
+            modelInstance,
+            false,
+            ConverterPropertiesFactory.getInstance().merge(properties));
+    BpmnElementCheckResult forkGateway = result.getResult("ForkGateway");
+    assertThat(forkGateway.getMessages()).hasSize(1);
+    assertThat(forkGateway.getMessages().get(0).getMessage()).isEqualTo("Element 'inclusiveGateway' is not supported in Zeebe version '8.0.0'. Please review.");
+    BpmnElementCheckResult joinGateway = result.getResult("JoinGateway");
+    assertThat(joinGateway.getMessages()).hasSize(1);
+    assertThat(joinGateway.getMessages().get(0).getMessage()).isEqualTo("Element 'inclusiveGateway' is not supported in Zeebe version '8.0.0'. Please review.");
+  }
+
+  @Test
+  void testOrGateways_8_1() {
+    BpmnConverter converter = BpmnConverterFactory.getInstance().get();
+    BpmnModelInstance modelInstance =
+        Bpmn.readModelFromStream(
+            getClass().getClassLoader().getResourceAsStream("or-gateways.bpmn"));
+    DefaultConverterProperties properties = new DefaultConverterProperties();
+    properties.setPlatformVersion("8.1.0");
+    BpmnDiagramCheckResult result =
+        converter.check(
+            "or-gateways.bpmn",
+            modelInstance,
+            false,
+            ConverterPropertiesFactory.getInstance().merge(properties));
+    BpmnElementCheckResult joinGateway = result.getResult("JoinGateway");
+    assertThat(joinGateway.getMessages()).hasSize(1);
+    assertThat(joinGateway.getMessages().get(0).getMessage()).isEqualTo("A joining inclusive gateway is not supported.");
   }
 }

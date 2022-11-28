@@ -19,9 +19,12 @@ public class InclusiveGatewayVisitor extends AbstractGatewayVisitor {
 
   @Override
   public boolean canBeConverted(DomElementVisitorContext context) {
-    return isNotJoining(context.getElement())
-        && VersionComparison.isSupported(
-            context.getProperties().getPlatformVersion(), SemanticVersion._8_1_0.toString());
+    return isNotJoining(context.getElement()) && isRequiredVersion(context);
+  }
+
+  private boolean isRequiredVersion(DomElementVisitorContext context) {
+    return VersionComparison.isSupported(
+        context.getProperties().getPlatformVersion(), SemanticVersion._8_1_0.toString());
   }
 
   private boolean isNotJoining(DomElement element) {
@@ -39,6 +42,10 @@ public class InclusiveGatewayVisitor extends AbstractGatewayVisitor {
 
   @Override
   protected void addCannotBeConvertedMessage(DomElementVisitorContext context) {
-    context.addMessage(Severity.WARNING, MessageFactory.inclusiveGatewayJoin());
+    if (!isRequiredVersion(context)) {
+      super.addCannotBeConvertedMessage(context);
+    } else {
+      context.addMessage(Severity.WARNING, MessageFactory.inclusiveGatewayJoin());
+    }
   }
 }
