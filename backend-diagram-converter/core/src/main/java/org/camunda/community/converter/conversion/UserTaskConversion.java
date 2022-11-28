@@ -1,5 +1,7 @@
 package org.camunda.community.converter.conversion;
 
+import static org.camunda.community.converter.BpmnElementFactory.*;
+
 import org.camunda.bpm.model.xml.instance.DomDocument;
 import org.camunda.bpm.model.xml.instance.DomElement;
 import org.camunda.community.converter.NamespaceUri;
@@ -8,7 +10,7 @@ import org.camunda.community.converter.convertible.UserTaskConvertible;
 public class UserTaskConversion extends AbstractTypedConversion<UserTaskConvertible> {
   @Override
   protected void convertTyped(DomElement element, UserTaskConvertible convertible) {
-    DomElement extensionElements = super.getExtensionElements(element);
+    DomElement extensionElements = getExtensionElements(element);
     if (canAddFormDefinition(convertible)) {
       extensionElements.appendChild(createFormDefinition(element.getDocument(), convertible));
     }

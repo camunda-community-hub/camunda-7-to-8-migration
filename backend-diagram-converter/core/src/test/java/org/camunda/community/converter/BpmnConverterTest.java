@@ -4,29 +4,50 @@ import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.io.ByteArrayInputStream;
+import java.io.StringWriter;
 import org.camunda.bpm.model.bpmn.Bpmn;
 import org.camunda.bpm.model.bpmn.BpmnModelInstance;
-import org.camunda.bpm.model.xml.impl.util.IoUtil;
 import org.camunda.community.converter.BpmnDiagramCheckResult.BpmnElementCheckMessage;
 import org.camunda.community.converter.BpmnDiagramCheckResult.BpmnElementCheckResult;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class BpmnConverterTest {
+  private static final Logger LOG = LoggerFactory.getLogger(BpmnConverterTest.class);
 
   @ParameterizedTest
-  @CsvSource(value = {"example-c7.bpmn", "example-c7_2.bpmn", "java-delegate-class-c7.bpmn"})
+  @CsvSource(
+      value = {
+        "example-c7.bpmn",
+        "example-c7_2.bpmn",
+        "java-delegate-class-c7.bpmn",
+        "old-process.bpmn20.xml"
+      })
   public void shouldConvert(String bpmnFile) {
     BpmnConverter converter = BpmnConverterFactory.getInstance().get();
     ConverterProperties properties = ConverterPropertiesFactory.getInstance().get();
     BpmnModelInstance modelInstance =
         Bpmn.readModelFromStream(this.getClass().getClassLoader().getResourceAsStream(bpmnFile));
-    BpmnDiagramCheckResult result = converter.check(bpmnFile, modelInstance, true, properties);
-    String processModel = IoUtil.convertXmlDocumentToString(modelInstance.getDocument());
-    ByteArrayInputStream stream = new ByteArrayInputStream(processModel.getBytes());
+    printModel(converter, modelInstance);
+    BpmnDiagramCheckResult result = converter.check(bpmnFile, modelInstance, false, properties);
+    printModel(converter, modelInstance);
+    StringWriter writer = new StringWriter();
+    converter.printXml(modelInstance.getDocument(), true, writer);
+    ByteArrayInputStream stream = new ByteArrayInputStream(writer.toString().getBytes());
     io.camunda.zeebe.model.bpmn.Bpmn.readModelFromStream(stream);
+  }
+
+  private void printModel(BpmnConverter converter, BpmnModelInstance modelInstance) {
+    StringWriter writer = new StringWriter();
+    converter.printXml(modelInstance.getDocument(), true, writer);
+    String[] processModel = writer.toString().split("\n");
+    for (int i = 0; i < processModel.length; i++) {
+      LOG.debug("" + i + "     " + processModel[i]);
+    }
   }
 
   @Test

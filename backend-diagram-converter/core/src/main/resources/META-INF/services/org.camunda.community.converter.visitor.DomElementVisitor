@@ -117,7 +117,7 @@ org.camunda.community.converter.visitor.impl.eventDefinition.ErrorEventDefinitio
 org.camunda.community.converter.visitor.impl.eventDefinition.MultipleEventDefinitionVisitor
 org.camunda.community.converter.visitor.impl.eventDefinition.CancelEventDefinitionVisitor
 org.camunda.community.converter.visitor.impl.eventDefinition.MultipleParallelEventDefinitionVisitor
-org.camunda.community.converter.visitor.impl.eventDefinition.TerminateEventDefinition
+org.camunda.community.converter.visitor.impl.eventDefinition.TerminateEventDefinitionVisitor
 org.camunda.community.converter.visitor.impl.eventDefinition.EscalationEventDefinitionVisitor
 org.camunda.community.converter.visitor.impl.eventDefinition.SignalEventDefinitionVisitor
 org.camunda.community.converter.visitor.impl.eventDefinition.ConditionalEventDefinitionVisitor

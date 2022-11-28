@@ -1,9 +1,10 @@
 package org.camunda.community.converter.conversion;
 
+import static org.camunda.community.converter.BpmnElementFactory.*;
+
 import java.util.List;
 import org.camunda.bpm.model.xml.instance.DomElement;
 import org.camunda.community.converter.BpmnDiagramCheckResult.BpmnElementCheckMessage;
-import org.camunda.community.converter.NamespaceUri;
 import org.camunda.community.converter.convertible.Convertible;
 
 public abstract class AbstractTypedConversion<T extends Convertible> implements Conversion {
@@ -14,11 +15,14 @@ public abstract class AbstractTypedConversion<T extends Convertible> implements 
     if (type().isAssignableFrom(convertible.getClass())) {
       convertTyped(element, type().cast(convertible));
     }
-    removeExtensionElementsIfEmpty(getExtensionElements(element));
+    removeIfEmpty(getExtensionElements(element));
+    removeIfEmpty(getDocumentation(element));
   }
 
-  private void removeExtensionElementsIfEmpty(DomElement extensionElements) {
-    if (extensionElements.getChildElements().isEmpty()) {
+  private void removeIfEmpty(DomElement extensionElements) {
+    if (extensionElements.getChildElements().isEmpty()
+        && (extensionElements.getTextContent() == null
+            || extensionElements.getTextContent().trim().equals(""))) {
       extensionElements.getParentElement().removeChild(extensionElements);
     }
   }
@@ -26,18 +30,4 @@ public abstract class AbstractTypedConversion<T extends Convertible> implements 
   protected abstract Class<T> type();
 
   protected abstract void convertTyped(DomElement element, T convertible);
-
-  protected DomElement getExtensionElements(DomElement element) {
-
-    return element.getChildElements().stream()
-        .filter(e -> e.getLocalName().equals("extensionElements"))
-        .findFirst()
-        .orElseGet(
-            () -> {
-              DomElement extensionElements =
-                  element.getDocument().createElement(NamespaceUri.BPMN, "bpmn:extensionElements");
-              element.insertChildElementAfter(extensionElements, null);
-              return extensionElements;
-            });
-  }
 }

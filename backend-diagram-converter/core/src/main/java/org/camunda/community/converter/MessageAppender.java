@@ -1,5 +1,7 @@
 package org.camunda.community.converter;
 
+import static org.camunda.community.converter.BpmnElementFactory.*;
+
 import java.util.Comparator;
 import java.util.List;
 import org.camunda.bpm.model.xml.instance.DomDocument;
@@ -45,31 +47,5 @@ public class MessageAppender {
     }
     messageElement.setTextContent(message.getMessage());
     return messageElement;
-  }
-
-  protected DomElement getExtensionElements(DomElement element) {
-    return element.getChildElements().stream()
-        .filter(e -> e.getLocalName().equals("extensionElements"))
-        .findFirst()
-        .orElseGet(
-            () -> {
-              DomElement extensionElements =
-                  element.getDocument().createElement(NamespaceUri.BPMN, "bpmn:extensionElements");
-              element.insertChildElementAfter(extensionElements, null);
-              return extensionElements;
-            });
-  }
-
-  protected DomElement getDocumentation(DomElement element) {
-    return element.getChildElements().stream()
-        .filter(e -> e.getLocalName().equals("documentation"))
-        .findFirst()
-        .orElseGet(
-            () -> {
-              DomElement extensionElements =
-                  element.getDocument().createElement(NamespaceUri.BPMN, "bpmn:documentation");
-              element.insertChildElementAfter(extensionElements, null);
-              return extensionElements;
-            });
   }
 }
