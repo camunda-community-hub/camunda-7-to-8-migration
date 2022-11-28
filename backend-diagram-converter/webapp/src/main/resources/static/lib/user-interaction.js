@@ -10,9 +10,9 @@ const resultArea = document.getElementById("accordionExample");
 const arrangedResultsArea = document.getElementById("arrangedResults");
 
 const severityClasses = {
-    "WARNING": "text-bg-danger",
-    "INFO": "text-bg-info",
-    "TASK": "text-bg-secondary"
+    "WARNING": "text-bg-warning",
+    "INFO": "text-bg-secondary",
+    "TASK": "text-bg-info"
 }
 
 const el = (tagName, attributes, children) => {
