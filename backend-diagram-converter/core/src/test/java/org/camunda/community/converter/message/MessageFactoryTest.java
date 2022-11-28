@@ -169,7 +169,7 @@ public class MessageFactoryTest {
 
   @Test
   void shouldBuildElementNotSupported() {
-    Message message = MessageFactory.elementNotSupported(random());
+    Message message = MessageFactory.elementNotSupported(random(), random());
     assertNotNull(message);
     assertNotNull(message.getMessage());
   }
@@ -357,7 +357,7 @@ public class MessageFactoryTest {
 
   @Test
   void shouldBuildElementNotSupportedHint() {
-    Message message = MessageFactory.elementNotSupportedHint(random());
+    Message message = MessageFactory.elementNotSupportedHint(random(), random());
     assertNotNull(message);
     assertNotNull(message.getMessage());
   }
