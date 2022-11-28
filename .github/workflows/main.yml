@@ -50,7 +50,7 @@ jobs:
         name: Push Worker Image (tag)
         run: docker push ghcr.io/camunda-community-hub/camunda-7-to-8-migration/diagram-converter:${{ env.maven_project_version }}
       - name: Push Worker Image (tag)
-        run: docker push ghcr.io/camunda-community-hub/camunda-7-to-8-migration/diagram-converter:${{ env.maven_project_version }}
+        run: docker push ghcr.io/camunda-community-hub/camunda-7-to-8-migration/diagram-converter:${{ github.event.release.tag_name }}
         if: github.event.release
       - if: github.event.release
         name: Attach artifacts to GitHub Release (Release only)
