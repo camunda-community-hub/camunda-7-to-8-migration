@@ -3,7 +3,7 @@ package org.camunda.community.converter.convertible;
 import java.util.HashSet;
 import java.util.Set;
 
-public abstract class AbstractFlownodeConvertible implements Convertible {
+public abstract class AbstractProcessElementConvertible implements Convertible {
   private Set<ZeebeProperty> zeebeProperties;
 
   public Set<ZeebeProperty> getZeebeProperties() {

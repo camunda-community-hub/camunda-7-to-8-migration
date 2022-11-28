@@ -1,6 +1,6 @@
 package org.camunda.community.converter.convertible;
 
-public class SequenceFlowConvertible implements Convertible {
+public class SequenceFlowConvertible extends AbstractProcessElementConvertible {
   private String conditionExpression;
 
   public String getConditionExpression() {

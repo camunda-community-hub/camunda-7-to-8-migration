@@ -1,3 +1,3 @@
 package org.camunda.community.converter.convertible;
 
-public abstract class AbstractGatewayConvertible extends AbstractFlownodeConvertible {}
+public abstract class AbstractGatewayConvertible extends AbstractProcessElementConvertible {}
