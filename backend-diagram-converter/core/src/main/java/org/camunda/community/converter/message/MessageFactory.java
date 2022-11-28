@@ -13,6 +13,10 @@ public class MessageFactory {
 
   private MessageFactory() {}
 
+  public static Message inclusiveGatewayJoin() {
+    return INSTANCE.staticMessage("inclusive-gateway-join");
+  }
+
   public static Message collectionHint() {
     return INSTANCE.staticMessage("collection-hint");
   }

@@ -28,6 +28,13 @@ public class MessageFactoryTest {
   }
 
   @Test
+  void shouldBuildInclusiveGatewayJoin() {
+    Message message = MessageFactory.inclusiveGatewayJoin();
+    assertNotNull(message);
+    assertNotNull(message.getMessage());
+  }
+
+  @Test
   void shouldBuildMap() {
     Message message = MessageFactory.map();
     assertNotNull(message);
