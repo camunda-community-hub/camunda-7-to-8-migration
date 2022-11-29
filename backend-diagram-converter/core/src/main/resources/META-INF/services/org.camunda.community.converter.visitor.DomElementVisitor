@@ -128,3 +128,6 @@ org.camunda.community.converter.visitor.impl.SequenceFlowVisitor
 org.camunda.community.converter.visitor.impl.ConditionExpressionVisitor
 org.camunda.community.converter.visitor.impl.ScriptVisitor
 org.camunda.community.converter.visitor.impl.element.FailedJobRetryTimeCycleVisitor$FailedJobRetryTimeCycleRemovalVisitor
+org.camunda.community.converter.visitor.impl.LaneVisitor
+org.camunda.community.converter.visitor.impl.LaneSetVisitor
+org.camunda.community.converter.visitor.impl.FlowNodeRefVisitor

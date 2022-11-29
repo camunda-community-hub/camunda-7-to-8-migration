@@ -122,6 +122,12 @@ public class CoverageTest {
         .containsAll(Stream.of("collaboration", "participant").collect(Collectors.toSet()));
   }
 
+  @Test
+  void shouldCoverLanes() {
+    assertThat(getCoveredElements())
+        .containsAll(Stream.of("lane", "laneSet", "flowNodeRef").collect(Collectors.toSet()));
+  }
+
   private Set<String> getCoveredEventDefinitionTypes() {
     return getElementsFilteredByClass(AbstractEventDefinitionVisitor.class)
         .map(AbstractElementVisitor::localName)
