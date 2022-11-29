@@ -6,6 +6,7 @@ import org.camunda.community.converter.NamespaceUri;
 import org.camunda.community.converter.convertible.Convertible;
 import org.camunda.community.converter.convertible.ServiceTaskConvertible;
 import org.camunda.community.converter.message.MessageFactory;
+import org.camunda.community.converter.version.SemanticVersion;
 import org.camunda.community.converter.visitor.AbstractActivityVisitor;
 
 public class ScriptTaskVisitor extends AbstractActivityVisitor {
@@ -13,11 +14,6 @@ public class ScriptTaskVisitor extends AbstractActivityVisitor {
   @Override
   public String localName() {
     return "scriptTask";
-  }
-
-  @Override
-  public boolean canBeConverted(DomElementVisitorContext context) {
-    return true;
   }
 
   @Override
@@ -51,5 +47,10 @@ public class ScriptTaskVisitor extends AbstractActivityVisitor {
     } else {
       context.addMessage(Severity.TASK, MessageFactory.scriptFormatMissing());
     }
+  }
+
+  @Override
+  protected SemanticVersion availableFrom(DomElementVisitorContext context) {
+    return SemanticVersion._8_0_0;
   }
 }

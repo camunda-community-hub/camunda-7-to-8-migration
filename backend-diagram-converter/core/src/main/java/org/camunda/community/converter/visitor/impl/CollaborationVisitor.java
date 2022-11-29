@@ -1,14 +1,10 @@
 package org.camunda.community.converter.visitor.impl;
 
 import org.camunda.community.converter.DomElementVisitorContext;
-import org.camunda.community.converter.NamespaceUri;
-import org.camunda.community.converter.visitor.AbstractElementVisitor;
+import org.camunda.community.converter.version.SemanticVersion;
+import org.camunda.community.converter.visitor.AbstractBpmnElementVisitor;
 
-public class CollaborationVisitor extends AbstractElementVisitor {
-  @Override
-  protected String namespaceUri() {
-    return NamespaceUri.BPMN;
-  }
+public class CollaborationVisitor extends AbstractBpmnElementVisitor {
 
   @Override
   public String localName() {
@@ -16,7 +12,10 @@ public class CollaborationVisitor extends AbstractElementVisitor {
   }
 
   @Override
-  protected void visitFilteredElement(DomElementVisitorContext context) {
-    // just do nothing
+  protected SemanticVersion availableFrom(DomElementVisitorContext context) {
+    return SemanticVersion._8_0_0;
   }
+
+  @Override
+  protected void visitBpmnElement(DomElementVisitorContext context) {}
 }

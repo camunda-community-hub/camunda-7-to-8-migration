@@ -375,4 +375,15 @@ public class MessageFactoryTest {
     assertNotNull(message);
     assertNotNull(message.getMessage());
   }
+
+  @Test
+  void shouldBuildElementAvailableInFutureVersion() {
+    Message message =
+        MessageFactory.elementAvailableInFutureVersion("inclusiveGateway", "8.0.0", "8.1.0");
+    assertNotNull(message);
+    assertNotNull(message.getMessage());
+    assertThat(message.getMessage())
+        .isEqualTo(
+            "Element 'inclusiveGateway' is not supported in Zeebe version '8.0.0'. It is available in version '8.1.0'.");
+  }
 }

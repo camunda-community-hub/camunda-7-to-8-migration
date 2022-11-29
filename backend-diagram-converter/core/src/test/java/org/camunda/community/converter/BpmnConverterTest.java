@@ -133,7 +133,7 @@ public class BpmnConverterTest {
     assertThat(forkGateway.getMessages()).hasSize(1);
     assertThat(forkGateway.getMessages().get(0).getMessage())
         .isEqualTo(
-            "Element 'inclusiveGateway' is not supported in Zeebe version '8.0.0'. Please review.");
+            "Element 'inclusiveGateway' is not supported in Zeebe version '8.0.0'. It is available in version '8.1.0'.");
     BpmnElementCheckResult joinGateway = result.getResult("JoinGateway");
     assertThat(joinGateway.getMessages()).hasSize(1);
     assertThat(joinGateway.getMessages().get(0).getMessage())
