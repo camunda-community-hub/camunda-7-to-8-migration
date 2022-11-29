@@ -11,6 +11,15 @@ public enum SemanticVersion {
     this.name = name;
   }
 
+  public static SemanticVersion parse(String platformVersion) {
+    for (SemanticVersion v : values()) {
+      if (v.toString().equals(platformVersion)) {
+        return v;
+      }
+    }
+    throw new IllegalStateException("Not a valid Platform version: " + platformVersion);
+  }
+
   @Override
   public String toString() {
     return name;

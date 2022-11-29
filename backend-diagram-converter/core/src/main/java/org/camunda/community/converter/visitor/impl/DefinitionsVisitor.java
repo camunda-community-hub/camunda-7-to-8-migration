@@ -4,12 +4,13 @@ import java.util.function.Consumer;
 import org.camunda.bpm.model.xml.instance.DomElement;
 import org.camunda.community.converter.DomElementVisitorContext;
 import org.camunda.community.converter.NamespaceUri;
-import org.camunda.community.converter.visitor.AbstractElementVisitor;
+import org.camunda.community.converter.version.SemanticVersion;
+import org.camunda.community.converter.visitor.AbstractBpmnElementVisitor;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-public class DefinitionsVisitor extends AbstractElementVisitor {
+public class DefinitionsVisitor extends AbstractBpmnElementVisitor {
   private static final String VERSION_HEADER = "executionPlatformVersion";
   private static final String PLATFORM_HEADER = "executionPlatform";
   private static final String PLATFORM_VALUE = "Camunda Cloud";
@@ -18,7 +19,9 @@ public class DefinitionsVisitor extends AbstractElementVisitor {
   private static final String MODELER_NAMESPACE_NAME = "modeler";
 
   @Override
-  protected void visitFilteredElement(DomElementVisitorContext context) {
+  protected void visitBpmnElement(DomElementVisitorContext context) {
+    SemanticVersion desiredVersion =
+        SemanticVersion.parse(context.getProperties().getPlatformVersion());
     DomElement element = context.getElement();
     String executionPlatform = element.getAttribute(NamespaceUri.MODELER, VERSION_HEADER);
     if (executionPlatform != null && executionPlatform.startsWith("8")) {
@@ -35,8 +38,7 @@ public class DefinitionsVisitor extends AbstractElementVisitor {
     element.registerNamespace(ZEEBE_NAMESPACE_NAME, NamespaceUri.ZEEBE);
     element.registerNamespace(CONVERSION_NAMESPACE_NAME, NamespaceUri.CONVERSION);
     element.setAttribute(NamespaceUri.MODELER, PLATFORM_HEADER, PLATFORM_VALUE);
-    element.setAttribute(
-        NamespaceUri.MODELER, VERSION_HEADER, context.getProperties().getPlatformVersion());
+    element.setAttribute(NamespaceUri.MODELER, VERSION_HEADER, desiredVersion.toString());
   }
 
   private void setNamespace(Node root, String oldPrefix) {
@@ -71,8 +73,8 @@ public class DefinitionsVisitor extends AbstractElementVisitor {
   }
 
   @Override
-  protected String namespaceUri() {
-    return NamespaceUri.BPMN;
+  protected SemanticVersion availableFrom(DomElementVisitorContext context) {
+    return SemanticVersion._8_0_0;
   }
 
   @Override

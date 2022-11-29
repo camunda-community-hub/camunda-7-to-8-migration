@@ -13,6 +13,16 @@ public class MessageFactory {
 
   private MessageFactory() {}
 
+  public static Message elementAvailableInFutureVersion(
+      String elementLocalName, String semanticVersion, String futureVersion) {
+    return INSTANCE.composeMessage(
+        "element-available-in-future-version",
+        ContextBuilder.builder()
+            .context(elementNotSupportedPrefix(elementLocalName, semanticVersion))
+            .entry("futureVersion", futureVersion)
+            .build());
+  }
+
   public static Message inclusiveGatewayJoin() {
     return INSTANCE.staticMessage("inclusive-gateway-join");
   }

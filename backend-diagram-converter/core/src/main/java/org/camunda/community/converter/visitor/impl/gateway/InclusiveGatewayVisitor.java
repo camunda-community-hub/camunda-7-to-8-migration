@@ -1,30 +1,21 @@
 package org.camunda.community.converter.visitor.impl.gateway;
 
 import org.camunda.bpm.model.xml.instance.DomElement;
-import org.camunda.community.converter.BpmnDiagramCheckResult.Severity;
 import org.camunda.community.converter.DomElementVisitorContext;
 import org.camunda.community.converter.NamespaceUri;
 import org.camunda.community.converter.convertible.Convertible;
 import org.camunda.community.converter.convertible.InclusiveGatewayConvertible;
+import org.camunda.community.converter.message.Message;
 import org.camunda.community.converter.message.MessageFactory;
 import org.camunda.community.converter.version.SemanticVersion;
-import org.camunda.community.converter.version.VersionComparison;
 import org.camunda.community.converter.visitor.AbstractGatewayVisitor;
 
 public class InclusiveGatewayVisitor extends AbstractGatewayVisitor {
+  private static final SemanticVersion FORK_AVAILABLE_VERSION = SemanticVersion._8_1_0;
+
   @Override
   public String localName() {
     return "inclusiveGateway";
-  }
-
-  @Override
-  public boolean canBeConverted(DomElementVisitorContext context) {
-    return isNotJoining(context.getElement()) && isRequiredVersion(context);
-  }
-
-  private boolean isRequiredVersion(DomElementVisitorContext context) {
-    return VersionComparison.isSupported(
-        context.getProperties().getPlatformVersion(), SemanticVersion._8_1_0.toString());
   }
 
   private boolean isNotJoining(DomElement element) {
@@ -41,11 +32,22 @@ public class InclusiveGatewayVisitor extends AbstractGatewayVisitor {
   }
 
   @Override
-  protected void addCannotBeConvertedMessage(DomElementVisitorContext context) {
-    if (!isRequiredVersion(context)) {
-      super.addCannotBeConvertedMessage(context);
-    } else {
-      context.addMessage(Severity.WARNING, MessageFactory.inclusiveGatewayJoin());
+  protected SemanticVersion availableFrom(DomElementVisitorContext context) {
+    if (isNotJoining(context.getElement())) {
+      return FORK_AVAILABLE_VERSION;
     }
+    return null;
+  }
+
+  @Override
+  protected Message cannotBeConvertedMessage(DomElementVisitorContext context) {
+    boolean forkAvailable =
+        !isNotSupportedInDesiredVersion(
+            FORK_AVAILABLE_VERSION,
+            SemanticVersion.parse(context.getProperties().getPlatformVersion()));
+    if (forkAvailable && !isNotJoining(context.getElement())) {
+      return MessageFactory.inclusiveGatewayJoin();
+    }
+    return super.cannotBeConvertedMessage(context);
   }
 }

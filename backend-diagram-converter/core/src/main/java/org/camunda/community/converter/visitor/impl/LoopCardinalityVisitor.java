@@ -1,16 +1,12 @@
 package org.camunda.community.converter.visitor.impl;
 
-import org.camunda.community.converter.BpmnDiagramCheckResult.Severity;
 import org.camunda.community.converter.DomElementVisitorContext;
-import org.camunda.community.converter.NamespaceUri;
+import org.camunda.community.converter.message.Message;
 import org.camunda.community.converter.message.MessageFactory;
-import org.camunda.community.converter.visitor.AbstractElementVisitor;
+import org.camunda.community.converter.version.SemanticVersion;
+import org.camunda.community.converter.visitor.AbstractBpmnElementVisitor;
 
-public class LoopCardinalityVisitor extends AbstractElementVisitor {
-  @Override
-  protected String namespaceUri() {
-    return NamespaceUri.BPMN;
-  }
+public class LoopCardinalityVisitor extends AbstractBpmnElementVisitor {
 
   @Override
   public String localName() {
@@ -18,7 +14,15 @@ public class LoopCardinalityVisitor extends AbstractElementVisitor {
   }
 
   @Override
-  protected void visitFilteredElement(DomElementVisitorContext context) {
-    context.addMessage(Severity.WARNING, MessageFactory.loopCardinality());
+  protected SemanticVersion availableFrom(DomElementVisitorContext context) {
+    return null;
+  }
+
+  @Override
+  protected void visitBpmnElement(DomElementVisitorContext context) {}
+
+  @Override
+  protected Message cannotBeConvertedMessage(DomElementVisitorContext context) {
+    return MessageFactory.loopCardinality();
   }
 }

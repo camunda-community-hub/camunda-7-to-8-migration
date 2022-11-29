@@ -8,6 +8,7 @@ import org.camunda.community.converter.convertible.Convertible;
 import org.camunda.community.converter.expression.ExpressionTransformationResult;
 import org.camunda.community.converter.expression.ExpressionTransformer;
 import org.camunda.community.converter.message.MessageFactory;
+import org.camunda.community.converter.version.SemanticVersion;
 import org.camunda.community.converter.visitor.AbstractActivityVisitor;
 
 public class CallActivityVisitor extends AbstractActivityVisitor {
@@ -17,11 +18,6 @@ public class CallActivityVisitor extends AbstractActivityVisitor {
   @Override
   public String localName() {
     return "callActivity";
-  }
-
-  @Override
-  public boolean canBeConverted(DomElementVisitorContext context) {
-    return true;
   }
 
   @Override
@@ -48,5 +44,10 @@ public class CallActivityVisitor extends AbstractActivityVisitor {
           Severity.TASK,
           MessageFactory.calledElement(CALLED_ELEMENT, localName(), transformationResult));
     }
+  }
+
+  @Override
+  protected SemanticVersion availableFrom(DomElementVisitorContext context) {
+    return SemanticVersion._8_0_0;
   }
 }
