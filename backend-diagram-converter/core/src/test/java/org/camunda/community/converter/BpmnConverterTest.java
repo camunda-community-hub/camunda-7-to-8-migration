@@ -25,7 +25,8 @@ public class BpmnConverterTest {
         "example-c7.bpmn",
         "example-c7_2.bpmn",
         "java-delegate-class-c7.bpmn",
-        "old-process.bpmn20.xml"
+        "old-process.bpmn20.xml",
+        "collaboration.bpmn"
       })
   public void shouldConvert(String bpmnFile) {
     BpmnConverter converter = BpmnConverterFactory.getInstance().get();

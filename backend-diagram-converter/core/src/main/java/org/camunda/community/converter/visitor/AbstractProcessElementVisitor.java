@@ -5,7 +5,7 @@ import org.camunda.community.converter.convertible.Convertible;
 
 public abstract class AbstractProcessElementVisitor extends AbstractBpmnElementVisitor {
   @Override
-  protected void visitBpmnElement(DomElementVisitorContext context) {
+  protected final void visitBpmnElement(DomElementVisitorContext context) {
     context.setAsBpmnProcessElement(createConvertible(context));
     postCreationVisitor(context);
   }

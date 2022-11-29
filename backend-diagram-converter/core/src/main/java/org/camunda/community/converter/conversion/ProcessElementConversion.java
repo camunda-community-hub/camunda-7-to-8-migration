@@ -8,7 +8,8 @@ import org.camunda.community.converter.NamespaceUri;
 import org.camunda.community.converter.convertible.AbstractProcessElementConvertible;
 import org.camunda.community.converter.convertible.AbstractProcessElementConvertible.ZeebeProperty;
 
-public class FlownodeConversion extends AbstractTypedConversion<AbstractProcessElementConvertible> {
+public class ProcessElementConversion
+    extends AbstractTypedConversion<AbstractProcessElementConvertible> {
   @Override
   protected Class<AbstractProcessElementConvertible> type() {
     return AbstractProcessElementConvertible.class;

@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_01azgc7" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.5.1" modeler:executionPlatform="Camunda Platform" modeler:executionPlatformVersion="7.18.0">
+  <bpmn:collaboration id="Collaboration_17wuchh">
+    <bpmn:extensionElements>
+      <camunda:properties>
+        <camunda:property name="key" value="value" />
+      </camunda:properties>
+    </bpmn:extensionElements>
+    <bpmn:participant id="Participant_1s75bsr" processRef="Process_1ejb89e" />
+  </bpmn:collaboration>
+  <bpmn:process id="Process_1ejb89e" isExecutable="true" camunda:jobPriority="123" camunda:taskPriority="1234">
+    <bpmn:extensionElements>
+      <camunda:properties>
+        <camunda:property name="key" value="value" />
+      </camunda:properties>
+    </bpmn:extensionElements>
+    <bpmn:laneSet id="LaneSet_0ov27ac">
+      <bpmn:lane id="Lane_0dgea9y">
+        <bpmn:extensionElements>
+          <camunda:properties>
+            <camunda:property name="key" value="value" />
+          </camunda:properties>
+        </bpmn:extensionElements>
+        <bpmn:flowNodeRef>StartEvent_1</bpmn:flowNodeRef>
+      </bpmn:lane>
+      <bpmn:lane id="Lane_0baauye" />
+    </bpmn:laneSet>
+    <bpmn:startEvent id="StartEvent_1" />
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Collaboration_17wuchh">
+      <bpmndi:BPMNShape id="Participant_1s75bsr_di" bpmnElement="Participant_1s75bsr" isHorizontal="true">
+        <dc:Bounds x="129" y="60" width="600" height="250" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Lane_0dgea9y_di" bpmnElement="Lane_0dgea9y" isHorizontal="true">
+        <dc:Bounds x="159" y="60" width="570" height="125" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Lane_0baauye_di" bpmnElement="Lane_0baauye" isHorizontal="true">
+        <dc:Bounds x="159" y="185" width="570" height="125" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="StartEvent_1">
+        <dc:Bounds x="179" y="159" width="36" height="36" />
+      </bpmndi:BPMNShape>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>
