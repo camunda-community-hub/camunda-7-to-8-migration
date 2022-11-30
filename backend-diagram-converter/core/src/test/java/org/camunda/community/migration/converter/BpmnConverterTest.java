@@ -64,12 +64,7 @@ public class BpmnConverterTest {
 
   @Test
   public void testDelegateHint() {
-    String bpmnFile = "java-delegate-class-c7.bpmn";
-    BpmnConverter converter = BpmnConverterFactory.getInstance().get();
-    ConverterProperties properties = ConverterPropertiesFactory.getInstance().get();
-    BpmnModelInstance modelInstance =
-        Bpmn.readModelFromStream(this.getClass().getClassLoader().getResourceAsStream(bpmnFile));
-    BpmnDiagramCheckResult result = converter.check(bpmnFile, modelInstance, false, properties);
+    BpmnDiagramCheckResult result = loadAndCheck("java-delegate-class-c7.bpmn");
     BpmnElementCheckResult delegateClassServiceTask = result.getResult("DelegateClassServiceTask");
     assertNotNull(delegateClassServiceTask);
     assertThat(delegateClassServiceTask.getMessages()).hasSize(1);
@@ -81,12 +76,7 @@ public class BpmnConverterTest {
 
   @Test
   public void testTaskListenerHints() {
-    String bpmnFile = "user-task-listener-implementations.bpmn";
-    BpmnConverter converter = BpmnConverterFactory.getInstance().get();
-    ConverterProperties properties = ConverterPropertiesFactory.getInstance().get();
-    BpmnModelInstance modelInstance =
-        Bpmn.readModelFromStream(this.getClass().getClassLoader().getResourceAsStream(bpmnFile));
-    BpmnDiagramCheckResult result = converter.check(bpmnFile, modelInstance, false, properties);
+    BpmnDiagramCheckResult result = loadAndCheck("user-task-listener-implementations.bpmn");
     BpmnElementCheckResult javaClassCheckResult = result.getResult("UserTaskUseJavaClass");
     assertThat(javaClassCheckResult.getMessages()).hasSize(1);
     assertThat(javaClassCheckResult.getMessages().get(0).getMessage())
@@ -118,18 +108,7 @@ public class BpmnConverterTest {
 
   @Test
   void testOrGateways() {
-    BpmnConverter converter = BpmnConverterFactory.getInstance().get();
-    BpmnModelInstance modelInstance =
-        Bpmn.readModelFromStream(
-            getClass().getClassLoader().getResourceAsStream("or-gateways.bpmn"));
-    DefaultConverterProperties properties = new DefaultConverterProperties();
-    properties.setPlatformVersion("8.0.0");
-    BpmnDiagramCheckResult result =
-        converter.check(
-            "or-gateways.bpmn",
-            modelInstance,
-            false,
-            ConverterPropertiesFactory.getInstance().merge(properties));
+    BpmnDiagramCheckResult result = loadAndCheckAgainstVersion("or-gateways.bpmn", "8.0.0");
     BpmnElementCheckResult forkGateway = result.getResult("ForkGateway");
     assertThat(forkGateway.getMessages()).hasSize(1);
     assertThat(forkGateway.getMessages().get(0).getMessage())
@@ -144,21 +123,32 @@ public class BpmnConverterTest {
 
   @Test
   void testOrGateways_8_1() {
-    BpmnConverter converter = BpmnConverterFactory.getInstance().get();
-    BpmnModelInstance modelInstance =
-        Bpmn.readModelFromStream(
-            getClass().getClassLoader().getResourceAsStream("or-gateways.bpmn"));
-    DefaultConverterProperties properties = new DefaultConverterProperties();
-    properties.setPlatformVersion("8.1.0");
-    BpmnDiagramCheckResult result =
-        converter.check(
-            "or-gateways.bpmn",
-            modelInstance,
-            false,
-            ConverterPropertiesFactory.getInstance().merge(properties));
+    String bpmnFile = "or-gateways.bpmn";
+    BpmnDiagramCheckResult result = loadAndCheckAgainstVersion(bpmnFile, "8.1.0");
     BpmnElementCheckResult joinGateway = result.getResult("JoinGateway");
     assertThat(joinGateway.getMessages()).hasSize(1);
     assertThat(joinGateway.getMessages().get(0).getMessage())
         .isEqualTo("A joining inclusive gateway is not supported.");
+  }
+
+  protected BpmnDiagramCheckResult loadAndCheck(String bpmnFile) {
+    ConverterProperties properties = ConverterPropertiesFactory.getInstance().get();
+    return loadAndCheckAgainstVersion(bpmnFile, properties.getPlatformVersion());
+  }
+
+  protected BpmnDiagramCheckResult loadAndCheckAgainstVersion(String bpmnFile, String targetVersion) {
+    BpmnConverter converter = BpmnConverterFactory.getInstance().get();
+    BpmnModelInstance modelInstance =
+        Bpmn.readModelFromStream(
+            getClass().getClassLoader().getResourceAsStream(bpmnFile));
+    DefaultConverterProperties properties = new DefaultConverterProperties();
+    properties.setPlatformVersion(targetVersion);
+    BpmnDiagramCheckResult result =
+        converter.check(
+            bpmnFile,
+            modelInstance,
+            false,
+            ConverterPropertiesFactory.getInstance().merge(properties));
+    return result;
   }
 }
