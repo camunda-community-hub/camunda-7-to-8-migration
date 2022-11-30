@@ -6,14 +6,11 @@ This tool helps with migration of process solutions from Camunda Platform 7 to C
 
 This projects contains:
 
-* [A Camunda Dektop Modeler Plugin](./modeler-plugin-7-to-8-converter) to convert models (BPMN/DMN) from Camunda Platform 7 to Camunda Platform 8
 * [An adapter library](./camunda-7-adapter) to re-use Java Delegates or expressions from Camunda Platform 7 when running Camunda Platform 8
 * [An example](./example) containing a sample process solution for Camunda Platform 7 and the migrated version that runs on Camunda Platform 8
 * [A process diagram converter](./backend-diagram-converter) that is implemented in Java and performs checks and migration
 
-The following video walks you through the migration process:
 
-<a href="http://www.youtube.com/watch?feature=player_embedded&v=yS0wAO0KgBc" target="_blank"><img src="http://img.youtube.com/vi/yS0wAO0KgBc/0.jpg" alt="Walkthrough" width="240" height="180" border="10" /></a>
 
 ## Use Snapshot Versions
 

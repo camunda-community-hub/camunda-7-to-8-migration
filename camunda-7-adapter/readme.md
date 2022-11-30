@@ -25,7 +25,7 @@ Add the dependency to the adapter library (double-check for the latest version):
 
 ## Import adapter
 
-Import the adapter into your Spring Boot application as shown in the [example application](../example/process-solution-migrated/src/main/java/io/berndruecker/converter/example/Application.java):
+Import the adapter into your Spring Boot application as shown in the [example application](../example/process-solution-migrated/src/main/java/org/camunda/community/migration/example/Application.java):
 
 ```java
 
