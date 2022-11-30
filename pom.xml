@@ -37,7 +37,7 @@
     <plugin.version.spotless-maven-plugin>2.28.0</plugin.version.spotless-maven-plugin>
     <plugin.version.maven-compiler-plugin>3.10.1</plugin.version.maven-compiler-plugin>
     <plugin.version.native-maven-plugin>0.9.18</plugin.version.native-maven-plugin>
-    <plugin.version.maven-depdendency-plugin>3.3.0</plugin.version.maven-depdendency-plugin>
+    <plugin.version.maven-depdendency-plugin>3.4.0</plugin.version.maven-depdendency-plugin>
   </properties>
 
   <dependencyManagement>
