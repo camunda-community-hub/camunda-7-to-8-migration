@@ -60,7 +60,7 @@ jobs:
         with:
           upload_url: ${{ github.event.release.upload_url }}
           asset_path: ${{ steps.release.outputs.artifacts_archive_path }}
-          asset_name: camunda-7-adapter.zip
+          asset_name: camunda-7-to-8-migration.zip
           asset_content_type: application/zip
   publish-modeler-plugin:
     runs-on: ubuntu-latest
