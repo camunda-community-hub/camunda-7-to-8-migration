@@ -12,7 +12,7 @@ import org.springframework.context.ConfigurableApplicationContext;
 @SpringBootApplication
 @EnableZeebeClient
 @EnableCamunda7Adapter
-@Deployment(resources = "classpath:*.bpmn")
+@Deployment(resources = "classpath*:*.bpmn")
 public class Application {
 
   public static void main(String... args) {
