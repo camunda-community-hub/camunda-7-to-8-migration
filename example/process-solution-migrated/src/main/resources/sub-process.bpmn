@@ -1,43 +1,43 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_0wib5yt" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="4.8.1" modeler:executionPlatform="Camunda Cloud" modeler:executionPlatformVersion="1.1.0">
-  <bpmn:process id="sub-process" isExecutable="true">
-    <bpmn:startEvent id="StartEvent_1">
+<?xml version="1.0" encoding="UTF-8"?><bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:conversion="http://camunda.org/schema/conversion/1.0" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:modeler="http://camunda.org/schema/modeler/1.0" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" exporter="Camunda Modeler" exporterVersion="4.8.1" expressionLanguage="http://www.w3.org/1999/XPath" id="Definitions_0wib5yt" modeler:executionPlatform="Camunda Cloud" modeler:executionPlatformVersion="8.1.0" targetNamespace="http://bpmn.io/schema/bpmn" typeLanguage="http://www.w3.org/2001/XMLSchema">
+  <bpmn:process id="sub-process" isClosed="false" isExecutable="true" processType="None">
+    <bpmn:startEvent id="StartEvent_1" isInterrupting="true" parallelMultiple="false">
       <bpmn:outgoing>Flow_1yz1hm4</bpmn:outgoing>
     </bpmn:startEvent>
-    <bpmn:sequenceFlow id="Flow_1yz1hm4" sourceRef="StartEvent_1" targetRef="Activity_1ufc7m0" />
+    <bpmn:sequenceFlow id="Flow_1yz1hm4" sourceRef="StartEvent_1" targetRef="Activity_1ufc7m0"/>
     <bpmn:endEvent id="Event_09ordlq">
       <bpmn:incoming>Flow_1qovl9n</bpmn:incoming>
     </bpmn:endEvent>
-    <bpmn:sequenceFlow id="Flow_1qovl9n" sourceRef="Activity_1ufc7m0" targetRef="Event_09ordlq" />
-    <bpmn:sendTask id="Activity_1ufc7m0" name="Java Delegate Expression" camunda:delegateExpression="#{sampleJavaDelegate}">
+    <bpmn:sequenceFlow id="Flow_1qovl9n" sourceRef="Activity_1ufc7m0" targetRef="Event_09ordlq"/>
+    <bpmn:sendTask completionQuantity="1" id="Activity_1ufc7m0" implementation="##WebService" isForCompensation="false" name="Java Delegate Expression" startQuantity="1">
       <bpmn:extensionElements>
-        <zeebe:taskDefinition type="camunda-7-adapter" />
+        <conversion:message severity="TASK">Attribute 'delegateExpression' on 'sendTask' was mapped. Delegate call to '#{sampleJavaDelegate}' was transformed to job type 'camunda-7-adapter'. Please review your implementation.</conversion:message>
         <zeebe:taskHeaders>
-          <zeebe:header key="delegateExpression" value="#{sampleJavaDelegate}" />
+          <zeebe:header key="delegateExpression" value="#{sampleJavaDelegate}"/>
         </zeebe:taskHeaders>
+        <zeebe:taskDefinition type="camunda-7-adapter"/>
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_1yz1hm4</bpmn:incoming>
       <bpmn:outgoing>Flow_1qovl9n</bpmn:outgoing>
     </bpmn:sendTask>
   </bpmn:process>
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
-    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="sub-process">
-      <bpmndi:BPMNEdge id="Flow_1qovl9n_di" bpmnElement="Flow_1qovl9n">
-        <di:waypoint x="370" y="117" />
-        <di:waypoint x="432" y="117" />
+    <bpmndi:BPMNPlane bpmnElement="sub-process" id="BPMNPlane_1">
+      <bpmndi:BPMNEdge bpmnElement="Flow_1yz1hm4" id="Flow_1yz1hm4_di">
+        <di:waypoint x="215" y="117"/>
+        <di:waypoint x="270" y="117"/>
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_1yz1hm4_di" bpmnElement="Flow_1yz1hm4">
-        <di:waypoint x="215" y="117" />
-        <di:waypoint x="270" y="117" />
+      <bpmndi:BPMNEdge bpmnElement="Flow_1qovl9n" id="Flow_1qovl9n_di">
+        <di:waypoint x="370" y="117"/>
+        <di:waypoint x="432" y="117"/>
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="StartEvent_1">
-        <dc:Bounds x="179" y="99" width="36" height="36" />
+      <bpmndi:BPMNShape bpmnElement="StartEvent_1" id="_BPMNShape_StartEvent_2">
+        <dc:Bounds height="36" width="36" x="179" y="99"/>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Event_09ordlq_di" bpmnElement="Event_09ordlq">
-        <dc:Bounds x="432" y="99" width="36" height="36" />
+      <bpmndi:BPMNShape bpmnElement="Event_09ordlq" id="Event_09ordlq_di">
+        <dc:Bounds height="36" width="36" x="432" y="99"/>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_0eqlcs9_di" bpmnElement="Activity_1ufc7m0">
-        <dc:Bounds x="270" y="77" width="100" height="80" />
+      <bpmndi:BPMNShape bpmnElement="Activity_1ufc7m0" id="Activity_0eqlcs9_di">
+        <dc:Bounds height="80" width="100" x="270" y="77"/>
       </bpmndi:BPMNShape>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>

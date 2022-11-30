@@ -27,7 +27,7 @@ The API offers 2 methods:
   * Headers
     * `Accept`: Either `application/json` or `text/csv`
 * Response:
-  * `200`: Everything fine. The body contains a list of [check results](./../core/src/main/java/org/camunda/community/converter/BpmnDiagramCheckResult.java), either in `application/json` format or flattened as `text/csv`.
+  * `200`: Everything fine. The body contains a list of [check results](../core/src/main/java/org/camunda/community/migration/converter/BpmnDiagramCheckResult.java), either in `application/json` format or flattened as `text/csv`.
 
 `POST /convert`:
 

@@ -113,6 +113,11 @@
         <artifactId>backend-diagram-converter-core</artifactId>
         <version>${project.version}</version>
       </dependency>
+      <dependency>
+        <groupId>org.camunda.community.migration</groupId>
+        <artifactId>camunda-7-adapter</artifactId>
+        <version>${project.version}</version>
+      </dependency>
     </dependencies>
   </dependencyManagement>
   <build>
@@ -267,5 +272,6 @@
   <modules>
     <module>camunda-7-adapter</module>
     <module>backend-diagram-converter</module>
+    <module>example</module>
   </modules>
 </project>

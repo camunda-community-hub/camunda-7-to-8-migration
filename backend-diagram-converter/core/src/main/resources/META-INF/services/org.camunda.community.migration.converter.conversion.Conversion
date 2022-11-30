@@ -1,0 +1,9 @@
+org.camunda.community.migration.converter.conversion.ActivityConversion
+org.camunda.community.migration.converter.conversion.BusinessRuleTaskConversion
+org.camunda.community.migration.converter.conversion.CallActivityConversion
+org.camunda.community.migration.converter.conversion.DataMapperConversion
+org.camunda.community.migration.converter.conversion.ProcessElementConversion
+org.camunda.community.migration.converter.conversion.MessageConversion
+org.camunda.community.migration.converter.conversion.SequenceFlowConversion
+org.camunda.community.migration.converter.conversion.ServiceTaskConversion
+org.camunda.community.migration.converter.conversion.UserTaskConversion
