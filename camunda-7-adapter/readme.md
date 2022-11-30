@@ -50,7 +50,7 @@ To use that worker, add the `taskType="camunda-7-adapter"` to your service task 
   <bpmn:extensionElements>
     <zeebe:taskDefinition type="camunda-7-adapter"/>
     <zeebe:taskHeaders>
-      <zeebe:header key="class" value="io.berndruecker.converter.example.SampleJavaDelegate"/>
+      <zeebe:header key="class" value="org.camunda.community.migration.example.SampleJavaDelegate"/>
     </zeebe:taskHeaders>
   </bpmn:extensionElements>
 </bpmn:serviceTask>
