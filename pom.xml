@@ -3,7 +3,7 @@
 
   <groupId>org.camunda.community.migration</groupId>
   <artifactId>camunda-7-to-8-migration</artifactId>
-  <version>0.2.2-SNAPSHOT</version>
+  <version>0.3.0</version>
   <packaging>pom</packaging>
 
   <parent>

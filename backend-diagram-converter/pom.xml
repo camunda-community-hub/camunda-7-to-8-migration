@@ -5,7 +5,7 @@
   <parent>
     <artifactId>camunda-7-to-8-migration</artifactId>
     <groupId>org.camunda.community.migration</groupId>
-    <version>0.2.2-SNAPSHOT</version>
+    <version>0.3.0</version>
   </parent>
   <modules>
     <module>core</module>
