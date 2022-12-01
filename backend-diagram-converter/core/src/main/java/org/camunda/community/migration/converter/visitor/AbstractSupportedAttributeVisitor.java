@@ -1,6 +1,5 @@
 package org.camunda.community.migration.converter.visitor;
 
-import org.camunda.community.migration.converter.BpmnDiagramCheckResult.Severity;
 import org.camunda.community.migration.converter.DomElementVisitorContext;
 import org.camunda.community.migration.converter.message.Message;
 
@@ -9,7 +8,7 @@ public abstract class AbstractSupportedAttributeVisitor extends AbstractAttribut
   @Override
   protected void visitAttribute(DomElementVisitorContext context, String attribute) {
     Message message = visitSupportedAttribute(context, attribute);
-    context.addMessage(Severity.TASK, message);
+    context.addMessage(message);
   }
 
   protected abstract Message visitSupportedAttribute(

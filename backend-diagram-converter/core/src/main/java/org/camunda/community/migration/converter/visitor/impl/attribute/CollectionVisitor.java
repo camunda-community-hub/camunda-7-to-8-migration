@@ -1,6 +1,5 @@
 package org.camunda.community.migration.converter.visitor.impl.attribute;
 
-import org.camunda.community.migration.converter.BpmnDiagramCheckResult.Severity;
 import org.camunda.community.migration.converter.DomElementVisitorContext;
 import org.camunda.community.migration.converter.convertible.AbstractActivityConvertible;
 import org.camunda.community.migration.converter.expression.ExpressionTransformationResult;
@@ -29,7 +28,7 @@ public class CollectionVisitor extends AbstractSupportedAttributeVisitor {
                 .getBpmnMultiInstanceLoopCharacteristics()
                 .getZeebeLoopCharacteristics()
                 .setInputCollection(transformationResult.getNewExpression()));
-    context.addMessage(Severity.TASK, MessageFactory.collectionHint());
+    context.addMessage(MessageFactory.collectionHint());
     return MessageFactory.collection(
         attributeLocalName(), context.getElement().getLocalName(), transformationResult);
   }

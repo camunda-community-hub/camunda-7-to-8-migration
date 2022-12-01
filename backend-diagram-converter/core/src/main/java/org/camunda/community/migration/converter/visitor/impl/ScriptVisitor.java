@@ -1,6 +1,5 @@
 package org.camunda.community.migration.converter.visitor.impl;
 
-import org.camunda.community.migration.converter.BpmnDiagramCheckResult.Severity;
 import org.camunda.community.migration.converter.DomElementVisitorContext;
 import org.camunda.community.migration.converter.convertible.AbstractDataMapperConvertible;
 import org.camunda.community.migration.converter.message.MessageFactory;
@@ -26,6 +25,6 @@ public class ScriptVisitor extends AbstractBpmnElementVisitor {
         AbstractDataMapperConvertible.class,
         convertible ->
             convertible.addZeebeTaskHeader(context.getProperties().getScriptHeader(), script));
-    context.addMessage(Severity.TASK, MessageFactory.script());
+    context.addMessage(MessageFactory.script());
   }
 }

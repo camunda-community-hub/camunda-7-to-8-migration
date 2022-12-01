@@ -1,6 +1,5 @@
 package org.camunda.community.migration.converter.visitor.impl.activity;
 
-import org.camunda.community.migration.converter.BpmnDiagramCheckResult.Severity;
 import org.camunda.community.migration.converter.DomElementVisitorContext;
 import org.camunda.community.migration.converter.NamespaceUri;
 import org.camunda.community.migration.converter.convertible.Convertible;
@@ -37,15 +36,13 @@ public class ScriptTaskVisitor extends AbstractActivityVisitor {
                   .getZeebeTaskDefinition()
                   .setType(context.getProperties().getScriptJobType()));
       context.addMessage(
-          Severity.TASK,
           MessageFactory.scriptFormat(
               context.getProperties().getScriptFormatHeader(), scriptFormat));
       context.addMessage(
-          Severity.TASK,
           MessageFactory.scriptJobType(
               context.getElement().getLocalName(), context.getProperties().getScriptJobType()));
     } else {
-      context.addMessage(Severity.TASK, MessageFactory.scriptFormatMissing());
+      context.addMessage(MessageFactory.scriptFormatMissing());
     }
   }
 

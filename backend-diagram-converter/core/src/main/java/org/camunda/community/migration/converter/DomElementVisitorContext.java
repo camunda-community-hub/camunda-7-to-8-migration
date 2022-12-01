@@ -6,8 +6,8 @@ import java.util.function.Consumer;
 import org.camunda.bpm.model.xml.instance.DomElement;
 import org.camunda.community.migration.converter.BpmnDiagramCheckResult.BpmnElementCheckMessage;
 import org.camunda.community.migration.converter.BpmnDiagramCheckResult.BpmnElementCheckResult;
-import org.camunda.community.migration.converter.BpmnDiagramCheckResult.Severity;
 import org.camunda.community.migration.converter.convertible.Convertible;
+import org.camunda.community.migration.converter.message.EmptyMessage;
 import org.camunda.community.migration.converter.message.Message;
 
 public interface DomElementVisitorContext {
@@ -32,10 +32,9 @@ public interface DomElementVisitorContext {
   /**
    * Adds a message to the BPMN process element of the currently handled element
    *
-   * @param severity severity of the message
    * @param message the message to display
    */
-  void addMessage(Severity severity, Message message);
+  void addMessage(Message message);
 
   /**
    * Sets the currently handled element as BPMN process element. This element can now hold messages
@@ -102,8 +101,8 @@ public interface DomElementVisitorContext {
     }
 
     @Override
-    public void addMessage(Severity severity, Message message) {
-      addMessage(element, severity, message);
+    public void addMessage(Message message) {
+      addMessage(element, message);
     }
 
     @Override
@@ -127,14 +126,16 @@ public interface DomElementVisitorContext {
       return converterProperties;
     }
 
-    private void addMessage(DomElement element, Severity severity, Message message) {
-      findElementMessages(element).add(createMessage(severity, message));
+    private void addMessage(DomElement element, Message message) {
+      if (!(message instanceof EmptyMessage)) {
+        findElementMessages(element).add(createMessage(message));
+      }
     }
 
-    private BpmnElementCheckMessage createMessage(Severity severity, Message message) {
+    private BpmnElementCheckMessage createMessage(Message message) {
       BpmnElementCheckMessage m = new BpmnElementCheckMessage();
       m.setMessage(message.getMessage());
-      m.setSeverity(severity);
+      m.setSeverity(message.getSeverity());
       m.setLink(message.getLink());
       return m;
     }

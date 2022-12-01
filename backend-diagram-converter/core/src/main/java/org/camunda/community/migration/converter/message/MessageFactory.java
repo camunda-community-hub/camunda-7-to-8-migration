@@ -9,7 +9,6 @@ public class MessageFactory {
 
   private final MessageTemplateProvider messageTemplateProvider = new MessageTemplateProvider();
   private final MessageTemplateProcessor messageTemplateProcessor = new MessageTemplateProcessor();
-  private final MessageLinkProvider messageLinkProvider = new MessageLinkProvider();
 
   private MessageFactory() {}
 
@@ -164,12 +163,12 @@ public class MessageFactory {
     return INSTANCE.staticMessage("local-variable-propagation-not-supported-hint");
   }
 
-  public static Message inAllNotRecommendedHint() {
-    return INSTANCE.staticMessage("in-all-not-recommended-hint");
+  public static Message inAllHint() {
+    return INSTANCE.staticMessage("in-all-hint");
   }
 
-  public static Message outAllNotRecommendedHint() {
-    return INSTANCE.staticMessage("out-all-not-recommended-hint");
+  public static Message outAllHint() {
+    return INSTANCE.staticMessage("out-all-hint");
   }
 
   public static Message inOutBusinessKeyNotSupported(String elementLocalName) {
@@ -179,12 +178,6 @@ public class MessageFactory {
             .context(businessKeyNotSupported())
             .context(elementNotTransformablePrefix(elementLocalName))
             .build());
-  }
-
-  public static Message elementCanBeUsed(String elementLocalName) {
-    return INSTANCE.composeMessage(
-        "element-can-be-used",
-        ContextBuilder.builder().context(elementCanBeUsedPrefix(elementLocalName)).build());
   }
 
   public static Message elementNotSupported(String elementLocalName, String semanticVersion) {
@@ -225,11 +218,13 @@ public class MessageFactory {
     return INSTANCE.staticMessage("script-format-missing");
   }
 
-  public static Message attributeNotSupported(String attributeLocalName, String elementLocalName) {
+  public static Message attributeNotSupported(
+      String attributeLocalName, String elementLocalName, String attributeValue) {
     return INSTANCE.composeMessage(
         "attribute-not-supported",
         ContextBuilder.builder()
-            .context(attributeNotSupportedPrefix(attributeLocalName, elementLocalName))
+            .context(
+                attributeNotSupportedPrefix(attributeLocalName, elementLocalName, attributeValue))
             .build());
   }
 
@@ -392,13 +387,13 @@ public class MessageFactory {
   }
 
   public static Message inputOutput() {
-    return INSTANCE.staticMessage("input-output");
+    return INSTANCE.emptyMessage();
   }
 
   public static Message camundaScript(
       String elementLocalName, String script, String scriptFormat, String parentElement) {
     return INSTANCE.composeMessage(
-        "camunda.script",
+        "camunda-script",
         ContextBuilder.builder()
             .context(elementNotTransformablePrefix(elementLocalName))
             .entry("script", script)
@@ -412,15 +407,12 @@ public class MessageFactory {
   }
 
   private static Map<String, String> attributeNotSupportedPrefix(
-      String attributeLocalName, String elementLocalName) {
+      String attributeLocalName, String elementLocalName, String attributeValue) {
     return ContextBuilder.builder()
         .entry("attributeLocalName", attributeLocalName)
         .entry("elementLocalName", elementLocalName)
+        .entry("attributeValue", attributeValue)
         .build();
-  }
-
-  private static Map<String, String> elementCanBeUsedPrefix(String elementLocalName) {
-    return ContextBuilder.builder().entry("elementLocalName", elementLocalName).build();
   }
 
   private static Map<String, String> businessKeyNotSupported() {
@@ -497,7 +489,8 @@ public class MessageFactory {
     ComposedMessage message = new ComposedMessage();
     MessageTemplate template = messageTemplateProvider.getMessageTemplate(templateName);
     message.setMessage(messageTemplateProcessor.decorate(template, context));
-    message.setLink(messageLinkProvider.getMessageLink(templateName));
+    message.setLink(template.getLink());
+    message.setSeverity(template.getSeverity());
     return message;
   }
 

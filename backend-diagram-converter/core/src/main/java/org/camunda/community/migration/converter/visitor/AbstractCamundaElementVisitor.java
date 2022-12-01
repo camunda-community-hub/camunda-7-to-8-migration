@@ -1,6 +1,5 @@
 package org.camunda.community.migration.converter.visitor;
 
-import org.camunda.community.migration.converter.BpmnDiagramCheckResult.Severity;
 import org.camunda.community.migration.converter.DomElementVisitorContext;
 import org.camunda.community.migration.converter.NamespaceUri;
 import org.camunda.community.migration.converter.message.Message;
@@ -14,25 +13,10 @@ public abstract class AbstractCamundaElementVisitor extends AbstractElementVisit
   @Override
   protected final void visitFilteredElement(DomElementVisitorContext context) {
     Message message = visitCamundaElement(context);
-    if (isSilent()) {
-      return;
-    }
-    Severity severity =
-        messageSeverity() != null
-            ? messageSeverity()
-            : canBeTransformed(context) ? Severity.TASK : Severity.WARNING;
-    context.addMessage(severity, message);
+    context.addMessage(message);
   }
 
   protected abstract Message visitCamundaElement(DomElementVisitorContext context);
 
   public abstract boolean canBeTransformed(DomElementVisitorContext context);
-
-  protected boolean isSilent() {
-    return false;
-  }
-
-  protected Severity messageSeverity() {
-    return null;
-  }
 }

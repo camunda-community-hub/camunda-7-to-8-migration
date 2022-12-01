@@ -184,7 +184,7 @@ function addStyle(element, overlays) {
             case 'camunda:InputOutput':
                 background = 'prop-info-blue';
                 break;
-            case 'camunda:in':
+            case 'camunda:In':
                 type = 'V';
                 key = 'camunda:In';
                 location = 'left';

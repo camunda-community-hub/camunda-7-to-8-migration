@@ -20,9 +20,4 @@ public class MapVisitor extends AbstractCamundaElementVisitor {
   public boolean canBeTransformed(DomElementVisitorContext context) {
     return false;
   }
-
-  @Override
-  protected boolean isSilent() {
-    return true;
-  }
 }

@@ -7,6 +7,7 @@ import org.camunda.community.migration.converter.expression.ExpressionTransforma
 import org.junit.jupiter.api.Test;
 import org.testcontainers.shaded.org.apache.commons.lang3.RandomStringUtils;
 
+// TODO create more fine-grained tests
 public class MessageFactoryTest {
 
   private static String random() {
@@ -155,21 +156,14 @@ public class MessageFactoryTest {
 
   @Test
   void shouldBuildInAllNotRecommendedHint() {
-    Message message = MessageFactory.inAllNotRecommendedHint();
+    Message message = MessageFactory.inAllHint();
     assertNotNull(message);
     assertNotNull(message.getMessage());
   }
 
   @Test
   void shouldBuildOutAllNotRecommendedHint() {
-    Message message = MessageFactory.outAllNotRecommendedHint();
-    assertNotNull(message);
-    assertNotNull(message.getMessage());
-  }
-
-  @Test
-  void shouldBuildElementCanBeUsed() {
-    Message message = MessageFactory.elementCanBeUsed(random());
+    Message message = MessageFactory.outAllHint();
     assertNotNull(message);
     assertNotNull(message.getMessage());
   }
@@ -197,9 +191,10 @@ public class MessageFactoryTest {
 
   @Test
   void shouldBuildAttributeNotSupported() {
-    Message message = MessageFactory.attributeNotSupported(random(), random());
+    Message message = MessageFactory.attributeNotSupported("attributeName", "element", "value");
     assertNotNull(message);
-    assertNotNull(message.getMessage());
+    assertThat(message.getMessage())
+        .isEqualTo("Attribute 'attributeName' with value 'value' on 'element' is not supported.");
   }
 
   @Test

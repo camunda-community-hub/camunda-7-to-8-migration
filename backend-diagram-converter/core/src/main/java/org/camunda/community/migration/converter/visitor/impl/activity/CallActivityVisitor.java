@@ -1,6 +1,5 @@
 package org.camunda.community.migration.converter.visitor.impl.activity;
 
-import org.camunda.community.migration.converter.BpmnDiagramCheckResult.Severity;
 import org.camunda.community.migration.converter.DomElementVisitorContext;
 import org.camunda.community.migration.converter.NamespaceUri;
 import org.camunda.community.migration.converter.convertible.CallActivityConvertible;
@@ -27,12 +26,12 @@ public class CallActivityVisitor extends AbstractActivityVisitor {
 
   @Override
   protected void postCreationVisitor(DomElementVisitorContext context) {
-
+    // TODO check if CMMN is called
     ExpressionTransformationResult transformationResult =
         ExpressionTransformer.transform(
             context.getElement().getAttribute(NamespaceUri.BPMN, CALLED_ELEMENT));
     if (transformationResult == null) {
-      context.addMessage(Severity.WARNING, MessageFactory.callActivityNoCalledElementHint());
+      context.addMessage(MessageFactory.callActivityNoCalledElementHint());
     } else {
       context.addConversion(
           CallActivityConvertible.class,
@@ -41,7 +40,6 @@ public class CallActivityVisitor extends AbstractActivityVisitor {
                   .getZeebeCalledElement()
                   .setProcessId(transformationResult.getNewExpression()));
       context.addMessage(
-          Severity.TASK,
           MessageFactory.calledElement(CALLED_ELEMENT, localName(), transformationResult));
     }
   }

@@ -2,7 +2,6 @@ package org.camunda.community.migration.converter.visitor.impl.element;
 
 import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
-import org.camunda.community.migration.converter.BpmnDiagramCheckResult.Severity;
 import org.camunda.community.migration.converter.DomElementVisitorContext;
 import org.camunda.community.migration.converter.RetryTimeCycleConverter;
 import org.camunda.community.migration.converter.convertible.Convertible;
@@ -70,11 +69,6 @@ public class FailedJobRetryTimeCycleVisitor extends AbstractCamundaElementVisito
       String timecycle = context.getElement().getTextContent();
       return MessageFactory.failedJobRetryTimeCycleRemoved(
           context.getElement().getLocalName(), timecycle);
-    }
-
-    @Override
-    protected Severity messageSeverity() {
-      return Severity.INFO;
     }
   }
 }

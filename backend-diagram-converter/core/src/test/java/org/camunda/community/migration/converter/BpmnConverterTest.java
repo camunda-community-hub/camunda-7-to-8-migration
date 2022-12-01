@@ -9,6 +9,7 @@ import org.camunda.bpm.model.bpmn.Bpmn;
 import org.camunda.bpm.model.bpmn.BpmnModelInstance;
 import org.camunda.community.migration.converter.BpmnDiagramCheckResult.BpmnElementCheckMessage;
 import org.camunda.community.migration.converter.BpmnDiagramCheckResult.BpmnElementCheckResult;
+import org.camunda.community.migration.converter.BpmnDiagramCheckResult.Severity;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -64,12 +65,7 @@ public class BpmnConverterTest {
 
   @Test
   public void testDelegateHint() {
-    String bpmnFile = "java-delegate-class-c7.bpmn";
-    BpmnConverter converter = BpmnConverterFactory.getInstance().get();
-    ConverterProperties properties = ConverterPropertiesFactory.getInstance().get();
-    BpmnModelInstance modelInstance =
-        Bpmn.readModelFromStream(this.getClass().getClassLoader().getResourceAsStream(bpmnFile));
-    BpmnDiagramCheckResult result = converter.check(bpmnFile, modelInstance, false, properties);
+    BpmnDiagramCheckResult result = loadAndCheck("java-delegate-class-c7.bpmn");
     BpmnElementCheckResult delegateClassServiceTask = result.getResult("DelegateClassServiceTask");
     assertNotNull(delegateClassServiceTask);
     assertThat(delegateClassServiceTask.getMessages()).hasSize(1);
@@ -81,12 +77,7 @@ public class BpmnConverterTest {
 
   @Test
   public void testTaskListenerHints() {
-    String bpmnFile = "user-task-listener-implementations.bpmn";
-    BpmnConverter converter = BpmnConverterFactory.getInstance().get();
-    ConverterProperties properties = ConverterPropertiesFactory.getInstance().get();
-    BpmnModelInstance modelInstance =
-        Bpmn.readModelFromStream(this.getClass().getClassLoader().getResourceAsStream(bpmnFile));
-    BpmnDiagramCheckResult result = converter.check(bpmnFile, modelInstance, false, properties);
+    BpmnDiagramCheckResult result = loadAndCheck("user-task-listener-implementations.bpmn");
     BpmnElementCheckResult javaClassCheckResult = result.getResult("UserTaskUseJavaClass");
     assertThat(javaClassCheckResult.getMessages()).hasSize(1);
     assertThat(javaClassCheckResult.getMessages().get(0).getMessage())
@@ -118,18 +109,7 @@ public class BpmnConverterTest {
 
   @Test
   void testOrGateways() {
-    BpmnConverter converter = BpmnConverterFactory.getInstance().get();
-    BpmnModelInstance modelInstance =
-        Bpmn.readModelFromStream(
-            getClass().getClassLoader().getResourceAsStream("or-gateways.bpmn"));
-    DefaultConverterProperties properties = new DefaultConverterProperties();
-    properties.setPlatformVersion("8.0.0");
-    BpmnDiagramCheckResult result =
-        converter.check(
-            "or-gateways.bpmn",
-            modelInstance,
-            false,
-            ConverterPropertiesFactory.getInstance().merge(properties));
+    BpmnDiagramCheckResult result = loadAndCheckAgainstVersion("or-gateways.bpmn", "8.0.0");
     BpmnElementCheckResult forkGateway = result.getResult("ForkGateway");
     assertThat(forkGateway.getMessages()).hasSize(1);
     assertThat(forkGateway.getMessages().get(0).getMessage())
@@ -144,21 +124,74 @@ public class BpmnConverterTest {
 
   @Test
   void testOrGateways_8_1() {
-    BpmnConverter converter = BpmnConverterFactory.getInstance().get();
-    BpmnModelInstance modelInstance =
-        Bpmn.readModelFromStream(
-            getClass().getClassLoader().getResourceAsStream("or-gateways.bpmn"));
-    DefaultConverterProperties properties = new DefaultConverterProperties();
-    properties.setPlatformVersion("8.1.0");
-    BpmnDiagramCheckResult result =
-        converter.check(
-            "or-gateways.bpmn",
-            modelInstance,
-            false,
-            ConverterPropertiesFactory.getInstance().merge(properties));
+    String bpmnFile = "or-gateways.bpmn";
+    BpmnDiagramCheckResult result = loadAndCheckAgainstVersion(bpmnFile, "8.1.0");
     BpmnElementCheckResult joinGateway = result.getResult("JoinGateway");
     assertThat(joinGateway.getMessages()).hasSize(1);
     assertThat(joinGateway.getMessages().get(0).getMessage())
         .isEqualTo("A joining inclusive gateway is not supported.");
+  }
+
+  @Test
+  void testCallActivityLatest() {
+    BpmnDiagramCheckResult result = loadAndCheck("call-activity-latest.bpmn");
+    BpmnElementCheckResult callActivityResult = result.getResult("callLatest");
+    assertThat(callActivityResult.getMessages()).hasSize(3);
+    assertThat(callActivityResult.getMessages().get(0).getMessage())
+        .isEqualTo(
+            "Attribute 'calledElement' on 'callActivity' was mapped. Please review transformed expression: 'myLatestProcess' -> 'myLatestProcess'.");
+    assertThat(callActivityResult.getMessages().get(0).getSeverity()).isEqualTo(Severity.TASK);
+    assertThat(callActivityResult.getMessages().get(1).getMessage())
+        .isEqualTo(
+            "Element 'camunda:in' with attribute 'variables=\"all\"' is removed. It is default in Zeebe.");
+    assertThat(callActivityResult.getMessages().get(1).getSeverity()).isEqualTo(Severity.INFO);
+    assertThat(callActivityResult.getMessages().get(2).getMessage())
+        .isEqualTo(
+            "Element 'camunda:out' with attribute 'variables=\"all\"' is mapped to 'propagateAllChildVariables=\"true\"'.");
+    assertThat(callActivityResult.getMessages().get(2).getSeverity()).isEqualTo(Severity.INFO);
+  }
+
+  @Test
+  void testCallActivityDeployment() {
+    BpmnDiagramCheckResult result = loadAndCheck("call-activity-deployment.bpmn");
+    BpmnElementCheckResult callActivityResult = result.getResult("callDeployment");
+    assertThat(callActivityResult.getMessages()).hasSize(4);
+    assertThat(callActivityResult.getMessages().get(0).getMessage())
+        .isEqualTo(
+            "Attribute 'calledElementBinding' with value 'deployment' on 'callActivity' is not supported.");
+    assertThat(callActivityResult.getMessages().get(0).getSeverity()).isEqualTo(Severity.WARNING);
+    assertThat(callActivityResult.getMessages().get(1).getMessage())
+        .isEqualTo(
+            "Attribute 'calledElement' on 'callActivity' was mapped. Please review transformed expression: 'myLatestProcess' -> 'myLatestProcess'.");
+    assertThat(callActivityResult.getMessages().get(1).getSeverity()).isEqualTo(Severity.TASK);
+    assertThat(callActivityResult.getMessages().get(2).getMessage())
+        .isEqualTo(
+            "Element 'camunda:in' with attribute 'variables=\"all\"' is removed. It is default in Zeebe.");
+    assertThat(callActivityResult.getMessages().get(2).getSeverity()).isEqualTo(Severity.INFO);
+    assertThat(callActivityResult.getMessages().get(3).getMessage())
+        .isEqualTo(
+            "Element 'camunda:out' with attribute 'variables=\"all\"' is mapped to 'propagateAllChildVariables=\"true\"'.");
+    assertThat(callActivityResult.getMessages().get(3).getSeverity()).isEqualTo(Severity.INFO);
+  }
+
+  protected BpmnDiagramCheckResult loadAndCheck(String bpmnFile) {
+    ConverterProperties properties = ConverterPropertiesFactory.getInstance().get();
+    return loadAndCheckAgainstVersion(bpmnFile, properties.getPlatformVersion());
+  }
+
+  protected BpmnDiagramCheckResult loadAndCheckAgainstVersion(
+      String bpmnFile, String targetVersion) {
+    BpmnConverter converter = BpmnConverterFactory.getInstance().get();
+    BpmnModelInstance modelInstance =
+        Bpmn.readModelFromStream(getClass().getClassLoader().getResourceAsStream(bpmnFile));
+    DefaultConverterProperties properties = new DefaultConverterProperties();
+    properties.setPlatformVersion(targetVersion);
+    BpmnDiagramCheckResult result =
+        converter.check(
+            bpmnFile,
+            modelInstance,
+            false,
+            ConverterPropertiesFactory.getInstance().merge(properties));
+    return result;
   }
 }

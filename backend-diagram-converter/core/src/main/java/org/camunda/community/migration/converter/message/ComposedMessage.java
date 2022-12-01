@@ -1,7 +1,9 @@
 package org.camunda.community.migration.converter.message;
 
-public class ComposedMessage implements Message {
+import org.camunda.community.migration.converter.BpmnDiagramCheckResult.Severity;
 
+public class ComposedMessage implements Message {
+  private Severity severity;
   private String message;
   private String link;
 
@@ -21,5 +23,14 @@ public class ComposedMessage implements Message {
 
   public void setLink(String link) {
     this.link = link;
+  }
+
+  @Override
+  public Severity getSeverity() {
+    return severity;
+  }
+
+  public void setSeverity(Severity severity) {
+    this.severity = severity;
   }
 }

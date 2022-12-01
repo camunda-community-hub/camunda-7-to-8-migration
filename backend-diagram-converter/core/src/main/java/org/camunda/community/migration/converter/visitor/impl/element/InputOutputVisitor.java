@@ -1,6 +1,5 @@
 package org.camunda.community.migration.converter.visitor.impl.element;
 
-import org.camunda.community.migration.converter.BpmnDiagramCheckResult.Severity;
 import org.camunda.community.migration.converter.DomElementVisitorContext;
 import org.camunda.community.migration.converter.message.Message;
 import org.camunda.community.migration.converter.message.MessageFactory;
@@ -20,10 +19,5 @@ public class InputOutputVisitor extends AbstractCamundaElementVisitor {
   @Override
   public boolean canBeTransformed(DomElementVisitorContext context) {
     return true;
-  }
-
-  @Override
-  protected Severity messageSeverity() {
-    return Severity.INFO;
   }
 }
