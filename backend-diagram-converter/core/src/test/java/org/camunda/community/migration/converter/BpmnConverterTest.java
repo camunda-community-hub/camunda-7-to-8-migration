@@ -9,6 +9,7 @@ import org.camunda.bpm.model.bpmn.Bpmn;
 import org.camunda.bpm.model.bpmn.BpmnModelInstance;
 import org.camunda.community.migration.converter.BpmnDiagramCheckResult.BpmnElementCheckMessage;
 import org.camunda.community.migration.converter.BpmnDiagramCheckResult.BpmnElementCheckResult;
+import org.camunda.community.migration.converter.BpmnDiagramCheckResult.Severity;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -131,16 +132,58 @@ public class BpmnConverterTest {
         .isEqualTo("A joining inclusive gateway is not supported.");
   }
 
+  @Test
+  void testCallActivityLatest() {
+    BpmnDiagramCheckResult result = loadAndCheck("call-activity-latest.bpmn");
+    BpmnElementCheckResult callActivityResult = result.getResult("callLatest");
+    assertThat(callActivityResult.getMessages()).hasSize(3);
+    assertThat(callActivityResult.getMessages().get(0).getMessage())
+        .isEqualTo(
+            "Attribute 'calledElement' on 'callActivity' was mapped. Please review transformed expression: 'myLatestProcess' -> 'myLatestProcess'.");
+    assertThat(callActivityResult.getMessages().get(0).getSeverity()).isEqualTo(Severity.TASK);
+    assertThat(callActivityResult.getMessages().get(1).getMessage())
+        .isEqualTo(
+            "Element 'camunda:in' with attribute 'variables=\"all\"' is removed. It is default in Zeebe.");
+    assertThat(callActivityResult.getMessages().get(1).getSeverity()).isEqualTo(Severity.INFO);
+    assertThat(callActivityResult.getMessages().get(2).getMessage())
+        .isEqualTo(
+            "Element 'camunda:out' with attribute 'variables=\"all\"' is mapped to 'propagateAllChildVariables=\"true\"'.");
+    assertThat(callActivityResult.getMessages().get(2).getSeverity()).isEqualTo(Severity.INFO);
+  }
+
+  @Test
+  void testCallActivityDeployment() {
+    BpmnDiagramCheckResult result = loadAndCheck("call-activity-deployment.bpmn");
+    BpmnElementCheckResult callActivityResult = result.getResult("callDeployment");
+    assertThat(callActivityResult.getMessages()).hasSize(4);
+    assertThat(callActivityResult.getMessages().get(0).getMessage())
+        .isEqualTo(
+            "Attribute 'calledElementBinding' with value 'deployment' on 'callActivity' is not supported.");
+    assertThat(callActivityResult.getMessages().get(0).getSeverity()).isEqualTo(Severity.WARNING);
+    assertThat(callActivityResult.getMessages().get(1).getMessage())
+        .isEqualTo(
+            "Attribute 'calledElement' on 'callActivity' was mapped. Please review transformed expression: 'myLatestProcess' -> 'myLatestProcess'.");
+    assertThat(callActivityResult.getMessages().get(1).getSeverity()).isEqualTo(Severity.TASK);
+    assertThat(callActivityResult.getMessages().get(2).getMessage())
+        .isEqualTo(
+            "Element 'camunda:in' with attribute 'variables=\"all\"' is removed. It is default in Zeebe.");
+    assertThat(callActivityResult.getMessages().get(2).getSeverity()).isEqualTo(Severity.INFO);
+    assertThat(callActivityResult.getMessages().get(3).getMessage())
+        .isEqualTo(
+            "Element 'camunda:out' with attribute 'variables=\"all\"' is mapped to 'propagateAllChildVariables=\"true\"'.");
+    assertThat(callActivityResult.getMessages().get(3).getSeverity()).isEqualTo(Severity.INFO);
+  }
+
   protected BpmnDiagramCheckResult loadAndCheck(String bpmnFile) {
     ConverterProperties properties = ConverterPropertiesFactory.getInstance().get();
     return loadAndCheckAgainstVersion(bpmnFile, properties.getPlatformVersion());
   }
 
-  protected BpmnDiagramCheckResult loadAndCheckAgainstVersion(String bpmnFile, String targetVersion) {
+  protected BpmnDiagramCheckResult loadAndCheckAgainstVersion(
+      String bpmnFile, String targetVersion) {
     BpmnConverter converter = BpmnConverterFactory.getInstance().get();
     BpmnModelInstance modelInstance =
-        Bpmn.readModelFromStream(
-            getClass().getClassLoader().getResourceAsStream(bpmnFile));
+        Bpmn.readModelFromStream(getClass().getClassLoader().getResourceAsStream(bpmnFile));
     DefaultConverterProperties properties = new DefaultConverterProperties();
     properties.setPlatformVersion(targetVersion);
     BpmnDiagramCheckResult result =

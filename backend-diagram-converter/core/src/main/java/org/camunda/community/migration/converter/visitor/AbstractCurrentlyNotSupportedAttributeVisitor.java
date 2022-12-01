@@ -12,6 +12,6 @@ public abstract class AbstractCurrentlyNotSupportedAttributeVisitor
     context.addMessage(
         Severity.WARNING,
         MessageFactory.attributeNotSupported(
-            attributeLocalName(), context.getElement().getLocalName()));
+            attributeLocalName(), context.getElement().getLocalName(), attribute));
   }
 }

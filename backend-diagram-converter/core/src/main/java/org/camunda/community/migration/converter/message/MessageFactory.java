@@ -164,12 +164,12 @@ public class MessageFactory {
     return INSTANCE.staticMessage("local-variable-propagation-not-supported-hint");
   }
 
-  public static Message inAllNotRecommendedHint() {
-    return INSTANCE.staticMessage("in-all-not-recommended-hint");
+  public static Message inAllHint() {
+    return INSTANCE.staticMessage("in-all-hint");
   }
 
-  public static Message outAllNotRecommendedHint() {
-    return INSTANCE.staticMessage("out-all-not-recommended-hint");
+  public static Message outAllHint() {
+    return INSTANCE.staticMessage("out-all-hint");
   }
 
   public static Message inOutBusinessKeyNotSupported(String elementLocalName) {
@@ -225,11 +225,13 @@ public class MessageFactory {
     return INSTANCE.staticMessage("script-format-missing");
   }
 
-  public static Message attributeNotSupported(String attributeLocalName, String elementLocalName) {
+  public static Message attributeNotSupported(
+      String attributeLocalName, String elementLocalName, String attributeValue) {
     return INSTANCE.composeMessage(
         "attribute-not-supported",
         ContextBuilder.builder()
-            .context(attributeNotSupportedPrefix(attributeLocalName, elementLocalName))
+            .context(
+                attributeNotSupportedPrefix(attributeLocalName, elementLocalName, attributeValue))
             .build());
   }
 
@@ -412,10 +414,11 @@ public class MessageFactory {
   }
 
   private static Map<String, String> attributeNotSupportedPrefix(
-      String attributeLocalName, String elementLocalName) {
+      String attributeLocalName, String elementLocalName, String attributeValue) {
     return ContextBuilder.builder()
         .entry("attributeLocalName", attributeLocalName)
         .entry("elementLocalName", elementLocalName)
+        .entry("attributeValue", attributeValue)
         .build();
   }
 

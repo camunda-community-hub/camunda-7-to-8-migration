@@ -56,12 +56,12 @@ public abstract class InOutVisitor extends AbstractCamundaElementVisitor {
     }
     if (isAll(context.getElement())) {
       if (isIn(context.getElement())) {
-        return MessageFactory.inAllNotRecommendedHint();
+        return MessageFactory.inAllHint();
       } else if (isOut(context.getElement())) {
         context.addConversion(
             CallActivityConvertible.class,
             conversion -> conversion.getZeebeCalledElement().setPropagateAllChildVariables(true));
-        return MessageFactory.outAllNotRecommendedHint();
+        return MessageFactory.outAllHint();
       } else {
         throw mustBeInOrOut();
       }
