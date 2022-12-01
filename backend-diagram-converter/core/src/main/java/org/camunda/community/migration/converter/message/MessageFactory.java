@@ -9,7 +9,6 @@ public class MessageFactory {
 
   private final MessageTemplateProvider messageTemplateProvider = new MessageTemplateProvider();
   private final MessageTemplateProcessor messageTemplateProcessor = new MessageTemplateProcessor();
-  private final MessageLinkProvider messageLinkProvider = new MessageLinkProvider();
 
   private MessageFactory() {}
 
@@ -179,12 +178,6 @@ public class MessageFactory {
             .context(businessKeyNotSupported())
             .context(elementNotTransformablePrefix(elementLocalName))
             .build());
-  }
-
-  public static Message elementCanBeUsed(String elementLocalName) {
-    return INSTANCE.composeMessage(
-        "element-can-be-used",
-        ContextBuilder.builder().context(elementCanBeUsedPrefix(elementLocalName)).build());
   }
 
   public static Message elementNotSupported(String elementLocalName, String semanticVersion) {
@@ -394,13 +387,13 @@ public class MessageFactory {
   }
 
   public static Message inputOutput() {
-    return INSTANCE.staticMessage("input-output");
+    return INSTANCE.emptyMessage();
   }
 
   public static Message camundaScript(
       String elementLocalName, String script, String scriptFormat, String parentElement) {
     return INSTANCE.composeMessage(
-        "camunda.script",
+        "camunda-script",
         ContextBuilder.builder()
             .context(elementNotTransformablePrefix(elementLocalName))
             .entry("script", script)
@@ -420,10 +413,6 @@ public class MessageFactory {
         .entry("elementLocalName", elementLocalName)
         .entry("attributeValue", attributeValue)
         .build();
-  }
-
-  private static Map<String, String> elementCanBeUsedPrefix(String elementLocalName) {
-    return ContextBuilder.builder().entry("elementLocalName", elementLocalName).build();
   }
 
   private static Map<String, String> businessKeyNotSupported() {
@@ -500,7 +489,8 @@ public class MessageFactory {
     ComposedMessage message = new ComposedMessage();
     MessageTemplate template = messageTemplateProvider.getMessageTemplate(templateName);
     message.setMessage(messageTemplateProcessor.decorate(template, context));
-    message.setLink(messageLinkProvider.getMessageLink(templateName));
+    message.setLink(template.getLink());
+    message.setSeverity(template.getSeverity());
     return message;
   }
 

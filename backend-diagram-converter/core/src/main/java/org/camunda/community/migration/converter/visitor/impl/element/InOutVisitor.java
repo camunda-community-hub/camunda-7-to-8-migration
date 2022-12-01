@@ -2,7 +2,6 @@ package org.camunda.community.migration.converter.visitor.impl.element;
 
 import java.util.Optional;
 import org.camunda.bpm.model.xml.instance.DomElement;
-import org.camunda.community.migration.converter.BpmnDiagramCheckResult.Severity;
 import org.camunda.community.migration.converter.DomElementVisitorContext;
 import org.camunda.community.migration.converter.convertible.AbstractDataMapperConvertible;
 import org.camunda.community.migration.converter.convertible.AbstractDataMapperConvertible.MappingDirection;
@@ -52,7 +51,7 @@ public abstract class InOutVisitor extends AbstractCamundaElementVisitor {
         Boolean.getBoolean(
             Optional.ofNullable(element.getAttribute("local")).orElse(Boolean.toString(false)));
     if (local) {
-      context.addMessage(Severity.TASK, MessageFactory.localVariablePropagationNotSupported());
+      context.addMessage(MessageFactory.localVariablePropagationNotSupported());
     }
     if (isAll(context.getElement())) {
       if (isIn(context.getElement())) {

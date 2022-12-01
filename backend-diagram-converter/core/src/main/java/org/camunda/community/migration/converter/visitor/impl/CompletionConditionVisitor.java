@@ -1,6 +1,5 @@
 package org.camunda.community.migration.converter.visitor.impl;
 
-import org.camunda.community.migration.converter.BpmnDiagramCheckResult.Severity;
 import org.camunda.community.migration.converter.DomElementVisitorContext;
 import org.camunda.community.migration.converter.convertible.AbstractActivityConvertible;
 import org.camunda.community.migration.converter.expression.ExpressionTransformationResult;
@@ -27,7 +26,7 @@ public class CompletionConditionVisitor extends AbstractBpmnElementVisitor {
             conversion
                 .getBpmnMultiInstanceLoopCharacteristics()
                 .setCompletionCondition(transformationResult.getNewExpression()));
-    context.addMessage(Severity.TASK, MessageFactory.completionCondition(transformationResult));
+    context.addMessage(MessageFactory.completionCondition(transformationResult));
   }
 
   @Override

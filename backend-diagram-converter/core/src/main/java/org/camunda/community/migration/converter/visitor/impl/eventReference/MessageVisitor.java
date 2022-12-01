@@ -1,6 +1,5 @@
 package org.camunda.community.migration.converter.visitor.impl.eventReference;
 
-import org.camunda.community.migration.converter.BpmnDiagramCheckResult.Severity;
 import org.camunda.community.migration.converter.DomElementVisitorContext;
 import org.camunda.community.migration.converter.convertible.Convertible;
 import org.camunda.community.migration.converter.convertible.MessageConvertible;
@@ -21,7 +20,7 @@ public class MessageVisitor extends AbstractEventReferenceVisitor {
 
   @Override
   protected void postCreationVisitor(DomElementVisitorContext context) {
-    context.addMessage(Severity.TASK, MessageFactory.correlationKeyHint());
+    context.addMessage(MessageFactory.correlationKeyHint());
   }
 
   @Override

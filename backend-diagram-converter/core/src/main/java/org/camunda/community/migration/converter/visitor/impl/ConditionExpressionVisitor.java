@@ -1,6 +1,5 @@
 package org.camunda.community.migration.converter.visitor.impl;
 
-import org.camunda.community.migration.converter.BpmnDiagramCheckResult.Severity;
 import org.camunda.community.migration.converter.DomElementVisitorContext;
 import org.camunda.community.migration.converter.convertible.SequenceFlowConvertible;
 import org.camunda.community.migration.converter.expression.ExpressionTransformationResult;
@@ -29,6 +28,6 @@ public class ConditionExpressionVisitor extends AbstractBpmnElementVisitor {
     context.addConversion(
         SequenceFlowConvertible.class,
         conversion -> conversion.setConditionExpression(transformationResult.getNewExpression()));
-    context.addMessage(Severity.TASK, MessageFactory.conditionExpression(transformationResult));
+    context.addMessage(MessageFactory.conditionExpression(transformationResult));
   }
 }

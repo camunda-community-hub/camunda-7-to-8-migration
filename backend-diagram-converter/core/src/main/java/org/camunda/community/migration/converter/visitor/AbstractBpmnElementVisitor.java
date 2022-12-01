@@ -1,6 +1,5 @@
 package org.camunda.community.migration.converter.visitor;
 
-import org.camunda.community.migration.converter.BpmnDiagramCheckResult.Severity;
 import org.camunda.community.migration.converter.DomElementVisitorContext;
 import org.camunda.community.migration.converter.NamespaceUri;
 import org.camunda.community.migration.converter.message.Message;
@@ -18,10 +17,10 @@ public abstract class AbstractBpmnElementVisitor extends AbstractElementVisitor 
     visitBpmnElement(context);
     SemanticVersion availableFrom = availableFrom(context);
     if (availableFrom == null) {
-      context.addMessage(Severity.WARNING, cannotBeConvertedMessage(context));
+      context.addMessage(cannotBeConvertedMessage(context));
     } else if (isNotSupportedInDesiredVersion(
         availableFrom, SemanticVersion.parse(context.getProperties().getPlatformVersion()))) {
-      context.addMessage(Severity.WARNING, supportedInFutureVersionMessage(context, availableFrom));
+      context.addMessage(supportedInFutureVersionMessage(context, availableFrom));
     }
   }
 

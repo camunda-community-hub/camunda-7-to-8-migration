@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import org.camunda.community.migration.converter.BpmnDiagramCheckResult.Severity;
 import org.junit.jupiter.api.Test;
 
 public class MessageTemplateProcessorTest {
@@ -15,7 +16,8 @@ public class MessageTemplateProcessorTest {
   @Test
   void shouldDecorateTemplateString() {
     MessageTemplate template =
-        new MessageTemplate("Easy {{ template }}", Collections.singletonList("template"));
+        new MessageTemplate(
+            Severity.INFO, null, "Easy {{ template }}", Collections.singletonList("template"));
     Map<String, String> context = ContextBuilder.builder().entry("template", "${pisi}").build();
     String message = MESSAGE_TEMPLATE_PROCESSOR.decorate(template, context);
     assertEquals("Easy ${pisi}", message);
@@ -24,7 +26,8 @@ public class MessageTemplateProcessorTest {
   @Test
   void shouldThrowIfVariableNotPresent() {
     MessageTemplate template =
-        new MessageTemplate("Easy {{ template }}", Collections.singletonList("template"));
+        new MessageTemplate(
+            Severity.INFO, null, "Easy {{ template }}", Collections.singletonList("template"));
     Map<String, String> context = ContextBuilder.builder().entry("template2", "pisi").build();
     assertThrows(
         IllegalStateException.class, () -> MESSAGE_TEMPLATE_PROCESSOR.decorate(template, context));
@@ -41,7 +44,10 @@ public class MessageTemplateProcessorTest {
   void shouldReplaceAllVariablesWithSameName() {
     MessageTemplate messageTemplate =
         new MessageTemplate(
-            "Hello {{ world }}, this is {{ world }}", Collections.singletonList("world"));
+            Severity.INFO,
+            null,
+            "Hello {{ world }}, this is {{ world }}",
+            Collections.singletonList("world"));
     Map<String, String> context = ContextBuilder.builder().entry("world", "Tim").build();
     String message = MESSAGE_TEMPLATE_PROCESSOR.decorate(messageTemplate, context);
     assertEquals("Hello Tim, this is Tim", message);

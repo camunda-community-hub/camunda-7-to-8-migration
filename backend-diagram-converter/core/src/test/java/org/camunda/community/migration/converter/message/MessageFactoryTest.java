@@ -7,6 +7,7 @@ import org.camunda.community.migration.converter.expression.ExpressionTransforma
 import org.junit.jupiter.api.Test;
 import org.testcontainers.shaded.org.apache.commons.lang3.RandomStringUtils;
 
+// TODO create more fine-grained tests
 public class MessageFactoryTest {
 
   private static String random() {
@@ -163,13 +164,6 @@ public class MessageFactoryTest {
   @Test
   void shouldBuildOutAllNotRecommendedHint() {
     Message message = MessageFactory.outAllHint();
-    assertNotNull(message);
-    assertNotNull(message.getMessage());
-  }
-
-  @Test
-  void shouldBuildElementCanBeUsed() {
-    Message message = MessageFactory.elementCanBeUsed(random());
     assertNotNull(message);
     assertNotNull(message.getMessage());
   }
