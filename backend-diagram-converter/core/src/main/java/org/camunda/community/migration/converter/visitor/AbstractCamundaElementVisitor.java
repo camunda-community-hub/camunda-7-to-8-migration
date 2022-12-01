@@ -13,17 +13,10 @@ public abstract class AbstractCamundaElementVisitor extends AbstractElementVisit
   @Override
   protected final void visitFilteredElement(DomElementVisitorContext context) {
     Message message = visitCamundaElement(context);
-    if (isSilent()) {
-      return;
-    }
     context.addMessage(message);
   }
 
   protected abstract Message visitCamundaElement(DomElementVisitorContext context);
 
   public abstract boolean canBeTransformed(DomElementVisitorContext context);
-
-  protected boolean isSilent() {
-    return false;
-  }
 }

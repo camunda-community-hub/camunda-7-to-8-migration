@@ -17,11 +17,6 @@ public abstract class GeneratedFormDataVisitor extends AbstractCamundaElementVis
     return MessageFactory.generatedFormData();
   }
 
-  @Override
-  protected boolean isSilent() {
-    return true;
-  }
-
   public static class FormDataVisitor extends GeneratedFormDataVisitor {
 
     @Override
@@ -32,11 +27,6 @@ public abstract class GeneratedFormDataVisitor extends AbstractCamundaElementVis
     @Override
     protected Message visitCamundaElement(DomElementVisitorContext context) {
       return MessageFactory.formData(context.getElement().getLocalName());
-    }
-
-    @Override
-    protected boolean isSilent() {
-      return false;
     }
   }
 

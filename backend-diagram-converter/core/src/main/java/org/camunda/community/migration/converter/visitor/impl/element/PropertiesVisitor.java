@@ -20,9 +20,4 @@ public class PropertiesVisitor extends AbstractCamundaElementVisitor {
   public boolean canBeTransformed(DomElementVisitorContext context) {
     return true;
   }
-
-  @Override
-  protected boolean isSilent() {
-    return true;
-  }
 }

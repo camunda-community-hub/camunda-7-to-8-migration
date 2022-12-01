@@ -7,6 +7,7 @@ import org.camunda.bpm.model.xml.instance.DomElement;
 import org.camunda.community.migration.converter.BpmnDiagramCheckResult.BpmnElementCheckMessage;
 import org.camunda.community.migration.converter.BpmnDiagramCheckResult.BpmnElementCheckResult;
 import org.camunda.community.migration.converter.convertible.Convertible;
+import org.camunda.community.migration.converter.message.EmptyMessage;
 import org.camunda.community.migration.converter.message.Message;
 
 public interface DomElementVisitorContext {
@@ -126,7 +127,9 @@ public interface DomElementVisitorContext {
     }
 
     private void addMessage(DomElement element, Message message) {
-      findElementMessages(element).add(createMessage(message));
+      if (!(message instanceof EmptyMessage)) {
+        findElementMessages(element).add(createMessage(message));
+      }
     }
 
     private BpmnElementCheckMessage createMessage(Message message) {
