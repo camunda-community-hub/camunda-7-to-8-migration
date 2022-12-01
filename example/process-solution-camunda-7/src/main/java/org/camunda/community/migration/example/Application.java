@@ -12,11 +12,6 @@ public class Application {
   public static void main(String... args) {
     ConfigurableApplicationContext context = SpringApplication.run(Application.class, args);
 
-    ProcessEngine engine = context.getBean(ProcessEngine.class);
 
-    engine
-        .getRuntimeService()
-        .startProcessInstanceByKey(
-            "sample-process-solution-process", Variables.createVariables().putValue("x", 7));
   }
 }
