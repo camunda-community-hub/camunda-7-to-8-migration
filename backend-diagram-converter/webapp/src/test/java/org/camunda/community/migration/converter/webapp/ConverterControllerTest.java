@@ -35,7 +35,7 @@ public class ConverterControllerTest {
             .multiPart(
                 "files", new File(getClass().getClassLoader().getResource("example.bpmn").toURI()))
             .accept(ContentType.JSON)
-            .post("http://localhost:8080/check")
+            .post("http://localhost:18080/check")
             .getBody()
             .as(new TypeRef<List<BpmnDiagramCheckResult>>() {});
     assertThat(checkResult).hasSize(1);
@@ -53,7 +53,7 @@ public class ConverterControllerTest {
             .multiPart(
                 "files", new File(getClass().getClassLoader().getResource("example.bpmn").toURI()))
             .accept("text/csv")
-            .post("http://localhost:8080/check")
+            .post("http://localhost:18080/check")
             .getBody()
             .print();
     try (CSVReader reader =
@@ -75,7 +75,7 @@ public class ConverterControllerTest {
             .multiPart(
                 "files", new File(getClass().getClassLoader().getResource("example.bpmn").toURI()))
             .accept("text/csv")
-            .post("http://localhost:8080/convert")
+            .post("http://localhost:18080/convert")
             .getBody()
             .asByteArray();
     try (ZipInputStream inputStream = new ZipInputStream(new ByteArrayInputStream(zip))) {

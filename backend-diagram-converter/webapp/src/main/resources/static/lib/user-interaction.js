@@ -22,8 +22,20 @@ const el = (tagName, attributes, children) => {
     return element;
 };
 
+const structureMessages = response => {
+    response.forEach(fileResponse => {
+        fileResponse.results.forEach(result => {
+            result.references.forEach(reference => {
+                fileResponse.results.filter(r => r.elementId === reference).forEach(r => {
+                    result.messages.push(...r.messages);
+                });
+            });
+        });
+    });
+};
+
 const createFormattedResult = result => {
-    if (result.messages.length) {
+    if (result.messages.length && result.referencedBy.length === 0) {
         return el("div", {className: "card m-3"}, [
             el("div", {className: "card-header"}, [result.elementType + " ", el("code", {}, result.elementId), ` ${result.elementName || ""}`]),
             createFormattedMessages(result.messages)
@@ -89,9 +101,10 @@ check.addEventListener("click", async () => {
         response.json().then(json => {
             checkContainer.innerHTML = JSON.stringify(json, null, 2);
             arrangedResultsArea.innerHTML = "";
+            structureMessages(json);
             createFormattedResultWrapper(json);
             resultArea.hidden = false;
-            addElementMarkers(json)
+            addElementMarkers(json);
         })
     });
 });
@@ -121,11 +134,11 @@ convert.addEventListener("click", async () => {
     }).then(downloadResponse);
 });
 
-async function showBpmn (bpmnXML) {
-  const bpmnViewer = await getBpmnViewer();
-  console.log('viewer loaded')
-  openDiagram(bpmnXML, bpmnViewer);
-  showPropertyInfos(bpmnViewer);
+async function showBpmn(bpmnXML) {
+    const bpmnViewer = await getBpmnViewer();
+    console.log('viewer loaded')
+    openDiagram(bpmnXML, bpmnViewer);
+    showPropertyInfos(bpmnViewer);
 }
 
 // load first diagram from uploaded files
@@ -133,30 +146,32 @@ const reader = new FileReader();
 reader.onload = showBpmn;
 
 if (fileUpload.files.length > 0) {
-  reader.readAsText(fileUpload.files[0]);
+    reader.readAsText(fileUpload.files[0]);
 }
 
-fileUpload.addEventListener("change", () => { 
-    if (fileUpload.files.length != 0) {
+fileUpload.addEventListener("change", () => {
+    if (fileUpload.files.length !== 0) {
         reader.readAsText(fileUpload.files[0]);
     }
 });
 
 async function addElementMarkers(checkResult) {
-  const bpmnViewer = await getBpmnViewer();
-  var canvas = bpmnViewer.get('canvas');
-  checkResult[0].results.forEach(result => {
-    if (result.elementType != 'process' && result.elementType != 'message') {
-      if (result.messages.length > 0) {
-        console.log('marker for ', result.elementId)
-        const isWarning = result.messages.some(message => message.severity === 'WARNING');
-        const isTask = result.messages.some(message => message.severity === 'TASK');
-        if (isWarning) {
-          canvas.addMarker(result.elementId, 'conversion-warning')
-        } else if (isTask) {
-          canvas.addMarker(result.elementId, 'conversion-task')
+    const bpmnViewer = await getBpmnViewer();
+    var canvas = bpmnViewer.get('canvas');
+    checkResult[0].results.forEach(result => {
+        if (result.elementType !== 'process' && result.elementType !== 'message') {
+            if (result.messages.length > 0) {
+                const isWarning = result.messages.some(message => message.severity === 'WARNING');
+                const isTask = result.messages.some(message => message.severity === 'TASK');
+                if (isWarning) {
+                    console.log('marker for ', result.elementId, result.elementName, 'WARNING');
+                    canvas.addMarker(result.elementId, 'conversion-warning')
+                } else if (isTask) {
+                    console.log('marker for ', result.elementId, result.elementName, 'WARNING');
+                    canvas.addMarker(result.elementId, 'conversion-task')
+                }
+            }
+
         }
-      }
-    }
-  })
+    })
 }
