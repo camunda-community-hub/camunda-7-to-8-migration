@@ -174,6 +174,19 @@ public class BpmnConverterTest {
     assertThat(callActivityResult.getMessages().get(3).getSeverity()).isEqualTo(Severity.INFO);
   }
 
+  @Test
+  void testReferences() {
+    BpmnDiagramCheckResult result = loadAndCheck("message-example.-.Kopie.bpmn");
+    BpmnElementCheckResult receiveTask = result.getResult("Activity_1yvxtxm");
+    assertThat(receiveTask).isNotNull();
+    assertThat(receiveTask.getReferences()).hasSize(1);
+    assertThat(receiveTask.getReferences().get(0)).isEqualTo("Message_13r2bfr");
+    BpmnElementCheckResult message = result.getResult("Message_13r2bfr");
+    assertThat(message).isNotNull();
+    assertThat(message.getReferencedBy()).hasSize(1);
+    assertThat(message.getReferencedBy().get(0)).isEqualTo("Activity_1yvxtxm");
+  }
+
   protected BpmnDiagramCheckResult loadAndCheck(String bpmnFile) {
     ConverterProperties properties = ConverterPropertiesFactory.getInstance().get();
     return loadAndCheckAgainstVersion(bpmnFile, properties.getPlatformVersion());

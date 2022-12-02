@@ -131,3 +131,7 @@ org.camunda.community.migration.converter.visitor.impl.element.FailedJobRetryTim
 org.camunda.community.migration.converter.visitor.impl.LaneVisitor
 org.camunda.community.migration.converter.visitor.impl.LaneSetVisitor
 org.camunda.community.migration.converter.visitor.impl.FlowNodeRefVisitor
+org.camunda.community.migration.converter.visitor.impl.EscalationRefVisitor
+org.camunda.community.migration.converter.visitor.impl.ErrorRefVisitor
+org.camunda.community.migration.converter.visitor.impl.SignalRefVisitor
+org.camunda.community.migration.converter.visitor.impl.MessageRefVisitor

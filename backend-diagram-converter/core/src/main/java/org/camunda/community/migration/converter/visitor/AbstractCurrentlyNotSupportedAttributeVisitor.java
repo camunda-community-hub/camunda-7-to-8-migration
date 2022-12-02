@@ -4,7 +4,7 @@ import org.camunda.community.migration.converter.DomElementVisitorContext;
 import org.camunda.community.migration.converter.message.MessageFactory;
 
 public abstract class AbstractCurrentlyNotSupportedAttributeVisitor
-    extends AbstractAttributeVisitor {
+    extends AbstractCamundaAttributeVisitor {
 
   @Override
   protected final void visitAttribute(DomElementVisitorContext context, String attribute) {

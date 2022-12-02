@@ -3,7 +3,7 @@ package org.camunda.community.migration.converter.visitor;
 import org.camunda.community.migration.converter.DomElementVisitorContext;
 import org.camunda.community.migration.converter.message.MessageFactory;
 
-public abstract class AbstractRemoveAttributeVisitor extends AbstractAttributeVisitor {
+public abstract class AbstractRemoveAttributeVisitor extends AbstractCamundaAttributeVisitor {
 
   @Override
   protected void visitAttribute(DomElementVisitorContext context, String attribute) {
