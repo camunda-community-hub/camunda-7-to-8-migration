@@ -297,6 +297,7 @@
     <module>camunda-7-adapter</module>
     <module>backend-diagram-converter</module>
     <module>example</module>
+    <module>process-instance-migration</module>
     <module>test-example-diagrams</module>
   </modules>
 </project>
