@@ -11,8 +11,9 @@ const arrangedResultsArea = document.getElementById("arrangedResults");
 
 const severityClasses = {
   "WARNING": "text-bg-warning",
-  "INFO": "text-bg-secondary",
-  "TASK": "text-bg-info"
+  "TASK": "text-bg-warning",
+  "REVIEW": "text-bg-info",
+  "INFO": "text-bg-secondary"
 }
 
 const el = (tagName, attributes, children) => {
@@ -163,12 +164,16 @@ async function addElementMarkers(checkResult) {
       if (result.messages.length > 0) {
         const isWarning = result.messages.some(message => message.severity === 'WARNING');
         const isTask = result.messages.some(message => message.severity === 'TASK');
+        const isReview = result.messages.some(message => message.severity === 'REVIEW');
         if (isWarning) {
           console.log('marker for ', result.elementId, result.elementName, 'WARNING');
           canvas.addMarker(result.elementId, 'conversion-warning')
         } else if (isTask) {
-          console.log('marker for ', result.elementId, result.elementName, 'WARNING');
+          console.log('marker for ', result.elementId, result.elementName, 'TASK');
           canvas.addMarker(result.elementId, 'conversion-task')
+        } else if (isReview) {
+          console.log('marker for ', result.elementId, result.elementName, 'REVIEW');
+          canvas.addMarker(result.elementId, 'conversion-review')
         }
       }
 

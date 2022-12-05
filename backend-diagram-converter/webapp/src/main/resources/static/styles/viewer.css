@@ -91,5 +91,9 @@
 }
 
 .conversion-task .djs-visual > :nth-child(1) {
+    stroke: #ffc107 !important; 
+}
+
+.conversion-review .djs-visual > :nth-child(1) {
     stroke: #0dcaf0 !important; 
 }
