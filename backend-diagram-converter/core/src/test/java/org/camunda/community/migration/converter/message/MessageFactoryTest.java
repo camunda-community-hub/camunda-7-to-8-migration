@@ -269,11 +269,11 @@ public class MessageFactoryTest {
 
   @Test
   void shouldBuildTaskListener() {
-    Message message = MessageFactory.taskListener("my tasklistener implementation");
+    Message message = MessageFactory.taskListener("create", "my tasklistener implementation");
     assertNotNull(message);
     assertThat(message.getMessage())
         .isEqualTo(
-            "Element 'taskListener' with implementation 'my tasklistener implementation' cannot be transformed. Task Listeners do not exist in Zeebe.");
+            "Listener at 'create' with implementation 'my tasklistener implementation' cannot be transformed. Task Listeners do not exist in Zeebe.");
   }
 
   @Test
@@ -352,9 +352,12 @@ public class MessageFactoryTest {
 
   @Test
   void shouldBuildExecutionListener() {
-    Message message = MessageFactory.executionListener(random());
+    Message message = MessageFactory.executionListener("start", "${myExecutionListener}");
     assertNotNull(message);
     assertNotNull(message.getMessage());
+    assertThat(message.getMessage())
+        .isEqualTo(
+            "Listener at 'start' with implementation '${myExecutionListener}' cannot be transformed. Execution Listeners do not exist in Zeebe.");
   }
 
   @Test

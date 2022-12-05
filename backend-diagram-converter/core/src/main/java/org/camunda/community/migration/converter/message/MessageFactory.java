@@ -256,10 +256,13 @@ public class MessageFactory {
             .build());
   }
 
-  public static Message executionListener(String elementLocalName) {
+  public static Message executionListener(String event, String implementation) {
     return INSTANCE.composeMessage(
         "execution-listener",
-        ContextBuilder.builder().context(elementNotTransformablePrefix(elementLocalName)).build());
+        ContextBuilder.builder()
+            .entry("event", event)
+            .entry("implementation", implementation)
+            .build());
   }
 
   public static Message resultVariableBusinessRule(
@@ -335,10 +338,13 @@ public class MessageFactory {
         ContextBuilder.builder().context(elementNotTransformablePrefix(elementLocalName)).build());
   }
 
-  public static Message taskListener(String listenerImplementation) {
+  public static Message taskListener(String event, String implementation) {
     return INSTANCE.composeMessage(
         "task-listener",
-        ContextBuilder.builder().entry("implementation", listenerImplementation).build());
+        ContextBuilder.builder()
+            .entry("event", event)
+            .entry("implementation", implementation)
+            .build());
   }
 
   public static Message formData(String elementLocalName) {

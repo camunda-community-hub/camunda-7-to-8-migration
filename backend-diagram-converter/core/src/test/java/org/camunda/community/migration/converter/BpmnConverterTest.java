@@ -82,26 +82,26 @@ public class BpmnConverterTest {
     assertThat(javaClassCheckResult.getMessages()).hasSize(1);
     assertThat(javaClassCheckResult.getMessages().get(0).getMessage())
         .isEqualTo(
-            "Element 'taskListener' with implementation 'com.camunda.consulting.TaskListenerExample' cannot be transformed. Task Listeners do not exist in Zeebe.");
+            "Listener at 'create' with implementation 'com.camunda.consulting.TaskListenerExample' cannot be transformed. Task Listeners do not exist in Zeebe.");
 
     BpmnElementCheckResult delegateExpressionCheckResult =
         result.getResult("UserTaskUseDelegateExpression");
     assertThat(delegateExpressionCheckResult.getMessages()).hasSize(1);
     assertThat(delegateExpressionCheckResult.getMessages().get(0).getMessage())
         .isEqualTo(
-            "Element 'taskListener' with implementation '${taskListenerExample}' cannot be transformed. Task Listeners do not exist in Zeebe.");
+            "Listener at 'assignment' with implementation '${taskListenerExample}' cannot be transformed. Task Listeners do not exist in Zeebe.");
 
     BpmnElementCheckResult expressionCheckResult = result.getResult("UserTaskUseExpression");
     assertThat(expressionCheckResult.getMessages()).hasSize(1);
     assertThat(expressionCheckResult.getMessages().get(0).getMessage())
         .isEqualTo(
-            "Element 'taskListener' with implementation '${delegateTask.setName(\"my expression name\")}' cannot be transformed. Task Listeners do not exist in Zeebe.");
+            "Listener at 'complete' with implementation '${delegateTask.setName(\"my expression name\")}' cannot be transformed. Task Listeners do not exist in Zeebe.");
 
     BpmnElementCheckResult inlineScriptCheckResult = result.getResult("UserTaskUseInlineScript");
     assertThat(inlineScriptCheckResult.getMessages()).hasSize(2);
     assertThat(inlineScriptCheckResult.getMessages().get(0).getMessage())
         .isEqualTo(
-            "Element 'taskListener' with implementation 'javascript' cannot be transformed. Task Listeners do not exist in Zeebe.");
+            "Listener at 'delete' with implementation 'javascript' cannot be transformed. Task Listeners do not exist in Zeebe.");
     assertThat(inlineScriptCheckResult.getMessages().get(1).getMessage())
         .isEqualTo(
             "Element 'script' cannot be transformed. Script 'delegateTask.setName(\"my script name\");' with format 'javascript' on 'taskListener'.");
@@ -185,6 +185,30 @@ public class BpmnConverterTest {
     assertThat(message).isNotNull();
     assertThat(message.getReferencedBy()).hasSize(1);
     assertThat(message.getReferencedBy().get(0)).isEqualTo("Receive1Task");
+  }
+
+  @Test
+  void testExecutionListener() {
+    BpmnDiagramCheckResult result = loadAndCheck("execution-listener.bpmn");
+    BpmnElementCheckResult serviceTaskWithListenerTask =
+        result.getResult("ServiceTaskWithListenerTask");
+    assertThat(serviceTaskWithListenerTask).isNotNull();
+    assertThat(serviceTaskWithListenerTask.getMessages()).hasSize(7);
+    assertThat(serviceTaskWithListenerTask.getMessages().get(0).getMessage())
+        .isEqualTo(
+            "Listener at 'end' with implementation '${endListener.execute(something)}' cannot be transformed. Execution Listeners do not exist in Zeebe.");
+    assertThat(serviceTaskWithListenerTask.getMessages().get(1).getMessage())
+        .isEqualTo(
+            "Listener at 'start' with implementation '${anotherStartListener}' cannot be transformed. Execution Listeners do not exist in Zeebe.");
+    assertThat(serviceTaskWithListenerTask.getMessages().get(2).getMessage())
+        .isEqualTo(
+            "Listener at 'end' with implementation 'groovy' cannot be transformed. Execution Listeners do not exist in Zeebe.");
+    assertThat(serviceTaskWithListenerTask.getMessages().get(3).getMessage())
+        .isEqualTo(
+            "Element 'script' cannot be transformed. Script 'print(\"something\");' with format 'groovy' on 'executionListener'.");
+    assertThat(serviceTaskWithListenerTask.getMessages().get(4).getMessage())
+        .isEqualTo(
+            "Listener at 'start' with implementation 'com.example.StartListener' cannot be transformed. Execution Listeners do not exist in Zeebe.");
   }
 
   protected BpmnDiagramCheckResult loadAndCheck(String bpmnFile) {
