@@ -48,7 +48,7 @@ public class Camunda7Service {
     }
   }
 
-  public void suspendProcessInstance(String camunda7ProcessInstanceId) {
-    camunda7Client.suspendProcessInstance(camunda7ProcessInstanceId);
+  public void suspendProcessDefinition(String bpmnProcessId, boolean suspended) {
+    camunda7Client.suspendProcessDefinitionByKey(bpmnProcessId, suspended);
   }
 }

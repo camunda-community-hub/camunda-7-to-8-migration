@@ -10,6 +10,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Map;
 
 @Component
@@ -20,6 +21,7 @@ public class Camunda7Client {
   private static final String ACTIVITY_INSTANCES = PROCESS_INSTANCE + "/activity-instances";
   private static final String PROCESS_DEFINITION = "/process-definition/{id}";
   private static final String VERSION = "/version";
+  private static final String PROCESS_DEFINITION_SUSPENDED = "/process-instance/suspended";
   private final RestTemplate restTemplate;
 
   public Camunda7Client(RestTemplate restTemplate) {
@@ -30,11 +32,18 @@ public class Camunda7Client {
     return restTemplate.getForObject(VERSION, Camunda7Version.class);
   }
 
-  public void suspendProcessInstance(String camunda7ProcessInstanceId) {
+  public void suspendProcessInstance(String camunda7ProcessInstanceId, boolean suspended) {
     restTemplate.put(
         SUSPEND_PROCESS_INSTANCE,
-        Collections.singletonMap("suspended", true),
+        Collections.singletonMap("suspended", suspended),
         Collections.singletonMap("id", camunda7ProcessInstanceId));
+  }
+
+  public void suspendProcessDefinitionByKey(String bpmnProcessId, boolean suspended) {
+    Map<String, Object> body = new HashMap<>();
+    body.put("processDefinitionKey", bpmnProcessId);
+    body.put("suspended", suspended);
+    restTemplate.put(PROCESS_DEFINITION_SUSPENDED, body);
   }
 
   public ProcessInstanceDto getProcessInstance(String processInstanceId) {
