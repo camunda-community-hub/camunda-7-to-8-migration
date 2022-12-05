@@ -176,15 +176,15 @@ public class BpmnConverterTest {
 
   @Test
   void testReferences() {
-    BpmnDiagramCheckResult result = loadAndCheck("message-example.-.Kopie.bpmn");
-    BpmnElementCheckResult receiveTask = result.getResult("Activity_1yvxtxm");
+    BpmnDiagramCheckResult result = loadAndCheck("message-example.bpmn");
+    BpmnElementCheckResult receiveTask = result.getResult("Receive1Task");
     assertThat(receiveTask).isNotNull();
     assertThat(receiveTask.getReferences()).hasSize(1);
-    assertThat(receiveTask.getReferences().get(0)).isEqualTo("Message_13r2bfr");
-    BpmnElementCheckResult message = result.getResult("Message_13r2bfr");
+    assertThat(receiveTask.getReferences().get(0)).isEqualTo("Receive1Message");
+    BpmnElementCheckResult message = result.getResult("Receive1Message");
     assertThat(message).isNotNull();
     assertThat(message.getReferencedBy()).hasSize(1);
-    assertThat(message.getReferencedBy().get(0)).isEqualTo("Activity_1yvxtxm");
+    assertThat(message.getReferencedBy().get(0)).isEqualTo("Receive1Task");
   }
 
   protected BpmnDiagramCheckResult loadAndCheck(String bpmnFile) {

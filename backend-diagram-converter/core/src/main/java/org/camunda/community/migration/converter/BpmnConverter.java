@@ -100,19 +100,21 @@ public class BpmnConverter {
       BpmnDiagramCheckResult result,
       List<BpmnElementCheckMessage> messages,
       List<String> references) {
-    List<BpmnElementCheckMessage> r = new ArrayList<>();
-    r.addAll(messages);
-    r.addAll(
+    List<BpmnElementCheckMessage> collectedMessages = new ArrayList<>();
+    collectedMessages.addAll(messages);
+    collectedMessages.addAll(
         references.stream()
             .flatMap(reference -> getMessages(reference, result).stream())
             .collect(Collectors.toList()));
-    return r;
+    return collectedMessages;
   }
 
   private List<BpmnElementCheckMessage> getMessages(
       DomElement element, BpmnDiagramCheckResult result) {
     return result.getResults().stream()
-        .filter(r -> r.getElementId().equals(element.getAttribute("id")))
+        .filter(
+            elementCheckResult ->
+                elementCheckResult.getElementId().equals(element.getAttribute("id")))
         .map(BpmnElementCheckResult::getMessages)
         .findFirst()
         .orElseGet(ArrayList::new);
@@ -121,7 +123,7 @@ public class BpmnConverter {
   private List<BpmnElementCheckMessage> getMessages(
       String elementId, BpmnDiagramCheckResult result) {
     return result.getResults().stream()
-        .filter(r -> r.getElementId().equals(elementId))
+        .filter(elementCheckResult -> elementCheckResult.getElementId().equals(elementId))
         .map(BpmnElementCheckResult::getMessages)
         .findFirst()
         .orElseGet(ArrayList::new);
@@ -129,7 +131,9 @@ public class BpmnConverter {
 
   private List<String> getReferences(DomElement element, BpmnDiagramCheckResult result) {
     return result.getResults().stream()
-        .filter(r -> r.getElementId().equals(element.getAttribute("id")))
+        .filter(
+            elementCheckResult ->
+                elementCheckResult.getElementId().equals(element.getAttribute("id")))
         .map(BpmnElementCheckResult::getReferences)
         .findFirst()
         .orElseGet(ArrayList::new);
@@ -137,7 +141,9 @@ public class BpmnConverter {
 
   private List<String> getReferencedBys(DomElement element, BpmnDiagramCheckResult result) {
     return result.getResults().stream()
-        .filter(r -> r.getElementId().equals(element.getAttribute("id")))
+        .filter(
+            elementCheckResult ->
+                elementCheckResult.getElementId().equals(element.getAttribute("id")))
         .map(BpmnElementCheckResult::getReferencedBy)
         .findFirst()
         .orElseGet(ArrayList::new);
