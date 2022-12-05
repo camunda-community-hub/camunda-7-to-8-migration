@@ -20,12 +20,20 @@ import java.util.List;
 import java.util.zip.ZipInputStream;
 import org.camunda.bpm.model.xml.instance.DomElement;
 import org.camunda.community.migration.converter.BpmnDiagramCheckResult;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
+import org.springframework.boot.test.web.server.LocalServerPort;
 
-@SpringBootTest(webEnvironment = WebEnvironment.DEFINED_PORT)
+@SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
 public class ConverterControllerTest {
+  @LocalServerPort int port;
+
+  @BeforeEach
+  void setup() {
+    RestAssured.port = port;
+  }
 
   @Test
   void shouldReturnCheckResult() throws URISyntaxException {
@@ -35,7 +43,7 @@ public class ConverterControllerTest {
             .multiPart(
                 "files", new File(getClass().getClassLoader().getResource("example.bpmn").toURI()))
             .accept(ContentType.JSON)
-            .post("http://localhost:8080/check")
+            .post("/check")
             .getBody()
             .as(new TypeRef<List<BpmnDiagramCheckResult>>() {});
     assertThat(checkResult).hasSize(1);
@@ -53,7 +61,7 @@ public class ConverterControllerTest {
             .multiPart(
                 "files", new File(getClass().getClassLoader().getResource("example.bpmn").toURI()))
             .accept("text/csv")
-            .post("http://localhost:8080/check")
+            .post("/check")
             .getBody()
             .print();
     try (CSVReader reader =
@@ -75,7 +83,7 @@ public class ConverterControllerTest {
             .multiPart(
                 "files", new File(getClass().getClassLoader().getResource("example.bpmn").toURI()))
             .accept("text/csv")
-            .post("http://localhost:8080/convert")
+            .post("/convert")
             .getBody()
             .asByteArray();
     try (ZipInputStream inputStream = new ZipInputStream(new ByteArrayInputStream(zip))) {

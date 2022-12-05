@@ -1,5 +1,6 @@
 package org.camunda.community.migration.converter;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.Consumer;
@@ -65,6 +66,13 @@ public interface DomElementVisitorContext {
    */
   ConverterProperties getProperties();
 
+  /**
+   * Registers a reference from the current context element to another context element
+   *
+   * @param referencedElementId the referenced id
+   */
+  void references(String referencedElementId);
+
   class DefaultDomElementVisitorContext implements DomElementVisitorContext {
     private final DomElement element;
     private final BpmnDiagramCheckContext context;
@@ -126,6 +134,30 @@ public interface DomElementVisitorContext {
       return converterProperties;
     }
 
+    @Override
+    public void references(String referencedElementId) {
+      references(element, referencedElementId);
+    }
+
+    private void references(DomElement element, String referencedElementId) {
+      BpmnElementCheckResult currentElementCheckResult = findBpmnElementCheckResult(element);
+      BpmnElementCheckResult referencedResult = result.getResult(referencedElementId);
+      if (referencedResult != null) {
+        createReference(currentElementCheckResult, referencedResult);
+      } else {
+        context
+            .getReferencesToCreate()
+            .computeIfAbsent(referencedElementId, s -> new ArrayList<>())
+            .add(currentElementCheckResult);
+      }
+    }
+
+    private void createReference(
+        BpmnElementCheckResult references, BpmnElementCheckResult referencedBy) {
+      references.getReferences().add(referencedBy.getElementId());
+      referencedBy.getReferencedBy().add(references.getElementId());
+    }
+
     private void addMessage(DomElement element, Message message) {
       if (!(message instanceof EmptyMessage)) {
         findElementMessages(element).add(createMessage(message));
@@ -181,6 +213,9 @@ public interface DomElementVisitorContext {
       result.setElementId(id);
       result.setElementName(element.getAttribute("name"));
       result.setElementType(element.getLocalName());
+      List<BpmnElementCheckResult> bpmnElementCheckResults =
+          context.getReferencesToCreate().getOrDefault(id, new ArrayList<>());
+      bpmnElementCheckResults.forEach(other -> createReference(other, result));
       this.result.getResults().add(result);
     }
 

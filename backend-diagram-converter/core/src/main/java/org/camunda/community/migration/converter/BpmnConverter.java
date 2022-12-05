@@ -7,6 +7,7 @@ import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerConfigurationException;
@@ -74,24 +75,76 @@ public class BpmnConverter {
                             attribute -> element.removeAttribute(namespaceUri, attribute))));
     LOG.info("Done remove of old elements");
     LOG.info("Start conversion");
-    MessageAppender messageAppender = new MessageAppender();
+    ConversionElementAppender conversionElementAppender = new ConversionElementAppender();
     context
         .getConvertibles()
         .forEach(
             (element, convertible) -> {
               List<BpmnElementCheckMessage> messages = getMessages(element, result);
-              messageAppender.appendMessages(element, messages, appendDocumentation);
+              List<String> references = getReferences(element, result);
+              List<String> referencedBys = getReferencedBys(element, result);
+              conversionElementAppender.appendMessages(element, messages);
+              conversionElementAppender.appendReferences(element, references);
+              conversionElementAppender.appendReferencedBy(element, referencedBys);
+              if (appendDocumentation) {
+                conversionElementAppender.appendDocumentation(
+                    element, collectMessages(result, messages, references));
+              }
               conversions.forEach(conversion -> conversion.convert(element, convertible, messages));
             });
     LOG.info("Done with conversion");
     return result;
   }
 
+  private List<BpmnElementCheckMessage> collectMessages(
+      BpmnDiagramCheckResult result,
+      List<BpmnElementCheckMessage> messages,
+      List<String> references) {
+    List<BpmnElementCheckMessage> collectedMessages = new ArrayList<>();
+    collectedMessages.addAll(messages);
+    collectedMessages.addAll(
+        references.stream()
+            .flatMap(reference -> getMessages(reference, result).stream())
+            .collect(Collectors.toList()));
+    return collectedMessages;
+  }
+
   private List<BpmnElementCheckMessage> getMessages(
       DomElement element, BpmnDiagramCheckResult result) {
     return result.getResults().stream()
-        .filter(r -> r.getElementId().equals(element.getAttribute("id")))
+        .filter(
+            elementCheckResult ->
+                elementCheckResult.getElementId().equals(element.getAttribute("id")))
         .map(BpmnElementCheckResult::getMessages)
+        .findFirst()
+        .orElseGet(ArrayList::new);
+  }
+
+  private List<BpmnElementCheckMessage> getMessages(
+      String elementId, BpmnDiagramCheckResult result) {
+    return result.getResults().stream()
+        .filter(elementCheckResult -> elementCheckResult.getElementId().equals(elementId))
+        .map(BpmnElementCheckResult::getMessages)
+        .findFirst()
+        .orElseGet(ArrayList::new);
+  }
+
+  private List<String> getReferences(DomElement element, BpmnDiagramCheckResult result) {
+    return result.getResults().stream()
+        .filter(
+            elementCheckResult ->
+                elementCheckResult.getElementId().equals(element.getAttribute("id")))
+        .map(BpmnElementCheckResult::getReferences)
+        .findFirst()
+        .orElseGet(ArrayList::new);
+  }
+
+  private List<String> getReferencedBys(DomElement element, BpmnDiagramCheckResult result) {
+    return result.getResults().stream()
+        .filter(
+            elementCheckResult ->
+                elementCheckResult.getElementId().equals(element.getAttribute("id")))
+        .map(BpmnElementCheckResult::getReferencedBy)
         .findFirst()
         .orElseGet(ArrayList::new);
   }

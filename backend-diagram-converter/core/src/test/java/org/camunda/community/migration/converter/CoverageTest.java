@@ -39,6 +39,9 @@ public class CoverageTest {
           .collect(Collectors.toSet());
   private static final Set<String> EVENT_REFERENCE_TYPES =
       Stream.of("error", "escalation", "message", "signal").collect(Collectors.toSet());
+
+  private static final Set<String> EVENT_REF_TYPES =
+      Stream.of("messageRef", "escalationRef", "errorRef", "signalRef").collect(Collectors.toSet());
   private static final Set<String> EVENT_TYPES =
       Stream.of(
               "startEvent",
@@ -126,6 +129,11 @@ public class CoverageTest {
   void shouldCoverLanes() {
     assertThat(getCoveredElements())
         .containsAll(Stream.of("lane", "laneSet", "flowNodeRef").collect(Collectors.toSet()));
+  }
+
+  @Test
+  void shouldCoverEventRefs() {
+    assertThat(getCoveredAttributes()).containsAll(EVENT_REF_TYPES);
   }
 
   private Set<String> getCoveredEventDefinitionTypes() {

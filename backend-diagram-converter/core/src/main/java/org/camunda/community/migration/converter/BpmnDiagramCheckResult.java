@@ -34,6 +34,8 @@ public class BpmnDiagramCheckResult {
 
   public static class BpmnElementCheckResult {
     private final List<BpmnElementCheckMessage> messages = new ArrayList<>();
+    private final List<String> references = new ArrayList<>();
+    private final List<String> referencedBy = new ArrayList<>();
     private String elementId;
     private String elementName;
     private String elementType;
@@ -64,6 +66,14 @@ public class BpmnDiagramCheckResult {
 
     public void setElementType(String elementType) {
       this.elementType = elementType;
+    }
+
+    public List<String> getReferences() {
+      return references;
+    }
+
+    public List<String> getReferencedBy() {
+      return referencedBy;
     }
   }
 

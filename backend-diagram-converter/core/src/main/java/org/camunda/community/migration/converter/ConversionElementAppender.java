@@ -8,19 +8,38 @@ import org.camunda.bpm.model.xml.instance.DomDocument;
 import org.camunda.bpm.model.xml.instance.DomElement;
 import org.camunda.community.migration.converter.BpmnDiagramCheckResult.BpmnElementCheckMessage;
 
-public class MessageAppender {
+public class ConversionElementAppender {
 
-  public void appendMessages(
-      DomElement element, List<BpmnElementCheckMessage> messages, boolean appendDocumentation) {
+  public void appendMessages(DomElement element, List<BpmnElementCheckMessage> messages) {
     if (!messages.isEmpty()) {
       DomElement extensionElements = getExtensionElements(element);
       messages.sort(Comparator.comparingInt(message -> message.getSeverity().ordinal()));
       messages.forEach(
           message -> extensionElements.appendChild(createMessage(message, element.getDocument())));
-      if (appendDocumentation) {
-        DomElement documentation = getDocumentation(element);
-        documentation.setTextContent(createDocumentation(documentation.getTextContent(), messages));
-      }
+    }
+  }
+
+  public void appendDocumentation(DomElement element, List<BpmnElementCheckMessage> messages) {
+    DomElement documentation = getDocumentation(element);
+    documentation.setTextContent(createDocumentation(documentation.getTextContent(), messages));
+  }
+
+  public void appendReferences(DomElement element, List<String> references) {
+    if (!references.isEmpty()) {
+      DomElement extensionElements = getExtensionElements(element);
+      references.forEach(
+          reference ->
+              extensionElements.appendChild(createReference(reference, element.getDocument())));
+    }
+  }
+
+  public void appendReferencedBy(DomElement element, List<String> referencedBys) {
+    if (!referencedBys.isEmpty()) {
+      DomElement extensionElements = getExtensionElements(element);
+      referencedBys.forEach(
+          referencedBy ->
+              extensionElements.appendChild(
+                  createReferencedBy(referencedBy, element.getDocument())));
     }
   }
 
@@ -47,5 +66,17 @@ public class MessageAppender {
     }
     messageElement.setTextContent(message.getMessage());
     return messageElement;
+  }
+
+  private DomElement createReference(String reference, DomDocument document) {
+    DomElement referenceElement = document.createElement(NamespaceUri.CONVERSION, "reference");
+    referenceElement.setTextContent(reference);
+    return referenceElement;
+  }
+
+  private DomElement createReferencedBy(String referencedBy, DomDocument document) {
+    DomElement referenceElement = document.createElement(NamespaceUri.CONVERSION, "referencedBy");
+    referenceElement.setTextContent(referencedBy);
+    return referenceElement;
   }
 }

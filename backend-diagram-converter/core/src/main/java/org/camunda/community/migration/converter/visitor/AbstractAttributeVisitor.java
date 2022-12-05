@@ -4,7 +4,6 @@ import org.camunda.community.migration.converter.DomElementVisitorContext;
 import org.camunda.community.migration.converter.NamespaceUri;
 
 public abstract class AbstractAttributeVisitor extends AbstractFilteringVisitor {
-
   @Override
   protected void visitFilteredElement(DomElementVisitorContext context) {
     String attribute = context.getElement().getAttribute(namespaceUri(), attributeLocalName());
@@ -24,17 +23,13 @@ public abstract class AbstractAttributeVisitor extends AbstractFilteringVisitor 
         && context.getElement().getNamespaceURI().equals(NamespaceUri.BPMN);
   }
 
-  protected String namespaceUri() {
-    return NamespaceUri.CAMUNDA;
-  }
+  protected abstract String namespaceUri();
 
   public abstract String attributeLocalName();
 
   protected abstract void visitAttribute(DomElementVisitorContext context, String attribute);
 
-  protected boolean removeAttribute() {
-    return true;
-  }
+  protected abstract boolean removeAttribute();
 
   @Override
   protected void logVisit(DomElementVisitorContext context) {
