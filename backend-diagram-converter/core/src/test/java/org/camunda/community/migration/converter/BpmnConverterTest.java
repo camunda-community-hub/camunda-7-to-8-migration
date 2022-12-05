@@ -140,7 +140,7 @@ public class BpmnConverterTest {
     assertThat(callActivityResult.getMessages().get(0).getMessage())
         .isEqualTo(
             "Attribute 'calledElement' on 'callActivity' was mapped. Please review transformed expression: 'myLatestProcess' -> 'myLatestProcess'.");
-    assertThat(callActivityResult.getMessages().get(0).getSeverity()).isEqualTo(Severity.TASK);
+    assertThat(callActivityResult.getMessages().get(0).getSeverity()).isEqualTo(Severity.REVIEW);
     assertThat(callActivityResult.getMessages().get(1).getMessage())
         .isEqualTo(
             "Element 'camunda:in' with attribute 'variables=\"all\"' is removed. It is default in Zeebe.");
@@ -163,7 +163,7 @@ public class BpmnConverterTest {
     assertThat(callActivityResult.getMessages().get(1).getMessage())
         .isEqualTo(
             "Attribute 'calledElement' on 'callActivity' was mapped. Please review transformed expression: 'myLatestProcess' -> 'myLatestProcess'.");
-    assertThat(callActivityResult.getMessages().get(1).getSeverity()).isEqualTo(Severity.TASK);
+    assertThat(callActivityResult.getMessages().get(1).getSeverity()).isEqualTo(Severity.REVIEW);
     assertThat(callActivityResult.getMessages().get(2).getMessage())
         .isEqualTo(
             "Element 'camunda:in' with attribute 'variables=\"all\"' is removed. It is default in Zeebe.");

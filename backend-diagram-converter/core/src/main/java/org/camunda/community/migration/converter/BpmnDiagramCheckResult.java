@@ -29,6 +29,7 @@ public class BpmnDiagramCheckResult {
   public enum Severity {
     WARNING,
     TASK,
+    REVIEW,
     INFO,
   }
 
