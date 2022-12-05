@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_1rh4xjp" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.5.0" modeler:executionPlatform="Camunda Platform" modeler:executionPlatformVersion="7.18.0">
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_1rh4xjp" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.5.1" modeler:executionPlatform="Camunda Platform" modeler:executionPlatformVersion="7.18.0">
   <bpmn:process id="UserTaskListenerImplementationsProcess" name="User Task Listener Implementations" isExecutable="true">
     <bpmn:startEvent id="StartEvent_1" name="All task listener implementations wanted">
       <bpmn:outgoing>Flow_03ety8g</bpmn:outgoing>
@@ -15,7 +15,7 @@
     <bpmn:sequenceFlow id="Flow_0rxm0x2" sourceRef="UserTaskUseJavaClass" targetRef="UserTaskUseDelegateExpression" />
     <bpmn:userTask id="UserTaskUseDelegateExpression" name="Use delegate expression">
       <bpmn:extensionElements>
-        <camunda:taskListener delegateExpression="${taskListenerExample}" event="create" />
+        <camunda:taskListener delegateExpression="${taskListenerExample}" event="assignment" />
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_0rxm0x2</bpmn:incoming>
       <bpmn:outgoing>Flow_1wzinyc</bpmn:outgoing>
@@ -23,7 +23,7 @@
     <bpmn:sequenceFlow id="Flow_1wzinyc" sourceRef="UserTaskUseDelegateExpression" targetRef="UserTaskUseExpression" />
     <bpmn:userTask id="UserTaskUseExpression" name="Use expression">
       <bpmn:extensionElements>
-        <camunda:taskListener expression="${delegateTask.setName(&#34;my expression name&#34;)}" event="create" />
+        <camunda:taskListener expression="${delegateTask.setName(&#34;my expression name&#34;)}" event="complete" />
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_1wzinyc</bpmn:incoming>
       <bpmn:outgoing>Flow_0e1l4oq</bpmn:outgoing>
@@ -31,7 +31,7 @@
     <bpmn:sequenceFlow id="Flow_0e1l4oq" sourceRef="UserTaskUseExpression" targetRef="UserTaskUseInlineScript" />
     <bpmn:userTask id="UserTaskUseInlineScript" name="Use inline script">
       <bpmn:extensionElements>
-        <camunda:taskListener event="create">
+        <camunda:taskListener event="delete">
           <camunda:script scriptFormat="javascript">delegateTask.setName("my script name");</camunda:script>
         </camunda:taskListener>
       </bpmn:extensionElements>
