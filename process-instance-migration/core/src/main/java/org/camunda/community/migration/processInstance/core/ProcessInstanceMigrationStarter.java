@@ -15,9 +15,9 @@ public class ProcessInstanceMigrationStarter {
     this.zeebeClient = zeebeClient;
   }
 
-  public ProcessInstanceEvent startProcessInstanceMigration(String processInstanceId) {
+  public ProcessInstanceEvent startProcessInstanceMigration(String bpmnProcessId) {
     ProcessInstanceMigrationVariables variables = new ProcessInstanceMigrationVariables();
-    variables.setCamunda7ProcessInstanceId(processInstanceId);
+    variables.setBpmnProcessId(bpmnProcessId);
     return zeebeClient
         .newCreateInstanceCommand()
         .bpmnProcessId("ProcessInstanceMigrationProcess")

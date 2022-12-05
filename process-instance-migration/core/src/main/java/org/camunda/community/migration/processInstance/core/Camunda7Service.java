@@ -7,7 +7,10 @@ import org.camunda.community.migration.processInstance.core.dto.ProcessInstanceD
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 public class Camunda7Service {
@@ -32,5 +35,20 @@ public class Camunda7Service {
     // activity ids
     ActivityInstanceDto activities = camunda7Client.getActivityInstances(camunda7ProcessInstanceId);
     return processData;
+  }
+
+  private List<String> extractFromTree(ActivityInstanceDto activityInstanceDto) {
+    if (activityInstanceDto.getChildActivityInstances() == null
+        || activityInstanceDto.getChildActivityInstances().isEmpty()) {
+      return Collections.singletonList(activityInstanceDto.getActivityId());
+    } else {
+      return activityInstanceDto.getChildActivityInstances().stream()
+          .flatMap(dto -> extractFromTree(dto).stream())
+          .collect(Collectors.toList());
+    }
+  }
+
+  public void suspendProcessInstance(String camunda7ProcessInstanceId) {
+    camunda7Client.suspendProcessInstance(camunda7ProcessInstanceId);
   }
 }

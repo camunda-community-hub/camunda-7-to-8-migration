@@ -4,10 +4,21 @@ import java.util.List;
 import java.util.Map;
 
 public class ProcessInstanceMigrationVariables {
+  private String bpmnProcessId;
   private String camunda7ProcessInstanceId;
   private Long camunda8ProcessInstanceKey;
   private List<String> activityIds;
-  private Map<String,Object> variables;
+  private Map<String, Object> variables;
+
+  private Boolean alreadyConverted;
+
+  public Boolean getAlreadyConverted() {
+    return alreadyConverted;
+  }
+
+  public void setAlreadyConverted(Boolean alreadyConverted) {
+    this.alreadyConverted = alreadyConverted;
+  }
 
   public String getCamunda7ProcessInstanceId() {
     return camunda7ProcessInstanceId;
@@ -39,5 +50,13 @@ public class ProcessInstanceMigrationVariables {
 
   public void setVariables(Map<String, Object> variables) {
     this.variables = variables;
+  }
+
+  public String getBpmnProcessId() {
+    return bpmnProcessId;
+  }
+
+  public void setBpmnProcessId(String bpmnProcessId) {
+    this.bpmnProcessId = bpmnProcessId;
   }
 }

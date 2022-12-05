@@ -1,148 +1,305 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_13says0" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.5.1" modeler:executionPlatform="Camunda Cloud" modeler:executionPlatformVersion="8.1.0">
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_13says0" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.5.1" modeler:executionPlatform="Camunda Cloud" modeler:executionPlatformVersion="8.1.0">
   <bpmn:collaboration id="Collaboration_0votdqa">
     <bpmn:participant id="ProcessInstanceMigrationParticipant" name="Process Instance Migration" processRef="ProcessInstanceMigrationProcess" />
-    <bpmn:participant id="Participant_0nsofvi" name="Camunda 7" />
-    <bpmn:participant id="Participant_0s2vlm4" name="Camunda 8" />
-    <bpmn:messageFlow id="Flow_1c4c7e2" sourceRef="SuspendProcessInstanceInCamunda7Task" targetRef="Participant_0nsofvi" />
-    <bpmn:messageFlow id="Flow_1177h36" sourceRef="Participant_0nsofvi" targetRef="SuspendProcessInstanceInCamunda7Task" />
-    <bpmn:messageFlow id="Flow_0cphhn7" sourceRef="ExtractRelevantDataFromProcessInstanceTask" targetRef="Participant_0nsofvi" />
-    <bpmn:messageFlow id="Flow_0etqhiw" sourceRef="Participant_0nsofvi" targetRef="ExtractRelevantDataFromProcessInstanceTask" />
-    <bpmn:messageFlow id="Flow_0e4khdk" sourceRef="CreateProcessInstanceInCamunda8Task" targetRef="Participant_0s2vlm4" />
-    <bpmn:messageFlow id="Flow_1mnltfq" sourceRef="Participant_0s2vlm4" targetRef="CreateProcessInstanceInCamunda8Task" />
-    <bpmn:messageFlow id="Flow_0f2splv" sourceRef="CancelProcessInstanceInCamunda7Task" targetRef="Participant_0nsofvi" />
-    <bpmn:messageFlow id="Flow_1q77ce3" sourceRef="Participant_0nsofvi" targetRef="CancelProcessInstanceInCamunda7Task" />
+    <bpmn:participant id="Camunda7Participant" name="Camunda 7" />
+    <bpmn:participant id="Camunda8Participant" name="Camunda 8" />
+    <bpmn:messageFlow id="Flow_0cphhn7" sourceRef="SuspendProcessDefinitionTask" targetRef="Camunda7Participant" />
+    <bpmn:messageFlow id="Flow_0e4khdk" sourceRef="CreateProcessInstanceInCamunda8Task" targetRef="Camunda8Participant" />
+    <bpmn:messageFlow id="Flow_1mnltfq" sourceRef="Camunda8Participant" targetRef="CreateProcessInstanceInCamunda8Task" />
+    <bpmn:messageFlow id="Flow_0f2splv" sourceRef="CancelProcessInstanceInCamunda7Task" targetRef="Camunda7Participant" />
+    <bpmn:messageFlow id="Flow_004rctf" sourceRef="CheckIfProcessDefinitionIsConvertedTask" targetRef="Camunda8Participant" />
+    <bpmn:messageFlow id="Flow_1augkbd" sourceRef="Camunda8Participant" targetRef="CheckIfProcessDefinitionIsConvertedTask" />
+    <bpmn:messageFlow id="Flow_0kno6bc" sourceRef="ExtractRelevantDataFromProcessInstanceTask" targetRef="Camunda7Participant" />
+    <bpmn:messageFlow id="Flow_0xq109a" sourceRef="Camunda7Participant" targetRef="ExtractRelevantDataFromProcessInstanceTask" />
+    <bpmn:messageFlow id="Flow_0z4v95b" sourceRef="ContinueProcessDefinitionTask" targetRef="Camunda7Participant" />
   </bpmn:collaboration>
   <bpmn:process id="ProcessInstanceMigrationProcess" name="Process Instance Migration" isExecutable="true">
     <bpmn:startEvent id="ProcessInstanceMigrationRequiredStartEvent" name="Process Instance Migration required">
+      <bpmn:extensionElements>
+        <zeebe:ioMapping>
+          <zeebe:output source="=bpmnProcessId" target="bpmnProcessId" />
+        </zeebe:ioMapping>
+      </bpmn:extensionElements>
       <bpmn:outgoing>Flow_1srfdoc</bpmn:outgoing>
     </bpmn:startEvent>
-    <bpmn:serviceTask id="SuspendProcessInstanceInCamunda7Task" name="Suspend Process Instance in Camunda 7">
+    <bpmn:sequenceFlow id="Flow_1srfdoc" sourceRef="ProcessInstanceMigrationRequiredStartEvent" targetRef="Gateway_1kodnvi" />
+    <bpmn:sequenceFlow id="Flow_1nwevf1" sourceRef="CreateAndDeployConversionTask" targetRef="Gateway_1kodnvi" />
+    <bpmn:sequenceFlow id="Flow_09af8ox" sourceRef="CheckIfProcessDefinitionIsConvertedTask" targetRef="AlreadyConvertedGateway" />
+    <bpmn:sequenceFlow id="YesSequenceFlow" name="yes" sourceRef="AlreadyConvertedGateway" targetRef="SuspendProcessDefinitionTask">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=alreadyConverted</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_1f3mszq" sourceRef="SuspendProcessDefinitionTask" targetRef="SelectProcessInstancesToMigrateTask" />
+    <bpmn:sequenceFlow id="NoSequenceFlow" name="no" sourceRef="AlreadyConvertedGateway" targetRef="CreateAndDeployConversionTask">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=not(alreadyConverted)</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_1gsrqvj" sourceRef="SelectProcessInstancesToMigrateTask" targetRef="MigrateProcessInstancesSubProcess" />
+    <bpmn:sequenceFlow id="Flow_05eic6u" sourceRef="MigrateProcessInstancesSubProcess" targetRef="ContinueProcessDefinitionTask" />
+    <bpmn:sequenceFlow id="Flow_08tz0d7" sourceRef="ContinueProcessDefinitionTask" targetRef="ProcessInstanceMigrationDoneEndEvent" />
+    <bpmn:serviceTask id="CheckIfProcessDefinitionIsConvertedTask" name="Check if process definition is converted">
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="camunda8:checkProcessDefinition" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_03ug8sp</bpmn:incoming>
+      <bpmn:outgoing>Flow_09af8ox</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:userTask id="CreateAndDeployConversionTask" name="Create and deploy conversion">
+      <bpmn:incoming>NoSequenceFlow</bpmn:incoming>
+      <bpmn:outgoing>Flow_1nwevf1</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:serviceTask id="SuspendProcessDefinitionTask" name="Suspend process definition">
       <bpmn:extensionElements>
         <zeebe:taskDefinition type="camunda7:suspend" />
       </bpmn:extensionElements>
-      <bpmn:incoming>Flow_1srfdoc</bpmn:incoming>
-      <bpmn:outgoing>Flow_09af8ox</bpmn:outgoing>
-    </bpmn:serviceTask>
-    <bpmn:serviceTask id="ExtractRelevantDataFromProcessInstanceTask" name="Extract relevant data from Process Instance">
-      <bpmn:extensionElements>
-        <zeebe:taskDefinition type="camunda7:extract" />
-      </bpmn:extensionElements>
-      <bpmn:incoming>Flow_09af8ox</bpmn:incoming>
+      <bpmn:incoming>YesSequenceFlow</bpmn:incoming>
       <bpmn:outgoing>Flow_1f3mszq</bpmn:outgoing>
     </bpmn:serviceTask>
-    <bpmn:serviceTask id="CreateProcessInstanceInCamunda8Task" name="Create Process Instance in Camunda 8">
-      <bpmn:extensionElements>
-        <zeebe:taskDefinition type="camunda8:start" />
-      </bpmn:extensionElements>
+    <bpmn:userTask id="SelectProcessInstancesToMigrateTask" name="Select process instances to migrate">
       <bpmn:incoming>Flow_1f3mszq</bpmn:incoming>
-      <bpmn:outgoing>Flow_1yg94qy</bpmn:outgoing>
-    </bpmn:serviceTask>
+      <bpmn:outgoing>Flow_1gsrqvj</bpmn:outgoing>
+    </bpmn:userTask>
     <bpmn:endEvent id="ProcessInstanceMigrationDoneEndEvent" name="Process Instance Migration done">
-      <bpmn:incoming>Flow_1trrxc5</bpmn:incoming>
+      <bpmn:incoming>Flow_08tz0d7</bpmn:incoming>
     </bpmn:endEvent>
-    <bpmn:serviceTask id="CancelProcessInstanceInCamunda7Task" name="Cancel Process Instance in Camunda 7">
+    <bpmn:serviceTask id="ContinueProcessDefinitionTask" name="Continue process definition">
       <bpmn:extensionElements>
-        <zeebe:taskDefinition type="camunda7:cancel" />
+        <zeebe:taskDefinition type="camunda7:continue" />
       </bpmn:extensionElements>
-      <bpmn:incoming>Flow_1yg94qy</bpmn:incoming>
-      <bpmn:outgoing>Flow_1trrxc5</bpmn:outgoing>
+      <bpmn:incoming>Flow_05eic6u</bpmn:incoming>
+      <bpmn:outgoing>Flow_08tz0d7</bpmn:outgoing>
     </bpmn:serviceTask>
-    <bpmn:sequenceFlow id="Flow_1srfdoc" sourceRef="ProcessInstanceMigrationRequiredStartEvent" targetRef="SuspendProcessInstanceInCamunda7Task" />
-    <bpmn:sequenceFlow id="Flow_09af8ox" sourceRef="SuspendProcessInstanceInCamunda7Task" targetRef="ExtractRelevantDataFromProcessInstanceTask" />
-    <bpmn:sequenceFlow id="Flow_1f3mszq" sourceRef="ExtractRelevantDataFromProcessInstanceTask" targetRef="CreateProcessInstanceInCamunda8Task" />
-    <bpmn:sequenceFlow id="Flow_1yg94qy" sourceRef="CreateProcessInstanceInCamunda8Task" targetRef="CancelProcessInstanceInCamunda7Task" />
-    <bpmn:sequenceFlow id="Flow_1trrxc5" sourceRef="CancelProcessInstanceInCamunda7Task" targetRef="ProcessInstanceMigrationDoneEndEvent" />
+    <bpmn:subProcess id="MigrateProcessInstancesSubProcess" name="Migrate process instances">
+      <bpmn:incoming>Flow_1gsrqvj</bpmn:incoming>
+      <bpmn:outgoing>Flow_05eic6u</bpmn:outgoing>
+      <bpmn:multiInstanceLoopCharacteristics>
+        <bpmn:extensionElements>
+          <zeebe:loopCharacteristics inputCollection="=camunda7ProcessInstanceIds" inputElement="camunda7ProcessInstanceId" />
+        </bpmn:extensionElements>
+      </bpmn:multiInstanceLoopCharacteristics>
+      <bpmn:serviceTask id="CreateProcessInstanceInCamunda8Task" name="Create Process Instance in Camunda 8">
+        <bpmn:extensionElements>
+          <zeebe:taskDefinition type="camunda8:start" />
+        </bpmn:extensionElements>
+        <bpmn:incoming>Flow_1q3kiho</bpmn:incoming>
+        <bpmn:outgoing>Flow_03u3n2u</bpmn:outgoing>
+      </bpmn:serviceTask>
+      <bpmn:serviceTask id="CancelProcessInstanceInCamunda7Task" name="Cancel Process Instance in Camunda 7">
+        <bpmn:extensionElements>
+          <zeebe:taskDefinition type="camunda7:cancel" />
+        </bpmn:extensionElements>
+        <bpmn:incoming>Flow_03u3n2u</bpmn:incoming>
+        <bpmn:outgoing>Flow_0mepwuc</bpmn:outgoing>
+      </bpmn:serviceTask>
+      <bpmn:endEvent id="MigrationOfSingleProcessInstanceCompleteEndEvent" name="Migration of single process instance complete">
+        <bpmn:incoming>Flow_0mepwuc</bpmn:incoming>
+      </bpmn:endEvent>
+      <bpmn:sequenceFlow id="Flow_0mepwuc" sourceRef="CancelProcessInstanceInCamunda7Task" targetRef="MigrationOfSingleProcessInstanceCompleteEndEvent" />
+      <bpmn:sequenceFlow id="Flow_03u3n2u" sourceRef="CreateProcessInstanceInCamunda8Task" targetRef="CancelProcessInstanceInCamunda7Task" />
+      <bpmn:startEvent id="MigrationOfSingleProcessInstanceStartedStartEvent" name="Migration of single process instance started">
+        <bpmn:outgoing>Flow_0b4qntx</bpmn:outgoing>
+      </bpmn:startEvent>
+      <bpmn:sequenceFlow id="Flow_0b4qntx" sourceRef="MigrationOfSingleProcessInstanceStartedStartEvent" targetRef="ExtractRelevantDataFromProcessInstanceTask" />
+      <bpmn:sequenceFlow id="Flow_1q3kiho" sourceRef="ExtractRelevantDataFromProcessInstanceTask" targetRef="CreateProcessInstanceInCamunda8Task" />
+      <bpmn:serviceTask id="ExtractRelevantDataFromProcessInstanceTask" name="Extract relevant data from process instance">
+        <bpmn:extensionElements>
+          <zeebe:taskDefinition type="camunda7:extract" />
+        </bpmn:extensionElements>
+        <bpmn:incoming>Flow_0b4qntx</bpmn:incoming>
+        <bpmn:outgoing>Flow_1q3kiho</bpmn:outgoing>
+      </bpmn:serviceTask>
+    </bpmn:subProcess>
+    <bpmn:exclusiveGateway id="Gateway_1kodnvi">
+      <bpmn:incoming>Flow_1srfdoc</bpmn:incoming>
+      <bpmn:incoming>Flow_1nwevf1</bpmn:incoming>
+      <bpmn:outgoing>Flow_03ug8sp</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:sequenceFlow id="Flow_03ug8sp" sourceRef="Gateway_1kodnvi" targetRef="CheckIfProcessDefinitionIsConvertedTask" />
+    <bpmn:exclusiveGateway id="AlreadyConvertedGateway" name="Already converted?">
+      <bpmn:incoming>Flow_09af8ox</bpmn:incoming>
+      <bpmn:outgoing>YesSequenceFlow</bpmn:outgoing>
+      <bpmn:outgoing>NoSequenceFlow</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
   </bpmn:process>
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Collaboration_0votdqa">
       <bpmndi:BPMNShape id="Participant_1d380cr_di" bpmnElement="ProcessInstanceMigrationParticipant" isHorizontal="true">
-        <dc:Bounds x="160" y="210" width="910" height="250" />
+        <dc:Bounds x="160" y="210" width="1910" height="420" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="ProcessInstanceMigrationRequiredStartEvent">
-        <dc:Bounds x="239" y="299" width="36" height="36" />
+        <dc:Bounds x="239" y="389" width="36" height="36" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="213" y="342" width="89" height="27" />
+          <dc:Bounds x="213" y="432" width="89" height="27" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_0vgpttv_di" bpmnElement="SuspendProcessInstanceInCamunda7Task">
-        <dc:Bounds x="330" y="277" width="100" height="80" />
+      <bpmndi:BPMNShape id="Activity_0vgpttv_di" bpmnElement="CheckIfProcessDefinitionIsConvertedTask">
+        <dc:Bounds x="400" y="367" width="100" height="80" />
+        <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_1khojs8_di" bpmnElement="ExtractRelevantDataFromProcessInstanceTask">
-        <dc:Bounds x="490" y="277" width="100" height="80" />
+      <bpmndi:BPMNShape id="Activity_1xp1vmx_di" bpmnElement="CreateAndDeployConversionTask">
+        <dc:Bounds x="610" y="460" width="100" height="80" />
+        <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_0qzyc3o_di" bpmnElement="CreateProcessInstanceInCamunda8Task">
-        <dc:Bounds x="650" y="277" width="100" height="80" />
+      <bpmndi:BPMNShape id="Activity_1khojs8_di" bpmnElement="SuspendProcessDefinitionTask">
+        <dc:Bounds x="750" y="367" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1n2kwr3_di" bpmnElement="SelectProcessInstancesToMigrateTask">
+        <dc:Bounds x="910" y="367" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_1h16zrj_di" bpmnElement="ProcessInstanceMigrationDoneEndEvent">
-        <dc:Bounds x="972" y="299" width="36" height="36" />
+        <dc:Bounds x="1912" y="389" width="36" height="36" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="948" y="342" width="85" height="27" />
+          <dc:Bounds x="1888" y="432" width="85" height="27" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_0w7bhii_di" bpmnElement="CancelProcessInstanceInCamunda7Task">
-        <dc:Bounds x="810" y="277" width="100" height="80" />
+      <bpmndi:BPMNShape id="Activity_1qtejxx_di" bpmnElement="ContinueProcessDefinitionTask">
+        <dc:Bounds x="1750" y="367" width="100" height="80" />
       </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_1kodnvi_di" bpmnElement="Gateway_1kodnvi" isMarkerVisible="true">
+        <dc:Bounds x="305" y="382" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_0rc03jj_di" bpmnElement="AlreadyConvertedGateway" isMarkerVisible="true">
+        <dc:Bounds x="555" y="382" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="552" y="345" width="55" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0t140u7_di" bpmnElement="MigrateProcessInstancesSubProcess" isExpanded="true">
+        <dc:Bounds x="1070" y="302" width="630" height="210" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0w7bhii_di" bpmnElement="CancelProcessInstanceInCamunda7Task">
+        <dc:Bounds x="1490" y="369" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1et7jg3_di" bpmnElement="MigrationOfSingleProcessInstanceCompleteEndEvent">
+        <dc:Bounds x="1642" y="391" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1616" y="434" width="89" height="40" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1v36rtm_di" bpmnElement="MigrationOfSingleProcessInstanceStartedStartEvent">
+        <dc:Bounds x="1112" y="391" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1091" y="434" width="78" height="40" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0qzyc3o_di" bpmnElement="CreateProcessInstanceInCamunda8Task">
+        <dc:Bounds x="1340" y="369" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0c0ptiu_di" bpmnElement="ExtractRelevantDataFromProcessInstanceTask">
+        <dc:Bounds x="1190" y="369" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_0mepwuc_di" bpmnElement="Flow_0mepwuc">
+        <di:waypoint x="1590" y="409" />
+        <di:waypoint x="1642" y="409" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_03u3n2u_di" bpmnElement="Flow_03u3n2u">
+        <di:waypoint x="1440" y="409" />
+        <di:waypoint x="1490" y="409" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0b4qntx_di" bpmnElement="Flow_0b4qntx">
+        <di:waypoint x="1148" y="409" />
+        <di:waypoint x="1190" y="409" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1q3kiho_di" bpmnElement="Flow_1q3kiho">
+        <di:waypoint x="1290" y="409" />
+        <di:waypoint x="1340" y="409" />
+      </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1srfdoc_di" bpmnElement="Flow_1srfdoc">
-        <di:waypoint x="275" y="317" />
-        <di:waypoint x="330" y="317" />
+        <di:waypoint x="275" y="407" />
+        <di:waypoint x="305" y="407" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1nwevf1_di" bpmnElement="Flow_1nwevf1">
+        <di:waypoint x="710" y="500" />
+        <di:waypoint x="740" y="500" />
+        <di:waypoint x="740" y="570" />
+        <di:waypoint x="330" y="570" />
+        <di:waypoint x="330" y="432" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_09af8ox_di" bpmnElement="Flow_09af8ox">
-        <di:waypoint x="430" y="317" />
-        <di:waypoint x="490" y="317" />
+        <di:waypoint x="500" y="407" />
+        <di:waypoint x="555" y="407" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0oed655_di" bpmnElement="YesSequenceFlow">
+        <di:waypoint x="605" y="407" />
+        <di:waypoint x="750" y="407" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="643" y="389" width="18" height="14" />
+        </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1f3mszq_di" bpmnElement="Flow_1f3mszq">
-        <di:waypoint x="590" y="317" />
-        <di:waypoint x="650" y="317" />
+        <di:waypoint x="850" y="407" />
+        <di:waypoint x="910" y="407" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_1yg94qy_di" bpmnElement="Flow_1yg94qy">
-        <di:waypoint x="750" y="317" />
-        <di:waypoint x="810" y="317" />
+      <bpmndi:BPMNEdge id="Flow_1mplbgm_di" bpmnElement="NoSequenceFlow">
+        <di:waypoint x="580" y="432" />
+        <di:waypoint x="580" y="500" />
+        <di:waypoint x="610" y="500" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="558" y="455" width="13" height="14" />
+        </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_1trrxc5_di" bpmnElement="Flow_1trrxc5">
-        <di:waypoint x="910" y="317" />
-        <di:waypoint x="972" y="317" />
+      <bpmndi:BPMNEdge id="Flow_1gsrqvj_di" bpmnElement="Flow_1gsrqvj">
+        <di:waypoint x="1010" y="407" />
+        <di:waypoint x="1070" y="407" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNShape id="Participant_1cofk6e_di" bpmnElement="Participant_0nsofvi" isHorizontal="true">
-        <dc:Bounds x="320" y="510" width="600" height="60" />
+      <bpmndi:BPMNEdge id="Flow_05eic6u_di" bpmnElement="Flow_05eic6u">
+        <di:waypoint x="1700" y="407" />
+        <di:waypoint x="1750" y="407" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_08tz0d7_di" bpmnElement="Flow_08tz0d7">
+        <di:waypoint x="1850" y="407" />
+        <di:waypoint x="1912" y="407" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_03ug8sp_di" bpmnElement="Flow_03ug8sp">
+        <di:waypoint x="355" y="407" />
+        <di:waypoint x="400" y="407" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="Participant_0pa0l8f_di" bpmnElement="Camunda8Participant" isHorizontal="true">
+        <dc:Bounds x="390" y="80" width="1090" height="60" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Participant_0pa0l8f_di" bpmnElement="Participant_0s2vlm4" isHorizontal="true">
-        <dc:Bounds x="320" y="80" width="600" height="60" />
+      <bpmndi:BPMNShape id="Participant_1cofk6e_di" bpmnElement="Camunda7Participant" isHorizontal="true">
+        <dc:Bounds x="390" y="670" width="1510" height="60" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNEdge id="Flow_1177h36_di" bpmnElement="Flow_1177h36">
-        <di:waypoint x="400" y="510" />
-        <di:waypoint x="400" y="357" />
+      <bpmndi:BPMNEdge id="Flow_1augkbd_di" bpmnElement="Flow_1augkbd">
+        <di:waypoint x="470" y="140" />
+        <di:waypoint x="470" y="367" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_1c4c7e2_di" bpmnElement="Flow_1c4c7e2">
-        <di:waypoint x="360" y="357" />
-        <di:waypoint x="360" y="510" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0etqhiw_di" bpmnElement="Flow_0etqhiw">
-        <di:waypoint x="560" y="510" />
-        <di:waypoint x="560" y="357" />
+      <bpmndi:BPMNEdge id="Flow_004rctf_di" bpmnElement="Flow_004rctf">
+        <di:waypoint x="430" y="367" />
+        <di:waypoint x="430" y="140" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0cphhn7_di" bpmnElement="Flow_0cphhn7">
-        <di:waypoint x="520" y="357" />
-        <di:waypoint x="520" y="510" />
+        <di:waypoint x="800" y="447" />
+        <di:waypoint x="800" y="670" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1mnltfq_di" bpmnElement="Flow_1mnltfq">
-        <di:waypoint x="720" y="140" />
-        <di:waypoint x="720" y="277" />
+        <di:waypoint x="1410" y="140" />
+        <di:waypoint x="1410" y="369" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0e4khdk_di" bpmnElement="Flow_0e4khdk">
-        <di:waypoint x="680" y="277" />
-        <di:waypoint x="680" y="140" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_1q77ce3_di" bpmnElement="Flow_1q77ce3">
-        <di:waypoint x="880" y="510" />
-        <di:waypoint x="880" y="357" />
+        <di:waypoint x="1370" y="369" />
+        <di:waypoint x="1370" y="140" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0f2splv_di" bpmnElement="Flow_0f2splv">
-        <di:waypoint x="840" y="357" />
-        <di:waypoint x="840" y="510" />
+        <di:waypoint x="1540" y="449" />
+        <di:waypoint x="1540" y="670" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0kno6bc_di" bpmnElement="Flow_0kno6bc">
+        <di:waypoint x="1220" y="449" />
+        <di:waypoint x="1220" y="670" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0xq109a_di" bpmnElement="Flow_0xq109a">
+        <di:waypoint x="1260" y="670" />
+        <di:waypoint x="1260" y="449" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0z4v95b_di" bpmnElement="Flow_0z4v95b">
+        <di:waypoint x="1800" y="447" />
+        <di:waypoint x="1800" y="670" />
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>
