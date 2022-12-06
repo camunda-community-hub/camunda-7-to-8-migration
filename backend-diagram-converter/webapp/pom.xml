@@ -19,10 +19,6 @@
       <artifactId>slack-api-client</artifactId>
     </dependency>
     <dependency>
-      <groupId>com.opencsv</groupId>
-      <artifactId>opencsv</artifactId>
-    </dependency>
-    <dependency>
       <groupId>org.camunda.community.migration</groupId>
       <artifactId>backend-diagram-converter-core</artifactId>
     </dependency>

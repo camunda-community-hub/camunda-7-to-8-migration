@@ -1,4 +1,4 @@
-package org.camunda.community.migration.converter.webapp;
+package org.camunda.community.migration.converter;
 
 import static org.assertj.core.api.Assertions.*;
 
@@ -11,13 +11,12 @@ import java.io.StringReader;
 import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.List;
-import org.camunda.community.migration.converter.BpmnDiagramCheckResult;
 import org.camunda.community.migration.converter.BpmnDiagramCheckResult.BpmnElementCheckMessage;
 import org.camunda.community.migration.converter.BpmnDiagramCheckResult.BpmnElementCheckResult;
 import org.camunda.community.migration.converter.BpmnDiagramCheckResult.Severity;
 import org.junit.jupiter.api.Test;
 
-public class CsvWriterServiceTest {
+public class CsvWriterTest {
   private static final String FILENAME = "mock-process.bpmn";
   private static final String LINK = "https://www.example.com";
   private static final String MESSAGE = "Test message";
@@ -25,7 +24,7 @@ public class CsvWriterServiceTest {
   private static final String ELEMENT_NAME = "Example;Name";
   private static final String ELEMENT_TYPE = "userTask";
   private static final Severity SEVERITY = Severity.TASK;
-  private static final CsvWriterService SERVICE = new CsvWriterService();
+  private static final BpmnConverter SERVICE = BpmnConverterFactory.getInstance().get();
 
   @Test
   public void shouldCreateValidCsv() {

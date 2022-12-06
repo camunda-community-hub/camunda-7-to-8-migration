@@ -1,5 +1,7 @@
 package org.camunda.community.migration.converter;
 
+import com.opencsv.CSVWriterBuilder;
+import com.opencsv.ICSVWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -184,5 +186,42 @@ public class BpmnConverter {
         .sorted(Comparator.comparingInt(v -> v instanceof AbstractProcessElementVisitor ? 2 : 3))
         .forEach(visitor -> visitor.visit(elementContext));
     element.getChildElements().forEach(child -> traverse(child, result, context, properties));
+  }
+
+  public void writeCsvFile(List<BpmnDiagramCheckResult> results, Writer writer) {
+    try (ICSVWriter csvWriter = new CSVWriterBuilder(writer).withSeparator(';').build()) {
+      csvWriter.writeNext(createHeaders());
+      csvWriter.writeAll(createLines(results));
+    } catch (IOException e) {
+      throw new RuntimeException(e);
+    }
+  }
+
+  private String[] createHeaders() {
+    return new String[] {
+      "filename", "elementName", "elementId", "elementType", "severity", "message", "link"
+    };
+  }
+
+  private List<String[]> createLines(List<BpmnDiagramCheckResult> results) {
+    return results.stream()
+        .flatMap(
+            diagramCheckResult ->
+                diagramCheckResult.getResults().stream()
+                    .flatMap(
+                        elementCheckResult ->
+                            elementCheckResult.getMessages().stream()
+                                .map(
+                                    message ->
+                                        new String[] {
+                                          diagramCheckResult.getFilename(),
+                                          elementCheckResult.getElementName(),
+                                          elementCheckResult.getElementId(),
+                                          elementCheckResult.getElementType(),
+                                          message.getSeverity().name(),
+                                          message.getMessage(),
+                                          message.getLink()
+                                        })))
+        .collect(Collectors.toList());
   }
 }
