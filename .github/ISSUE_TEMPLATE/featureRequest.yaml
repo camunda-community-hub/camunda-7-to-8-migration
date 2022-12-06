@@ -1,7 +1,6 @@
 name: Feature request
 labels: [ "enhancement" ]
 description: Suggest an idea or general improvement
-assignees: [ "jonathanlukas" ]
 title: Feature request
 body:
 - type: textarea
