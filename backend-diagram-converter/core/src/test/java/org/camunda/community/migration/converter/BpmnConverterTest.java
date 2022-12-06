@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import java.io.ByteArrayInputStream;
 import java.io.StringWriter;
+import java.util.List;
 import org.camunda.bpm.model.bpmn.Bpmn;
 import org.camunda.bpm.model.bpmn.BpmnModelInstance;
 import org.camunda.community.migration.converter.BpmnDiagramCheckResult.BpmnElementCheckMessage;
@@ -209,6 +210,15 @@ public class BpmnConverterTest {
     assertThat(serviceTaskWithListenerTask.getMessages().get(4).getMessage())
         .isEqualTo(
             "Listener at 'start' with implementation 'com.example.StartListener' cannot be transformed. Execution Listeners do not exist in Zeebe.");
+  }
+
+  @Test
+  void testConditionalFlow() {
+    BpmnDiagramCheckResult result = loadAndCheck("conditional-flow.bpmn");
+    BpmnElementCheckResult checkResult = result.getResult("SomethingWorkedSequenceFlow");
+    List<BpmnElementCheckMessage> messages = checkResult.getMessages();
+    assertThat(messages).hasSize(2);
+    assertThat(messages.get(0).getMessage()).isEqualTo("A Conditional flow is not supported.");
   }
 
   protected BpmnDiagramCheckResult loadAndCheck(String bpmnFile) {

@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_0vltd1z" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.5.1" modeler:executionPlatform="Camunda Platform" modeler:executionPlatformVersion="7.18.0">
+  <bpmn:process id="ConditionalFlowProcess" name="Conditional Flow" isExecutable="true">
+    <bpmn:startEvent id="ProcessStartedStartEvent" name="Process started">
+      <bpmn:outgoing>Flow_1uabi3r</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:task id="DoSomethingTask" name="Do something">
+      <bpmn:incoming>Flow_1uabi3r</bpmn:incoming>
+      <bpmn:outgoing>Flow_1e81ueo</bpmn:outgoing>
+      <bpmn:outgoing>SomethingWorkedSequenceFlow</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:sequenceFlow id="Flow_1uabi3r" sourceRef="ProcessStartedStartEvent" targetRef="DoSomethingTask" />
+    <bpmn:endEvent id="ProcessEndedEndEvent" name="Process ended">
+      <bpmn:incoming>Flow_1e81ueo</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_1e81ueo" sourceRef="DoSomethingTask" targetRef="ProcessEndedEndEvent" />
+    <bpmn:task id="EventuallyDoSomethingElseTask" name="Eventually, do something else">
+      <bpmn:incoming>SomethingWorkedSequenceFlow</bpmn:incoming>
+    </bpmn:task>
+    <bpmn:sequenceFlow id="SomethingWorkedSequenceFlow" name="something worked" sourceRef="DoSomethingTask" targetRef="EventuallyDoSomethingElseTask">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${condition}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="ConditionalFlowProcess">
+      <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="ProcessStartedStartEvent">
+        <dc:Bounds x="179" y="99" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="159" y="142" width="77" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0brcqy3_di" bpmnElement="DoSomethingTask">
+        <dc:Bounds x="270" y="77" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_135z037_di" bpmnElement="ProcessEndedEndEvent">
+        <dc:Bounds x="462" y="222" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="443" y="192" width="74" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0mkihxe_di" bpmnElement="EventuallyDoSomethingElseTask">
+        <dc:Bounds x="600" y="77" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_1uabi3r_di" bpmnElement="Flow_1uabi3r">
+        <di:waypoint x="215" y="117" />
+        <di:waypoint x="270" y="117" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1e81ueo_di" bpmnElement="Flow_1e81ueo">
+        <di:waypoint x="320" y="157" />
+        <di:waypoint x="320" y="240" />
+        <di:waypoint x="462" y="240" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_15jwcgf_di" bpmnElement="SomethingWorkedSequenceFlow">
+        <di:waypoint x="370" y="117" />
+        <di:waypoint x="600" y="117" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="444" y="93" width="90" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>
