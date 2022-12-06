@@ -24,12 +24,10 @@ const el = (tagName, attributes, children) => {
 };
 
 const structureMessages = response => {
-  response.forEach(fileResponse => {
-    fileResponse.results.forEach(result => {
-      result.references.forEach(reference => {
-        fileResponse.results.filter(r => r.elementId === reference).forEach(r => {
-          result.messages.push(...r.messages);
-        });
+  response.results.forEach(result => {
+    result.references.forEach(reference => {
+      response.results.filter(r => r.elementId === reference).forEach(r => {
+        result.messages.push(...r.messages);
       });
     });
   });
@@ -58,21 +56,16 @@ const createFormData = async () => {
     alert("Please select a .bpmn file");
     return null;
   }
-  for (let i = 0; i < fileUpload.files.length; i++) {
-    formData.append("files", fileUpload.files[i], fileUpload.files[i].name)
-  }
+  formData.append("file", fileUpload.files[0]);
   formData.append("appendDocumentation", appendDocumentation.checked)
   return formData;
 }
-const createFormattedResultWrapper = files => {
-  arrangedResultsArea.append(...files.map(createFormattedResultForFile));
+const createFormattedResultWrapper = file => {
+  arrangedResultsArea.append(...createFormattedResultForFile(file));
 }
 
 const createFormattedResultForFile = file => {
-  return el("div", {className: "card mb-3"}, [
-    el("div", {className: "card-header"}, [file.filename]),
-    el("ul", {className: "list-group list-group-flush"}, file.results.map(createFormattedResult).filter(e => e !== undefined))
-  ]);
+  return  file.results.map(createFormattedResult).filter(e => e !== undefined);
 
 }
 
@@ -159,7 +152,7 @@ fileUpload.addEventListener("change", () => {
 async function addElementMarkers(checkResult) {
   const bpmnViewer = await getBpmnViewer();
   var canvas = bpmnViewer.get('canvas');
-  checkResult[0].results.forEach(result => {
+  checkResult.results.forEach(result => {
     if (result.elementType !== 'process' && result.elementType !== 'message') {
       if (result.messages.length > 0) {
         const isWarning = result.messages.some(message => message.severity === 'WARNING');

@@ -21,25 +21,25 @@ The API offers 2 methods:
 * Request:
   * Format: `FormData`
   * Fields
-    * `files` (`MultipartFile[]`): BPMN files _(mandatory)_
+    * `file` (`MultipartFile`): BPMN file _(mandatory)_
     * `adapterJobType` (`String`): type of the job all service tasks formerly implemented as delegates or expressions should have. _(optional)_
     * `platformVersion` (`String`): version of the target platform _(optional)_
   * Headers
     * `Accept`: Either `application/json` or `text/csv`
 * Response:
-  * `200`: Everything fine. The body contains a list of [check results](../core/src/main/java/org/camunda/community/migration/converter/BpmnDiagramCheckResult.java), either in `application/json` format or flattened as `text/csv`.
+  * `200`: Everything fine. The body contains a [check results](../core/src/main/java/org/camunda/community/migration/converter/BpmnDiagramCheckResult.java), either in `application/json` format or flattened as `text/csv`.
 
 `POST /convert`:
 
 * Request:
   * Format: `FormData`
   * Fields
-    * `files` (`MultipartFile[]`): BPMN files _(mandatory)_
+    * `file` (`MultipartFile`): BPMN file _(mandatory)_
     * `appendDocumentation` (`Boolean`): whether the check results should also be added to the documentation of each BPMN element _(default: `false`)_
     * `adapterJobType` (`String`): type of the job all service tasks formerly implemented as delegates or expressions should have. _(optional)_
     * `platformVersion` (`String`): version of the target platform _(optional)_
 * Response:
-  * `200`: Everything fine. The body contains a zipped `Blob` which can be saved as a file and is a zip archive containing your converted BPMN diagrams.
+  * `200`: Everything fine. The body contains a BPMN diagram. The header contains a `Content-Disposition` field that declares this as attachment and holds a filename. The `Content-Type` is `application/bpmn+xml`.
 
 These error can occur on both endpoints:
 
