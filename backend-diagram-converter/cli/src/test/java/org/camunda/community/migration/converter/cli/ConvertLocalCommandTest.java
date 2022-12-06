@@ -1,6 +1,7 @@
 package org.camunda.community.migration.converter.cli;
 
 import static java.nio.file.StandardCopyOption.*;
+import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.io.File;
@@ -44,5 +45,20 @@ public class ConvertLocalCommandTest {
     command.file = tempDir;
     Integer call = command.call();
     assertEquals(1, call);
+  }
+
+  @Test
+  void shouldCreateCsv(@TempDir File tempDir) {
+    setupDir("c7.bpmn", tempDir);
+    ConvertLocalCommand command = new ConvertLocalCommand();
+    command.csv = true;
+    command.file = tempDir;
+    Integer call = command.call();
+    assertEquals(0, call);
+    assertThat(tempDir.listFiles())
+        .hasSize(3)
+        .anyMatch(file -> file.getName().equals("c7.bpmn"))
+        .anyMatch(file -> file.getName().equals("converted-c8-c7.bpmn"))
+        .anyMatch(file -> file.getName().equals("conversion-results.csv"));
   }
 }

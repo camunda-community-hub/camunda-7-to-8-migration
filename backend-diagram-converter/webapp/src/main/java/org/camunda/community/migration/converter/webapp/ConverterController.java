@@ -1,10 +1,18 @@
 package org.camunda.community.migration.converter.webapp;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringWriter;
+import java.util.AbstractMap.SimpleEntry;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 import org.camunda.bpm.model.bpmn.Bpmn;
 import org.camunda.bpm.model.bpmn.BpmnModelInstance;
 import org.camunda.community.migration.converter.BpmnDiagramCheckResult;
@@ -26,13 +34,10 @@ import org.springframework.web.multipart.MultipartFile;
 public class ConverterController {
   private static final Logger LOG = LoggerFactory.getLogger(ConverterController.class);
   private final BpmnConverterService bpmnConverter;
-  private final CsvWriterService csvWriterService;
 
   @Autowired
-  public ConverterController(
-      BpmnConverterService bpmnConverter, CsvWriterService csvWriterService) {
+  public ConverterController(BpmnConverterService bpmnConverter) {
     this.bpmnConverter = bpmnConverter;
-    this.csvWriterService = csvWriterService;
   }
 
   @PostMapping(
@@ -44,7 +49,6 @@ public class ConverterController {
       @RequestParam(value = "adapterJobType", required = false) String adapterJobType,
       @RequestParam(value = "platformVersion", required = false) String platformVersion,
       @RequestHeader(HttpHeaders.ACCEPT) String[] contentType) {
-
     try (InputStream in = bpmnFile.getInputStream()) {
       BpmnDiagramCheckResult diagramCheckResult =
           bpmnConverter.check(
@@ -60,7 +64,7 @@ public class ConverterController {
       }
       if (Arrays.asList(contentType).contains("text/csv")) {
         StringWriter sw = new StringWriter();
-        csvWriterService.writeCsvFile(Collections.singletonList(diagramCheckResult), sw);
+        bpmnConverter.writeCsvFile(Collections.singletonList(diagramCheckResult), sw);
         Resource file = new ByteArrayResource(sw.toString().getBytes());
         return ResponseEntity.ok()
             .header(

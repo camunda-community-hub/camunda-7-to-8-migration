@@ -3,7 +3,6 @@ package org.camunda.community.migration.converter.cli;
 import static org.camunda.community.migration.converter.cli.ConvertCommand.*;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.FileVisitResult;
 import java.nio.file.Files;
@@ -12,6 +11,7 @@ import java.nio.file.attribute.BasicFileAttributes;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -41,10 +41,19 @@ public class ConvertLocalCommand extends AbstractConvertCommand {
   boolean notRecursive;
 
   @Override
-  protected Map<File, BpmnModelInstance> modelInstances() throws Exception {
+  protected File targetDirectory() {
+    if (file.isDirectory()) {
+      return file;
+    }
+    return file.getParentFile();
+  }
+
+  @Override
+  protected Map<File, BpmnModelInstance> modelInstances() {
     if (!file.exists()) {
       LOG_CLI.error("File {} does not exist", file.getAbsolutePath());
-      throw new FileNotFoundException();
+      returnCode = 1;
+      return new HashMap<>();
     }
     Collection<File> files = new ArrayList<>();
     if (file.isDirectory()) {
@@ -77,16 +86,6 @@ public class ConvertLocalCommand extends AbstractConvertCommand {
     }
   }
 
-  private String createMessage(Exception e) {
-    StringBuilder message = new StringBuilder(e.getMessage());
-    Throwable ex = e.getCause();
-    while (ex != null) {
-      message.append(", caused by: ").append(ex.getMessage());
-      ex = ex.getCause();
-    }
-    return message.toString();
-  }
-
   private BpmnModelInstance handleFile(File file) {
     return Bpmn.readModelFromFile(file);
   }
@@ -95,10 +94,15 @@ public class ConvertLocalCommand extends AbstractConvertCommand {
     return Arrays.stream(FILE_ENDINGS).anyMatch(ending -> file.getName().endsWith(ending));
   }
 
-  private List<File> findFiles(File directory) throws IOException {
+  private List<File> findFiles(File directory) {
     List<File> files = new ArrayList<>();
-    Files.walkFileTree(
-        directory.toPath(), new FindFileBySuffixPathVisitor(files, Arrays.asList(FILE_ENDINGS)));
+    try {
+      Files.walkFileTree(
+          directory.toPath(), new FindFileBySuffixPathVisitor(files, Arrays.asList(FILE_ENDINGS)));
+    } catch (Exception e) {
+      LOG_CLI.error("Error while finding files: {}", createMessage(e));
+      returnCode = 1;
+    }
     return files;
   }
 

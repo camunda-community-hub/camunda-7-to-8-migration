@@ -2,6 +2,8 @@ package org.camunda.community.migration.converter.webapp;
 
 import java.io.IOException;
 import java.io.StringWriter;
+import java.io.Writer;
+import java.util.List;
 import org.camunda.bpm.model.bpmn.BpmnModelInstance;
 import org.camunda.bpm.model.xml.instance.DomDocument;
 import org.camunda.community.migration.converter.BpmnConverter;
@@ -27,6 +29,7 @@ public class BpmnConverterService {
       String platformVersion) {
     DefaultConverterProperties adaptedProperties = new DefaultConverterProperties();
     adaptedProperties.setAdapterJobType(adapterJobType);
+    adaptedProperties.setPlatformVersion(platformVersion);
     bpmnConverter.convert(
         modelInstance,
         appendDocumentation,
@@ -41,6 +44,7 @@ public class BpmnConverterService {
       String platformVersion) {
     DefaultConverterProperties adaptedProperties = new DefaultConverterProperties();
     adaptedProperties.setAdapterJobType(adapterJobType);
+    adaptedProperties.setPlatformVersion(platformVersion);
     return bpmnConverter.check(
         filename,
         modelInstance,
@@ -55,5 +59,9 @@ public class BpmnConverterService {
     } catch (IOException e) {
       throw new RuntimeException(e);
     }
+  }
+
+  public void writeCsvFile(List<BpmnDiagramCheckResult> results, Writer writer) {
+    bpmnConverter.writeCsvFile(results, writer);
   }
 }
