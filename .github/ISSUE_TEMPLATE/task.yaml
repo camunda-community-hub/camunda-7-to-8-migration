@@ -1,7 +1,6 @@
 name: Task
 labels: [ "task" ]
 description: Describe a generic activity we should carry out
-assignees: [ "jonathanlukas" ]
 title: Task
 body:
 - type: textarea
