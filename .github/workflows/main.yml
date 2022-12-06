@@ -30,6 +30,7 @@ jobs:
         uses: camunda-community-hub/community-action-maven-release@v1
         with:
           maven-release-options: -Dspotless.apply.skip
+          maven-additional-options: -Dspotless.apply.skip
           release-version: ${{ github.event.release.tag_name }}
           release-profile: community-action-maven-release
           nexus-usr: ${{ secrets.NEXUS_USR }}
