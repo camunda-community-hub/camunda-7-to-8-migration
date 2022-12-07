@@ -18,7 +18,7 @@
 
     <version.spring-boot>2.7.6</version.spring-boot>
     <version.adapter>0.4.0</version.adapter>
-    <version.zeebe>8.1.4</version.zeebe>
+    <version.zeebe>8.1.5</version.zeebe>
   </properties>
 
   <dependencyManagement>
