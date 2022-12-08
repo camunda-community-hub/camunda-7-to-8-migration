@@ -9,7 +9,6 @@ import com.opencsv.exceptions.CsvException;
 import io.camunda.zeebe.model.bpmn.Bpmn;
 import io.camunda.zeebe.model.bpmn.BpmnModelInstance;
 import io.restassured.RestAssured;
-import io.restassured.common.mapper.TypeRef;
 import io.restassured.http.ContentType;
 import java.io.ByteArrayInputStream;
 import java.io.File;
@@ -17,7 +16,6 @@ import java.io.IOException;
 import java.io.StringReader;
 import java.net.URISyntaxException;
 import java.util.List;
-import java.util.zip.ZipInputStream;
 import org.camunda.bpm.model.xml.instance.DomElement;
 import org.camunda.community.migration.converter.BpmnDiagramCheckResult;
 import org.junit.jupiter.api.BeforeEach;
@@ -37,20 +35,19 @@ public class ConverterControllerTest {
 
   @Test
   void shouldReturnCheckResult() throws URISyntaxException {
-    List<BpmnDiagramCheckResult> checkResult =
+    BpmnDiagramCheckResult checkResult =
         RestAssured.given()
             .contentType(ContentType.MULTIPART)
             .multiPart(
-                "files", new File(getClass().getClassLoader().getResource("example.bpmn").toURI()))
+                "file", new File(getClass().getClassLoader().getResource("example.bpmn").toURI()))
             .accept(ContentType.JSON)
             .post("/check")
             .getBody()
-            .as(new TypeRef<List<BpmnDiagramCheckResult>>() {});
-    assertThat(checkResult).hasSize(1);
-    assertThat(checkResult.get(0))
+            .as(BpmnDiagramCheckResult.class);
+    assertThat(checkResult)
         .matches(
             result -> result.getFilename().equals("example.bpmn"), "Filename is set correctly");
-    assertThat(checkResult.get(0).getResults()).isNotEmpty();
+    assertThat(checkResult.getResults()).isNotEmpty();
   }
 
   @Test
@@ -59,7 +56,7 @@ public class ConverterControllerTest {
         RestAssured.given()
             .contentType(ContentType.MULTIPART)
             .multiPart(
-                "files", new File(getClass().getClassLoader().getResource("example.bpmn").toURI()))
+                "file", new File(getClass().getClassLoader().getResource("example.bpmn").toURI()))
             .accept("text/csv")
             .post("/check")
             .getBody()
@@ -76,22 +73,20 @@ public class ConverterControllerTest {
   }
 
   @Test
-  void shouldReturnZip() throws IOException, URISyntaxException {
-    byte[] zip =
+  void shouldReturnBpmn() throws URISyntaxException {
+    byte[] bpmn =
         RestAssured.given()
             .contentType(ContentType.MULTIPART)
             .multiPart(
-                "files", new File(getClass().getClassLoader().getResource("example.bpmn").toURI()))
-            .accept("text/csv")
+                "file", new File(getClass().getClassLoader().getResource("example.bpmn").toURI()))
+            .formParam("appendDocumentation", true)
+            .accept("application/bpmn+xml")
             .post("/convert")
             .getBody()
             .asByteArray();
-    try (ZipInputStream inputStream = new ZipInputStream(new ByteArrayInputStream(zip))) {
-      while (inputStream.getNextEntry() != null) {
-        BpmnModelInstance bpmnModelInstance = Bpmn.readModelFromStream(inputStream);
-        DomElement process = bpmnModelInstance.getDocument().getElementById("Process_11j5dku");
-        assertThat(process).isNotNull();
-      }
-    }
+    ByteArrayInputStream in = new ByteArrayInputStream(bpmn);
+    BpmnModelInstance bpmnModelInstance = Bpmn.readModelFromStream(in);
+    DomElement process = bpmnModelInstance.getDocument().getElementById("Process_11j5dku");
+    assertThat(process).isNotNull();
   }
 }
