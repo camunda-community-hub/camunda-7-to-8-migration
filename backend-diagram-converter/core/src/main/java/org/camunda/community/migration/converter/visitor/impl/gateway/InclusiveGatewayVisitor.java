@@ -12,10 +12,11 @@ import org.camunda.community.migration.converter.visitor.AbstractGatewayVisitor;
 
 public class InclusiveGatewayVisitor extends AbstractGatewayVisitor {
   private static final SemanticVersion FORK_AVAILABLE_VERSION = SemanticVersion._8_1_0;
+  public static final String ELEMENT_LOCAL_NAME = "inclusiveGateway";
 
   @Override
   public String localName() {
-    return "inclusiveGateway";
+    return ELEMENT_LOCAL_NAME;
   }
 
   private boolean isNotJoining(DomElement element) {

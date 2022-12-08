@@ -491,6 +491,10 @@ public class MessageFactory {
     return INSTANCE.emptyMessage();
   }
 
+  public static Message conditionalFlow() {
+    return INSTANCE.staticMessage("conditional-flow");
+  }
+
   private Message composeMessage(String templateName, Map<String, String> context) {
     ComposedMessage message = new ComposedMessage();
     MessageTemplate template = messageTemplateProvider.getMessageTemplate(templateName);

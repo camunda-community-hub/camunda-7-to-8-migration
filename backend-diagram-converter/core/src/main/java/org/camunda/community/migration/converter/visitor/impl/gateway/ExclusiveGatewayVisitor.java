@@ -7,9 +7,12 @@ import org.camunda.community.migration.converter.version.SemanticVersion;
 import org.camunda.community.migration.converter.visitor.AbstractGatewayVisitor;
 
 public class ExclusiveGatewayVisitor extends AbstractGatewayVisitor {
+
+  public static final String ELEMENT_LOCAL_NAME = "exclusiveGateway";
+
   @Override
   public String localName() {
-    return "exclusiveGateway";
+    return ELEMENT_LOCAL_NAME;
   }
 
   @Override
