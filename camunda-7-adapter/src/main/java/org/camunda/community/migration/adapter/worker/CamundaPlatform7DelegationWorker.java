@@ -71,7 +71,7 @@ public class CamundaPlatform7DelegationWorker {
       }
       completeCommand.send().join();
     } catch (BpmnError e) {
-      throw new ZeebeBpmnError(e.getErrorCode(), e.getMessage());
+      throw new ZeebeBpmnError(e.getErrorCode(), e.getMessage() == null ? "" : e.getMessage());
     }
   }
 
