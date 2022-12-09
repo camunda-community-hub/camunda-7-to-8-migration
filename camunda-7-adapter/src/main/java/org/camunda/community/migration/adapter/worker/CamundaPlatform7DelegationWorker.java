@@ -4,9 +4,11 @@ import io.camunda.zeebe.client.api.command.CompleteJobCommandStep1;
 import io.camunda.zeebe.client.api.response.ActivatedJob;
 import io.camunda.zeebe.client.api.worker.JobClient;
 import io.camunda.zeebe.spring.client.annotation.JobWorker;
+import io.camunda.zeebe.spring.client.exception.ZeebeBpmnError;
 import java.util.HashMap;
 import java.util.Map;
 import org.camunda.bpm.engine.ArtifactFactory;
+import org.camunda.bpm.engine.delegate.BpmnError;
 import org.camunda.bpm.engine.delegate.DelegateExecution;
 import org.camunda.bpm.engine.delegate.JavaDelegate;
 import org.camunda.bpm.engine.delegate.VariableScope;
@@ -40,32 +42,37 @@ public class CamundaPlatform7DelegationWorker {
     DelegateExecution execution = wrapDelegateExecution(job);
     // this is required as we add the execution to the variables scope for expression evaluation
     VariableScope variableScope = wrapDelegateExecution(job);
-    if (delegateClass != null) {
-      JavaDelegate javaDelegate = loadJavaDelegate(delegateClass);
-      javaDelegate.execute(execution);
-      resultPayload = execution.getVariables();
-    } else if (delegateExpression != null) {
-      JavaDelegate javaDelegate =
-          (JavaDelegate) expressionResolver.evaluate(delegateExpression, variableScope, execution);
-      javaDelegate.execute(execution);
-      resultPayload = execution.getVariables();
-    } else if (expression != null) {
-      Object result = expressionResolver.evaluate(expression, variableScope, execution);
-      if (resultVariable != null) {
-        resultPayload = new HashMap<>();
-        resultPayload.put(resultVariable, result);
+    try {
+      if (delegateClass != null) {
+        JavaDelegate javaDelegate = loadJavaDelegate(delegateClass);
+        javaDelegate.execute(execution);
+        resultPayload = execution.getVariables();
+      } else if (delegateExpression != null) {
+        JavaDelegate javaDelegate =
+            (JavaDelegate)
+                expressionResolver.evaluate(delegateExpression, variableScope, execution);
+        javaDelegate.execute(execution);
+        resultPayload = execution.getVariables();
+      } else if (expression != null) {
+        Object result = expressionResolver.evaluate(expression, variableScope, execution);
+        if (resultVariable != null) {
+          resultPayload = new HashMap<>();
+          resultPayload.put(resultVariable, result);
+        }
+      } else {
+        throw new RuntimeException(
+            "Either 'class' or 'delegateExpression' or 'expression' must be specified in task headers for job :"
+                + job);
       }
-    } else {
-      throw new RuntimeException(
-          "Either 'class' or 'delegateExpression' or 'expression' must be specified in task headers for job :"
-              + job);
-    }
 
-    CompleteJobCommandStep1 completeCommand = client.newCompleteCommand(job.getKey());
-    if (resultPayload != null) {
-      completeCommand.variables(resultPayload);
+      CompleteJobCommandStep1 completeCommand = client.newCompleteCommand(job.getKey());
+      if (resultPayload != null) {
+        completeCommand.variables(resultPayload);
+      }
+      completeCommand.send().join();
+    } catch (BpmnError e) {
+      throw new ZeebeBpmnError(e.getErrorCode(), e.getMessage());
     }
-    completeCommand.send().join();
   }
 
   private DelegateExecution wrapDelegateExecution(ActivatedJob job) {

@@ -10,6 +10,7 @@ import io.camunda.zeebe.model.bpmn.BpmnModelInstance;
 import io.camunda.zeebe.spring.test.ZeebeSpringTest;
 import java.time.Duration;
 import java.util.Collections;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -19,6 +20,20 @@ import org.springframework.boot.test.context.SpringBootTest;
 public class CamundaPlatform7AdapterTest {
 
   @Autowired private ZeebeClient zeebeClient;
+
+  @BeforeEach
+  public void setup() {
+    SampleBean.executionReceived = false;
+    SampleBean.someVariableReceived = false;
+    SampleDelegate.canReachExecutionVariable = false;
+    SampleDelegate.capturedBusinessKey = null;
+    SampleDelegate.capturedVariable = null;
+    SampleDelegate.executed = false;
+    SampleDelegateBean.canReachExecutionVariable = false;
+    SampleDelegateBean.capturedBusinessKey = null;
+    SampleDelegateBean.capturedVariable = null;
+    SampleDelegateBean.executed = false;
+  }
 
   @Test
   public void testDelegateClass() {
@@ -131,5 +146,23 @@ public class CamundaPlatform7AdapterTest {
 
     waitForProcessInstanceCompleted(processInstance, Duration.ofSeconds(60));
     assertEquals("value", SampleExternalTaskHandler.someVariable);
+  }
+
+  @Test
+  void testBpmnError() {
+    zeebeClient
+        .newDeployResourceCommand()
+        .addResourceFromClasspath("test-with-error-event.bpmn")
+        .send()
+        .join();
+    ProcessInstanceEvent join =
+        zeebeClient
+            .newCreateInstanceCommand()
+            .bpmnProcessId("error-test")
+            .latestVersion()
+            .send()
+            .join();
+    waitForProcessInstanceCompleted(join, Duration.ofSeconds(60));
+    assertTrue(SampleDelegateBean.executed);
   }
 }
