@@ -9,6 +9,6 @@ import org.springframework.stereotype.Component;
 public class ErrorThrowingDelegate implements JavaDelegate {
   @Override
   public void execute(DelegateExecution execution) throws Exception {
-    throw new BpmnError("test-error", "I have a message for you!");
+    throw new BpmnError("test-error");
   }
 }
