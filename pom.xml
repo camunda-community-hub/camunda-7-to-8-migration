@@ -22,7 +22,7 @@
     <version.zeebe>8.1.5</version.zeebe>
     <version.camunda.platform>7.18.0</version.camunda.platform>
     <version.jsoup>1.15.3</version.jsoup>
-    <version.spring-boot>2.7.6</version.spring-boot>
+    <version.spring-boot>2.7.7</version.spring-boot>
     <version.picocli>4.7.0</version.picocli>
     <version.commons-io>2.11.0</version.commons-io>
     <version.slack-api-client>1.27.2</version.slack-api-client>
