@@ -1,15 +1,14 @@
 package org.camunda.community.migration.converter;
 
+import static org.junit.jupiter.api.Assertions.*;
+
+import java.util.stream.Stream;
 import org.camunda.community.migration.converter.expression.ExpressionTransformationResult;
 import org.camunda.community.migration.converter.expression.ExpressionTransformer;
 import org.junit.jupiter.api.DynamicTest;
 import org.junit.jupiter.api.TestFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.util.stream.Stream;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 public class ExpressionTransformerTest {
   private static final Logger LOG = LoggerFactory.getLogger(ExpressionTransformerTest.class);
@@ -56,11 +55,11 @@ public class ExpressionTransformerTest {
             test("#{customer.address[\"street\"]}", "=customer.address.street"),
             test("#{customer.orders[1]}", "=customer.orders[2]"),
             test("${not empty x}", "=not(x=null)"),
-            test("${empty donut}","=donut=null"),
-            test("${!empty donut}","=not(donut=null)"),
-            test("${empty donut || coffee}","=donut=null or coffee"),
-            test("${not empty donut || coffee}","=not(donut=null) or coffee"),
-            test("${not(empty donut || coffee)}","=not(donut=null or coffee)")),
+            test("${empty donut}", "=donut=null"),
+            test("${!empty donut}", "=not(donut=null)"),
+            test("${empty donut || coffee}", "=donut=null or coffee"),
+            test("${not empty donut || coffee}", "=not(donut=null) or coffee"),
+            test("${not(empty donut || coffee)}", "=not(donut=null or coffee)")),
         ExpressionTestDataSet::toString,
         this::testExpression);
   }
