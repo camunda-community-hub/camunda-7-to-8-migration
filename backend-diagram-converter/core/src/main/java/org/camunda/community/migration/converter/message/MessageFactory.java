@@ -583,6 +583,18 @@ public class MessageFactory {
     return INSTANCE.staticMessage("conditional-flow");
   }
 
+  public static Message escalationCode(String oldCode, String newCode) {
+    return INSTANCE.composeMessage(
+        "escalation-code",
+        ContextBuilder.builder().entry("oldCode", oldCode).entry("newCode", newCode).build());
+  }
+
+  public static Message errorCode(String oldCode, String newCode) {
+    return INSTANCE.composeMessage(
+        "error-code",
+        ContextBuilder.builder().entry("oldCode", oldCode).entry("newCode", newCode).build());
+  }
+
   private Message composeMessage(String templateName, Map<String, String> context) {
     ComposedMessage message = new ComposedMessage();
     MessageTemplate template = messageTemplateProvider.getMessageTemplate(templateName);
