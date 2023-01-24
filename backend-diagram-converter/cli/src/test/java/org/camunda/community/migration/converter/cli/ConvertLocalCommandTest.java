@@ -9,14 +9,14 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.util.Objects;
-
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
 public class ConvertLocalCommandTest {
   private void setupDir(String filename, File tempDir) {
     try (InputStream in = getClass().getClassLoader().getResourceAsStream(filename)) {
-      Files.copy(Objects.requireNonNull(in), new File(tempDir, filename).toPath(), REPLACE_EXISTING);
+      Files.copy(
+          Objects.requireNonNull(in), new File(tempDir, filename).toPath(), REPLACE_EXISTING);
     } catch (IOException e) {
       throw new RuntimeException(e);
     }
