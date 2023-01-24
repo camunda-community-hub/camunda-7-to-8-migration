@@ -12,6 +12,6 @@ public class LinkEventDefinitionVisitor extends AbstractEventDefinitionVisitor {
 
   @Override
   protected SemanticVersion availableFrom(DomElementVisitorContext context) {
-    return null;
+    return SemanticVersion._8_2_0;
   }
 }
