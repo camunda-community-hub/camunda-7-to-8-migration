@@ -384,4 +384,24 @@ public class MessageFactoryTest {
         .isEqualTo(
             "Element 'inclusiveGateway' is not supported in Zeebe version '8.0.0'. It is available in version '8.1.0'.");
   }
+
+  @Test
+  void shouldBuildEscalationCode() {
+    Message message = MessageFactory.escalationCode("old", "new");
+    assertNotNull(message);
+    assertNotNull(message.getMessage());
+    assertNotNull(message.getSeverity());
+    assertThat(message.getMessage())
+        .isEqualTo("Escalation code was transformed from 'old' to 'new'. Please review.");
+  }
+
+  @Test
+  void shouldBuildErrorCode() {
+    Message message = MessageFactory.errorCode("old", "new");
+    assertNotNull(message);
+    assertNotNull(message.getMessage());
+    assertNotNull(message.getSeverity());
+    assertThat(message.getMessage())
+        .isEqualTo("Error code was transformed from 'old' to 'new'. Please review.");
+  }
 }
