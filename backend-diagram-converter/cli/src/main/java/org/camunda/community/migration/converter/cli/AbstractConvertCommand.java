@@ -58,6 +58,9 @@ public abstract class AbstractConvertCommand implements Callable<Integer> {
           "If enabled, a CSV file will be created containing the results for all conversions")
   boolean csv;
 
+  @Option(names = "--check", description = "If enabled, no converted diagrams are exported")
+  boolean check;
+
   public AbstractConvertCommand() {
     BpmnConverterFactory factory = BpmnConverterFactory.getInstance();
     factory.getNotificationServiceFactory().setInstance(new PrintNotificationServiceImpl());
@@ -75,19 +78,21 @@ public abstract class AbstractConvertCommand implements Callable<Integer> {
 
   private void writeResults(
       Map<File, BpmnModelInstance> modelInstances, List<BpmnDiagramCheckResult> results) {
-    for (Entry<File, BpmnModelInstance> modelInstance : modelInstances.entrySet()) {
-      File file = determineFileName(prefixFileName(modelInstance.getKey()));
-      if (!override && file.exists()) {
-        LOG_CLI.error("File does already exist: {}", file);
-        returnCode = 1;
-      }
-      LOG_CLI.info("Created {}", file);
-      try (FileWriter fw = new FileWriter(file)) {
-        converter.printXml(modelInstance.getValue().getDocument(), true, fw);
-        fw.flush();
-      } catch (IOException e) {
-        LOG_CLI.error("Error while creating BPMN file: {}", createMessage(e));
-        returnCode = 1;
+    if (!check) {
+      for (Entry<File, BpmnModelInstance> modelInstance : modelInstances.entrySet()) {
+        File file = determineFileName(prefixFileName(modelInstance.getKey()));
+        if (!override && file.exists()) {
+          LOG_CLI.error("File does already exist: {}", file);
+          returnCode = 1;
+        }
+        LOG_CLI.info("Created {}", file);
+        try (FileWriter fw = new FileWriter(file)) {
+          converter.printXml(modelInstance.getValue().getDocument(), true, fw);
+          fw.flush();
+        } catch (IOException e) {
+          LOG_CLI.error("Error while creating BPMN file: {}", createMessage(e));
+          returnCode = 1;
+        }
       }
     }
     if (csv) {
