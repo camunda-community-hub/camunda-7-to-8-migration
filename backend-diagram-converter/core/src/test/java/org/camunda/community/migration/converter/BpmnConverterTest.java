@@ -30,6 +30,8 @@ public class BpmnConverterTest {
         "java-delegate-class-c7.bpmn",
         "old-process.bpmn20.xml",
         "collaboration.bpmn",
+        "internal-script.bpmn"
+        "collaboration.bpmn",
         "empty-input-parameter.bpmn"
       })
   public void shouldConvert(String bpmnFile) {
@@ -221,6 +223,22 @@ public class BpmnConverterTest {
     List<BpmnElementCheckMessage> messages = checkResult.getMessages();
     assertThat(messages).hasSize(2);
     assertThat(messages.get(0).getMessage()).isEqualTo("A Conditional flow is not supported.");
+  }
+
+  @Test
+  void testInternalScript() {
+    BpmnDiagramCheckResult result = loadAndCheckAgainstVersion("internal-script.bpmn", "8.2.0");
+    assertThat(result)
+        .isNotNull()
+        .extracting(r -> r.getResult("FeelScriptTask"))
+        .isNotNull()
+        .extracting(BpmnElementCheckResult::getMessages)
+        .asList()
+        .hasSize(2);
+    assertThat(result.getResult("FeelScriptTask").getMessages().get(0).getMessage())
+        .isEqualTo("Result variable is set to Zeebe script result variable. Please review.");
+    assertThat(result.getResult("FeelScriptTask").getMessages().get(1).getMessage())
+        .isEqualTo("Script is transformed to Zeebe script.");
   }
 
   @Test

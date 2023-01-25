@@ -392,7 +392,7 @@ public class MessageFactoryTest {
     assertNotNull(message.getMessage());
     assertNotNull(message.getSeverity());
     assertThat(message.getMessage())
-        .isEqualTo("Escalation code was transformed from 'old' to 'new'. Please review.");
+        .isEqualTo("Escalation code is transformed from 'old' to 'new'. Please review.");
   }
 
   @Test
@@ -402,6 +402,25 @@ public class MessageFactoryTest {
     assertNotNull(message.getMessage());
     assertNotNull(message.getSeverity());
     assertThat(message.getMessage())
-        .isEqualTo("Error code was transformed from 'old' to 'new'. Please review.");
+        .isEqualTo("Error code is transformed from 'old' to 'new'. Please review.");
+  }
+
+  @Test
+  void shouldBuildInternalScript() {
+    Message message = MessageFactory.internalScript();
+    assertNotNull(message);
+    assertNotNull(message.getMessage());
+    assertNotNull(message.getSeverity());
+    assertThat(message.getMessage()).isEqualTo("Script is transformed to Zeebe script.");
+  }
+
+  @Test
+  void shouldBuildResultVariableInternalScript() {
+    Message message = MessageFactory.resultVariableInternalScript();
+    assertNotNull(message);
+    assertNotNull(message.getMessage());
+    assertNotNull(message.getSeverity());
+    assertThat(message.getMessage())
+        .isEqualTo("Result variable is set to Zeebe script result variable. Please review.");
   }
 }

@@ -595,6 +595,14 @@ public class MessageFactory {
         ContextBuilder.builder().entry("oldCode", oldCode).entry("newCode", newCode).build());
   }
 
+  public static Message internalScript() {
+    return INSTANCE.staticMessage("internal-script");
+  }
+
+  public static Message resultVariableInternalScript() {
+    return INSTANCE.staticMessage("result-variable-internal-script");
+  }
+
   private Message composeMessage(String templateName, Map<String, String> context) {
     ComposedMessage message = new ComposedMessage();
     MessageTemplate template = messageTemplateProvider.getMessageTemplate(templateName);

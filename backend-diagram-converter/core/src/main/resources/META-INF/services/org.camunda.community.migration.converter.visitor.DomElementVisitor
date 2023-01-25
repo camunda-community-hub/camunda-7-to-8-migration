@@ -48,6 +48,7 @@ org.camunda.community.migration.converter.visitor.impl.attribute.ExclusiveVisito
 org.camunda.community.migration.converter.visitor.impl.activity.BusinessRuleTaskVisitor
 org.camunda.community.migration.converter.visitor.impl.attribute.ResultVariableVisitor$ResultVariableOnBusinessRuleTaskVisitor
 org.camunda.community.migration.converter.visitor.impl.attribute.ResultVariableVisitor$ResultVariableOnRestVisitor
+org.camunda.community.migration.converter.visitor.impl.attribute.ResultVariableVisitor$ResultVariableOnInternalScriptVisitor
 org.camunda.community.migration.converter.visitor.impl.attribute.DecisionRefVisitor
 org.camunda.community.migration.converter.visitor.impl.attribute.JobPriorityVisitor
 org.camunda.community.migration.converter.visitor.impl.attribute.ResourceVisitor
