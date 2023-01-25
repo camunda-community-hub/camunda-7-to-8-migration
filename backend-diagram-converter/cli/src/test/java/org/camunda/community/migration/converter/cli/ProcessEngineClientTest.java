@@ -32,7 +32,7 @@ public class ProcessEngineClientTest {
   }
 
   @Test
-  void shouldRFindProcessDefinition() {
+  void shouldFindProcessDefinition() {
     processEngine
         .getRepositoryService()
         .createDeployment()
