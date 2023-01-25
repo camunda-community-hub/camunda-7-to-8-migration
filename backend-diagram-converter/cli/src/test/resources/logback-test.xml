@@ -6,8 +6,8 @@
       </pattern>
     </encoder>
   </appender>
-  <root level="debug">
+  <root level="info">
     <appender-ref ref="CONSOLE"/>
   </root>
-
+  <logger name="org.camunda" level="debug"/>
 </configuration>
