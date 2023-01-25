@@ -23,7 +23,7 @@ public class ScriptTaskVisitor extends AbstractActivityVisitor {
         && scriptFormat.trim().length() > 0
         && scriptFormat.equalsIgnoreCase("feel")
         && SemanticVersion._8_2_0.ordinal()
-            >= SemanticVersion.parse(context.getProperties().getPlatformVersion()).ordinal();
+            <= SemanticVersion.parse(context.getProperties().getPlatformVersion()).ordinal();
   }
 
   @Override

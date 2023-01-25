@@ -226,7 +226,7 @@ public class BpmnConverterTest {
   }
 
   @Test
-  void testInternalScript() {
+  void testInternalScript_8_2() {
     BpmnDiagramCheckResult result = loadAndCheckAgainstVersion("internal-script.bpmn", "8.2.0");
     assertThat(result)
         .isNotNull()
@@ -239,6 +239,28 @@ public class BpmnConverterTest {
         .isEqualTo("Result variable is set to Zeebe script result variable. Please review.");
     assertThat(result.getResult("FeelScriptTask").getMessages().get(1).getMessage())
         .isEqualTo("Script is transformed to Zeebe script.");
+  }
+
+  @Test
+  void testInternalScript_8_1() {
+    BpmnDiagramCheckResult result = loadAndCheckAgainstVersion("internal-script.bpmn", "8.1.0");
+    assertThat(result)
+        .isNotNull()
+        .extracting(r -> r.getResult("FeelScriptTask"))
+        .isNotNull()
+        .extracting(BpmnElementCheckResult::getMessages)
+        .asList()
+        .hasSize(4);
+    assertThat(result.getResult("FeelScriptTask").getMessages().get(0).getMessage())
+        .isEqualTo("Script format 'feel' was set to header 'scriptFormat'. Please review.");
+    assertThat(result.getResult("FeelScriptTask").getMessages().get(1).getMessage())
+        .isEqualTo(
+            "Element 'scriptTask' was transformed. Currently, script tasks are implemented like service tasks with job type 'script'. Please review your implementation.");
+    assertThat(result.getResult("FeelScriptTask").getMessages().get(2).getMessage())
+        .isEqualTo(
+            "Attribute 'resultVariable' on 'scriptTask' was mapped. Is now available as header 'resultVariable'.");
+    assertThat(result.getResult("FeelScriptTask").getMessages().get(3).getMessage())
+        .isEqualTo("Script was set to header 'script'. Please review.");
   }
 
   @Test
