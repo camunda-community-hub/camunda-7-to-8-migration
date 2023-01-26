@@ -26,13 +26,10 @@ import org.springframework.web.multipart.MultipartFile;
 public class ConverterController {
   private static final Logger LOG = LoggerFactory.getLogger(ConverterController.class);
   private final BpmnConverterService bpmnConverter;
-  private final CsvWriterService csvWriterService;
 
   @Autowired
-  public ConverterController(
-      BpmnConverterService bpmnConverter, CsvWriterService csvWriterService) {
+  public ConverterController(BpmnConverterService bpmnConverter) {
     this.bpmnConverter = bpmnConverter;
-    this.csvWriterService = csvWriterService;
   }
 
   @PostMapping(
@@ -44,7 +41,6 @@ public class ConverterController {
       @RequestParam(value = "adapterJobType", required = false) String adapterJobType,
       @RequestParam(value = "platformVersion", required = false) String platformVersion,
       @RequestHeader(HttpHeaders.ACCEPT) String[] contentType) {
-
     try (InputStream in = bpmnFile.getInputStream()) {
       BpmnDiagramCheckResult diagramCheckResult =
           bpmnConverter.check(
@@ -60,7 +56,7 @@ public class ConverterController {
       }
       if (Arrays.asList(contentType).contains("text/csv")) {
         StringWriter sw = new StringWriter();
-        csvWriterService.writeCsvFile(Collections.singletonList(diagramCheckResult), sw);
+        bpmnConverter.writeCsvFile(Collections.singletonList(diagramCheckResult), sw);
         Resource file = new ByteArrayResource(sw.toString().getBytes());
         return ResponseEntity.ok()
             .header(

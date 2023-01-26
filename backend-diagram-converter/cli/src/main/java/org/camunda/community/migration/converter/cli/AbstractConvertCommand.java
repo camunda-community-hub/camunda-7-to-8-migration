@@ -5,12 +5,17 @@ import static org.camunda.community.migration.converter.cli.ConvertCommand.*;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Objects;
 import java.util.concurrent.Callable;
+import java.util.stream.Collectors;
 import org.apache.commons.io.FilenameUtils;
 import org.camunda.bpm.model.bpmn.BpmnModelInstance;
 import org.camunda.community.migration.converter.BpmnConverter;
 import org.camunda.community.migration.converter.BpmnConverterFactory;
+import org.camunda.community.migration.converter.BpmnDiagramCheckResult;
 import org.camunda.community.migration.converter.ConverterPropertiesFactory;
 import org.camunda.community.migration.converter.DefaultConverterProperties;
 import picocli.CommandLine.Option;
@@ -19,6 +24,7 @@ public abstract class AbstractConvertCommand implements Callable<Integer> {
   private static final String DEFAULT_PREFIX = "converted-c8-";
 
   protected final BpmnConverter converter;
+  protected int returnCode = 0;
 
   @Option(
       names = {"-d", "--documentation"},
@@ -46,6 +52,15 @@ public abstract class AbstractConvertCommand implements Callable<Integer> {
       description = "Semantic version of the target platform, defaults to latest version")
   String platformVersion;
 
+  @Option(
+      names = {"--csv"},
+      description =
+          "If enabled, a CSV file will be created containing the results for all conversions")
+  boolean csv;
+
+  @Option(names = "--check", description = "If enabled, no converted diagrams are exported")
+  boolean check;
+
   public AbstractConvertCommand() {
     BpmnConverterFactory factory = BpmnConverterFactory.getInstance();
     factory.getNotificationServiceFactory().setInstance(new PrintNotificationServiceImpl());
@@ -53,38 +68,69 @@ public abstract class AbstractConvertCommand implements Callable<Integer> {
   }
 
   @Override
-  public final Integer call() throws Exception {
-    return modelInstances().entrySet().stream()
-        .mapToInt(e -> handleModel(determineFileName(e.getKey()), e.getValue()))
-        .max()
-        .orElse(0);
+  public final Integer call() {
+    returnCode = 0;
+    Map<File, BpmnModelInstance> modelInstances = modelInstances();
+    List<BpmnDiagramCheckResult> results = checkModels(modelInstances);
+    writeResults(modelInstances, results);
+    return returnCode;
   }
 
-  private int handleModel(File file, BpmnModelInstance modelInstance) {
+  private void writeResults(
+      Map<File, BpmnModelInstance> modelInstances, List<BpmnDiagramCheckResult> results) {
+    if (!check) {
+      for (Entry<File, BpmnModelInstance> modelInstance : modelInstances.entrySet()) {
+        File file = determineFileName(prefixFileName(modelInstance.getKey()));
+        if (!override && file.exists()) {
+          LOG_CLI.error("File does already exist: {}", file);
+          returnCode = 1;
+        }
+        LOG_CLI.info("Created {}", file);
+        try (FileWriter fw = new FileWriter(file)) {
+          converter.printXml(modelInstance.getValue().getDocument(), true, fw);
+          fw.flush();
+        } catch (IOException e) {
+          LOG_CLI.error("Error while creating BPMN file: {}", createMessage(e));
+          returnCode = 1;
+        }
+      }
+    }
+    if (csv) {
+      try (FileWriter fw =
+          new FileWriter(
+              determineFileName(new File(targetDirectory(), "conversion-results.csv")))) {
+        converter.writeCsvFile(results, fw);
+      } catch (IOException e) {
+        LOG_CLI.error("Error while creating csv results: {}", createMessage(e));
+        returnCode = 1;
+      }
+    }
+  }
+
+  protected abstract File targetDirectory();
+
+  private List<BpmnDiagramCheckResult> checkModels(Map<File, BpmnModelInstance> modelInstances) {
+    return modelInstances.entrySet().stream()
+        .map(this::checkModel)
+        .filter(Objects::nonNull)
+        .collect(Collectors.toList());
+  }
+
+  private BpmnDiagramCheckResult checkModel(Entry<File, BpmnModelInstance> modelInstance) {
     try {
-      converter.convert(
-          modelInstance,
+      return converter.check(
+          modelInstance.getKey().getAbsolutePath(),
+          modelInstance.getValue(),
           documentation,
           ConverterPropertiesFactory.getInstance().merge(converterProperties()));
     } catch (Exception e) {
-      LOG_CLI.error("Problem while converting: {}", e.getMessage());
-      return 1;
+      LOG_CLI.error("Problem while converting: {}", createMessage(e));
+      returnCode = 1;
+      return null;
     }
-    if (!override && file.exists()) {
-      LOG_CLI.error("File does already exist: {}", file);
-      return 1;
-    }
-    LOG_CLI.info("Created {}", file);
-    try (FileWriter fw = new FileWriter(file)) {
-      converter.printXml(modelInstance.getDocument(), true, fw);
-      fw.flush();
-    } catch (IOException e) {
-      throw new RuntimeException(e);
-    }
-    return 0;
   }
 
-  protected abstract Map<File, BpmnModelInstance> modelInstances() throws Exception;
+  protected abstract Map<File, BpmnModelInstance> modelInstances();
 
   protected DefaultConverterProperties converterProperties() {
     DefaultConverterProperties properties = new DefaultConverterProperties();
@@ -93,8 +139,12 @@ public abstract class AbstractConvertCommand implements Callable<Integer> {
     return properties;
   }
 
+  private File prefixFileName(File file) {
+    return new File(file.getParentFile(), prefix + file.getName());
+  }
+
   private File determineFileName(File file) {
-    File newFile = new File(file.getParentFile(), prefix + file.getName());
+    File newFile = file;
     int counter = 0;
     while (!override && newFile.exists()) {
       counter++;
@@ -109,5 +159,15 @@ public abstract class AbstractConvertCommand implements Callable<Integer> {
                   + FilenameUtils.getExtension(file.getName()));
     }
     return newFile;
+  }
+
+  protected String createMessage(Exception e) {
+    StringBuilder message = new StringBuilder(e.getMessage());
+    Throwable ex = e.getCause();
+    while (ex != null) {
+      message.append(",").append("\n").append("caused by: ").append(ex.getMessage());
+      ex = ex.getCause();
+    }
+    return message.toString();
   }
 }
