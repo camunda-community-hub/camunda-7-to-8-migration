@@ -49,10 +49,11 @@ public class ExpressionTransformer {
     // replace operators globally
     String replaced =
         expression
+            .replaceAll("empty (\\S*)", "$1=null")
             // replace all !x with not(x)
-            .replaceAll("!(?![\\(=])([\\w-^]*)", "not($1)")
+            .replaceAll("!(?![\\(=])([\\S-^]*)", "not($1)")
             // replace all not x with not(x)
-            .replaceAll("not (?![\\(=])([\\w-^]*)", "not($1)")
+            .replaceAll("not (?![\\(=])([\\S-^]*)", "not($1)")
             // replace all x["y"] with x.y
             .replaceAll("\\[\\\"(\\D[^\\]\\[]*)\\\"]", ".$1")
             .replaceAll(" gt ", " > ")

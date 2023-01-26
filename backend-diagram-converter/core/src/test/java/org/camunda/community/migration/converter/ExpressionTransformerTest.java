@@ -53,7 +53,13 @@ public class ExpressionTransformerTest {
             test("#{x or y}", "=x or y"),
             test("#{customer.name}", "=customer.name"),
             test("#{customer.address[\"street\"]}", "=customer.address.street"),
-            test("#{customer.orders[1]}", "=customer.orders[2]")),
+            test("#{customer.orders[1]}", "=customer.orders[2]"),
+            test("${not empty x}", "=not(x=null)"),
+            test("${empty donut}", "=donut=null"),
+            test("${!empty donut}", "=not(donut=null)"),
+            test("${empty donut || coffee}", "=donut=null or coffee"),
+            test("${not empty donut || coffee}", "=not(donut=null) or coffee"),
+            test("${not(empty donut || coffee)}", "=not(donut=null or coffee)")),
         ExpressionTestDataSet::toString,
         this::testExpression);
   }
