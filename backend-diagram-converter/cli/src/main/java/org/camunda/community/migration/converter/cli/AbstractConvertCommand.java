@@ -99,7 +99,7 @@ public abstract class AbstractConvertCommand implements Callable<Integer> {
       File csvFile = determineFileName(new File(targetDirectory(), "conversion-results.csv"));
       try (FileWriter fw = new FileWriter(csvFile)) {
         converter.writeCsvFile(results, fw);
-        LOG_CLI.info("Created {}", csvFile.getName());
+        LOG_CLI.info("Created {}", csvFile);
       } catch (IOException e) {
         LOG_CLI.error("Error while creating csv results: {}", createMessage(e));
         returnCode = 1;
