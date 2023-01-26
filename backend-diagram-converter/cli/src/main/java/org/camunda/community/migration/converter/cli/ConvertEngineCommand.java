@@ -43,7 +43,12 @@ public class ConvertEngineCommand extends AbstractConvertCommand {
   File targetDirectory = new File(".");
 
   @Override
-  protected Map<File, BpmnModelInstance> modelInstances() throws Exception {
+  protected File targetDirectory() {
+    return targetDirectory;
+  }
+
+  @Override
+  protected Map<File, BpmnModelInstance> modelInstances() {
     Map<String, Map<String, Set<String>>> allLatestBpmnXml = getAllLatestBpmnXml();
     Map<File, BpmnModelInstance> result = new HashMap<>();
     allLatestBpmnXml.forEach(
