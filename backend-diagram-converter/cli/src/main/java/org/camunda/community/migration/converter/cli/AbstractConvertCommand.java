@@ -96,10 +96,10 @@ public abstract class AbstractConvertCommand implements Callable<Integer> {
       }
     }
     if (csv) {
-      try (FileWriter fw =
-          new FileWriter(
-              determineFileName(new File(targetDirectory(), "conversion-results.csv")))) {
+      File csvFile = determineFileName(new File(targetDirectory(), "conversion-results.csv"));
+      try (FileWriter fw = new FileWriter(csvFile)) {
         converter.writeCsvFile(results, fw);
+        LOG_CLI.info("Created {}", csvFile);
       } catch (IOException e) {
         LOG_CLI.error("Error while creating csv results: {}", createMessage(e));
         returnCode = 1;
@@ -151,8 +151,7 @@ public abstract class AbstractConvertCommand implements Callable<Integer> {
       newFile =
           new File(
               file.getParentFile(),
-              prefix
-                  + FilenameUtils.getBaseName(file.getName())
+              FilenameUtils.getBaseName(file.getName())
                   + " ("
                   + counter
                   + ")."
