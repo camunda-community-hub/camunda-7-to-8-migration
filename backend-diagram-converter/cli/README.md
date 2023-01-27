@@ -1,6 +1,7 @@
 # Conversion CLI tool
 
-The command line interface tool can convert a Camunda Platform 7 diagram or all diagrams inside a folder (plus sub directories).
+The command line interface tool can convert a Camunda Platform 7 diagram or all diagrams inside a folder (plus sub directories)
+or convert all diagrams from a Camunda Platform 7 process engine.
 
 All diagrams that should be converted need to have the `.bpmn` or `.bpmn20.xml` file ending.
 
