@@ -6,7 +6,7 @@ import picocli.CommandLine;
 import picocli.CommandLine.Command;
 
 @Command(
-    name = "camunda-convert",
+    name = "java -Dfile.encoding=UTF-8 -jar backend-diagram-converter-cli.jar",
     mixinStandardHelpOptions = true,
     versionProvider = MavenVersionProvider.class,
     subcommands = {ConvertLocalCommand.class, ConvertEngineCommand.class})

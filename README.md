@@ -9,6 +9,8 @@ This projects contains:
 * [An adapter library](./camunda-7-adapter) to re-use Java Delegates or expressions from Camunda Platform 7 when running Camunda Platform 8
 * [An example](./example) containing a sample process solution for Camunda Platform 7 and the migrated version that runs on Camunda Platform 8
 * [A process diagram converter](./backend-diagram-converter) that is implemented in Java and performs checks and migration
+    - [A web frontend](./backend-diagram-converter/webapp) with graphical output of the conversion result
+    - [A command line tool](./backend-diagram-converter/cli) to support mass conversion
 
 
 
