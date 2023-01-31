@@ -25,7 +25,7 @@ Usage: backend-diagram-converter-cli local [-dhoV] [--check] [--csv] [-nr]
        [--platform-version=<platformVersion>] [--prefix=<prefix>] <file>
 Converts the diagram from the given directory or file
 
-Execute as
+Execute as:
 
 java -Dfile.encoding=UTF-8 -jar backend-diagram-converter-cli.jar local
 

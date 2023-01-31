@@ -28,7 +28,7 @@ import picocli.CommandLine.Parameters;
     name = "local",
     description = {
       "Converts the diagram from the given directory or file",
-      "%nExecute as",
+      "%nExecute as:",
       "%njava -Dfile.encoding=UTF-8 -jar backend-diagram-converter-cli.jar local%n"
     },
     mixinStandardHelpOptions = true,
