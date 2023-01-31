@@ -20,11 +20,18 @@ java -Dfile.encoding=UTF-8 -jar backend-diagram-converter-cli-version.jar
 ### Convert diagrams from the local file systems
 
 ```
-Usage: java -Dfile.encoding=UTF-8 -jar backend-diagram-converter-cli.jar local
-       [-dhoV] [--check] [--csv] [-nr] [--adapter-job-type=<adapterJobType>]
+Usage: backend-diagram-converter-cli local [-dhoV] [--check] [--csv] [-nr]
+       [--adapter-job-type=<adapterJobType>]
        [--platform-version=<platformVersion>] [--prefix=<prefix>] <file>
-Converts the diagrams from the given directory or file
+Converts the diagram from the given directory or file
+
+Execute as
+
+java -Dfile.encoding=UTF-8 -jar backend-diagram-converter-cli.jar local
+
+Parameter:
       <file>                 The file to convert or directory to search in
+Options:
       --adapter-job-type=<adapterJobType>
                              If set, the default value for the adapter job is
                                overridden
@@ -41,6 +48,7 @@ Converts the diagrams from the given directory or file
                              Semantic version of the target platform, defaults
                                to latest version
       --prefix=<prefix>      Prefix for the name of the generated file
+                               Default: converted-c8-
   -V, --version              Print version information and exit.
 ```
 
@@ -53,13 +61,21 @@ java -Dfile.encoding=UTF-8 -jar backend-diagram-converter-cli-v.v.v.jar local c:
 ### Convert diagrams from a running process engine
 
 ```
-Usage: java -Dfile.encoding=UTF-8 -jar backend-diagram-converter-cli.jar engine
-       [-dhoV] [--check] [--csv] [--adapter-job-type=<adapterJobType>]
-       [-p=<password>] [--platform-version=<platformVersion>]
-       [--prefix=<prefix>] [-t=<targetDirectory>] [-u=<username>] <url>
-Converts the diagrams from the given process engine
+Usage: backend-diagram-converter-cli engine [-dhoV] [--check] [--csv]
+       [--adapter-job-type=<adapterJobType>] [-p=<password>]
+       [--platform-version=<platformVersion>] [--prefix=<prefix>]
+       [-t=<targetDirectory>] [-u=<username>] <url>
+Description: Converts the diagrams from the given process engine
+
+Execute as:
+
+java -Dfile.encoding=UTF-8 -jar backend-diagram-converter-cli.jar engine
+
+Parameter:
       <url>               Fully qualified http(s) address to the process engine
                             REST API
+                            Default: http://localhost:8080/engine-rest
+Options:
       --adapter-job-type=<adapterJobType>
                           If set, the default value for the adapter job is
                             overridden
@@ -76,8 +92,10 @@ Converts the diagrams from the given process engine
                           Semantic version of the target platform, defaults to
                             latest version
       --prefix=<prefix>   Prefix for the name of the generated file
+                            Default: converted-c8-
   -t, --target-directory=<targetDirectory>
                           The directory to save the .bpmn files
+                            Default: .
   -u, --username=<username>
                           Username for basic auth
   -V, --version           Print version information and exit.

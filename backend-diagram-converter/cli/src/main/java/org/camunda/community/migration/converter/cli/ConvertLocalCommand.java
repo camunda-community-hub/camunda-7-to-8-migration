@@ -26,8 +26,15 @@ import picocli.CommandLine.Parameters;
 
 @Command(
     name = "local",
-    description = "Converts the diagrams from the given directory or file",
-    mixinStandardHelpOptions = true)
+    description = {
+      "Converts the diagram from the given directory or file",
+      "%nExecute as",
+      "%njava -Dfile.encoding=UTF-8 -jar backend-diagram-converter-cli.jar local%n"
+    },
+    mixinStandardHelpOptions = true,
+    optionListHeading = "Options:%n",
+    parameterListHeading = "Parameter:%n",
+    showDefaultValues = true)
 public class ConvertLocalCommand extends AbstractConvertCommand {
 
   private static final String[] FILE_ENDINGS = new String[] {"bpmn", "bpmn20.xml"};
