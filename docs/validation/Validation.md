@@ -6,7 +6,7 @@ Each directory is a use case. It contains all information to explain the use cas
 
 # Overview
 
-| Use case   | Status      |
-|------------|-------------|
-| Simple User task| In progress | 
+| Use case   | Description                        | Status      |
+|------------|------------------------------------|-------------|
+| Simple User task| One user task, no process variable | In progress | 
 
