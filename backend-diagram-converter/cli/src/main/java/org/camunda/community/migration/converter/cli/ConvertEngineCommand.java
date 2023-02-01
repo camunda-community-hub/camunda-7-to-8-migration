@@ -15,8 +15,16 @@ import picocli.CommandLine.Parameters;
 
 @Command(
     name = "engine",
-    description = "Converts the diagrams from the given process engine",
-    mixinStandardHelpOptions = true)
+    descriptionHeading = "Description: ",
+    description = {
+      "Converts the diagrams from the given process engine",
+      "%nExecute as:",
+      "%njava -Dfile.encoding=UTF-8 -jar backend-diagram-converter-cli.jar engine%n"
+    },
+    mixinStandardHelpOptions = true,
+    optionListHeading = "Options:%n",
+    parameterListHeading = "Parameter:%n",
+    showDefaultValues = true)
 public class ConvertEngineCommand extends AbstractConvertCommand {
   private static final String DEFAULT_URL = "http://localhost:8080/engine-rest";
 

@@ -26,18 +26,25 @@ import picocli.CommandLine.Parameters;
 
 @Command(
     name = "local",
-    description = "Converts the diagrams from the given directory or file",
-    mixinStandardHelpOptions = true)
+    description = {
+      "Converts the diagram from the given directory or file",
+      "%nExecute as:",
+      "%njava -Dfile.encoding=UTF-8 -jar backend-diagram-converter-cli.jar local%n"
+    },
+    mixinStandardHelpOptions = true,
+    optionListHeading = "Options:%n",
+    parameterListHeading = "Parameter:%n",
+    showDefaultValues = true)
 public class ConvertLocalCommand extends AbstractConvertCommand {
 
   private static final String[] FILE_ENDINGS = new String[] {"bpmn", "bpmn20.xml"};
 
-  @Parameters(index = "0", description = "The file or directory to search for")
+  @Parameters(index = "0", description = "The file to convert or directory to search in")
   File file;
 
   @Option(
       names = {"-nr", "--not-recursive"},
-      description = "If enabled, recursive search will not be performed")
+      description = "If enabled, recursive search in subfolders will be omitted")
   boolean notRecursive;
 
   @Override
