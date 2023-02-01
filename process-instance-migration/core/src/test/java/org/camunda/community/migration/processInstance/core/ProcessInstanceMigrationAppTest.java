@@ -97,6 +97,7 @@ public class ProcessInstanceMigrationAppTest {
             "camunda7ProcessInstanceIds", Collections.singletonList(c7Pi.getProcessInstanceId())));
     // wait until migration is done
     waitForProcessInstanceCompleted(processInstance, Duration.ofMinutes(5));
+    // TODO complete the started process instance in c8
     // assert that the c7 instance was terminated
     HistoricProcessInstance historicProcessInstance =
         processEngine
@@ -135,6 +136,8 @@ public class ProcessInstanceMigrationAppTest {
     // assert that the c8 process instance is waiting where the c7 process instance was stopped
     BpmnAssert.assertThat(new InspectedProcessInstance(Long.valueOf(camunda8ProcessInstanceKey)))
         .isWaitingAtElements("UserTask2Task");
+    // TODO assert that the camunda7ProcessInstanceId is available as variable in c8 process
+    // instance
   }
 
   @Test
