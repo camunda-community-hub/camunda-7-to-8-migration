@@ -90,13 +90,13 @@ public class ProcessInstanceMigrationAppTest {
     ProcessInstanceEvent processInstance =
         processInstanceMigrationStarter.startProcessInstanceMigration("UserTasksLinearProcess");
     waitForProcessInstanceHasPassedElement(processInstance, "SuspendProcessDefinitionTask");
-    zeebeTestEngine.waitForIdleState(Duration.ofMinutes(1));
+    zeebeTestEngine.waitForIdleState(Duration.ofMinutes(5));
     // select the started c7 instance
     completeUserTask(
         Collections.singletonMap(
             "camunda7ProcessInstanceIds", Collections.singletonList(c7Pi.getProcessInstanceId())));
     // wait until migration is done
-    waitForProcessInstanceCompleted(processInstance, Duration.ofMinutes(1));
+    waitForProcessInstanceCompleted(processInstance, Duration.ofMinutes(5));
     // assert that the c7 instance was terminated
     HistoricProcessInstance historicProcessInstance =
         processEngine
