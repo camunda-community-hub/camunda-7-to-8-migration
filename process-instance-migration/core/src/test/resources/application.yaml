@@ -5,3 +5,9 @@ c7.client.base-url: http://localhost:18080/engine-rest
 camunda:
   bpm:
     auto-deployment-enabled: false
+operate.client:
+  url: http://localhost:8081
+  authentication:
+    simple:
+      username: demo
+      password: demo

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_13says0" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.5.1" modeler:executionPlatform="Camunda Cloud" modeler:executionPlatformVersion="8.1.0">
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_13says0" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.7.0" modeler:executionPlatform="Camunda Cloud" modeler:executionPlatformVersion="8.1.0">
   <bpmn:collaboration id="Collaboration_0votdqa">
     <bpmn:participant id="ProcessInstanceMigrationParticipant" name="Process Instance Migration" processRef="ProcessInstanceMigrationProcess" />
     <bpmn:participant id="Camunda7Participant" name="Camunda 7" />
@@ -69,6 +69,13 @@
       <bpmn:outgoing>Flow_08tz0d7</bpmn:outgoing>
     </bpmn:serviceTask>
     <bpmn:subProcess id="MigrateProcessInstancesSubProcess" name="Migrate process instances">
+      <bpmn:extensionElements>
+        <zeebe:ioMapping>
+          <zeebe:input source="={}" target="variables" />
+          <zeebe:input source="=null" target="camunda8ProcessInstanceKey" />
+          <zeebe:input source="=[]" target="activityIds" />
+        </zeebe:ioMapping>
+      </bpmn:extensionElements>
       <bpmn:incoming>Flow_1gsrqvj</bpmn:incoming>
       <bpmn:outgoing>Flow_05eic6u</bpmn:outgoing>
       <bpmn:multiInstanceLoopCharacteristics>
@@ -156,18 +163,12 @@
       <bpmndi:BPMNShape id="Activity_1qtejxx_di" bpmnElement="ContinueProcessDefinitionTask">
         <dc:Bounds x="1750" y="367" width="100" height="80" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Gateway_1kodnvi_di" bpmnElement="Gateway_1kodnvi" isMarkerVisible="true">
-        <dc:Bounds x="305" y="382" width="50" height="50" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Gateway_0rc03jj_di" bpmnElement="AlreadyConvertedGateway" isMarkerVisible="true">
-        <dc:Bounds x="555" y="382" width="50" height="50" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="552" y="345" width="55" height="27" />
-        </bpmndi:BPMNLabel>
-      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_0t140u7_di" bpmnElement="MigrateProcessInstancesSubProcess" isExpanded="true">
         <dc:Bounds x="1070" y="302" width="630" height="210" />
         <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0qzyc3o_di" bpmnElement="CreateProcessInstanceInCamunda8Task">
+        <dc:Bounds x="1340" y="369" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_0w7bhii_di" bpmnElement="CancelProcessInstanceInCamunda7Task">
         <dc:Bounds x="1490" y="369" width="100" height="80" />
@@ -183,9 +184,6 @@
         <bpmndi:BPMNLabel>
           <dc:Bounds x="1091" y="434" width="78" height="40" />
         </bpmndi:BPMNLabel>
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_0qzyc3o_di" bpmnElement="CreateProcessInstanceInCamunda8Task">
-        <dc:Bounds x="1340" y="369" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_0c0ptiu_di" bpmnElement="ExtractRelevantDataFromProcessInstanceTask">
         <dc:Bounds x="1190" y="369" width="100" height="80" />
@@ -207,6 +205,15 @@
         <di:waypoint x="1290" y="409" />
         <di:waypoint x="1340" y="409" />
       </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="Gateway_1kodnvi_di" bpmnElement="Gateway_1kodnvi" isMarkerVisible="true">
+        <dc:Bounds x="305" y="382" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_0rc03jj_di" bpmnElement="AlreadyConvertedGateway" isMarkerVisible="true">
+        <dc:Bounds x="555" y="382" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="552" y="345" width="55" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="Flow_1srfdoc_di" bpmnElement="Flow_1srfdoc">
         <di:waypoint x="275" y="407" />
         <di:waypoint x="305" y="407" />
@@ -257,37 +264,37 @@
         <di:waypoint x="355" y="407" />
         <di:waypoint x="400" y="407" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNShape id="Participant_0pa0l8f_di" bpmnElement="Camunda8Participant" isHorizontal="true">
-        <dc:Bounds x="390" y="80" width="1090" height="60" />
-        <bpmndi:BPMNLabel />
-      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Participant_1cofk6e_di" bpmnElement="Camunda7Participant" isHorizontal="true">
         <dc:Bounds x="390" y="670" width="1510" height="60" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNEdge id="Flow_1augkbd_di" bpmnElement="Flow_1augkbd">
-        <di:waypoint x="470" y="140" />
-        <di:waypoint x="470" y="367" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_004rctf_di" bpmnElement="Flow_004rctf">
-        <di:waypoint x="430" y="367" />
-        <di:waypoint x="430" y="140" />
-      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="Participant_0pa0l8f_di" bpmnElement="Camunda8Participant" isHorizontal="true">
+        <dc:Bounds x="390" y="80" width="1090" height="60" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="Flow_0cphhn7_di" bpmnElement="Flow_0cphhn7">
         <di:waypoint x="800" y="447" />
         <di:waypoint x="800" y="670" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_1mnltfq_di" bpmnElement="Flow_1mnltfq">
-        <di:waypoint x="1410" y="140" />
-        <di:waypoint x="1410" y="369" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0e4khdk_di" bpmnElement="Flow_0e4khdk">
         <di:waypoint x="1370" y="369" />
         <di:waypoint x="1370" y="140" />
       </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1mnltfq_di" bpmnElement="Flow_1mnltfq">
+        <di:waypoint x="1410" y="140" />
+        <di:waypoint x="1410" y="369" />
+      </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0f2splv_di" bpmnElement="Flow_0f2splv">
         <di:waypoint x="1540" y="449" />
         <di:waypoint x="1540" y="670" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_004rctf_di" bpmnElement="Flow_004rctf">
+        <di:waypoint x="430" y="367" />
+        <di:waypoint x="430" y="140" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1augkbd_di" bpmnElement="Flow_1augkbd">
+        <di:waypoint x="470" y="140" />
+        <di:waypoint x="470" y="367" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0kno6bc_di" bpmnElement="Flow_0kno6bc">
         <di:waypoint x="1220" y="449" />

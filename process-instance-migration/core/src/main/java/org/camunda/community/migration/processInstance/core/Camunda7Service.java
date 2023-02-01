@@ -1,16 +1,15 @@
 package org.camunda.community.migration.processInstance.core;
 
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 import org.camunda.community.migration.processInstance.core.dto.ActivityInstanceDto;
 import org.camunda.community.migration.processInstance.core.dto.Camunda7ProcessData;
 import org.camunda.community.migration.processInstance.core.dto.ProcessDefinitionDto;
 import org.camunda.community.migration.processInstance.core.dto.ProcessInstanceDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 @Service
 public class Camunda7Service {
@@ -34,6 +33,7 @@ public class Camunda7Service {
     processData.setProcessVariables(variables);
     // activity ids
     ActivityInstanceDto activities = camunda7Client.getActivityInstances(camunda7ProcessInstanceId);
+    processData.setActivityIds(extractFromTree(activities));
     return processData;
   }
 
@@ -50,5 +50,12 @@ public class Camunda7Service {
 
   public void suspendProcessDefinition(String bpmnProcessId, boolean suspended) {
     camunda7Client.suspendProcessDefinitionByKey(bpmnProcessId, suspended);
+  }
+
+  public void cancelProcessInstance(
+      String camunda7ProcessInstanceId, Long camunda8ProcessInstanceKey) {
+    camunda7Client.setVariable(
+        camunda7ProcessInstanceId, "camunda8ProcessInstanceKey", camunda8ProcessInstanceKey);
+    camunda7Client.cancelProcessInstance(camunda7ProcessInstanceId);
   }
 }

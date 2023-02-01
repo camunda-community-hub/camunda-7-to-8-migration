@@ -1,17 +1,17 @@
 package org.camunda.community.migration.processInstance.core;
 
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 import org.camunda.community.migration.processInstance.core.dto.ActivityInstanceDto;
 import org.camunda.community.migration.processInstance.core.dto.Camunda7Version;
+import org.camunda.community.migration.processInstance.core.dto.HistoricActivityInstance.HistoricActivityInstanceQueryResultDto;
 import org.camunda.community.migration.processInstance.core.dto.ProcessDefinitionDto;
 import org.camunda.community.migration.processInstance.core.dto.ProcessInstanceDto;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
-
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
 
 @Component
 public class Camunda7Client {
@@ -22,6 +22,11 @@ public class Camunda7Client {
   private static final String PROCESS_DEFINITION = "/process-definition/{id}";
   private static final String VERSION = "/version";
   private static final String PROCESS_DEFINITION_SUSPENDED = "/process-instance/suspended";
+  private static final String HISTORY = "/history";
+  private static final String HISTORIC_ACTIVITY_INSTANCE =
+      HISTORY + "/activity-instance?processInstanceId={processInstanceId}";
+  private static final String PROCESS_INSTANCE_VARIABLE =
+      "/process-instance/{id}/variables/{varName}";
   private final RestTemplate restTemplate;
 
   public Camunda7Client(RestTemplate restTemplate) {
@@ -76,5 +81,26 @@ public class Camunda7Client {
         ACTIVITY_INSTANCES,
         ActivityInstanceDto.class,
         Collections.singletonMap("id", processInstanceId));
+  }
+
+  public HistoricActivityInstanceQueryResultDto getHistoricActivityInstances(
+      String processInstanceId) {
+    return restTemplate.getForObject(
+        HISTORIC_ACTIVITY_INSTANCE,
+        HistoricActivityInstanceQueryResultDto.class,
+        Collections.singletonMap("processInstanceId", processInstanceId));
+  }
+
+  public void cancelProcessInstance(String processInstanceId) {
+    restTemplate.delete(PROCESS_INSTANCE, Collections.singletonMap("id", processInstanceId));
+  }
+
+  public void setVariable(String processInstanceId, String variableName, Object variableValue) {
+    Map<String, Object> body = new HashMap<>();
+    body.put("value", variableValue);
+    Map<String, String> uriVariables = new HashMap<>();
+    uriVariables.put("id", processInstanceId);
+    uriVariables.put("varName", variableName);
+    restTemplate.put(PROCESS_INSTANCE_VARIABLE, body, uriVariables);
   }
 }

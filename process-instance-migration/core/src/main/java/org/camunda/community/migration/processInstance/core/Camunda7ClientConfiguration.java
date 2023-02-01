@@ -1,12 +1,11 @@
 package org.camunda.community.migration.processInstance.core;
 
+import java.util.Set;
+import java.util.function.Consumer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.DefaultUriBuilderFactory;
-
-import java.util.Set;
-import java.util.function.Consumer;
 
 @Configuration
 public class Camunda7ClientConfiguration {

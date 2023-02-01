@@ -1,5 +1,7 @@
 package org.camunda.community.migration.processInstance.core;
 
+import static org.camunda.community.migration.processInstance.core.ProcessConstants.JobType.*;
+
 import io.camunda.operate.CamundaOperateClient;
 import io.camunda.operate.dto.ProcessDefinition;
 import io.camunda.operate.exception.OperateException;
@@ -10,13 +12,10 @@ import io.camunda.zeebe.client.api.command.CreateProcessInstanceCommandStep1.Cre
 import io.camunda.zeebe.client.api.response.ProcessInstanceEvent;
 import io.camunda.zeebe.spring.client.annotation.JobWorker;
 import io.camunda.zeebe.spring.client.annotation.VariablesAsType;
+import java.util.List;
 import org.camunda.community.migration.processInstance.core.dto.Camunda7ProcessData;
 import org.camunda.community.migration.processInstance.core.variables.ProcessInstanceMigrationVariables;
 import org.springframework.stereotype.Component;
-
-import java.util.List;
-
-import static org.camunda.community.migration.processInstance.core.ProcessConstants.JobType.*;
 
 @Component
 public class ZeebeJobClient {
@@ -80,5 +79,11 @@ public class ZeebeJobClient {
   public void continueProcessDefinition(
       @VariablesAsType ProcessInstanceMigrationVariables variables) {
     camunda7Service.suspendProcessDefinition(variables.getBpmnProcessId(), false);
+  }
+
+  @JobWorker(type = CAMUNDA7_CANCEL)
+  public void cancelProcessInstance(@VariablesAsType ProcessInstanceMigrationVariables variables) {
+    camunda7Service.cancelProcessInstance(
+        variables.getCamunda7ProcessInstanceId(), variables.getCamunda8ProcessInstanceKey());
   }
 }
