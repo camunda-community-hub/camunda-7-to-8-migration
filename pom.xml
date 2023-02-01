@@ -29,7 +29,7 @@
     <version.opencsv>5.7.1</version.opencsv>
 
     <plugin.version.function-maven-plugin>0.10.1</plugin.version.function-maven-plugin>
-    <plugin.version.maven-enforcer-plugin>3.1.0</plugin.version.maven-enforcer-plugin>
+    <plugin.version.maven-enforcer-plugin>3.2.1</plugin.version.maven-enforcer-plugin>
     <plugin.version.maven-install-plugin>3.1.0</plugin.version.maven-install-plugin>
     <plugin.version.maven-resources-plugin>3.2.0</plugin.version.maven-resources-plugin>
     <plugin.version.maven-shade-plugin>3.4.1</plugin.version.maven-shade-plugin>
@@ -38,6 +38,8 @@
     <plugin.version.maven-compiler-plugin>3.10.1</plugin.version.maven-compiler-plugin>
     <plugin.version.native-maven-plugin>0.9.19</plugin.version.native-maven-plugin>
     <plugin.version.maven-depdendency-plugin>3.5.0</plugin.version.maven-depdendency-plugin>
+    <plugin.version.maven-site-plugin>3.3</plugin.version.maven-site-plugin>
+    <plugin.version.maven-resources-plugin>2.6</plugin.version.maven-resources-plugin>
   </properties>
 
   <dependencyManagement>
@@ -125,6 +127,16 @@
       <plugins>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-resources-plugin</artifactId>
+          <version>${plugin.version.maven-resources-plugin}</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-site-plugin</artifactId>
+          <version>${plugin.version.maven-site-plugin}</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-dependency-plugin</artifactId>
           <version>${plugin.version.maven-depdendency-plugin}</version>
         </plugin>
@@ -170,7 +182,7 @@
               <!--
                 <dependencyConvergence />
               -->
-              <requirePluginVersion />
+              <requirePluginVersions />
             </rules>
           </configuration>
           <executions>
