@@ -12,7 +12,9 @@ import io.camunda.zeebe.client.api.command.CreateProcessInstanceCommandStep1.Cre
 import io.camunda.zeebe.client.api.response.ProcessInstanceEvent;
 import io.camunda.zeebe.spring.client.annotation.JobWorker;
 import io.camunda.zeebe.spring.client.annotation.VariablesAsType;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import org.camunda.community.migration.processInstance.core.dto.Camunda7ProcessData;
 import org.camunda.community.migration.processInstance.core.variables.ProcessInstanceMigrationVariables;
 import org.springframework.stereotype.Component;
@@ -63,12 +65,14 @@ public class ZeebeJobClient {
   @JobWorker(type = CAMUNDA8_START)
   public ProcessInstanceMigrationVariables startCamunda8ProcessInstance(
       @VariablesAsType ProcessInstanceMigrationVariables variables) {
+    Map<String, Object> processVariables = new HashMap<>(variables.getVariables());
+    processVariables.put("camunda7ProcessInstanceId", variables.getCamunda7ProcessInstanceId());
     CreateProcessInstanceCommandStep3 command =
         zeebeClient
             .newCreateInstanceCommand()
             .bpmnProcessId(variables.getBpmnProcessId())
             .latestVersion()
-            .variables(variables.getVariables());
+            .variables(processVariables);
     variables.getActivityIds().forEach(command::startBeforeElement);
     ProcessInstanceEvent processInstanceEvent = command.send().join();
     variables.setCamunda8ProcessInstanceKey(processInstanceEvent.getProcessInstanceKey());

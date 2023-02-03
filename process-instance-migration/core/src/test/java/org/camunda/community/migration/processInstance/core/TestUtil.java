@@ -6,18 +6,15 @@ import static org.assertj.core.api.Assertions.*;
 import io.camunda.zeebe.client.ZeebeClient;
 import io.camunda.zeebe.client.api.response.ActivateJobsResponse;
 import io.camunda.zeebe.client.api.response.ActivatedJob;
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.StringWriter;
-import org.camunda.bpm.model.bpmn.Bpmn;
-import org.camunda.bpm.model.bpmn.BpmnModelInstance;
-import org.camunda.community.migration.converter.BpmnConverter;
-import org.camunda.community.migration.converter.BpmnConverterFactory;
-import org.camunda.community.migration.converter.ConverterPropertiesFactory;
+import io.camunda.zeebe.process.test.api.ZeebeTestEngine;
+import io.camunda.zeebe.process.test.filters.RecordStream;
+import java.util.stream.StreamSupport;
+import org.camunda.bpm.engine.ProcessEngine;
+import org.camunda.bpm.engine.ProcessEngines;
 
 public class TestUtil {
   static ZeebeClient zeebeClient;
+  static ZeebeTestEngine zeebeTestEngine;
 
   public static void completeUserTask(Object variables) {
     ActivateJobsResponse response =
@@ -32,24 +29,39 @@ public class TestUtil {
     zeebeClient.newCompleteCommand(userTask).variables(variables).send().join();
   }
 
-  public static void deployCamunda7ProcessToZeebe(String resourceName) {
-    BpmnConverter converter = BpmnConverterFactory.getInstance().get();
-    try (InputStream in =
-        TestUtil.class.getClassLoader().getResourceAsStream("user-tasks-linear.bpmn")) {
-      BpmnModelInstance model = Bpmn.readModelFromStream(in);
-      converter.convert(model, false, ConverterPropertiesFactory.getInstance().get());
-      StringWriter writer = new StringWriter();
-      converter.printXml(model.getDocument(), true, writer);
-      ByteArrayInputStream stream = new ByteArrayInputStream(writer.toString().getBytes());
-      io.camunda.zeebe.model.bpmn.BpmnModelInstance zeebeModel =
-          io.camunda.zeebe.model.bpmn.Bpmn.readModelFromStream(stream);
-      zeebeClient
-          .newDeployResourceCommand()
-          .addProcessModel(zeebeModel, "user-tasks-linear.bpmn")
-          .send()
-          .join();
-    } catch (IOException e) {
-      throw new RuntimeException(e);
-    }
+  public static void deployProcessToZeebe(String resourceName) {
+    zeebeClient.newDeployResourceCommand().addResourceFromClasspath(resourceName).send().join();
+  }
+
+  public static void deployCamunda7Process(String resourceName) {
+    ProcessEngines.getDefaultProcessEngine()
+        .getRepositoryService()
+        .createDeployment()
+        .addClasspathResource(resourceName)
+        .deploy();
+  }
+
+  public static void deleteDeployments() {
+    ProcessEngine processEngine = ProcessEngines.getDefaultProcessEngine();
+    processEngine
+        .getRepositoryService()
+        .createDeploymentQuery()
+        .list()
+        .forEach(
+            deployment ->
+                processEngine
+                    .getRepositoryService()
+                    .deleteDeployment(deployment.getId(), true, true, true));
+  }
+
+  public static void cancelInstances() {
+    StreamSupport.stream(
+            RecordStream.of(zeebeTestEngine.getRecordStreamSource())
+                .processInstanceRecords()
+                .spliterator(),
+            false)
+        .map(record -> record.getValue().getProcessInstanceKey())
+        .distinct()
+        .forEach(key -> zeebeClient.newCancelInstanceCommand(key).send());
   }
 }
