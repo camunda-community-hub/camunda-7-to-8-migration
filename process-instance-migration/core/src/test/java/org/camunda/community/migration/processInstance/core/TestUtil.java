@@ -7,8 +7,6 @@ import io.camunda.zeebe.client.ZeebeClient;
 import io.camunda.zeebe.client.api.response.ActivateJobsResponse;
 import io.camunda.zeebe.client.api.response.ActivatedJob;
 import io.camunda.zeebe.process.test.api.ZeebeTestEngine;
-import io.camunda.zeebe.process.test.filters.RecordStream;
-import java.util.stream.StreamSupport;
 import org.camunda.bpm.engine.ProcessEngine;
 import org.camunda.bpm.engine.ProcessEngines;
 
@@ -52,16 +50,5 @@ public class TestUtil {
                 processEngine
                     .getRepositoryService()
                     .deleteDeployment(deployment.getId(), true, true, true));
-  }
-
-  public static void cancelInstances() {
-    StreamSupport.stream(
-            RecordStream.of(zeebeTestEngine.getRecordStreamSource())
-                .processInstanceRecords()
-                .spliterator(),
-            false)
-        .map(record -> record.getValue().getProcessInstanceKey())
-        .distinct()
-        .forEach(key -> zeebeClient.newCancelInstanceCommand(key).send());
   }
 }

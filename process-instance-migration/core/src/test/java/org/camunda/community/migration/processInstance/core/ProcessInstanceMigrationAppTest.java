@@ -72,7 +72,6 @@ public class ProcessInstanceMigrationAppTest {
   @AfterEach
   void clean() {
     deleteDeployments();
-    cancelInstances();
   }
 
   @TestFactory
@@ -178,6 +177,7 @@ public class ProcessInstanceMigrationAppTest {
           String camunda7ProcessInstanceId =
               getVariableValue(camunda8ProcessInstanceKey, "camunda7ProcessInstanceId").asText();
           assertThat(camunda7ProcessInstanceId).isEqualTo(c7Pi.getId());
+          zeebeClient.newCancelInstanceCommand(camunda8ProcessInstanceKey).send().join();
         });
   }
 
