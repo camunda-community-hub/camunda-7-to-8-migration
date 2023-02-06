@@ -41,6 +41,11 @@
       <scope>test</scope>
     </dependency>
     <dependency>
+      <groupId>org.camunda.bpm.assert</groupId>
+      <artifactId>camunda-bpm-assert</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
       <groupId>org.camunda.bpm.springboot</groupId>
       <artifactId>camunda-bpm-spring-boot-starter-rest</artifactId>
       <scope>test</scope>
