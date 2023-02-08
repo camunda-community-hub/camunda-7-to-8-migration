@@ -6,7 +6,7 @@ import org.springframework.context.annotation.Configuration;
 @ConfigurationProperties("c7.client")
 @Configuration
 public class Camunda7ClientProperties {
-  private String baseUrl;
+  private String baseUrl = "http://localhost:8080/engine-rest";
 
   public String getBaseUrl() {
     return baseUrl;

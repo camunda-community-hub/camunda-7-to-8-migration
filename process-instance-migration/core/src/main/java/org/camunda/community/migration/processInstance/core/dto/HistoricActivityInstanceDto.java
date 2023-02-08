@@ -3,7 +3,7 @@ package org.camunda.community.migration.processInstance.core.dto;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
 
-public class HistoricActivityInstance {
+public class HistoricActivityInstanceDto {
   private String activityId;
   private String activityName;
   private String activityType;
@@ -186,5 +186,5 @@ public class HistoricActivityInstance {
   }
 
   public static class HistoricActivityInstanceQueryResultDto
-      extends ArrayList<HistoricActivityInstance> {}
+      extends ArrayList<HistoricActivityInstanceDto> {}
 }

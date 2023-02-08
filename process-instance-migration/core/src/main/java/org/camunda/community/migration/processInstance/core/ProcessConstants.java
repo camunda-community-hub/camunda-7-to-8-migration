@@ -9,5 +9,10 @@ public interface ProcessConstants {
     String CAMUNDA8_START = "camunda8:start";
     String CAMUNDA7_CANCEL = "camunda7:cancel";
     String CAMUNDA7_EXTRACT = "camunda7:extract";
+    String CAMUNDA7_VERSIONED_INFORMATION = "camunda7:versionedInformation";
+  }
+
+  interface Message {
+    String START = "migration.camunda:start";
   }
 }

@@ -1,6 +1,7 @@
 package org.camunda.community.migration.processInstance.core;
 
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -29,7 +30,11 @@ public class Camunda7Service {
         camunda7Client.getProcessDefinition(processInstance.getDefinitionId());
     processData.setProcessDefinitionKey(processDefinition.getKey());
     // variables
-    Map<String, Object> variables = camunda7Client.getVariables(camunda7ProcessInstanceId);
+    Map<String, Object> variables = new HashMap<>();
+    variables.put("businessKey", processInstance.getBusinessKey());
+    camunda7Client
+        .getVariables(camunda7ProcessInstanceId)
+        .forEach((s, variableValueDto) -> variables.put(s, variableValueDto.getValue()));
     processData.setProcessVariables(variables);
     // activity ids
     ActivityInstanceDto activities = camunda7Client.getActivityInstances(camunda7ProcessInstanceId);
@@ -48,8 +53,8 @@ public class Camunda7Service {
     }
   }
 
-  public void suspendProcessDefinition(String bpmnProcessId, boolean suspended) {
-    camunda7Client.suspendProcessDefinitionByKey(bpmnProcessId, suspended);
+  public void suspendProcessDefinition(String processDefinitionId, boolean suspended) {
+    camunda7Client.suspendProcessDefinitionById(processDefinitionId, suspended);
   }
 
   public void cancelProcessInstance(
@@ -57,5 +62,16 @@ public class Camunda7Service {
     camunda7Client.setVariable(
         camunda7ProcessInstanceId, "camunda8ProcessInstanceKey", camunda8ProcessInstanceKey);
     camunda7Client.cancelProcessInstance(camunda7ProcessInstanceId);
+  }
+
+  public List<ProcessInstanceDto> getProcessInstancesByProcessDefinitionId(
+      String processDefinitionId) {
+    return camunda7Client.getProcessInstancesByProcessDefinition(processDefinitionId);
+  }
+
+  public ProcessDefinitionDto getLatestProcessDefinition(String bpmnProcessId) {
+    List<ProcessDefinitionDto> processDefinitionByKey =
+        camunda7Client.getLatestProcessDefinitionByKey(bpmnProcessId);
+    return processDefinitionByKey.isEmpty() ? null : processDefinitionByKey.get(0);
   }
 }

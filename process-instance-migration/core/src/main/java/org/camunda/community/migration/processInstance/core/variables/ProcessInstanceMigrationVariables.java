@@ -1,16 +1,27 @@
 package org.camunda.community.migration.processInstance.core.variables;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import java.util.List;
 import java.util.Map;
 
+@JsonInclude(Include.NON_NULL)
 public class ProcessInstanceMigrationVariables {
   private String bpmnProcessId;
+  private String camunda7ProcessDefinitionId;
   private String camunda7ProcessInstanceId;
   private Long camunda8ProcessInstanceKey;
   private List<String> activityIds;
   private Map<String, Object> variables;
-
   private Boolean alreadyConverted;
+
+  public String getCamunda7ProcessDefinitionId() {
+    return camunda7ProcessDefinitionId;
+  }
+
+  public void setCamunda7ProcessDefinitionId(String camunda7ProcessDefinitionId) {
+    this.camunda7ProcessDefinitionId = camunda7ProcessDefinitionId;
+  }
 
   public Boolean getAlreadyConverted() {
     return alreadyConverted;

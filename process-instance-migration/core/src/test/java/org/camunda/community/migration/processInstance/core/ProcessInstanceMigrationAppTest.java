@@ -1,7 +1,8 @@
 package org.camunda.community.migration.processInstance.core;
 
 import static io.camunda.zeebe.spring.test.ZeebeTestThreadSupport.*;
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.camunda.bpm.engine.test.assertions.bpmn.BpmnAwareTests.*;
 import static org.camunda.community.migration.processInstance.core.TestUtil.*;
 import static org.mockito.Mockito.*;
 
@@ -12,31 +13,39 @@ import io.camunda.operate.CamundaOperateClient;
 import io.camunda.operate.dto.ProcessDefinition;
 import io.camunda.operate.exception.OperateException;
 import io.camunda.zeebe.client.ZeebeClient;
-import io.camunda.zeebe.client.api.response.ProcessInstanceEvent;
+import io.camunda.zeebe.client.api.response.PublishMessageResponse;
 import io.camunda.zeebe.process.test.api.ZeebeTestEngine;
 import io.camunda.zeebe.process.test.assertions.BpmnAssert;
 import io.camunda.zeebe.process.test.filters.RecordStream;
 import io.camunda.zeebe.process.test.filters.StreamFilter;
 import io.camunda.zeebe.process.test.inspections.model.InspectedProcessInstance;
 import io.camunda.zeebe.protocol.record.Record;
+import io.camunda.zeebe.protocol.record.RejectionType;
+import io.camunda.zeebe.protocol.record.intent.MessageStartEventSubscriptionIntent;
 import io.camunda.zeebe.spring.test.ZeebeSpringTest;
 import java.time.Duration;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeoutException;
+import java.util.concurrent.atomic.AtomicLong;
 import java.util.function.Consumer;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
-import org.camunda.bpm.engine.ProcessEngine;
 import org.camunda.bpm.engine.history.HistoricProcessInstance;
 import org.camunda.bpm.engine.history.HistoricVariableInstance;
 import org.camunda.bpm.engine.runtime.ProcessInstance;
-import org.camunda.community.migration.processInstance.core.dto.Camunda7Version;
-import org.camunda.community.migration.processInstance.core.dto.HistoricActivityInstance.HistoricActivityInstanceQueryResultDto;
+import org.camunda.bpm.engine.test.assertions.bpmn.BpmnAwareTests;
+import org.camunda.community.migration.processInstance.core.dto.Camunda7VersionDto;
+import org.camunda.community.migration.processInstance.core.dto.HistoricActivityInstanceDto;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DynamicContainer;
 import org.junit.jupiter.api.DynamicTest;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestFactory;
@@ -52,14 +61,14 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 public class ProcessInstanceMigrationAppTest {
   private static final Logger LOG = LoggerFactory.getLogger(ProcessInstanceMigrationAppTest.class);
 
-  @Autowired ProcessInstanceMigrationStarter processInstanceMigrationStarter;
+  @Autowired ProcessInstanceMigrationService processInstanceMigrationStarter;
   @MockBean CamundaOperateClient operateClient;
   @Autowired Camunda7Client camunda7Client;
-  @Autowired ProcessEngine processEngine;
 
   @Autowired ZeebeTestEngine zeebeTestEngine;
 
   @Autowired ZeebeClient zeebeClient;
+  @Autowired ProcessInstanceSelectionService selectionService;
 
   @BeforeEach
   void setup() throws OperateException {
@@ -74,111 +83,132 @@ public class ProcessInstanceMigrationAppTest {
     deleteDeployments();
   }
 
+  private Map<MigrationTestProcessDefinitionInput, List<MigrationTestProcessInstanceInput>>
+      createInput() {
+    Map<MigrationTestProcessDefinitionInput, List<MigrationTestProcessInstanceInput>> input =
+        new HashMap<>();
+    input.put(
+        new MigrationTestProcessDefinitionInput(
+            "bpmn/c7/user-tasks-linear.bpmn",
+            "bpmn/c8/user-tasks-linear.bpmn",
+            "UserTasksLinearProcess"),
+        Arrays.asList(
+            new MigrationTestProcessInstanceInput(
+                "Advanced to step 2", new HashMap<>(), Arrays.asList(pi -> complete(task()))),
+            new MigrationTestProcessInstanceInput(
+                "Just started", new HashMap<>(), new ArrayList<>())));
+    input.put(
+        new MigrationTestProcessDefinitionInput(
+            "bpmn/c7/user-tasks-parallel.bpmn",
+            "bpmn/c8/user-tasks-parallel.bpmn",
+            "UserTasksParallelProcess"),
+        Arrays.asList(
+            new MigrationTestProcessInstanceInput(
+                "Advanced on both branches",
+                new HashMap<>(),
+                Arrays.asList(
+                    pi -> complete(task(taskQuery().taskName("Task 1A"))),
+                    pi -> complete(task(taskQuery().taskName("Task 1B")))))));
+    input.put(
+        new MigrationTestProcessDefinitionInput(
+            "bpmn/c7/parallel-fork-join.bpmn",
+            "bpmn/c8/parallel-fork-join.bpmn",
+            "ParallelForkJoinProcess"),
+        Arrays.asList(
+            new MigrationTestProcessInstanceInput(
+                "One token on joining gateway",
+                new HashMap<>(),
+                Arrays.asList(pi -> complete(task(taskQuery().taskName("Task A")))))));
+    return input;
+  }
+
   @TestFactory
-  Stream<DynamicTest> shouldMigrateProcess() {
-    return DynamicTest.stream(
-        Stream.of(
-            new MigrationTestInput(
-                "bpmn/c7/user-tasks-linear.bpmn",
-                "bpmn/c8/user-tasks-linear.bpmn",
-                "UserTasksLinearProcess",
-                new HashMap<>(),
-                Arrays.asList(
-                    pi ->
-                        processEngine
-                            .getTaskService()
-                            .complete(
-                                processEngine
-                                    .getTaskService()
-                                    .createTaskQuery()
-                                    .singleResult()
-                                    .getId()))),
-            new MigrationTestInput(
-                "bpmn/c7/user-tasks-parallel.bpmn",
-                "bpmn/c8/user-tasks-parallel.bpmn",
-                "UserTasksParallelProcess",
-                new HashMap<>(),
-                Arrays.asList(
-                    pi ->
-                        processEngine
-                            .getTaskService()
-                            .complete(
-                                processEngine
-                                    .getTaskService()
-                                    .createTaskQuery()
-                                    .taskName("Task 1A")
-                                    .singleResult()
-                                    .getId()),
-                    pi ->
-                        processEngine
-                            .getTaskService()
-                            .complete(
-                                processEngine
-                                    .getTaskService()
-                                    .createTaskQuery()
-                                    .taskName("Task 1B")
-                                    .singleResult()
-                                    .getId())))),
-        input -> input.getC7DiagramResourceName() + " -> " + input.getC8DiagramResourceName(),
-        input -> {
-          deployCamunda7Process(input.getC7DiagramResourceName());
-          ProcessInstance c7Pi =
-              processEngine
-                  .getRuntimeService()
-                  .startProcessInstanceByKey(input.getProcessDefinitionKey());
-          LOG.info("Started C7 process instance {}", c7Pi.getId());
-          input.getProcessSteps().forEach(c -> c.accept(c7Pi));
-          List<String> elementIds =
-              processEngine.getRuntimeService().getActiveActivityIds(c7Pi.getId());
-          LOG.info("Advanced to activities {}", elementIds);
-          // setup c8 engine
-          deployProcessToZeebe(input.getC8DiagramResourceName());
-          // start migration process
-          ProcessInstanceEvent processInstance =
-              processInstanceMigrationStarter.startProcessInstanceMigration(
-                  input.getProcessDefinitionKey());
-          waitForProcessInstanceHasPassedElement(processInstance, "SuspendProcessDefinitionTask");
-          zeebeTestEngine.waitForIdleState(Duration.ofMinutes(5));
-          // select the started c7 instance
-          completeUserTask(
-              Collections.singletonMap(
-                  "camunda7ProcessInstanceIds",
-                  Collections.singletonList(c7Pi.getProcessInstanceId())));
-          // wait until migration is done
-          waitForProcessInstanceCompleted(processInstance, Duration.ofMinutes(5));
-          // assert that the c7 instance was terminated
-          HistoricProcessInstance historicProcessInstance =
-              processEngine
-                  .getHistoryService()
-                  .createHistoricProcessInstanceQuery()
-                  .processInstanceId(c7Pi.getId())
-                  .singleResult();
-          assertThat(historicProcessInstance.getState()).isEqualTo("EXTERNALLY_TERMINATED");
-          // find created c8 instance
-          long camunda8ProcessInstanceKey =
-              getVariableValue(
-                      processInstance.getProcessInstanceKey(), "camunda8ProcessInstanceKey")
-                  .asLong();
-          LOG.info("Started C8 process instance {}", camunda8ProcessInstanceKey);
-          // assert that the c8 process instance key was set as variable before
-          HistoricVariableInstance c8PiKeyInC7 =
-              processEngine
-                  .getHistoryService()
-                  .createHistoricVariableInstanceQuery()
-                  .processInstanceId(c7Pi.getId())
-                  .variableName("camunda8ProcessInstanceKey")
-                  .singleResult();
-          assertThat(c8PiKeyInC7.getValue()).isEqualTo(camunda8ProcessInstanceKey);
-          // assert that the c8 process instance is waiting where the c7 process instance was
-          // stopped
-          BpmnAssert.assertThat(new InspectedProcessInstance(camunda8ProcessInstanceKey))
-              .isWaitingAtElements(elementIds.toArray(new String[] {}));
-          //  assert that the camunda7ProcessInstanceId is available as variable in c8 process
-          String camunda7ProcessInstanceId =
-              getVariableValue(camunda8ProcessInstanceKey, "camunda7ProcessInstanceId").asText();
-          assertThat(camunda7ProcessInstanceId).isEqualTo(c7Pi.getId());
-          zeebeClient.newCancelInstanceCommand(camunda8ProcessInstanceKey).send().join();
-        });
+  Stream<DynamicContainer> shouldMigrateProcessInstances() {
+    Map<MigrationTestProcessDefinitionInput, List<MigrationTestProcessInstanceInput>> inputs =
+        createInput();
+    return inputs.entrySet().stream()
+        .map(
+            (e) -> {
+              MigrationTestProcessDefinitionInput pdInput = e.getKey();
+              return DynamicContainer.dynamicContainer(
+                  pdInput.getC7DiagramResourceName() + " -> " + pdInput.getC8DiagramResourceName(),
+                  e.getValue().stream()
+                      .map(
+                          piInput ->
+                              DynamicTest.dynamicTest(
+                                  piInput.getScenarioName(), () -> realTest(pdInput, piInput)))
+                      .collect(Collectors.toList()));
+            });
+  }
+
+  private void realTest(
+      MigrationTestProcessDefinitionInput pdInput, MigrationTestProcessInstanceInput piInput)
+      throws InterruptedException, TimeoutException {
+    deployCamunda7Process(pdInput.getC7DiagramResourceName());
+    ProcessInstance c7Pi =
+        runtimeService()
+            .startProcessInstanceByKey(pdInput.getBpmnProcessId(), piInput.getVariables());
+    BpmnAwareTests.assertThat(c7Pi);
+    LOG.info("Started C7 process instance {}", c7Pi.getId());
+    piInput.getProcessSteps().forEach(c -> c.accept(c7Pi));
+    List<String> elementIds = runtimeService().getActiveActivityIds(c7Pi.getId());
+    LOG.info("Advanced to activities {}", elementIds);
+    // setup c8 engine
+    deployProcessToZeebe(pdInput.getC8DiagramResourceName());
+    // start migration process
+    PublishMessageResponse startMessage =
+        processInstanceMigrationStarter.startProcessInstanceMigration(pdInput.getBpmnProcessId());
+    zeebeTestEngine.waitForIdleState(Duration.ofMinutes(5));
+    InspectedProcessInstance processInstance =
+        getProcessInstanceKeysForCorrelatedMessage(startMessage);
+    waitForProcessInstanceHasPassedElement(processInstance, "SuspendProcessDefinitionTask");
+    zeebeTestEngine.waitForIdleState(Duration.ofMinutes(5));
+    // select the started c7 instance
+    long jobKey = getTask(processInstance, Duration.ofMinutes(5));
+    selectionService.complete(jobKey, Collections.singletonList(c7Pi.getProcessInstanceId()));
+    // wait until migration is done
+    waitForProcessInstanceCompleted(processInstance, Duration.ofMinutes(5));
+    // assert that the c7 instance was terminated
+    HistoricProcessInstance historicProcessInstance =
+        historyService()
+            .createHistoricProcessInstanceQuery()
+            .processInstanceId(c7Pi.getId())
+            .singleResult();
+    assertThat(historicProcessInstance.getState()).isEqualTo("EXTERNALLY_TERMINATED");
+    // find created c8 instance
+    long camunda8ProcessInstanceKey =
+        getVariableValue(processInstance.getProcessInstanceKey(), "camunda8ProcessInstanceKey")
+            .asLong();
+    LOG.info("Created C8 process instance {}", camunda8ProcessInstanceKey);
+    // assert that the c8 process instance key was set as variable before
+    HistoricVariableInstance c8PiKeyInC7 =
+        historyService()
+            .createHistoricVariableInstanceQuery()
+            .processInstanceId(c7Pi.getId())
+            .variableName("camunda8ProcessInstanceKey")
+            .singleResult();
+    assertThat(c8PiKeyInC7.getValue()).isEqualTo(camunda8ProcessInstanceKey);
+    // assert that the c8 process instance is waiting where the c7 process instance was
+    // stopped
+    BpmnAssert.assertThat(new InspectedProcessInstance(camunda8ProcessInstanceKey))
+        .isWaitingAtElements(elementIds.toArray(new String[] {}));
+    //  assert that the camunda7ProcessInstanceId is available as variable in c8 process
+    String camunda7ProcessInstanceId =
+        getVariableValue(camunda8ProcessInstanceKey, "camunda7ProcessInstanceId").asText();
+    assertThat(camunda7ProcessInstanceId).isEqualTo(c7Pi.getId());
+    zeebeClient.newCancelInstanceCommand(camunda8ProcessInstanceKey).send().join();
+  }
+
+  private long getTask(InspectedProcessInstance processInstance, Duration timeout) {
+    AtomicLong task = new AtomicLong(0);
+    LocalDateTime started = LocalDateTime.now();
+    while (task.get() == 0 && started.plus(timeout).isAfter(LocalDateTime.now())) {
+      selectionService.getTasks(false).stream()
+          .filter(t -> t.getProcessInstanceKey() == processInstance.getProcessInstanceKey())
+          .findFirst()
+          .ifPresent(t -> task.set(t.getJobKey()));
+    }
+    return task.get();
   }
 
   private JsonNode getVariableValue(long processInstanceKey, String variableName) {
@@ -218,7 +248,7 @@ public class ProcessInstanceMigrationAppTest {
 
   @Test
   void shouldConnectToCamunda7() {
-    Camunda7Version version = camunda7Client.getVersion();
+    Camunda7VersionDto version = camunda7Client.getVersion();
     assertThat(version.getVersion()).isEqualTo("7.18.0");
   }
 
@@ -226,11 +256,9 @@ public class ProcessInstanceMigrationAppTest {
   void shouldFindActivityHistory() {
     deployCamunda7Process("bpmn/c7/user-tasks-linear.bpmn");
     ProcessInstance processInstance =
-        processEngine.getRuntimeService().startProcessInstanceByKey("UserTasksLinearProcess");
-    processEngine
-        .getTaskService()
-        .complete(processEngine.getTaskService().createTaskQuery().singleResult().getId());
-    HistoricActivityInstanceQueryResultDto historicActivityInstances =
+        runtimeService().startProcessInstanceByKey("UserTasksLinearProcess");
+    complete(taskQuery().singleResult());
+    List<HistoricActivityInstanceDto> historicActivityInstances =
         camunda7Client.getHistoricActivityInstances(processInstance.getId());
     assertThat(historicActivityInstances)
         .hasSize(3)
@@ -239,64 +267,69 @@ public class ProcessInstanceMigrationAppTest {
         .anyMatch(i -> i.getActivityId().equals("UserTask2Task"));
   }
 
-  private static class MigrationTestInput {
-    private String c7DiagramResourceName;
-    private String c8DiagramResourceName;
-    private String processDefinitionKey;
-    private Map<String, Object> variables;
-    private List<Consumer<ProcessInstance>> processSteps;
+  private InspectedProcessInstance getProcessInstanceKeysForCorrelatedMessage(
+      PublishMessageResponse event) {
+    RecordStream recordStream = RecordStream.of(zeebeTestEngine.getRecordStreamSource());
+    return new InspectedProcessInstance(
+        StreamFilter.messageStartEventSubscription(recordStream)
+            .withMessageKey(event.getMessageKey())
+            .withRejectionType(RejectionType.NULL_VAL)
+            .withIntent(MessageStartEventSubscriptionIntent.CORRELATED)
+            .stream()
+            .map(record -> record.getValue().getProcessInstanceKey())
+            .findFirst()
+            .get());
+  }
 
-    public MigrationTestInput(
-        String c7DiagramResourceName,
-        String c8DiagramResourceName,
-        String processDefinitionKey,
-        Map<String, Object> variables,
-        List<Consumer<ProcessInstance>> processSteps) {
+  private static class MigrationTestProcessDefinitionInput {
+    private final String c7DiagramResourceName;
+    private final String c8DiagramResourceName;
+    private final String bpmnProcessId;
+
+    public MigrationTestProcessDefinitionInput(
+        String c7DiagramResourceName, String c8DiagramResourceName, String bpmnProcessId) {
       this.c7DiagramResourceName = c7DiagramResourceName;
       this.c8DiagramResourceName = c8DiagramResourceName;
-      this.processDefinitionKey = processDefinitionKey;
-      this.variables = variables;
-      this.processSteps = processSteps;
+      this.bpmnProcessId = bpmnProcessId;
     }
 
     public String getC7DiagramResourceName() {
       return c7DiagramResourceName;
     }
 
-    public void setC7DiagramResourceName(String c7DiagramResourceName) {
-      this.c7DiagramResourceName = c7DiagramResourceName;
-    }
-
     public String getC8DiagramResourceName() {
       return c8DiagramResourceName;
     }
 
-    public void setC8DiagramResourceName(String c8DiagramResourceName) {
-      this.c8DiagramResourceName = c8DiagramResourceName;
+    public String getBpmnProcessId() {
+      return bpmnProcessId;
+    }
+  }
+
+  private static class MigrationTestProcessInstanceInput {
+    private final String scenarioName;
+    private final Map<String, Object> variables;
+    private final List<Consumer<ProcessInstance>> processSteps;
+
+    private MigrationTestProcessInstanceInput(
+        String scenarioName,
+        Map<String, Object> variables,
+        List<Consumer<ProcessInstance>> processSteps) {
+      this.scenarioName = scenarioName;
+      this.variables = variables;
+      this.processSteps = processSteps;
     }
 
-    public String getProcessDefinitionKey() {
-      return processDefinitionKey;
-    }
-
-    public void setProcessDefinitionKey(String processDefinitionKey) {
-      this.processDefinitionKey = processDefinitionKey;
+    public String getScenarioName() {
+      return scenarioName;
     }
 
     public Map<String, Object> getVariables() {
       return variables;
     }
 
-    public void setVariables(Map<String, Object> variables) {
-      this.variables = variables;
-    }
-
     public List<Consumer<ProcessInstance>> getProcessSteps() {
       return processSteps;
-    }
-
-    public void setProcessSteps(List<Consumer<ProcessInstance>> processSteps) {
-      this.processSteps = processSteps;
     }
   }
 }
