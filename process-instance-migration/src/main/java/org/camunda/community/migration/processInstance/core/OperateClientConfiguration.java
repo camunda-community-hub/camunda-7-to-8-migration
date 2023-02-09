@@ -37,7 +37,7 @@ public class OperateClientConfiguration {
       return new SimpleAuthentication(
           properties.getAuthentication().getSimple().getUsername(),
           properties.getAuthentication().getSimple().getPassword(),
-          properties.getUrl());
+          properties.getBaseUrl());
     }
     throw new IllegalStateException("No authentication configured for Operate client");
   }
@@ -45,7 +45,7 @@ public class OperateClientConfiguration {
   @Bean
   public CamundaOperateClient operateClient(AuthInterface authentication) throws OperateException {
     return new CamundaOperateClient.Builder()
-        .operateUrl(properties.getUrl())
+        .operateUrl(properties.getBaseUrl())
         .authentication(authentication)
         .build();
   }

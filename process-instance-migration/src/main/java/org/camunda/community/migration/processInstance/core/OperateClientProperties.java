@@ -7,18 +7,18 @@ import org.springframework.context.annotation.Configuration;
 @ConfigurationProperties("operate.client")
 public class OperateClientProperties {
   private final AuthenticationProperties authentication = new AuthenticationProperties();
-  private String url;
+  private String baseUrl;
 
   public AuthenticationProperties getAuthentication() {
     return authentication;
   }
 
-  public String getUrl() {
-    return url;
+  public String getBaseUrl() {
+    return baseUrl;
   }
 
-  public void setUrl(String url) {
-    this.url = url;
+  public void setBaseUrl(String baseUrl) {
+    this.baseUrl = baseUrl;
   }
 
   public static class AuthenticationProperties {
