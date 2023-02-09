@@ -1,11 +1,13 @@
 package org.camunda.community.migration.converter;
 
+import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.stream.Stream;
 import org.camunda.community.migration.converter.expression.ExpressionTransformationResult;
 import org.camunda.community.migration.converter.expression.ExpressionTransformer;
 import org.junit.jupiter.api.DynamicTest;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -62,6 +64,18 @@ public class ExpressionTransformerTest {
             test("${not(empty donut || coffee)}", "=not(donut=null or coffee)")),
         ExpressionTestDataSet::toString,
         this::testExpression);
+  }
+
+  @Test
+  public void testExecution() {
+    assertThat(ExpressionTransformer.hasExecution("${execution.getVariable(\"a\")}")).isTrue();
+    assertThat(ExpressionTransformer.hasExecution("myexecutionContext.isSpecial()")).isFalse();
+  }
+
+  @Test
+  public void testMethodInvocation() {
+    assertThat(ExpressionTransformer.hasMethodInvocation("var.getSomething()")).isTrue();
+    assertThat(ExpressionTransformer.hasMethodInvocation("input > 5.5")).isFalse();
   }
 
   private void testExpression(ExpressionTestDataSet test) {

@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_1o4u5yj" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.7.0" modeler:executionPlatform="Camunda Platform" modeler:executionPlatformVersion="7.18.0">
+  <bpmn:process id="Process_0spzeqd" isExecutable="true">
+    <bpmn:startEvent id="StartEvent_1" name="Severity should be checked">
+      <bpmn:outgoing>Flow_0q0abr8</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:exclusiveGateway id="Gateway_02uaj22" name="What is going on?">
+      <bpmn:incoming>Flow_0q0abr8</bpmn:incoming>
+      <bpmn:outgoing>EasyExpressionSequenceFlow</bpmn:outgoing>
+      <bpmn:outgoing>ExecutionIsUsedSequenceFlow</bpmn:outgoing>
+      <bpmn:outgoing>MethodInvocationIsUsedSequenceFlow</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:sequenceFlow id="Flow_0q0abr8" sourceRef="StartEvent_1" targetRef="Gateway_02uaj22" />
+    <bpmn:endEvent id="Event_0p65fg4" name="Should be INFO">
+      <bpmn:incoming>EasyExpressionSequenceFlow</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="EasyExpressionSequenceFlow" name="Easy expression" sourceRef="Gateway_02uaj22" targetRef="Event_0p65fg4">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${input &gt; 3}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:endEvent id="Event_0rbx3rf" name="Should be TASK for execution">
+      <bpmn:incoming>ExecutionIsUsedSequenceFlow</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="ExecutionIsUsedSequenceFlow" name="Execution is used" sourceRef="Gateway_02uaj22" targetRef="Event_0rbx3rf">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${execution.getVariable("input") != null &amp;&amp; input &gt; 5}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:endEvent id="Event_1nqgwkk" name="Should be TASK for method">
+      <bpmn:incoming>MethodInvocationIsUsedSequenceFlow</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="MethodInvocationIsUsedSequenceFlow" name="Method invocation is used" sourceRef="Gateway_02uaj22" targetRef="Event_1nqgwkk">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${objectVar.getAddress().getStreet() != "main street"}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Process_0spzeqd">
+      <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="StartEvent_1">
+        <dc:Bounds x="179" y="159" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="159" y="202" width="76" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_02uaj22_di" bpmnElement="Gateway_02uaj22" isMarkerVisible="true">
+        <dc:Bounds x="265" y="152" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="246" y="122" width="88" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0p65fg4_di" bpmnElement="Event_0p65fg4">
+        <dc:Bounds x="422" y="159" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="400" y="202" width="80" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0rbx3rf_di" bpmnElement="Event_0rbx3rf">
+        <dc:Bounds x="422" y="272" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="400" y="315" width="81" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1nqgwkk_di" bpmnElement="Event_1nqgwkk">
+        <dc:Bounds x="422" y="382" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="400" y="425" width="81" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_0q0abr8_di" bpmnElement="Flow_0q0abr8">
+        <di:waypoint x="215" y="177" />
+        <di:waypoint x="265" y="177" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1v89h6p_di" bpmnElement="EasyExpressionSequenceFlow">
+        <di:waypoint x="315" y="177" />
+        <di:waypoint x="422" y="177" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="330" y="159" width="81" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0m6beph_di" bpmnElement="ExecutionIsUsedSequenceFlow">
+        <di:waypoint x="290" y="202" />
+        <di:waypoint x="290" y="290" />
+        <di:waypoint x="422" y="290" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="306" y="273" width="87" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_173e4ph_di" bpmnElement="MethodInvocationIsUsedSequenceFlow">
+        <di:waypoint x="290" y="202" />
+        <di:waypoint x="290" y="400" />
+        <di:waypoint x="422" y="400" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="305" y="406" width="90" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

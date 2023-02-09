@@ -136,6 +136,24 @@ public class MessageFactory {
             .build());
   }
 
+  public static Message conditionExpressionExecution(
+      ExpressionTransformationResult transformationResult) {
+    return INSTANCE.composeMessage(
+        "condition-expression-execution",
+        ContextBuilder.builder()
+            .context(expressionTransformationResult(transformationResult))
+            .build());
+  }
+
+  public static Message conditionExpressionMethod(
+      ExpressionTransformationResult transformationResult) {
+    return INSTANCE.composeMessage(
+        "condition-expression-method",
+        ContextBuilder.builder()
+            .context(expressionTransformationResult(transformationResult))
+            .build());
+  }
+
   public static Message inputOutputParameterIsNoExpression(
       String elementLocalName, String parameterName) {
     return INSTANCE.composeMessage(

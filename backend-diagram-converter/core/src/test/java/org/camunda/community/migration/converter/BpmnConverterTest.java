@@ -221,6 +221,27 @@ public class BpmnConverterTest {
     assertThat(messages.get(0).getMessage()).isEqualTo("A Conditional flow is not supported.");
   }
 
+  @Test
+  void testExpressionWithMethodInvocation() {
+    BpmnDiagramCheckResult result = loadAndCheck("expression-method-invocation.bpmn");
+    List<BpmnElementCheckMessage> easyExpressionMessage =
+        result.getResult("EasyExpressionSequenceFlow").getMessages();
+    assertThat(easyExpressionMessage).hasSize(1);
+    assertThat(easyExpressionMessage.get(0).getSeverity()).isEqualTo(Severity.REVIEW);
+    List<BpmnElementCheckMessage> executionIsUsedMessage =
+        result.getResult("ExecutionIsUsedSequenceFlow").getMessages();
+    assertThat(executionIsUsedMessage).hasSize(1);
+    assertThat(executionIsUsedMessage.get(0).getSeverity()).isEqualTo(Severity.TASK);
+    assertThat(executionIsUsedMessage.get(0).getMessage())
+        .contains("'execution' is not available in FEEL");
+    List<BpmnElementCheckMessage> methodInvocationIsUsedMessage =
+        result.getResult("MethodInvocationIsUsedSequenceFlow").getMessages();
+    assertThat(methodInvocationIsUsedMessage).hasSize(1);
+    assertThat(methodInvocationIsUsedMessage.get(0).getSeverity()).isEqualTo(Severity.TASK);
+    assertThat(methodInvocationIsUsedMessage.get(0).getMessage())
+        .contains("Method invocation is not possible in FEEL");
+  }
+
   protected BpmnDiagramCheckResult loadAndCheck(String bpmnFile) {
     ConverterProperties properties = ConverterPropertiesFactory.getInstance().get();
     return loadAndCheckAgainstVersion(bpmnFile, properties.getPlatformVersion());
