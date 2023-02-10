@@ -8,9 +8,9 @@ import io.camunda.operate.search.SearchQuery;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
-import org.camunda.community.migration.processInstance.core.dto.ProcessInstanceDto;
 import org.camunda.community.migration.processInstance.core.dto.ProcessInstanceMigrationStartRequestDto;
 import org.camunda.community.migration.processInstance.core.dto.ProcessInstanceMigrationTaskDto;
+import org.camunda.community.migration.processInstance.core.dto.ProcessInstanceMigrationTaskDto.ProcessInstanceDataDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -67,11 +67,17 @@ public class ProcessInstanceMigrationController {
     dto.setId(task.getJobKey());
     dto.setProcessDefinitionId(task.getProcessDefinitionId());
     dto.setBpmnProcessId(task.getBpmnProcessId());
-    dto.setAvailableProcessInstanceIds(
+    dto.setAvailableProcessInstances(
         camunda7Service
             .getProcessInstancesByProcessDefinitionId(task.getProcessDefinitionId())
             .stream()
-            .map(ProcessInstanceDto::getId)
+            .map(
+                pi -> {
+                  ProcessInstanceDataDto data = new ProcessInstanceDataDto();
+                  data.setId(pi.getId());
+                  data.setBusinessKey(pi.getBusinessKey());
+                  return data;
+                })
             .collect(Collectors.toList()));
     ProcessDefinitionFilter filter = new ProcessDefinitionFilter();
     filter.setBpmnProcessId(task.getBpmnProcessId());

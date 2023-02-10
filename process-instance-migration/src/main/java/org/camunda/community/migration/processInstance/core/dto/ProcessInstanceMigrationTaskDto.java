@@ -8,7 +8,7 @@ public class ProcessInstanceMigrationTaskDto {
   private String bpmnProcessId;
   private String processDefinitionId;
   private Long processDefinitionKey;
-  private List<String> availableProcessInstanceIds;
+  private List<ProcessInstanceDataDto> availableProcessInstances;
   private TaskState state;
 
   public TaskState getState() {
@@ -35,12 +35,12 @@ public class ProcessInstanceMigrationTaskDto {
     this.processDefinitionId = processDefinitionId;
   }
 
-  public List<String> getAvailableProcessInstanceIds() {
-    return availableProcessInstanceIds;
+  public List<ProcessInstanceDataDto> getAvailableProcessInstances() {
+    return availableProcessInstances;
   }
 
-  public void setAvailableProcessInstanceIds(List<String> availableProcessInstanceIds) {
-    this.availableProcessInstanceIds = availableProcessInstanceIds;
+  public void setAvailableProcessInstances(List<ProcessInstanceDataDto> availableProcessInstances) {
+    this.availableProcessInstances = availableProcessInstances;
   }
 
   public Long getProcessDefinitionKey() {
@@ -57,5 +57,26 @@ public class ProcessInstanceMigrationTaskDto {
 
   public void setBpmnProcessId(String bpmnProcessId) {
     this.bpmnProcessId = bpmnProcessId;
+  }
+
+  public static class ProcessInstanceDataDto {
+    private String id;
+    private String businessKey;
+
+    public String getId() {
+      return id;
+    }
+
+    public void setId(String id) {
+      this.id = id;
+    }
+
+    public String getBusinessKey() {
+      return businessKey;
+    }
+
+    public void setBusinessKey(String businessKey) {
+      this.businessKey = businessKey;
+    }
   }
 }
