@@ -282,6 +282,46 @@ public class BpmnConverterTest {
     assertThat(outMappingMessages.get(2).getMessage()).contains("reviewExpected");
   }
 
+  @Test
+  void testMultiInstanceConfigurationWithExecution() {
+    BpmnDiagramCheckResult result = loadAndCheck("expression-method-invocation.bpmn");
+    List<BpmnElementCheckMessage> messages =
+        result.getResult("MultiInstanceConfigurationWithExecutionServiceTask").getMessages();
+    assertThat(messages).hasSize(4);
+    assertThat(messages.get(0).getSeverity()).isEqualTo(Severity.TASK);
+    assertThat(messages.get(0).getMessage()).contains("Collecting results");
+
+    assertThat(messages.get(1).getSeverity()).isEqualTo(Severity.TASK);
+    assertThat(messages.get(1).getMessage())
+        .contains(List.of("collection", "'execution' is not available in FEEL"));
+
+    assertThat(messages.get(2).getSeverity()).isEqualTo(Severity.TASK);
+    assertThat(messages.get(2).getMessage())
+        .contains(List.of("Completion condition", "'execution' is not available in FEEL"));
+
+    assertThat(messages.get(3).getSeverity()).isEqualTo(Severity.INFO);
+  }
+
+  @Test
+  void testMultiInstanceConfigurationWithMethodInvocation() {
+    BpmnDiagramCheckResult result = loadAndCheck("expression-method-invocation.bpmn");
+    List<BpmnElementCheckMessage> messages =
+        result.getResult("MultiInstanceConfigurationWithMethodInvocationServiceTask").getMessages();
+    assertThat(messages).hasSize(4);
+    assertThat(messages.get(0).getSeverity()).isEqualTo(Severity.TASK);
+    assertThat(messages.get(0).getMessage()).contains("Collecting results");
+
+    assertThat(messages.get(1).getSeverity()).isEqualTo(Severity.TASK);
+    assertThat(messages.get(1).getMessage())
+        .contains(List.of("collection", "Method invocation is not possible in FEEL"));
+
+    assertThat(messages.get(2).getSeverity()).isEqualTo(Severity.TASK);
+    assertThat(messages.get(2).getMessage())
+        .contains(List.of("Completion condition", "Method invocation is not possible in FEEL"));
+
+    assertThat(messages.get(3).getSeverity()).isEqualTo(Severity.INFO);
+  }
+
   protected BpmnDiagramCheckResult loadAndCheck(String bpmnFile) {
     ConverterProperties properties = ConverterPropertiesFactory.getInstance().get();
     return loadAndCheckAgainstVersion(bpmnFile, properties.getPlatformVersion());

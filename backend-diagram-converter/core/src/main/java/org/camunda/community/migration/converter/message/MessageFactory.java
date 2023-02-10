@@ -50,6 +50,24 @@ public class MessageFactory {
             .build());
   }
 
+  public static Message completionConditionExecution(
+      ExpressionTransformationResult transformationResult) {
+    return INSTANCE.composeMessage(
+        "completion-condition-execution",
+        ContextBuilder.builder()
+            .context(expressionTransformationResult(transformationResult))
+            .build());
+  }
+
+  public static Message completionConditionMethod(
+      ExpressionTransformationResult transformationResult) {
+    return INSTANCE.composeMessage(
+        "completion-condition-method",
+        ContextBuilder.builder()
+            .context(expressionTransformationResult(transformationResult))
+            .build());
+  }
+
   public static Message candidateGroups(
       String attributeLocalName,
       String elementLocalName,
@@ -108,6 +126,32 @@ public class MessageFactory {
       ExpressionTransformationResult transformationResult) {
     return INSTANCE.composeMessage(
         "collection",
+        ContextBuilder.builder()
+            .context(
+                supportedAttributeExpression(
+                    attributeLocalName, elementLocalName, transformationResult))
+            .build());
+  }
+
+  public static Message collectionExecution(
+      String attributeLocalName,
+      String elementLocalName,
+      ExpressionTransformationResult transformationResult) {
+    return INSTANCE.composeMessage(
+        "collection-execution",
+        ContextBuilder.builder()
+            .context(
+                supportedAttributeExpression(
+                    attributeLocalName, elementLocalName, transformationResult))
+            .build());
+  }
+
+  public static Message collectionMethod(
+      String attributeLocalName,
+      String elementLocalName,
+      ExpressionTransformationResult transformationResult) {
+    return INSTANCE.composeMessage(
+        "collection-method",
         ContextBuilder.builder()
             .context(
                 supportedAttributeExpression(

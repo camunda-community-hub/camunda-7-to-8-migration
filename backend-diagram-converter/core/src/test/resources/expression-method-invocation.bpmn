@@ -5,7 +5,7 @@
       <bpmn:outgoing>Flow_0q0abr8</bpmn:outgoing>
     </bpmn:startEvent>
     <bpmn:exclusiveGateway id="Gateway_02uaj22" name="What is going on?">
-      <bpmn:incoming>Flow_19ic0dl</bpmn:incoming>
+      <bpmn:incoming>Flow_13lx2sc</bpmn:incoming>
       <bpmn:outgoing>EasyExpressionSequenceFlow</bpmn:outgoing>
       <bpmn:outgoing>ExecutionIsUsedSequenceFlow</bpmn:outgoing>
       <bpmn:outgoing>MethodInvocationIsUsedSequenceFlow</bpmn:outgoing>
@@ -30,7 +30,7 @@
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${objectVar.getAddress().getStreet() != "main street"}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="Flow_1co39yo" sourceRef="TaskWithInMappingsServiceTask" targetRef="TaskWithOutMappingsServiceTask" />
-    <bpmn:sequenceFlow id="Flow_19ic0dl" sourceRef="TaskWithOutMappingsServiceTask" targetRef="Gateway_02uaj22" />
+    <bpmn:sequenceFlow id="Flow_19ic0dl" sourceRef="TaskWithOutMappingsServiceTask" targetRef="MultiInstanceConfigurationWithExecutionServiceTask" />
     <bpmn:serviceTask id="TaskWithInMappingsServiceTask" name="Task with in mappings">
       <bpmn:extensionElements>
         <camunda:inputOutput>
@@ -53,6 +53,22 @@
       <bpmn:incoming>Flow_1co39yo</bpmn:incoming>
       <bpmn:outgoing>Flow_19ic0dl</bpmn:outgoing>
     </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_1bmugtj" sourceRef="MultiInstanceConfigurationWithExecutionServiceTask" targetRef="MultiInstanceConfigurationWithMethodInvocationServiceTask" />
+    <bpmn:serviceTask id="MultiInstanceConfigurationWithExecutionServiceTask" name="Multi-instance configuration with execution">
+      <bpmn:incoming>Flow_19ic0dl</bpmn:incoming>
+      <bpmn:outgoing>Flow_1bmugtj</bpmn:outgoing>
+      <bpmn:multiInstanceLoopCharacteristics isSequential="true" camunda:collection="${execution.getVariable(&#34;myList&#34;)}" camunda:elementVariable="theElement">
+        <bpmn:completionCondition xsi:type="bpmn:tFormalExpression">${execution.getVariable("complete") == true}</bpmn:completionCondition>
+      </bpmn:multiInstanceLoopCharacteristics>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_13lx2sc" sourceRef="MultiInstanceConfigurationWithMethodInvocationServiceTask" targetRef="Gateway_02uaj22" />
+    <bpmn:serviceTask id="MultiInstanceConfigurationWithMethodInvocationServiceTask" name="Multi-instance configuration with method invocation">
+      <bpmn:incoming>Flow_1bmugtj</bpmn:incoming>
+      <bpmn:outgoing>Flow_13lx2sc</bpmn:outgoing>
+      <bpmn:multiInstanceLoopCharacteristics isSequential="true" camunda:collection="${myInput.getAdresses().getAll()}" camunda:elementVariable="myElement">
+        <bpmn:completionCondition xsi:type="bpmn:tFormalExpression">${myInput.getComplete()}</bpmn:completionCondition>
+      </bpmn:multiInstanceLoopCharacteristics>
+    </bpmn:serviceTask>
   </bpmn:process>
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Process_0spzeqd">
@@ -62,61 +78,69 @@
           <dc:Bounds x="159" y="202" width="76" height="27" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Gateway_02uaj22_di" bpmnElement="Gateway_02uaj22" isMarkerVisible="true">
-        <dc:Bounds x="605" y="152" width="50" height="50" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="586" y="122" width="88" height="14" />
-        </bpmndi:BPMNLabel>
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Event_0p65fg4_di" bpmnElement="Event_0p65fg4">
-        <dc:Bounds x="762" y="159" width="36" height="36" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="740" y="202" width="80" height="14" />
-        </bpmndi:BPMNLabel>
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Event_0rbx3rf_di" bpmnElement="Event_0rbx3rf">
-        <dc:Bounds x="762" y="272" width="36" height="36" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="740" y="315" width="81" height="27" />
-        </bpmndi:BPMNLabel>
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Event_1nqgwkk_di" bpmnElement="Event_1nqgwkk">
-        <dc:Bounds x="762" y="382" width="36" height="36" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="740" y="425" width="81" height="27" />
-        </bpmndi:BPMNLabel>
-      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_0hq01gs_di" bpmnElement="TaskWithInMappingsServiceTask">
         <dc:Bounds x="280" y="137" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_0p12cmq_di" bpmnElement="TaskWithOutMappingsServiceTask">
         <dc:Bounds x="440" y="137" width="100" height="80" />
       </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0s2g5ax_di" bpmnElement="MultiInstanceConfigurationWithExecutionServiceTask">
+        <dc:Bounds x="600" y="137" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_02uaj22_di" bpmnElement="Gateway_02uaj22" isMarkerVisible="true">
+        <dc:Bounds x="905" y="152" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="886" y="122" width="88" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0p65fg4_di" bpmnElement="Event_0p65fg4">
+        <dc:Bounds x="1062" y="159" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1040" y="202" width="80" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0rbx3rf_di" bpmnElement="Event_0rbx3rf">
+        <dc:Bounds x="1062" y="272" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1040" y="315" width="81" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1nqgwkk_di" bpmnElement="Event_1nqgwkk">
+        <dc:Bounds x="1062" y="382" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1040" y="425" width="81" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1ca4i39_di" bpmnElement="MultiInstanceConfigurationWithMethodInvocationServiceTask">
+        <dc:Bounds x="760" y="137" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="Flow_0q0abr8_di" bpmnElement="Flow_0q0abr8">
         <di:waypoint x="215" y="177" />
         <di:waypoint x="280" y="177" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1v89h6p_di" bpmnElement="EasyExpressionSequenceFlow">
-        <di:waypoint x="655" y="177" />
-        <di:waypoint x="762" y="177" />
+        <di:waypoint x="955" y="177" />
+        <di:waypoint x="1062" y="177" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="670" y="159" width="81" height="14" />
+          <dc:Bounds x="970" y="159" width="81" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0m6beph_di" bpmnElement="ExecutionIsUsedSequenceFlow">
-        <di:waypoint x="630" y="202" />
-        <di:waypoint x="630" y="290" />
-        <di:waypoint x="762" y="290" />
+        <di:waypoint x="930" y="202" />
+        <di:waypoint x="930" y="290" />
+        <di:waypoint x="1062" y="290" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="646" y="273" width="87" height="14" />
+          <dc:Bounds x="946" y="273" width="87" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_173e4ph_di" bpmnElement="MethodInvocationIsUsedSequenceFlow">
-        <di:waypoint x="630" y="202" />
-        <di:waypoint x="630" y="400" />
-        <di:waypoint x="762" y="400" />
+        <di:waypoint x="930" y="202" />
+        <di:waypoint x="930" y="400" />
+        <di:waypoint x="1062" y="400" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="645" y="406" width="90" height="27" />
+          <dc:Bounds x="945" y="406" width="90" height="27" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1co39yo_di" bpmnElement="Flow_1co39yo">
@@ -125,7 +149,15 @@
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_19ic0dl_di" bpmnElement="Flow_19ic0dl">
         <di:waypoint x="540" y="177" />
-        <di:waypoint x="605" y="177" />
+        <di:waypoint x="600" y="177" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1bmugtj_di" bpmnElement="Flow_1bmugtj">
+        <di:waypoint x="700" y="177" />
+        <di:waypoint x="760" y="177" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_13lx2sc_di" bpmnElement="Flow_13lx2sc">
+        <di:waypoint x="860" y="177" />
+        <di:waypoint x="905" y="177" />
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>
