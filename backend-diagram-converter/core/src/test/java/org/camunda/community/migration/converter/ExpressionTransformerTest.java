@@ -68,14 +68,17 @@ public class ExpressionTransformerTest {
 
   @Test
   public void testExecution() {
-    assertThat(ExpressionTransformer.hasExecution("${execution.getVariable(\"a\")}")).isTrue();
-    assertThat(ExpressionTransformer.hasExecution("myexecutionContext.isSpecial()")).isFalse();
+    assertThat(ExpressionTransformer.transform("${execution.getVariable(\"a\")}").hasExecution())
+        .isTrue();
+    assertThat(ExpressionTransformer.transform("myexecutionContext.isSpecial()").hasExecution())
+        .isFalse();
   }
 
   @Test
   public void testMethodInvocation() {
-    assertThat(ExpressionTransformer.hasMethodInvocation("var.getSomething()")).isTrue();
-    assertThat(ExpressionTransformer.hasMethodInvocation("input > 5.5")).isFalse();
+    assertThat(ExpressionTransformer.transform("var.getSomething()").hasMethodInvocation())
+        .isTrue();
+    assertThat(ExpressionTransformer.transform("input > 5.5").hasMethodInvocation()).isFalse();
   }
 
   private void testExpression(ExpressionTestDataSet test) {

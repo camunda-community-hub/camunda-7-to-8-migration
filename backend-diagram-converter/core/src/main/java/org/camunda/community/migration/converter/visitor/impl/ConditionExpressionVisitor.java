@@ -57,9 +57,9 @@ public class ConditionExpressionVisitor extends AbstractBpmnElementVisitor {
     context.addConversion(
         SequenceFlowConvertible.class,
         conversion -> conversion.setConditionExpression(transformationResult.getNewExpression()));
-    if (ExpressionTransformer.hasExecution(expression)) {
+    if (transformationResult.hasExecution()) {
       context.addMessage(MessageFactory.conditionExpressionExecution(transformationResult));
-    } else if (ExpressionTransformer.hasMethodInvocation(expression)) {
+    } else if (transformationResult.hasMethodInvocation()) {
       context.addMessage(MessageFactory.conditionExpressionMethod(transformationResult));
     } else {
       context.addMessage(MessageFactory.conditionExpression(transformationResult));

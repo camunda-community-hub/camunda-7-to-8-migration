@@ -75,16 +75,4 @@ public class ExpressionTransformer {
     }
     return replaced;
   }
-
-  public static boolean hasMethodInvocation(String expression) {
-    Pattern pattern = Pattern.compile("[^\\s]\\.get.*\\(\\)");
-    Matcher m = pattern.matcher(expression);
-    return m.find();
-  }
-
-  public static boolean hasExecution(String expression) {
-    Pattern pattern = Pattern.compile("execution\\.");
-    Matcher m = pattern.matcher(expression);
-    return m.find();
-  }
 }
