@@ -177,6 +177,32 @@ public class MessageFactory {
             .build());
   }
 
+  public static Message inputOutputParameterExecution(
+      String elementLocalName,
+      String parameterName,
+      ExpressionTransformationResult transformationResult) {
+    return INSTANCE.composeMessage(
+        "input-output-parameter-execution",
+        ContextBuilder.builder()
+            .entry("parameterName", parameterName)
+            .context(elementTransformedPrefix(elementLocalName))
+            .context(expressionTransformationResult(transformationResult))
+            .build());
+  }
+
+  public static Message inputOutputParameterMethod(
+      String elementLocalName,
+      String parameterName,
+      ExpressionTransformationResult transformationResult) {
+    return INSTANCE.composeMessage(
+        "input-output-parameter-method",
+        ContextBuilder.builder()
+            .entry("parameterName", parameterName)
+            .context(elementTransformedPrefix(elementLocalName))
+            .context(expressionTransformationResult(transformationResult))
+            .build());
+  }
+
   public static Message localVariablePropagationNotSupported() {
     return INSTANCE.staticMessage("local-variable-propagation-not-supported-hint");
   }
