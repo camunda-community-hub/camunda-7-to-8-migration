@@ -273,5 +273,6 @@
     <module>camunda-7-adapter</module>
     <module>backend-diagram-converter</module>
     <module>example</module>
+    <module>test-example-diagrams</module>
   </modules>
 </project>
