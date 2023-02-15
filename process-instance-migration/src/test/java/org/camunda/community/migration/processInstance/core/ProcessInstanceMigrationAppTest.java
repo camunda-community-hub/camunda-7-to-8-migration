@@ -33,16 +33,22 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.function.Consumer;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import org.apache.commons.collections4.keyvalue.AbstractKeyValue;
+import org.apache.commons.collections4.keyvalue.DefaultMapEntry;
 import org.camunda.bpm.engine.history.HistoricProcessInstance;
 import org.camunda.bpm.engine.history.HistoricVariableInstance;
 import org.camunda.bpm.engine.runtime.ProcessInstance;
 import org.camunda.bpm.engine.test.assertions.bpmn.BpmnAwareTests;
+import org.camunda.community.migration.processInstance.core.dto.ActivityInstanceDto;
 import org.camunda.community.migration.processInstance.core.dto.Camunda7VersionDto;
 import org.camunda.community.migration.processInstance.core.dto.HistoricActivityInstanceDto;
+import org.camunda.community.migration.processInstance.core.dto.VariableInstanceDto;
 import org.camunda.community.migration.processInstance.core.variables.ProcessInstanceMigrationVariables;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -249,6 +255,111 @@ public class ProcessInstanceMigrationAppTest {
   }
 
   @Test
+  void shouldMapMultiInstance() {
+    deployCamunda7Process("bpmn/c7/multi-instance-subprocess.bpmn");
+    ProcessInstance processInstance =
+        runtimeService()
+            .startProcessInstanceByKey(
+                "MultiInstanceProcess", withVariables("collection", Arrays.asList("A", "B", "C")));
+    BpmnAwareTests.assertThat(processInstance).isActive();
+    complete(task());
+    complete(taskQuery().list().get(0), withVariables("result", "D"));
+    complete(taskQuery().list().get(0));
+    complete(task());
+    complete(taskQuery().list().get(0));
+    runtimeService().correlateMessage("some");
+    List<TaskCompletionQuery> tasksToComplete =
+        findTasksToComplete(
+            processInstance.getId(),
+            camunda7Client.getHistoricActivityInstances(processInstance.getId()),
+            getTree(
+                camunda7Client.getActivityInstances(processInstance.getId()),
+                camunda7Client.getVariableInstances(processInstance.getId())));
+    tasksToComplete.forEach(System.out::println);
+  }
+
+  private ActivityTreeElement getTree(
+      ActivityInstanceDto current, List<VariableInstanceDto> variables) {
+    ActivityTreeElement treeElement = new ActivityTreeElement();
+    treeElement.setElement(current);
+    treeElement.setChildren(
+        current.getChildActivityInstances().stream()
+            .map(ai -> getTree(ai, variables))
+            .collect(Collectors.toList()));
+    treeElement.setVariables(
+        variables.stream()
+            .filter(v -> current.getId().equals(v.getActivityInstanceId()))
+            .collect(Collectors.toList()));
+    return treeElement;
+  }
+
+  private List<TaskCompletionQuery> findTasksToComplete(
+      String processInstanceId,
+      List<HistoricActivityInstanceDto> historicActivityInstances,
+      ActivityTreeElement activityTree) {
+    return historicActivityInstances.stream()
+        .filter(hai -> isExecutableActivity(hai.getActivityType()))
+        .filter(this::isCompleted)
+        .map(
+            hai -> {
+              TaskCompletionQuery query = new TaskCompletionQuery();
+              query.setProcessInstanceId(processInstanceId);
+              query.setElementId(hai.getActivityId());
+              query.setIgnoreVariables(
+                  findIgnoreVariables(hai.getActivityId(), activityTree, Collections.emptyMap()));
+              return query;
+            })
+        .collect(Collectors.toList());
+  }
+
+  private boolean isExecutableActivity(String activityType) {
+    return Stream.of("process", "startevent", "endevent", "gateway", "multiinstance")
+        .noneMatch(term -> activityType.toLowerCase().contains(term));
+  }
+
+  private boolean isCompleted(HistoricActivityInstanceDto historicActivityInstance) {
+    return historicActivityInstance.getDurationInMillis() != null;
+  }
+
+  private Map<String, Set<JsonNode>> findIgnoreVariables(
+      String activityId,
+      ActivityTreeElement activityTree,
+      Map<String, Set<JsonNode>> collectedVariables) {
+    Map<String, Set<JsonNode>> variables = new HashMap<>(collectedVariables);
+    variables.putAll(
+        activityTree.getVariables().stream()
+            .filter(v -> isNoControlVariable(v.getName()))
+            .collect(
+                Collectors.groupingBy(
+                    VariableInstanceDto::getName,
+                    Collectors.mapping(VariableInstanceDto::getValue, Collectors.toSet()))));
+    if (activityTree.getElement().getActivityId().equals(activityId)) {
+      return variables;
+    } else if (activityTree.getChildren().isEmpty()) {
+      return Collections.emptyMap();
+    } else {
+      return activityTree.getChildren().stream()
+          .flatMap(
+              e ->
+                  findIgnoreVariables(activityId, e, variables).entrySet().stream()
+                      .flatMap(
+                          en ->
+                              en.getValue().stream()
+                                  .map(v -> new DefaultMapEntry<>(en.getKey(), v))))
+          .collect(
+              Collectors.groupingBy(
+                  AbstractKeyValue::getKey,
+                  Collectors.mapping(AbstractKeyValue::getValue, Collectors.toSet())));
+    }
+  }
+
+  private boolean isNoControlVariable(String variableName) {
+    return !Arrays.asList(
+            "nrOfActiveInstances", "loopCounter", "nrOfInstances", "nrOfCompletedInstances")
+        .contains(variableName);
+  }
+
+  @Test
   void shouldMapOnlyNonNullFields() {
     ProcessInstanceMigrationVariables variables = new ProcessInstanceMigrationVariables();
     String json = jsonMapper.toJson(variables);
@@ -268,6 +379,80 @@ public class ProcessInstanceMigrationAppTest {
             .map(record -> record.getValue().getProcessInstanceKey())
             .findFirst()
             .get());
+  }
+
+  private static class TaskCompletionQuery {
+    private String processInstanceId;
+    private String elementId;
+    private Map<String, Set<JsonNode>> ignoreVariables;
+
+    public String getProcessInstanceId() {
+      return processInstanceId;
+    }
+
+    public void setProcessInstanceId(String processInstanceId) {
+      this.processInstanceId = processInstanceId;
+    }
+
+    public String getElementId() {
+      return elementId;
+    }
+
+    public void setElementId(String elementId) {
+      this.elementId = elementId;
+    }
+
+    public Map<String, Set<JsonNode>> getIgnoreVariables() {
+      return ignoreVariables;
+    }
+
+    public void setIgnoreVariables(Map<String, Set<JsonNode>> ignoreVariables) {
+      this.ignoreVariables = ignoreVariables;
+    }
+
+    @Override
+    public String toString() {
+      return "TaskCompletionQuery{"
+          + "processInstanceId='"
+          + processInstanceId
+          + '\''
+          + ", elementId='"
+          + elementId
+          + '\''
+          + ", ignoreVariables="
+          + ignoreVariables
+          + '}';
+    }
+  }
+
+  private static class ActivityTreeElement {
+    private ActivityInstanceDto element;
+    private List<ActivityTreeElement> children;
+    private List<VariableInstanceDto> variables;
+
+    public ActivityInstanceDto getElement() {
+      return element;
+    }
+
+    public void setElement(ActivityInstanceDto element) {
+      this.element = element;
+    }
+
+    public List<ActivityTreeElement> getChildren() {
+      return children;
+    }
+
+    public void setChildren(List<ActivityTreeElement> children) {
+      this.children = children;
+    }
+
+    public List<VariableInstanceDto> getVariables() {
+      return variables;
+    }
+
+    public void setVariables(List<VariableInstanceDto> variables) {
+      this.variables = variables;
+    }
   }
 
   private static class MigrationTestProcessDefinitionInput {

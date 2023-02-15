@@ -8,10 +8,14 @@ import org.camunda.community.migration.processInstance.core.dto.ActivityInstance
 import org.camunda.community.migration.processInstance.core.dto.Camunda7VersionDto;
 import org.camunda.community.migration.processInstance.core.dto.HistoricActivityInstanceDto;
 import org.camunda.community.migration.processInstance.core.dto.HistoricActivityInstanceDto.HistoricActivityInstanceQueryResultDto;
+import org.camunda.community.migration.processInstance.core.dto.HistoricVariableInstanceDto;
+import org.camunda.community.migration.processInstance.core.dto.HistoricVariableInstanceDto.HistoricVariableInstanceQueryResultDto;
 import org.camunda.community.migration.processInstance.core.dto.ProcessDefinitionDto;
 import org.camunda.community.migration.processInstance.core.dto.ProcessDefinitionDto.ProcessDefinitionQueryResultDto;
 import org.camunda.community.migration.processInstance.core.dto.ProcessInstanceDto;
 import org.camunda.community.migration.processInstance.core.dto.ProcessInstanceDto.ProcessInstanceQueryResultDto;
+import org.camunda.community.migration.processInstance.core.dto.VariableInstanceDto;
+import org.camunda.community.migration.processInstance.core.dto.VariableInstanceDto.VariableInstanceQueryResultDto;
 import org.camunda.community.migration.processInstance.core.dto.VariableValueDto;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpMethod;
@@ -20,6 +24,9 @@ import org.springframework.web.client.RestTemplate;
 
 @Component
 public class Camunda7Client {
+  private static final String QUERY_PROCESS_INSTANCE = "/process-instance";
+  private static final String QUERY_VARIABLE_INSTANCE =
+      "/variable-instance?processInstanceId={processInstanceId}";
   private static final String PROCESS_INSTANCE = "/process-instance/{id}";
   private static final String PROCESS_INSTANCE_VARIABLES = PROCESS_INSTANCE + "/variables";
   private static final String ACTIVITY_INSTANCES = PROCESS_INSTANCE + "/activity-instances";
@@ -31,6 +38,8 @@ public class Camunda7Client {
   private static final String HISTORY = "/history";
   private static final String HISTORIC_ACTIVITY_INSTANCE =
       HISTORY + "/activity-instance?processInstanceId={processInstanceId}";
+  private static final String HISTORIC_VARIABLE_INSTANCE =
+      HISTORY + "/variable-instance?processInstanceId={processInstanceId}";
   private static final String PROCESS_INSTANCE_VARIABLE =
       "/process-instance/{id}/variables/{varName}";
   private static final String PROCESS_INSTANCE_LIST =
@@ -118,5 +127,23 @@ public class Camunda7Client {
         PROCESS_DEFINITION_LATEST_BY_KEY,
         ProcessDefinitionQueryResultDto.class,
         Collections.singletonMap("processDefinitionKey", processDefinitionKey));
+  }
+
+  public List<ProcessInstanceDto> getProcessInstances() {
+    return restTemplate.getForObject(QUERY_PROCESS_INSTANCE, ProcessInstanceQueryResultDto.class);
+  }
+
+  public List<HistoricVariableInstanceDto> getHistoricVariables(String processInstanceId) {
+    return restTemplate.getForObject(
+        HISTORIC_VARIABLE_INSTANCE,
+        HistoricVariableInstanceQueryResultDto.class,
+        Collections.singletonMap("processInstanceId", processInstanceId));
+  }
+
+  public List<VariableInstanceDto> getVariableInstances(String processInstanceId) {
+    return restTemplate.getForObject(
+        QUERY_VARIABLE_INSTANCE,
+        VariableInstanceQueryResultDto.class,
+        Collections.singletonMap("processInstanceId", processInstanceId));
   }
 }

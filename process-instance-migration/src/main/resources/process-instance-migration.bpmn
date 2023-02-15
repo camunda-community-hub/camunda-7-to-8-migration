@@ -39,16 +39,6 @@
       <bpmn:incoming>Flow_1f3mszq</bpmn:incoming>
       <bpmn:outgoing>Flow_1gsrqvj</bpmn:outgoing>
     </bpmn:userTask>
-    <bpmn:endEvent id="ProcessInstanceMigrationDoneEndEvent" name="Process Instance Migration done">
-      <bpmn:incoming>Flow_08tz0d7</bpmn:incoming>
-    </bpmn:endEvent>
-    <bpmn:serviceTask id="ContinueProcessDefinitionTask" name="Continue process definition">
-      <bpmn:extensionElements>
-        <zeebe:taskDefinition type="camunda7:continue" />
-      </bpmn:extensionElements>
-      <bpmn:incoming>Flow_05eic6u</bpmn:incoming>
-      <bpmn:outgoing>Flow_08tz0d7</bpmn:outgoing>
-    </bpmn:serviceTask>
     <bpmn:serviceTask id="Activity_1gyfftb" name="Get versioned process information">
       <bpmn:extensionElements>
         <zeebe:taskDefinition type="camunda7:versionedInformation" />
@@ -137,12 +127,22 @@
       <bpmn:outgoing>Flow_1srfdoc</bpmn:outgoing>
       <bpmn:messageEventDefinition id="MessageEventDefinition_12vyylp" messageRef="Message_3iurpm1" />
     </bpmn:startEvent>
+    <bpmn:serviceTask id="ContinueProcessDefinitionTask" name="Continue process definition">
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="camunda7:continue" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_05eic6u</bpmn:incoming>
+      <bpmn:outgoing>Flow_08tz0d7</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:endEvent id="ProcessInstanceMigrationDoneEndEvent" name="Process Instance Migration done">
+      <bpmn:incoming>Flow_08tz0d7</bpmn:incoming>
+    </bpmn:endEvent>
   </bpmn:process>
   <bpmn:message id="Message_3iurpm1" name="migration.camunda:start" />
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Collaboration_0votdqa">
       <bpmndi:BPMNShape id="Participant_1d380cr_di" bpmnElement="ProcessInstanceMigrationParticipant" isHorizontal="true">
-        <dc:Bounds x="160" y="210" width="2110" height="420" />
+        <dc:Bounds x="160" y="210" width="2040" height="420" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_0vgpttv_di" bpmnElement="CheckIfProcessDefinitionIsConvertedTask">
@@ -171,12 +171,6 @@
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_0rmyeew_di" bpmnElement="Activity_1gyfftb">
         <dc:Bounds x="320" y="367" width="100" height="80" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Event_00xp16h_di" bpmnElement="ProcessInstanceMigrationRequiredStartEvent">
-        <dc:Bounds x="222" y="389" width="36" height="36" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="196" y="432" width="89" height="27" />
-        </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_0t140u7_di" bpmnElement="MigrateProcessInstancesSubProcess" isExpanded="true">
         <dc:Bounds x="1270" y="302" width="630" height="210" />
@@ -227,6 +221,12 @@
         <dc:Bounds x="755" y="382" width="50" height="50" />
         <bpmndi:BPMNLabel>
           <dc:Bounds x="752" y="345" width="55" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_00xp16h_di" bpmnElement="ProcessInstanceMigrationRequiredStartEvent">
+        <dc:Bounds x="222" y="389" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="196" y="432" width="89" height="27" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="Flow_03ug8sp_di" bpmnElement="Flow_03ug8sp">
@@ -288,7 +288,7 @@
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Participant_0pa0l8f_di" bpmnElement="Camunda8Participant" isHorizontal="true">
-        <dc:Bounds x="590" y="80" width="1090" height="60" />
+        <dc:Bounds x="590" y="80" width="1400" height="60" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="Flow_0cphhn7_di" bpmnElement="Flow_0cphhn7">
