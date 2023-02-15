@@ -8,3 +8,4 @@ target
 *.db
 *.iml
 *.factorypath
+.DS_Store
