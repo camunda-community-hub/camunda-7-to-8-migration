@@ -78,6 +78,14 @@ public class ExpressionTransformerTest {
   public void testMethodInvocation() {
     assertThat(ExpressionTransformer.transform("var.getSomething()").hasMethodInvocation())
         .isTrue();
+    assertThat(
+            ExpressionTransformer.transform("${!dauerbuchungVoat21Ids.isEmpty()}")
+                .hasMethodInvocation())
+        .isTrue();
+    assertThat(
+            ExpressionTransformer.transform("${!dauerbuchungVoat21Ids.contains(\"someText\")}")
+                .hasMethodInvocation())
+        .isTrue();
     assertThat(ExpressionTransformer.transform("input > 5.5").hasMethodInvocation()).isFalse();
   }
 

@@ -24,7 +24,7 @@ public class ExpressionTransformationResult {
   }
 
   public Boolean hasMethodInvocation() {
-    Pattern pattern = Pattern.compile("[^\\s]\\.get.*\\(\\)");
+    Pattern pattern = Pattern.compile("\\.[\\w]*\\(.*\\)");
     Matcher m = pattern.matcher(oldExpression);
     return m.find();
   }
