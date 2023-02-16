@@ -7,6 +7,9 @@ public class ExpressionTransformationResult {
   private String oldExpression;
   private String newExpression;
 
+  private static Pattern methodInvocationPattern = Pattern.compile("\\.[\\w]*\\(.*\\)");
+  private static Pattern executionPattern = Pattern.compile("execution\\.");
+
   public String getOldExpression() {
     return oldExpression;
   }
@@ -24,14 +27,12 @@ public class ExpressionTransformationResult {
   }
 
   public Boolean hasMethodInvocation() {
-    Pattern pattern = Pattern.compile("\\.[\\w]*\\(.*\\)");
-    Matcher m = pattern.matcher(oldExpression);
+    Matcher m = methodInvocationPattern.matcher(oldExpression);
     return m.find();
   }
 
   public Boolean hasExecution() {
-    Pattern pattern = Pattern.compile("execution\\.");
-    Matcher m = pattern.matcher(oldExpression);
+    Matcher m = executionPattern.matcher(oldExpression);
     return m.find();
   }
 }

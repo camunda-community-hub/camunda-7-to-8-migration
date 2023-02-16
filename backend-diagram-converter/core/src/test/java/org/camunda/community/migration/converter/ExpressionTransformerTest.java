@@ -7,13 +7,11 @@ import java.util.stream.Stream;
 import org.camunda.community.migration.converter.expression.ExpressionTransformationResult;
 import org.camunda.community.migration.converter.expression.ExpressionTransformer;
 import org.junit.jupiter.api.DynamicTest;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestFactory;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 
 public class ExpressionTransformerTest {
-  private static final Logger LOG = LoggerFactory.getLogger(ExpressionTransformerTest.class);
 
   private static ExpressionTestDataSet test(String expression, String expectedResult) {
     ExpressionTestDataSet set = new ExpressionTestDataSet();
@@ -66,27 +64,24 @@ public class ExpressionTransformerTest {
         this::testExpression);
   }
 
-  @Test
-  public void testExecution() {
-    assertThat(ExpressionTransformer.transform("${execution.getVariable(\"a\")}").hasExecution())
-        .isTrue();
-    assertThat(ExpressionTransformer.transform("myexecutionContext.isSpecial()").hasExecution())
-        .isFalse();
+  @ParameterizedTest
+  @CsvSource(
+      value = {"${execution.getVariable(\"a\")}, true", "myexecutionContext.isSpecial(), false"})
+  public void testExecution(String expression, Boolean expected) {
+    assertThat(ExpressionTransformer.transform(expression).hasExecution()).isEqualTo(expected);
   }
 
-  @Test
-  public void testMethodInvocation() {
-    assertThat(ExpressionTransformer.transform("var.getSomething()").hasMethodInvocation())
-        .isTrue();
-    assertThat(
-            ExpressionTransformer.transform("${!dauerbuchungVoat21Ids.isEmpty()}")
-                .hasMethodInvocation())
-        .isTrue();
-    assertThat(
-            ExpressionTransformer.transform("${!dauerbuchungVoat21Ids.contains(\"someText\")}")
-                .hasMethodInvocation())
-        .isTrue();
-    assertThat(ExpressionTransformer.transform("input > 5.5").hasMethodInvocation()).isFalse();
+  @ParameterizedTest
+  @CsvSource(
+      value = {
+        "var.getSomething(),true",
+        "${!dauerbuchungVoat21Ids.isEmpty()}, true",
+        "${!dauerbuchungVoat21Ids.contains(\"someText\")}, true",
+        "input > 5.5, false"
+      })
+  public void testMethodInvocation(String expression, Boolean expected) {
+    assertThat(ExpressionTransformer.transform(expression).hasMethodInvocation())
+        .isEqualTo(expected);
   }
 
   private void testExpression(ExpressionTestDataSet test) {
