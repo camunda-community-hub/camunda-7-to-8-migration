@@ -18,3 +18,4 @@ operate:
 camunda7:
   client:
     base-url: http://localhost:8080/engine-rest
+    check-on-init: true
