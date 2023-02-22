@@ -1,0 +1,16 @@
+{
+  "name": "Parallel User Task",
+  "processId": "ParallelUserTask",
+  "executions": [
+    {
+      "name": "Parallel User Task",
+      "steps": [
+        {
+          "type": "STARTEVENT",
+          "activityId": "Start_ParallelUserTask",
+          "variables": {}
+        }
+      ]
+    }
+  ]
+}
