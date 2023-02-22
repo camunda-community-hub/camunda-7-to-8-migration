@@ -20,7 +20,7 @@
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Collaboration_0e0h89z">
       <bpmndi:BPMNShape id="Participant_1ic0c6g_di" bpmnElement="Participant_1ic0c6g" isHorizontal="true">
-        <dc:Bounds x="129" y="100" width="600" height="170" />
+        <dc:Bounds x="129" y="100" width="600" height="258" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="Start_SimpleUserTask">
