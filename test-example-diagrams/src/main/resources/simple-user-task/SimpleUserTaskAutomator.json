@@ -1,0 +1,17 @@
+{
+  "name": "Simple User Task",
+  "processId": "SimpleUserTask",
+  "modeVerification": "STRICT",
+  "executions": [
+    {
+      "name": "Load UserTask",
+      "steps": [
+        {
+          "type": "STARTEVENT",
+          "activityId": "Start_SimpleUserTask",
+          "variables": {}
+        }
+      ]
+    }
+  ]
+}
