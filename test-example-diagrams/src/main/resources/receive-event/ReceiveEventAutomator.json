@@ -1,0 +1,22 @@
+{
+  "name": "Receive Event",
+  "processId": "ReceiveEvent",
+  "executions": [
+    {
+      "name": "Receive event",
+      "steps": [
+        {
+          "type": "STARTEVENT",
+          "activityId": "Start_ReceiveEvent",
+          "variables": {}
+        },
+        {
+          "type": "USERTASK",
+          "delay": "PT0.1S",
+          "activityId": "Activity_Review_1",
+          "variables": {}
+        }
+      ]
+    }
+  ]
+}
