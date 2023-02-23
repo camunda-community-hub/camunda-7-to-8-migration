@@ -131,6 +131,10 @@ public class ProcessInstanceMigrationAppTest {
       if (jobQuery().active().processInstanceId(processInstance.getId()).count() == 0) {
         return;
       }
+      try {
+        Thread.sleep(500L);
+      } catch (InterruptedException ignored) {
+      }
     }
     throw new RuntimeException("Timed out");
   }
