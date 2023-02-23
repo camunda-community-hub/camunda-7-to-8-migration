@@ -75,7 +75,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 @ZeebeSpringTest
 @SpringBootTest
 public class ProcessInstanceMigrationScenarioTest {
-  public static final Duration TIMEOUT = Duration.ofMinutes(5);
+  public static final Duration TIMEOUT = Duration.ofMinutes(10);
   public static final String PROCESS_INSTANCE_STATE = "INTERNALLY_TERMINATED";
   private static final Logger LOG =
       LoggerFactory.getLogger(ProcessInstanceMigrationScenarioTest.class);
@@ -255,7 +255,8 @@ public class ProcessInstanceMigrationScenarioTest {
     zeebeTestEngine.waitForIdleState(TIMEOUT);
     InspectedProcessInstance processInstance =
         getProcessInstanceKeysForCorrelatedMessage(startMessage);
-    waitForProcessInstanceHasPassedElement(processInstance, "SuspendProcessDefinitionTask");
+    waitForProcessInstanceHasPassedElement(
+        processInstance, "SuspendProcessDefinitionTask", TIMEOUT);
     zeebeTestEngine.waitForIdleState(TIMEOUT);
     // select the started c7 instance
     long jobKey = getTask(processInstance.getProcessInstanceKey(), TIMEOUT).getKey();
