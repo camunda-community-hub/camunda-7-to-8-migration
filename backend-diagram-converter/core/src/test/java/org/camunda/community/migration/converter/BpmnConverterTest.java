@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import java.io.ByteArrayInputStream;
 import java.io.StringWriter;
+import java.util.Arrays;
 import java.util.List;
 import org.camunda.bpm.model.bpmn.Bpmn;
 import org.camunda.bpm.model.bpmn.BpmnModelInstance;
@@ -253,11 +254,13 @@ public class BpmnConverterTest {
 
     assertThat(inMappingMessages.get(0).getSeverity()).isEqualTo(Severity.TASK);
     assertThat(inMappingMessages.get(0).getMessage())
-        .contains(List.of("taskForMethodExpected", "Method invocation is not possible in FEEL"));
+        .contains(
+            Arrays.asList("taskForMethodExpected", "Method invocation is not possible in FEEL"));
 
     assertThat(inMappingMessages.get(1).getSeverity()).isEqualTo(Severity.TASK);
     assertThat(inMappingMessages.get(1).getMessage())
-        .contains(List.of("taskForExecutionExpected", "'execution' is not available in FEEL"));
+        .contains(
+            Arrays.asList("taskForExecutionExpected", "'execution' is not available in FEEL"));
 
     assertThat(inMappingMessages.get(2).getSeverity()).isEqualTo(Severity.REVIEW);
     assertThat(inMappingMessages.get(2).getMessage()).contains("reviewExpected");
@@ -272,11 +275,13 @@ public class BpmnConverterTest {
 
     assertThat(outMappingMessages.get(0).getSeverity()).isEqualTo(Severity.TASK);
     assertThat(outMappingMessages.get(0).getMessage())
-        .contains(List.of("taskForMethodExpected", "Method invocation is not possible in FEEL"));
+        .contains(
+            Arrays.asList("taskForMethodExpected", "Method invocation is not possible in FEEL"));
 
     assertThat(outMappingMessages.get(1).getSeverity()).isEqualTo(Severity.TASK);
     assertThat(outMappingMessages.get(1).getMessage())
-        .contains(List.of("taskForExecutionExpected", "'execution' is not available in FEEL"));
+        .contains(
+            Arrays.asList("taskForExecutionExpected", "'execution' is not available in FEEL"));
 
     assertThat(outMappingMessages.get(2).getSeverity()).isEqualTo(Severity.REVIEW);
     assertThat(outMappingMessages.get(2).getMessage()).contains("reviewExpected");
@@ -293,11 +298,11 @@ public class BpmnConverterTest {
 
     assertThat(messages.get(1).getSeverity()).isEqualTo(Severity.TASK);
     assertThat(messages.get(1).getMessage())
-        .contains(List.of("collection", "'execution' is not available in FEEL"));
+        .contains(Arrays.asList("collection", "'execution' is not available in FEEL"));
 
     assertThat(messages.get(2).getSeverity()).isEqualTo(Severity.TASK);
     assertThat(messages.get(2).getMessage())
-        .contains(List.of("Completion condition", "'execution' is not available in FEEL"));
+        .contains(Arrays.asList("Completion condition", "'execution' is not available in FEEL"));
 
     assertThat(messages.get(3).getSeverity()).isEqualTo(Severity.INFO);
   }
@@ -313,11 +318,12 @@ public class BpmnConverterTest {
 
     assertThat(messages.get(1).getSeverity()).isEqualTo(Severity.TASK);
     assertThat(messages.get(1).getMessage())
-        .contains(List.of("collection", "Method invocation is not possible in FEEL"));
+        .contains(Arrays.asList("collection", "Method invocation is not possible in FEEL"));
 
     assertThat(messages.get(2).getSeverity()).isEqualTo(Severity.TASK);
     assertThat(messages.get(2).getMessage())
-        .contains(List.of("Completion condition", "Method invocation is not possible in FEEL"));
+        .contains(
+            Arrays.asList("Completion condition", "Method invocation is not possible in FEEL"));
 
     assertThat(messages.get(3).getSeverity()).isEqualTo(Severity.INFO);
   }

@@ -1,124 +1,112 @@
 package org.camunda.community.migration.converter;
 
 import static org.assertj.core.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.*;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.stream.Stream;
 import org.camunda.community.migration.converter.expression.ExpressionTransformationResult;
 import org.camunda.community.migration.converter.expression.ExpressionTransformer;
+import org.junit.jupiter.api.DynamicContainer;
 import org.junit.jupiter.api.DynamicTest;
 import org.junit.jupiter.api.TestFactory;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.CsvSource;
 
 public class ExpressionTransformerTest {
 
-  private static ExpressionTestDataSet test(String expression, String expectedResult) {
-    ExpressionTestDataSet set = new ExpressionTestDataSet();
-    set.expectedResult = expectedResult;
-    set.expression = expression;
-    return set;
+  private static ExpressionTestBuilder expression(String expression) {
+    return new ExpressionTestBuilder(expression);
   }
 
   @TestFactory
-  public Stream<DynamicTest> shouldResolveExpression() {
-    return DynamicTest.stream(
-        Stream.of(
-            test("${someVariable}", "=someVariable"),
-            test("someStaticValue", "someStaticValue"),
-            test("${var.innerField}", "=var.innerField"),
-            test("hello-${World}", "=\"hello-\" + World"),
-            test("#{x}", "=x"),
-            test("${x}", "=x"),
-            test("#{x>5}", "=x>5"),
-            test("#{x gt 5}", "=x > 5"),
-            test("#{x < 5}", "=x < 5"),
-            test("#{x lt 5}", "=x < 5"),
-            test("#{x==5}", "=x=5"),
-            test("#{x!=5}", "=x!=5"),
-            test("#{x eq 5}", "=x = 5"),
-            test("#{x ne 5}", "=x != 5"),
-            test("#{x == \"test\"}", "=x = \"test\""),
-            test("#{true}", "=true"),
-            test("${false}", "=false"),
-            test("#{!x}", "=not(x)"),
-            test("${!x and y}", "=not(x) and y"),
-            test("${!(x and y)}", "=not(x and y)"),
-            test("#{!true}", "=not(true)"),
-            test("#{not(x>5)}", "=not(x>5)"),
-            test("${not x}", "=not(x)"),
-            test("#{x && y}", "=x and y"),
-            test("#{x and y}", "=x and y"),
-            test("#{x || y}", "=x or y"),
-            test("#{x or y}", "=x or y"),
-            test("#{customer.name}", "=customer.name"),
-            test("#{customer.address[\"street\"]}", "=customer.address.street"),
-            test("#{customer.orders[1]}", "=customer.orders[2]"),
-            test("${not empty x}", "=not(x=null)"),
-            test("${empty donut}", "=donut=null"),
-            test("${!empty donut}", "=not(donut=null)"),
-            test("${empty donut || coffee}", "=donut=null or coffee"),
-            test("${not empty donut || coffee}", "=not(donut=null) or coffee"),
-            test("${not(empty donut || coffee)}", "=not(donut=null or coffee)")),
-        ExpressionTestDataSet::toString,
-        this::testExpression);
+  public Stream<DynamicContainer> shouldResolveExpression() {
+    return Stream.of(
+            expression("${someVariable}").hasResult("=someVariable"),
+            expression("someStaticValue").hasResult("someStaticValue"),
+            expression("${var.innerField}").hasResult("=var.innerField"),
+            expression("hello-${World}").hasResult("=\"hello-\" + World"),
+            expression("#{x}").hasResult("=x"),
+            expression("${x}").hasResult("=x"),
+            expression("#{x>5}").hasResult("=x>5"),
+            expression("#{x gt 5}").hasResult("=x > 5"),
+            expression("#{x < 5}").hasResult("=x < 5"),
+            expression("#{x lt 5}").hasResult("=x < 5"),
+            expression("#{x==5}").hasResult("=x=5"),
+            expression("#{x!=5}").hasResult("=x!=5"),
+            expression("#{x eq 5}").hasResult("=x = 5"),
+            expression("#{x ne 5}").hasResult("=x != 5"),
+            expression("#{x == \"test\"}").hasResult("=x = \"test\""),
+            expression("#{true}").hasResult("=true"),
+            expression("${false}").hasResult("=false"),
+            expression("#{!x}").hasResult("=not(x)"),
+            expression("${!x and y}").hasResult("=not(x) and y"),
+            expression("${!(x and y)}").hasResult("=not(x and y)"),
+            expression("#{!true}").hasResult("=not(true)"),
+            expression("#{not(x>5)}").hasResult("=not(x>5)"),
+            expression("${not x}").hasResult("=not(x)"),
+            expression("#{x && y}").hasResult("=x and y"),
+            expression("#{x and y}").hasResult("=x and y"),
+            expression("#{x || y}").hasResult("=x or y"),
+            expression("#{x or y}").hasResult("=x or y"),
+            expression("#{customer.name}").hasResult("=customer.name"),
+            expression("#{customer.address[\"street\"]}").hasResult("=customer.address.street"),
+            expression("#{customer.orders[1]}").hasResult("=customer.orders[2]"),
+            expression("${not empty x}").hasResult("=not(x=null)"),
+            expression("${empty donut}").hasResult("=donut=null"),
+            expression("${!empty donut}").hasResult("=not(donut=null)"),
+            expression("${empty donut || coffee}").hasResult("=donut=null or coffee"),
+            expression("${not empty donut || coffee}").hasResult("=not(donut=null) or coffee"),
+            expression("${not(empty donut || coffee)}").hasResult("=not(donut=null or coffee)"),
+            expression("${execution.getVariable(\"a\")}").hasUsedExecution(true),
+            expression("${myexecutionContext.isSpecial()}").hasUsedExecution(false),
+            expression("${var.getSomething()}").hasMethodInvocation(true),
+            expression("${!dauerbuchungVoat21Ids.isEmpty()}").hasMethodInvocation(true),
+            expression("${!dauerbuchungVoat21Ids.contains(\"someText\")}")
+                .hasMethodInvocation(true),
+            expression("${input > 5.5}").hasMethodInvocation(false))
+        .map(
+            data ->
+                DynamicContainer.dynamicContainer(
+                    data.getResult().getOldExpression(), data.getTests()));
   }
 
-  @ParameterizedTest
-  @CsvSource(
-      value = {"${execution.getVariable(\"a\")}, true", "myexecutionContext.isSpecial(), false"})
-  public void testExecution(String expression, Boolean expected) {
-    assertThat(ExpressionTransformer.transform(expression).hasExecution()).isEqualTo(expected);
-  }
+  private static class ExpressionTestBuilder {
+    private final ExpressionTransformationResult result;
+    private final List<DynamicTest> tests = new ArrayList<>();
 
-  @ParameterizedTest
-  @CsvSource(
-      value = {
-        "var.getSomething(),true",
-        "${!dauerbuchungVoat21Ids.isEmpty()}, true",
-        "${!dauerbuchungVoat21Ids.contains(\"someText\")}, true",
-        "input > 5.5, false"
-      })
-  public void testMethodInvocation(String expression, Boolean expected) {
-    assertThat(ExpressionTransformer.transform(expression).hasMethodInvocation())
-        .isEqualTo(expected);
-  }
+    public ExpressionTestBuilder(String expression) {
+      this.result = ExpressionTransformer.transform(expression);
+    }
 
-  private void testExpression(ExpressionTestDataSet test) {
-    ExpressionTransformationResult transformationResult =
-        ExpressionTransformer.transform(test.expression);
-    assertEquals(test.expectedResult, transformationResult.getNewExpression());
-  }
+    public ExpressionTransformationResult getResult() {
+      return result;
+    }
 
-  public static class ExpressionTestDataSet {
-    String expression;
-    String expectedResult;
+    public List<DynamicTest> getTests() {
+      return tests;
+    }
 
-    @Override
-    public String toString() {
-      return expression + " => " + expectedResult;
+    public ExpressionTestBuilder hasResult(String expectedResult) {
+      tests.add(
+          DynamicTest.dynamicTest(
+              "Expect Result: '" + expectedResult + "'",
+              () -> assertThat(result.getNewExpression()).isEqualTo(expectedResult)));
+      return this;
+    }
+
+    public ExpressionTestBuilder hasMethodInvocation(boolean expected) {
+      tests.add(
+          DynamicTest.dynamicTest(
+              String.format("Expect %s method invocation", expected ? "a" : "no"),
+              () -> assertThat(result.hasMethodInvocation()).isEqualTo(expected)));
+      return this;
+    }
+
+    public ExpressionTestBuilder hasUsedExecution(boolean expected) {
+      tests.add(
+          DynamicTest.dynamicTest(
+              String.format("Expect %s execution used", expected ? "a" : "no"),
+              () -> assertThat(result.hasExecution()).isEqualTo(expected)));
+      return this;
     }
   }
 }
-
-//
-//    expect(convertJuel("#{customer.orders[1]}").feelExpression).toBe("=customer.orders[2]");
-//    });
-//
-//
-//    notest("JUEL Tutorial", () => {
-//    // Other elements valid in JUEL (taken from
-// https://docs.oracle.com/javaee/5/tutorial/doc/bnahq.html)
-//    // Still need to be translated and implemented
-//    expect(convertJuel("${1 > (4/2)}").feelExpression).toBe("=xxx");
-//    expect(convertJuel("${4.0 >= 3}").feelExpression).toBe("=xxx");
-//    expect(convertJuel("${100.0 == 100}").feelExpression).toBe("=xxx");
-//    expect(convertJuel("${(10*10) ne 100}").feelExpression).toBe("=xxx");
-//    expect(convertJuel("${'a' < 'b'}").feelExpression).toBe("=xxx");
-//    expect(convertJuel("${'hip' gt 'hit'}").feelExpression).toBe("=xxx");
-//    expect(convertJuel("${4 > 3}").feelExpression).toBe("=xxx");
-//    expect(convertJuel("${1.2E4 + 1.4}").feelExpression).toBe("=xxx");
-//    expect(convertJuel("").feelExpression).toBe("=xxx");
-//    expect(convertJuel("").feelExpression).toBe("=xxx");
-//    expect(convertJuel("").feelExpression).toBe("=xxx");
-//    });
