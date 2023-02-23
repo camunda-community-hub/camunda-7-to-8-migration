@@ -47,7 +47,7 @@
         <camunda:inputOutput>
           <camunda:inputParameter name="decision" />
         </camunda:inputOutput>
-        <camunda:in sourceExpression="&#34;CollPara&#34;" target="callActivityMarker" />
+        <camunda:in sourceExpression="${&#34;CollPara&#34;}" target="callActivityMarker" />
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_041e34z</bpmn:incoming>
       <bpmn:outgoing>Flow_0qnhdm5</bpmn:outgoing>
@@ -236,6 +236,19 @@
         <dc:Bounds x="730" y="320" width="100" height="80" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0ftls02_di" bpmnElement="Activity_1js03sv" isExpanded="true">
+        <dc:Bounds x="510" y="60" width="350" height="128" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1omk5ju_di" bpmnElement="Event_1omk5ju">
+        <dc:Bounds x="642" y="80" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_10brgoa_di" bpmnElement="Event_104czhl">
+        <dc:Bounds x="550" y="80" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_0ynsgn7_di" bpmnElement="Flow_0ynsgn7">
+        <di:waypoint x="586" y="98" />
+        <di:waypoint x="642" y="98" />
+      </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="TextAnnotation_0er6wjq_di" bpmnElement="TextAnnotation_0er6wjq">
         <dc:Bounds x="530" y="250" width="100" height="84" />
         <bpmndi:BPMNLabel />
@@ -252,19 +265,6 @@
         <dc:Bounds x="800" y="480" width="99.99274099883856" height="40.65040650406504" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_0ftls02_di" bpmnElement="Activity_1js03sv" isExpanded="true">
-        <dc:Bounds x="510" y="60" width="350" height="128" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Event_1omk5ju_di" bpmnElement="Event_1omk5ju">
-        <dc:Bounds x="642" y="80" width="36" height="36" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Event_10brgoa_di" bpmnElement="Event_104czhl">
-        <dc:Bounds x="550" y="80" width="36" height="36" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNEdge id="Flow_0ynsgn7_di" bpmnElement="Flow_0ynsgn7">
-        <di:waypoint x="586" y="98" />
-        <di:waypoint x="642" y="98" />
-      </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0clro87_di" bpmnElement="Flow_0clro87">
         <di:waypoint x="298" y="220" />
         <di:waypoint x="325" y="220" />
