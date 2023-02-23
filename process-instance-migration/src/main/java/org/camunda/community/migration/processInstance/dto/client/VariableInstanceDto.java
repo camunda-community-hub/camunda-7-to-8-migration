@@ -59,46 +59,6 @@ public class VariableInstanceDto {
     this.executionId = executionId;
   }
 
-  public String getTaskId() {
-    return taskId;
-  }
-
-  public void setTaskId(String taskId) {
-    this.taskId = taskId;
-  }
-
-  public String getBatchId() {
-    return batchId;
-  }
-
-  public void setBatchId(String batchId) {
-    this.batchId = batchId;
-  }
-
-  public String getActivityInstanceId() {
-    return activityInstanceId;
-  }
-
-  public void setActivityInstanceId(String activityInstanceId) {
-    this.activityInstanceId = activityInstanceId;
-  }
-
-  public String getTenantId() {
-    return tenantId;
-  }
-
-  public void setTenantId(String tenantId) {
-    this.tenantId = tenantId;
-  }
-
-  public String getErrorMessage() {
-    return errorMessage;
-  }
-
-  public void setErrorMessage(String errorMessage) {
-    this.errorMessage = errorMessage;
-  }
-
   public JsonNode getValue() {
     return value;
   }
@@ -113,14 +73,6 @@ public class VariableInstanceDto {
 
   public void setType(String type) {
     this.type = type;
-  }
-
-  public Map<String, JsonNode> getValueInfo() {
-    return valueInfo;
-  }
-
-  public void setValueInfo(Map<String, JsonNode> valueInfo) {
-    this.valueInfo = valueInfo;
   }
 
   public static class VariableInstanceQueryResultDto extends ArrayList<VariableInstanceDto> {}

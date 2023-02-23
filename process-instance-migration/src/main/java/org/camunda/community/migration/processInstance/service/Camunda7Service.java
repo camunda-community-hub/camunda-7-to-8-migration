@@ -144,10 +144,9 @@ public class Camunda7Service {
 
   public Camunda7ProcessDefinitionData getLatestProcessDefinition(String bpmnProcessId) {
     Camunda7ProcessDefinitionData data = new Camunda7ProcessDefinitionData();
-    List<ProcessDefinitionDto> processDefinitionByKey =
+    ProcessDefinitionDto processDefinitionByKey =
         camunda7Client.getLatestProcessDefinitionByKey(bpmnProcessId);
-    data.setProcessDefinition(
-        processDefinitionByKey.isEmpty() ? null : processDefinitionByKey.get(0));
+    data.setProcessDefinition(processDefinitionByKey);
     if (data.getProcessDefinition() != null) {
       data.setJobDefinitions(
           camunda7Client.getJobDefinitions(

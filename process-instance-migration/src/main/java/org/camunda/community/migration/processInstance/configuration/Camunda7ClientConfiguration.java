@@ -2,10 +2,13 @@ package org.camunda.community.migration.processInstance.configuration;
 
 import java.util.Set;
 import java.util.function.Consumer;
+import org.camunda.community.migration.processInstance.client.Camunda7Client;
+import org.camunda.community.migration.processInstance.client.Camunda7RestClient;
 import org.camunda.community.migration.processInstance.properties.Camunda7ClientProperties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
@@ -16,6 +19,7 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.DefaultUriBuilderFactory;
 
 @Configuration
+@ConditionalOnMissingBean(Camunda7Client.class)
 public class Camunda7ClientConfiguration {
   private static final Logger LOG = LoggerFactory.getLogger(Camunda7ClientConfiguration.class);
   private final Camunda7ClientProperties properties;
@@ -23,6 +27,12 @@ public class Camunda7ClientConfiguration {
   @Autowired
   public Camunda7ClientConfiguration(Camunda7ClientProperties properties) {
     this.properties = properties;
+  }
+
+  @Bean
+  public Camunda7Client camunda7Client(
+      RestTemplate restTemplate, Camunda7ClientProperties properties) {
+    return new Camunda7RestClient(restTemplate, properties);
   }
 
   @Bean

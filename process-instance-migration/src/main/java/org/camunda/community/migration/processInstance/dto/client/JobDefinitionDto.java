@@ -30,68 +30,12 @@ public class JobDefinitionDto {
     this.processDefinitionId = processDefinitionId;
   }
 
-  public String getProcessDefinitionKey() {
-    return processDefinitionKey;
-  }
-
-  public void setProcessDefinitionKey(String processDefinitionKey) {
-    this.processDefinitionKey = processDefinitionKey;
-  }
-
-  public String getJobType() {
-    return jobType;
-  }
-
-  public void setJobType(String jobType) {
-    this.jobType = jobType;
-  }
-
-  public String getJobConfiguration() {
-    return jobConfiguration;
-  }
-
-  public void setJobConfiguration(String jobConfiguration) {
-    this.jobConfiguration = jobConfiguration;
-  }
-
   public String getActivityId() {
     return activityId;
   }
 
   public void setActivityId(String activityId) {
     this.activityId = activityId;
-  }
-
-  public Boolean getSuspended() {
-    return suspended;
-  }
-
-  public void setSuspended(Boolean suspended) {
-    this.suspended = suspended;
-  }
-
-  public Integer getOverridingJobPriority() {
-    return overridingJobPriority;
-  }
-
-  public void setOverridingJobPriority(Integer overridingJobPriority) {
-    this.overridingJobPriority = overridingJobPriority;
-  }
-
-  public String getTenantId() {
-    return tenantId;
-  }
-
-  public void setTenantId(String tenantId) {
-    this.tenantId = tenantId;
-  }
-
-  public String getDeploymentId() {
-    return deploymentId;
-  }
-
-  public void setDeploymentId(String deploymentId) {
-    this.deploymentId = deploymentId;
   }
 
   public static class JobDefinitionQueryResultDto extends ArrayList<JobDefinitionDto> {}

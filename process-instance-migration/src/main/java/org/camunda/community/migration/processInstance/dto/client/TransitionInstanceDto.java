@@ -22,28 +22,12 @@ public class TransitionInstanceDto {
     this.id = id;
   }
 
-  public String getParentActivityInstanceId() {
-    return parentActivityInstanceId;
-  }
-
-  public void setParentActivityInstanceId(String parentActivityInstanceId) {
-    this.parentActivityInstanceId = parentActivityInstanceId;
-  }
-
   public String getActivityId() {
     return activityId;
   }
 
   public void setActivityId(String activityId) {
     this.activityId = activityId;
-  }
-
-  public String getActivityName() {
-    return activityName;
-  }
-
-  public void setActivityName(String activityName) {
-    this.activityName = activityName;
   }
 
   public String getActivityType() {
@@ -68,29 +52,5 @@ public class TransitionInstanceDto {
 
   public void setProcessDefinitionId(String processDefinitionId) {
     this.processDefinitionId = processDefinitionId;
-  }
-
-  public String getExecutionId() {
-    return executionId;
-  }
-
-  public void setExecutionId(String executionId) {
-    this.executionId = executionId;
-  }
-
-  public List<String> getIncidentIds() {
-    return incidentIds;
-  }
-
-  public void setIncidentIds(List<String> incidentIds) {
-    this.incidentIds = incidentIds;
-  }
-
-  public List<ActivityInstanceIncidentDto> getIncidents() {
-    return incidents;
-  }
-
-  public void setIncidents(List<ActivityInstanceIncidentDto> incidents) {
-    this.incidents = incidents;
   }
 }
