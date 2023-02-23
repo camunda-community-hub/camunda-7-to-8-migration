@@ -59,6 +59,9 @@ jobs:
           asset_path: ${{ steps.release.outputs.artifacts_archive_path }}
           asset_name: camunda-7-to-8-migration.zip
           asset_content_type: application/zip
+      - name: Check Test Fails
+        if: failure()
+        run: find . -name "*-output.txt" -print -exec cat {} \;
   publish-modeler-plugin:
     runs-on: ubuntu-latest
     steps:
