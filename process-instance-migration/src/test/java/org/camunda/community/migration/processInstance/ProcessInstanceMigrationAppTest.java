@@ -406,7 +406,8 @@ public class ProcessInstanceMigrationAppTest {
     LOG.info("Started C7 process instance {}", c7instance.getId());
     ProcessInstanceEvent processInstance =
         camunda8Service.startProcessInstanceMigrationRouter(pdInput.getBpmnProcessId());
-    waitForProcessInstanceHasPassedElement(processInstance, "GetVersionedProcessInformationTask");
+    waitForProcessInstanceHasPassedElement(
+        processInstance, "GetVersionedProcessInformationTask", TIMEOUT);
     zeebeTestEngine.waitForIdleState(TIMEOUT);
     UserTask task = getTask(processInstance.getProcessInstanceKey(), TIMEOUT);
     Map<String, Map<String, String>> response =
