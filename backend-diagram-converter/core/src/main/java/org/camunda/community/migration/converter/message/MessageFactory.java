@@ -50,6 +50,24 @@ public class MessageFactory {
             .build());
   }
 
+  public static Message completionConditionExecution(
+      ExpressionTransformationResult transformationResult) {
+    return INSTANCE.composeMessage(
+        "completion-condition-execution",
+        ContextBuilder.builder()
+            .context(expressionTransformationResult(transformationResult))
+            .build());
+  }
+
+  public static Message completionConditionMethod(
+      ExpressionTransformationResult transformationResult) {
+    return INSTANCE.composeMessage(
+        "completion-condition-method",
+        ContextBuilder.builder()
+            .context(expressionTransformationResult(transformationResult))
+            .build());
+  }
+
   public static Message candidateGroups(
       String attributeLocalName,
       String elementLocalName,
@@ -115,6 +133,32 @@ public class MessageFactory {
             .build());
   }
 
+  public static Message collectionExecution(
+      String attributeLocalName,
+      String elementLocalName,
+      ExpressionTransformationResult transformationResult) {
+    return INSTANCE.composeMessage(
+        "collection-execution",
+        ContextBuilder.builder()
+            .context(
+                supportedAttributeExpression(
+                    attributeLocalName, elementLocalName, transformationResult))
+            .build());
+  }
+
+  public static Message collectionMethod(
+      String attributeLocalName,
+      String elementLocalName,
+      ExpressionTransformationResult transformationResult) {
+    return INSTANCE.composeMessage(
+        "collection-method",
+        ContextBuilder.builder()
+            .context(
+                supportedAttributeExpression(
+                    attributeLocalName, elementLocalName, transformationResult))
+            .build());
+  }
+
   public static Message assignee(
       String attributeLocalName,
       String elementLocalName,
@@ -136,6 +180,24 @@ public class MessageFactory {
             .build());
   }
 
+  public static Message conditionExpressionExecution(
+      ExpressionTransformationResult transformationResult) {
+    return INSTANCE.composeMessage(
+        "condition-expression-execution",
+        ContextBuilder.builder()
+            .context(expressionTransformationResult(transformationResult))
+            .build());
+  }
+
+  public static Message conditionExpressionMethod(
+      ExpressionTransformationResult transformationResult) {
+    return INSTANCE.composeMessage(
+        "condition-expression-method",
+        ContextBuilder.builder()
+            .context(expressionTransformationResult(transformationResult))
+            .build());
+  }
+
   public static Message inputOutputParameterIsNoExpression(
       String elementLocalName, String parameterName) {
     return INSTANCE.composeMessage(
@@ -152,6 +214,32 @@ public class MessageFactory {
       ExpressionTransformationResult transformationResult) {
     return INSTANCE.composeMessage(
         "input-output-parameter",
+        ContextBuilder.builder()
+            .entry("parameterName", parameterName)
+            .context(elementTransformedPrefix(elementLocalName))
+            .context(expressionTransformationResult(transformationResult))
+            .build());
+  }
+
+  public static Message inputOutputParameterExecution(
+      String elementLocalName,
+      String parameterName,
+      ExpressionTransformationResult transformationResult) {
+    return INSTANCE.composeMessage(
+        "input-output-parameter-execution",
+        ContextBuilder.builder()
+            .entry("parameterName", parameterName)
+            .context(elementTransformedPrefix(elementLocalName))
+            .context(expressionTransformationResult(transformationResult))
+            .build());
+  }
+
+  public static Message inputOutputParameterMethod(
+      String elementLocalName,
+      String parameterName,
+      ExpressionTransformationResult transformationResult) {
+    return INSTANCE.composeMessage(
+        "input-output-parameter-method",
         ContextBuilder.builder()
             .entry("parameterName", parameterName)
             .context(elementTransformedPrefix(elementLocalName))

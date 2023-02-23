@@ -29,7 +29,20 @@ public class CollectionVisitor extends AbstractSupportedAttributeVisitor {
                 .getZeebeLoopCharacteristics()
                 .setInputCollection(transformationResult.getNewExpression()));
     context.addMessage(MessageFactory.collectionHint());
-    return MessageFactory.collection(
-        attributeLocalName(), context.getElement().getLocalName(), transformationResult);
+    Message message;
+    if (transformationResult.hasExecution()) {
+      message =
+          MessageFactory.collectionExecution(
+              attributeLocalName(), context.getElement().getLocalName(), transformationResult);
+    } else if (transformationResult.hasMethodInvocation()) {
+      message =
+          MessageFactory.collectionMethod(
+              attributeLocalName(), context.getElement().getLocalName(), transformationResult);
+    } else {
+      message =
+          MessageFactory.collection(
+              attributeLocalName(), context.getElement().getLocalName(), transformationResult);
+    }
+    return message;
   }
 }

@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import java.io.ByteArrayInputStream;
 import java.io.StringWriter;
+import java.util.Arrays;
 import java.util.List;
 import org.camunda.bpm.model.bpmn.Bpmn;
 import org.camunda.bpm.model.bpmn.BpmnModelInstance;
@@ -219,6 +220,112 @@ public class BpmnConverterTest {
     List<BpmnElementCheckMessage> messages = checkResult.getMessages();
     assertThat(messages).hasSize(2);
     assertThat(messages.get(0).getMessage()).isEqualTo("A Conditional flow is not supported.");
+  }
+
+  @Test
+  void testExpressionWithMethodInvocation() {
+    BpmnDiagramCheckResult result = loadAndCheck("expression-method-invocation.bpmn");
+    List<BpmnElementCheckMessage> easyExpressionMessage =
+        result.getResult("EasyExpressionSequenceFlow").getMessages();
+    assertThat(easyExpressionMessage).hasSize(1);
+    assertThat(easyExpressionMessage.get(0).getSeverity()).isEqualTo(Severity.REVIEW);
+
+    List<BpmnElementCheckMessage> executionIsUsedMessage =
+        result.getResult("ExecutionIsUsedSequenceFlow").getMessages();
+    assertThat(executionIsUsedMessage).hasSize(1);
+    assertThat(executionIsUsedMessage.get(0).getSeverity()).isEqualTo(Severity.TASK);
+    assertThat(executionIsUsedMessage.get(0).getMessage())
+        .contains("'execution' is not available in FEEL");
+
+    List<BpmnElementCheckMessage> methodInvocationIsUsedMessage =
+        result.getResult("MethodInvocationIsUsedSequenceFlow").getMessages();
+    assertThat(methodInvocationIsUsedMessage).hasSize(1);
+    assertThat(methodInvocationIsUsedMessage.get(0).getSeverity()).isEqualTo(Severity.TASK);
+    assertThat(methodInvocationIsUsedMessage.get(0).getMessage())
+        .contains("Method invocation is not possible in FEEL");
+  }
+
+  @Test
+  void testInMappingWithMethodInvocationAndExecution() {
+    BpmnDiagramCheckResult result = loadAndCheck("expression-method-invocation.bpmn");
+    List<BpmnElementCheckMessage> inMappingMessages =
+        result.getResult("TaskWithInMappingsServiceTask").getMessages();
+    assertThat(inMappingMessages).hasSize(3);
+
+    assertThat(inMappingMessages.get(0).getSeverity()).isEqualTo(Severity.TASK);
+    assertThat(inMappingMessages.get(0).getMessage())
+        .contains(
+            Arrays.asList("taskForMethodExpected", "Method invocation is not possible in FEEL"));
+
+    assertThat(inMappingMessages.get(1).getSeverity()).isEqualTo(Severity.TASK);
+    assertThat(inMappingMessages.get(1).getMessage())
+        .contains(
+            Arrays.asList("taskForExecutionExpected", "'execution' is not available in FEEL"));
+
+    assertThat(inMappingMessages.get(2).getSeverity()).isEqualTo(Severity.REVIEW);
+    assertThat(inMappingMessages.get(2).getMessage()).contains("reviewExpected");
+  }
+
+  @Test
+  void testOutputMappingWithMethodInvocationAndExecution() {
+    BpmnDiagramCheckResult result = loadAndCheck("expression-method-invocation.bpmn");
+    List<BpmnElementCheckMessage> outMappingMessages =
+        result.getResult("TaskWithOutMappingsServiceTask").getMessages();
+    assertThat(outMappingMessages).hasSize(3);
+
+    assertThat(outMappingMessages.get(0).getSeverity()).isEqualTo(Severity.TASK);
+    assertThat(outMappingMessages.get(0).getMessage())
+        .contains(
+            Arrays.asList("taskForMethodExpected", "Method invocation is not possible in FEEL"));
+
+    assertThat(outMappingMessages.get(1).getSeverity()).isEqualTo(Severity.TASK);
+    assertThat(outMappingMessages.get(1).getMessage())
+        .contains(
+            Arrays.asList("taskForExecutionExpected", "'execution' is not available in FEEL"));
+
+    assertThat(outMappingMessages.get(2).getSeverity()).isEqualTo(Severity.REVIEW);
+    assertThat(outMappingMessages.get(2).getMessage()).contains("reviewExpected");
+  }
+
+  @Test
+  void testMultiInstanceConfigurationWithExecution() {
+    BpmnDiagramCheckResult result = loadAndCheck("expression-method-invocation.bpmn");
+    List<BpmnElementCheckMessage> messages =
+        result.getResult("MultiInstanceConfigurationWithExecutionServiceTask").getMessages();
+    assertThat(messages).hasSize(4);
+    assertThat(messages.get(0).getSeverity()).isEqualTo(Severity.TASK);
+    assertThat(messages.get(0).getMessage()).contains("Collecting results");
+
+    assertThat(messages.get(1).getSeverity()).isEqualTo(Severity.TASK);
+    assertThat(messages.get(1).getMessage())
+        .contains(Arrays.asList("collection", "'execution' is not available in FEEL"));
+
+    assertThat(messages.get(2).getSeverity()).isEqualTo(Severity.TASK);
+    assertThat(messages.get(2).getMessage())
+        .contains(Arrays.asList("Completion condition", "'execution' is not available in FEEL"));
+
+    assertThat(messages.get(3).getSeverity()).isEqualTo(Severity.INFO);
+  }
+
+  @Test
+  void testMultiInstanceConfigurationWithMethodInvocation() {
+    BpmnDiagramCheckResult result = loadAndCheck("expression-method-invocation.bpmn");
+    List<BpmnElementCheckMessage> messages =
+        result.getResult("MultiInstanceConfigurationWithMethodInvocationServiceTask").getMessages();
+    assertThat(messages).hasSize(4);
+    assertThat(messages.get(0).getSeverity()).isEqualTo(Severity.TASK);
+    assertThat(messages.get(0).getMessage()).contains("Collecting results");
+
+    assertThat(messages.get(1).getSeverity()).isEqualTo(Severity.TASK);
+    assertThat(messages.get(1).getMessage())
+        .contains(Arrays.asList("collection", "Method invocation is not possible in FEEL"));
+
+    assertThat(messages.get(2).getSeverity()).isEqualTo(Severity.TASK);
+    assertThat(messages.get(2).getMessage())
+        .contains(
+            Arrays.asList("Completion condition", "Method invocation is not possible in FEEL"));
+
+    assertThat(messages.get(3).getSeverity()).isEqualTo(Severity.INFO);
   }
 
   protected BpmnDiagramCheckResult loadAndCheck(String bpmnFile) {

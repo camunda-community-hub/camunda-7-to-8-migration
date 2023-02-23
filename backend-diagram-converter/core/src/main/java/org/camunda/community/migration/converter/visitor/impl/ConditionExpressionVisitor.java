@@ -51,12 +51,19 @@ public class ConditionExpressionVisitor extends AbstractBpmnElementVisitor {
 
   @Override
   protected void visitBpmnElement(DomElementVisitorContext context) {
+    String expression = context.getElement().getTextContent();
     ExpressionTransformationResult transformationResult =
-        ExpressionTransformer.transform(context.getElement().getTextContent());
+        ExpressionTransformer.transform(expression);
     context.addConversion(
         SequenceFlowConvertible.class,
         conversion -> conversion.setConditionExpression(transformationResult.getNewExpression()));
-    context.addMessage(MessageFactory.conditionExpression(transformationResult));
+    if (transformationResult.hasExecution()) {
+      context.addMessage(MessageFactory.conditionExpressionExecution(transformationResult));
+    } else if (transformationResult.hasMethodInvocation()) {
+      context.addMessage(MessageFactory.conditionExpressionMethod(transformationResult));
+    } else {
+      context.addMessage(MessageFactory.conditionExpression(transformationResult));
+    }
   }
 
   @Override

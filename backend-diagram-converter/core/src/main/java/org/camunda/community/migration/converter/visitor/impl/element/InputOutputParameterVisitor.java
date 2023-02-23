@@ -27,14 +27,25 @@ public abstract class InputOutputParameterVisitor extends AbstractCamundaElement
     if (isNotStringOrExpression(element)) {
       return MessageFactory.inputOutputParameterIsNoExpression(localName(), name);
     }
+    String expression = element.getTextContent();
     ExpressionTransformationResult transformationResult =
-        ExpressionTransformer.transform(element.getTextContent());
+        ExpressionTransformer.transform(expression);
     context.addConversion(
         AbstractDataMapperConvertible.class,
         abstractTaskConversion ->
             abstractTaskConversion.addZeebeIoMapping(
                 direction, transformationResult.getNewExpression(), name));
-    return MessageFactory.inputOutputParameter(localName(), name, transformationResult);
+    Message resultMessage;
+    if (transformationResult.hasExecution()) {
+      resultMessage =
+          MessageFactory.inputOutputParameterExecution(localName(), name, transformationResult);
+    } else if (transformationResult.hasMethodInvocation()) {
+      resultMessage =
+          MessageFactory.inputOutputParameterMethod(localName(), name, transformationResult);
+    } else {
+      resultMessage = MessageFactory.inputOutputParameter(localName(), name, transformationResult);
+    }
+    return resultMessage;
   }
 
   private MappingDirection findMappingDirection(DomElement element) {

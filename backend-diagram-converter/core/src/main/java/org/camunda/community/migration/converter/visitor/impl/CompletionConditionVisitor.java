@@ -4,6 +4,7 @@ import org.camunda.community.migration.converter.DomElementVisitorContext;
 import org.camunda.community.migration.converter.convertible.AbstractActivityConvertible;
 import org.camunda.community.migration.converter.expression.ExpressionTransformationResult;
 import org.camunda.community.migration.converter.expression.ExpressionTransformer;
+import org.camunda.community.migration.converter.message.Message;
 import org.camunda.community.migration.converter.message.MessageFactory;
 import org.camunda.community.migration.converter.version.SemanticVersion;
 import org.camunda.community.migration.converter.visitor.AbstractBpmnElementVisitor;
@@ -26,7 +27,15 @@ public class CompletionConditionVisitor extends AbstractBpmnElementVisitor {
             conversion
                 .getBpmnMultiInstanceLoopCharacteristics()
                 .setCompletionCondition(transformationResult.getNewExpression()));
-    context.addMessage(MessageFactory.completionCondition(transformationResult));
+    Message message;
+    if (transformationResult.hasExecution()) {
+      message = MessageFactory.completionConditionExecution(transformationResult);
+    } else if (transformationResult.hasMethodInvocation()) {
+      message = MessageFactory.completionConditionMethod(transformationResult);
+    } else {
+      message = MessageFactory.completionCondition(transformationResult);
+    }
+    context.addMessage(message);
   }
 
   @Override
