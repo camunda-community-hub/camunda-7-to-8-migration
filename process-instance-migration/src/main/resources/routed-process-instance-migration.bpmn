@@ -1,0 +1,223 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_08ol8a9" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.8.0" modeler:executionPlatform="Camunda Cloud" modeler:executionPlatformVersion="8.1.0">
+  <bpmn:collaboration id="Collaboration_10znebz">
+    <bpmn:participant id="RoutedProcessInstanceMigrationParticipant" name="Routed Process Instance Migration" processRef="RoutedProcessInstanceMigrationProcess" />
+  </bpmn:collaboration>
+  <bpmn:process id="RoutedProcessInstanceMigrationProcess" name="Routed Process Instance Migration" isExecutable="true">
+    <bpmn:subProcess id="ExecuteRouteSubProcess" name="Execute route">
+      <bpmn:incoming>Flow_1gnxw7b</bpmn:incoming>
+      <bpmn:outgoing>Flow_0pph5so</bpmn:outgoing>
+      <bpmn:startEvent id="Event_1322oq3">
+        <bpmn:outgoing>Flow_07ibjq0</bpmn:outgoing>
+      </bpmn:startEvent>
+      <bpmn:sequenceFlow id="Flow_07ibjq0" sourceRef="Event_1322oq3" targetRef="CancelRouteExecutionTask" />
+      <bpmn:endEvent id="Event_0k3i8gd">
+        <bpmn:incoming>Flow_1uduxen</bpmn:incoming>
+      </bpmn:endEvent>
+      <bpmn:sequenceFlow id="Flow_1uduxen" sourceRef="CancelRouteExecutionTask" targetRef="Event_0k3i8gd" />
+      <bpmn:userTask id="CancelRouteExecutionTask" name="Cancel route execution">
+        <bpmn:extensionElements>
+          <zeebe:formDefinition formKey="cancel-route-execution" />
+        </bpmn:extensionElements>
+        <bpmn:incoming>Flow_07ibjq0</bpmn:incoming>
+        <bpmn:outgoing>Flow_1uduxen</bpmn:outgoing>
+      </bpmn:userTask>
+      <bpmn:subProcess id="Activity_0f984dj" triggeredByEvent="true">
+        <bpmn:extensionElements>
+          <zeebe:ioMapping>
+            <zeebe:input source="=null" target="camunda7ProcessInstanceIds" />
+          </zeebe:ioMapping>
+        </bpmn:extensionElements>
+        <bpmn:sequenceFlow id="Flow_14vrw4h" sourceRef="Every10MinutesStartEvent" targetRef="QueryRoutableProcessInstancesTask" />
+        <bpmn:serviceTask id="QueryRoutableProcessInstancesTask" name="Query routable process instances">
+          <bpmn:extensionElements>
+            <zeebe:taskDefinition type="camunda7:process-instance:query:routable" />
+          </bpmn:extensionElements>
+          <bpmn:incoming>Flow_14vrw4h</bpmn:incoming>
+          <bpmn:outgoing>Flow_0dln01h</bpmn:outgoing>
+        </bpmn:serviceTask>
+        <bpmn:sequenceFlow id="Flow_0dln01h" sourceRef="QueryRoutableProcessInstancesTask" targetRef="SingleProcessInstanceMigrationCallActivity" />
+        <bpmn:callActivity id="SingleProcessInstanceMigrationCallActivity" name="Single Process Instance Migration">
+          <bpmn:extensionElements>
+            <zeebe:calledElement processId="SingleProcessInstanceMigrationProcess" propagateAllChildVariables="false" />
+          </bpmn:extensionElements>
+          <bpmn:incoming>Flow_0dln01h</bpmn:incoming>
+          <bpmn:outgoing>Flow_0xzxyeq</bpmn:outgoing>
+          <bpmn:multiInstanceLoopCharacteristics>
+            <bpmn:extensionElements>
+              <zeebe:loopCharacteristics inputCollection="=camunda7ProcessInstanceIds" inputElement="camunda7ProcessInstanceId" />
+            </bpmn:extensionElements>
+          </bpmn:multiInstanceLoopCharacteristics>
+        </bpmn:callActivity>
+        <bpmn:endEvent id="Event_1ok0txl">
+          <bpmn:incoming>Flow_0xzxyeq</bpmn:incoming>
+        </bpmn:endEvent>
+        <bpmn:sequenceFlow id="Flow_0xzxyeq" sourceRef="SingleProcessInstanceMigrationCallActivity" targetRef="Event_1ok0txl" />
+        <bpmn:startEvent id="Every10MinutesStartEvent" name="Every 10 minutes" isInterrupting="false">
+          <bpmn:outgoing>Flow_14vrw4h</bpmn:outgoing>
+          <bpmn:timerEventDefinition id="TimerEventDefinition_0pnza0l">
+            <bpmn:timeCycle xsi:type="bpmn:tFormalExpression">R/PT10M</bpmn:timeCycle>
+          </bpmn:timerEventDefinition>
+        </bpmn:startEvent>
+        <bpmn:textAnnotation id="TextAnnotation_1n2e184">
+          <bpmn:text>Process instances that only have active transition instances in suspended job definitions</bpmn:text>
+        </bpmn:textAnnotation>
+        <bpmn:association id="Association_1x1gjud" sourceRef="QueryRoutableProcessInstancesTask" targetRef="TextAnnotation_1n2e184" />
+      </bpmn:subProcess>
+    </bpmn:subProcess>
+    <bpmn:sequenceFlow id="Flow_1gnxw7b" sourceRef="SuspendJobDefinitionsTask" targetRef="ExecuteRouteSubProcess" />
+    <bpmn:sequenceFlow id="Flow_0pph5so" sourceRef="ExecuteRouteSubProcess" targetRef="ActivateJobDefinitionsTask" />
+    <bpmn:sequenceFlow id="Flow_0by97eo" sourceRef="ActivateJobDefinitionsTask" targetRef="Event_1tcwn0e" />
+    <bpmn:sequenceFlow id="Flow_1bk9sbs" sourceRef="RoutedProcessInstanceMigrationRequiredStartEvent" targetRef="GetVersionedProcessInformationTask" />
+    <bpmn:sequenceFlow id="Flow_0acca0v" sourceRef="GetVersionedProcessInformationTask" targetRef="SelectJobDefinitionsForMigrationRoutesTask" />
+    <bpmn:sequenceFlow id="Flow_1y35y1f" sourceRef="SelectJobDefinitionsForMigrationRoutesTask" targetRef="SuspendJobDefinitionsTask" />
+    <bpmn:startEvent id="RoutedProcessInstanceMigrationRequiredStartEvent" name="Routed Process Instance Migration required">
+      <bpmn:outgoing>Flow_1bk9sbs</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:serviceTask id="GetVersionedProcessInformationTask" name="Get versioned process information">
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="camunda7:process-definition:get" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_1bk9sbs</bpmn:incoming>
+      <bpmn:outgoing>Flow_0acca0v</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:userTask id="SelectJobDefinitionsForMigrationRoutesTask" name="Select job definitions for migration routes">
+      <bpmn:extensionElements>
+        <zeebe:formDefinition formKey="select-job-definition" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0acca0v</bpmn:incoming>
+      <bpmn:outgoing>Flow_1y35y1f</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:serviceTask id="SuspendJobDefinitionsTask" name="Suspend job definitions">
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="camunda7:job-definition:suspend" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_1y35y1f</bpmn:incoming>
+      <bpmn:outgoing>Flow_1gnxw7b</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:endEvent id="Event_1tcwn0e">
+      <bpmn:incoming>Flow_0by97eo</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:serviceTask id="ActivateJobDefinitionsTask" name="Activate job definitions">
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="camunda7:job-definition:continue" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0pph5so</bpmn:incoming>
+      <bpmn:outgoing>Flow_0by97eo</bpmn:outgoing>
+    </bpmn:serviceTask>
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Collaboration_10znebz">
+      <bpmndi:BPMNShape id="Participant_1xikh00_di" bpmnElement="RoutedProcessInstanceMigrationParticipant" isHorizontal="true">
+        <dc:Bounds x="129" y="52" width="1518" height="368" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1jq9ssm_di" bpmnElement="ExecuteRouteSubProcess" isExpanded="true">
+        <dc:Bounds x="750" y="77" width="559" height="320" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1322oq3_di" bpmnElement="Event_1322oq3">
+        <dc:Bounds x="885.3333333333334" y="132" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0k3i8gd_di" bpmnElement="Event_0k3i8gd">
+        <dc:Bounds x="1142" y="132" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1sw7ujl_di" bpmnElement="CancelRouteExecutionTask">
+        <dc:Bounds x="980" y="110" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0nfjupe_di" bpmnElement="Activity_0f984dj" isExpanded="true">
+        <dc:Bounds x="770" y="210" width="520" height="170" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="TextAnnotation_1n2e184_di" bpmnElement="TextAnnotation_1n2e184">
+        <dc:Bounds x="790" y="220" width="410" height="41" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1a2drjw_di" bpmnElement="Every10MinutesStartEvent">
+        <dc:Bounds x="815" y="302" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="791" y="345" width="85" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_07qtung_di" bpmnElement="QueryRoutableProcessInstancesTask">
+        <dc:Bounds x="910" y="280" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1v2z0wh_di" bpmnElement="SingleProcessInstanceMigrationCallActivity">
+        <dc:Bounds x="1070" y="280" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1ok0txl_di" bpmnElement="Event_1ok0txl">
+        <dc:Bounds x="1232" y="302" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Association_1x1gjud_di" bpmnElement="Association_1x1gjud">
+        <di:waypoint x="977" y="280" />
+        <di:waypoint x="984" y="261" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_14vrw4h_di" bpmnElement="Flow_14vrw4h">
+        <di:waypoint x="851" y="320" />
+        <di:waypoint x="910" y="320" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0dln01h_di" bpmnElement="Flow_0dln01h">
+        <di:waypoint x="1010" y="320" />
+        <di:waypoint x="1070" y="320" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0xzxyeq_di" bpmnElement="Flow_0xzxyeq">
+        <di:waypoint x="1170" y="320" />
+        <di:waypoint x="1232" y="320" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_07ibjq0_di" bpmnElement="Flow_07ibjq0">
+        <di:waypoint x="921" y="150" />
+        <di:waypoint x="980" y="150" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1uduxen_di" bpmnElement="Flow_1uduxen">
+        <di:waypoint x="1080" y="150" />
+        <di:waypoint x="1142" y="150" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="RoutedProcessInstanceMigrationRequiredStartEvent">
+        <dc:Bounds x="202" y="169" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="175" y="212" width="90" height="40" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1grlu9d_di" bpmnElement="GetVersionedProcessInformationTask">
+        <dc:Bounds x="290" y="147" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_00zbb2z_di" bpmnElement="SelectJobDefinitionsForMigrationRoutesTask">
+        <dc:Bounds x="450" y="147" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0mtbs35_di" bpmnElement="SuspendJobDefinitionsTask">
+        <dc:Bounds x="600" y="147" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1tcwn0e_di" bpmnElement="Event_1tcwn0e">
+        <dc:Bounds x="1511" y="169" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0xs72ai_di" bpmnElement="ActivateJobDefinitionsTask">
+        <dc:Bounds x="1359" y="147" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_1gnxw7b_di" bpmnElement="Flow_1gnxw7b">
+        <di:waypoint x="700" y="187" />
+        <di:waypoint x="750" y="187" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0pph5so_di" bpmnElement="Flow_0pph5so">
+        <di:waypoint x="1309" y="187" />
+        <di:waypoint x="1359" y="187" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0by97eo_di" bpmnElement="Flow_0by97eo">
+        <di:waypoint x="1459" y="187" />
+        <di:waypoint x="1511" y="187" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1bk9sbs_di" bpmnElement="Flow_1bk9sbs">
+        <di:waypoint x="238" y="187" />
+        <di:waypoint x="290" y="187" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0acca0v_di" bpmnElement="Flow_0acca0v">
+        <di:waypoint x="390" y="187" />
+        <di:waypoint x="450" y="187" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1y35y1f_di" bpmnElement="Flow_1y35y1f">
+        <di:waypoint x="550" y="187" />
+        <di:waypoint x="600" y="187" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_02n2d19" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.7.0" modeler:executionPlatform="Camunda Platform" modeler:executionPlatformVersion="7.18.0">
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_02n2d19" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.8.0" modeler:executionPlatform="Camunda Platform" modeler:executionPlatformVersion="7.18.0">
   <bpmn:process id="ParallelForkJoinProcess" name="Parallel Fork Join" isExecutable="true">
     <bpmn:startEvent id="ProcessStartedStartEvent" name="Process started">
       <bpmn:outgoing>Flow_0tx5mzv</bpmn:outgoing>
@@ -16,7 +16,7 @@
       <bpmn:outgoing>Flow_0zi50dx</bpmn:outgoing>
       <bpmn:outgoing>Flow_06bf20k</bpmn:outgoing>
     </bpmn:parallelGateway>
-    <bpmn:parallelGateway id="Gateway_1rvv8vt">
+    <bpmn:parallelGateway id="Gateway_1rvv8vt" camunda:asyncBefore="true">
       <bpmn:incoming>Flow_00nl8x7</bpmn:incoming>
       <bpmn:incoming>Flow_091pjsd</bpmn:incoming>
       <bpmn:outgoing>Flow_0ixnoy6</bpmn:outgoing>
@@ -27,7 +27,7 @@
       <bpmn:outgoing>Flow_00nl8x7</bpmn:outgoing>
     </bpmn:userTask>
     <bpmn:sequenceFlow id="Flow_091pjsd" sourceRef="TaskBTask" targetRef="Gateway_1rvv8vt" />
-    <bpmn:userTask id="TaskBTask" name="Task B">
+    <bpmn:userTask id="TaskBTask" name="Task B" camunda:asyncBefore="true">
       <bpmn:incoming>Flow_06bf20k</bpmn:incoming>
       <bpmn:outgoing>Flow_091pjsd</bpmn:outgoing>
     </bpmn:userTask>
@@ -63,22 +63,22 @@
         <di:waypoint x="215" y="117" />
         <di:waypoint x="265" y="117" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0ixnoy6_di" bpmnElement="Flow_0ixnoy6">
-        <di:waypoint x="575" y="117" />
-        <di:waypoint x="632" y="117" />
-      </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0zi50dx_di" bpmnElement="Flow_0zi50dx">
         <di:waypoint x="315" y="117" />
         <di:waypoint x="370" y="117" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_00nl8x7_di" bpmnElement="Flow_00nl8x7">
+        <di:waypoint x="470" y="117" />
+        <di:waypoint x="525" y="117" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0ixnoy6_di" bpmnElement="Flow_0ixnoy6">
+        <di:waypoint x="575" y="117" />
+        <di:waypoint x="632" y="117" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_06bf20k_di" bpmnElement="Flow_06bf20k">
         <di:waypoint x="290" y="142" />
         <di:waypoint x="290" y="220" />
         <di:waypoint x="370" y="220" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_00nl8x7_di" bpmnElement="Flow_00nl8x7">
-        <di:waypoint x="470" y="117" />
-        <di:waypoint x="525" y="117" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_091pjsd_di" bpmnElement="Flow_091pjsd">
         <di:waypoint x="470" y="220" />

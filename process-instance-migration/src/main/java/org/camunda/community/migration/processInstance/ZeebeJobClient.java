@@ -1,6 +1,7 @@
 package org.camunda.community.migration.processInstance;
 
 import static io.camunda.zeebe.protocol.Protocol.*;
+import static org.camunda.community.migration.processInstance.ProcessConstants.ErrorCode.*;
 
 import io.camunda.operate.dto.ProcessDefinition;
 import io.camunda.operate.search.ProcessDefinitionFilter;
@@ -9,6 +10,7 @@ import io.camunda.zeebe.client.api.response.ActivatedJob;
 import io.camunda.zeebe.client.api.response.ProcessInstanceEvent;
 import io.camunda.zeebe.spring.client.annotation.JobWorker;
 import io.camunda.zeebe.spring.client.annotation.VariablesAsType;
+import io.camunda.zeebe.spring.client.exception.ZeebeBpmnError;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
@@ -16,15 +18,17 @@ import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import org.camunda.community.migration.processInstance.ProcessConstants.JobType;
+import org.camunda.community.migration.processInstance.dto.Camunda7ProcessDefinitionData;
 import org.camunda.community.migration.processInstance.dto.Camunda7ProcessInstanceData;
 import org.camunda.community.migration.processInstance.dto.Camunda7ProcessInstanceData.ActivityData;
-import org.camunda.community.migration.processInstance.dto.ProcessDefinitionDto;
-import org.camunda.community.migration.processInstance.dto.ProcessInstanceSelectionTask;
-import org.camunda.community.migration.processInstance.dto.ProcessInstanceSelectionTask.TaskState;
+import org.camunda.community.migration.processInstance.dto.client.JobDefinitionDto;
+import org.camunda.community.migration.processInstance.dto.task.UserTask;
+import org.camunda.community.migration.processInstance.dto.task.UserTask.TaskState;
 import org.camunda.community.migration.processInstance.service.Camunda7Service;
 import org.camunda.community.migration.processInstance.service.Camunda8Service;
+import org.camunda.community.migration.processInstance.service.MigrationTaskService;
 import org.camunda.community.migration.processInstance.service.ProcessDefinitionMigrationHintService;
-import org.camunda.community.migration.processInstance.service.ProcessInstanceSelectionService;
+import org.camunda.community.migration.processInstance.service.TaskMappingService;
 import org.camunda.community.migration.processInstance.variables.ProcessInstanceMigrationVariables;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,25 +38,57 @@ import org.springframework.stereotype.Component;
 public class ZeebeJobClient {
   private static final Logger LOG = LoggerFactory.getLogger(ZeebeJobClient.class);
   private final Camunda7Service camunda7Service;
-  private final ProcessInstanceSelectionService selectionService;
+  private final MigrationTaskService migrationTaskService;
   private final Camunda8Service camunda8Service;
   private final ProcessDefinitionMigrationHintService processDefinitionMigrationHintService;
+  private final TaskMappingService taskMappingService;
 
   public ZeebeJobClient(
       Camunda7Service camunda7Service,
-      ProcessInstanceSelectionService selectionService,
+      MigrationTaskService migrationTaskService,
       Camunda8Service camunda8Service,
-      ProcessDefinitionMigrationHintService processDefinitionMigrationHintService) {
+      ProcessDefinitionMigrationHintService processDefinitionMigrationHintService,
+      TaskMappingService taskMappingService) {
     this.camunda7Service = camunda7Service;
-    this.selectionService = selectionService;
+    this.migrationTaskService = migrationTaskService;
     this.camunda8Service = camunda8Service;
     this.processDefinitionMigrationHintService = processDefinitionMigrationHintService;
+    this.taskMappingService = taskMappingService;
   }
 
   @JobWorker(type = JobType.CAMUNDA7_SUSPEND)
   public void suspendProcessInstance(@VariablesAsType ProcessInstanceMigrationVariables variables) {
     LOG.info("Suspending process definition '{}'", variables.getCamunda7ProcessDefinitionId());
     camunda7Service.suspendProcessDefinition(variables.getCamunda7ProcessDefinitionId(), true);
+  }
+
+  @JobWorker(type = JobType.CAMUNDA7_SUSPEND_JOB)
+  public void suspendJob(@VariablesAsType ProcessInstanceMigrationVariables variables) {
+    Map<String, String> selectedJobDefinitions = variables.getSelectedJobDefinitions();
+    LOG.info("Suspending job definitions {}", selectedJobDefinitions);
+    camunda7Service.suspendJobDefinitions(selectedJobDefinitions.keySet());
+  }
+
+  @JobWorker(type = JobType.CAMUNDA7_CONTINUE_JOB)
+  public void continueJob(@VariablesAsType ProcessInstanceMigrationVariables variables) {
+    Map<String, String> selectedJobDefinitions = variables.getSelectedJobDefinitions();
+    LOG.info("Continuing job definitions {}", selectedJobDefinitions);
+    camunda7Service.continueJobDefinitions(selectedJobDefinitions.keySet());
+  }
+
+  @JobWorker(type = JobType.CAMUNDA7_QUERY_ROUTABLE_INSTANCES)
+  public ProcessInstanceMigrationVariables queryRoutableInstances(
+      @VariablesAsType ProcessInstanceMigrationVariables variables) {
+    variables.setCamunda7ProcessInstanceIds(
+        camunda7Service
+            .getProcessInstancesByProcessDefinitionIdAndExclusiveActivityIds(
+                variables.getCamunda7ProcessDefinitionId(),
+                variables.getSelectedJobDefinitions().values())
+            .stream()
+            .map(Camunda7ProcessInstanceData::getProcessInstanceId)
+            .collect(Collectors.toList()));
+    LOG.info("Found process instances to migrate: {}", variables.getCamunda7ProcessInstanceIds());
+    return variables;
   }
 
   @JobWorker(type = JobType.CAMUNDA7_EXTRACT)
@@ -99,8 +135,9 @@ public class ZeebeJobClient {
     Map<String, Object> processVariables = new HashMap<>(variables.getVariables());
     processVariables.put("camunda7ProcessInstanceId", variables.getCamunda7ProcessInstanceId());
     LOG.info(
-        "Starting process instance with corresponding c7 instance '{}'",
-        variables.getCamunda7ProcessInstanceId());
+        "Starting process instance with corresponding c7 instance '{}' at {}",
+        variables.getCamunda7ProcessInstanceId(),
+        variables.getActivityIds());
     ProcessInstanceEvent processInstanceEvent =
         camunda8Service.startMigratedProcessInstance(
             variables.getBpmnProcessId(), variables.getActivityIds(), processVariables);
@@ -120,32 +157,49 @@ public class ZeebeJobClient {
   @JobWorker(type = JobType.CAMUNDA7_CANCEL)
   public void cancelProcessInstance(@VariablesAsType ProcessInstanceMigrationVariables variables) {
     LOG.info("Canceling process instance '{}'", variables.getCamunda7ProcessInstanceId());
-    camunda7Service.cancelProcessInstance(
-        variables.getCamunda7ProcessInstanceId(), variables.getCamunda8ProcessInstanceKey());
+    try {
+      camunda7Service.cancelProcessInstance(
+          variables.getCamunda7ProcessInstanceId(), variables.getCamunda8ProcessInstanceKey());
+    } catch (Exception e) {
+      throw new ZeebeBpmnError(
+          CANCEL_PROCESS_INSTANCE,
+          "Error while cancelling process instance " + variables.getCamunda7ProcessInstanceId());
+    }
+  }
+
+  @JobWorker(type = JobType.CAMUNDA8_CANCEL)
+  public void cancelCamunda8ProcessInstance(
+      @VariablesAsType ProcessInstanceMigrationVariables variables) {
+    camunda8Service.cancelProcessInstance(variables.getCamunda8ProcessInstanceKey());
   }
 
   @JobWorker(type = JobType.CAMUNDA7_VERSIONED_INFORMATION)
   public ProcessInstanceMigrationVariables extractVersionInformation(
       @VariablesAsType ProcessInstanceMigrationVariables variables) {
-    ProcessDefinitionDto latestProcessDefinition =
+    Camunda7ProcessDefinitionData data =
         camunda7Service.getLatestProcessDefinition(variables.getBpmnProcessId());
-    variables.setCamunda7ProcessDefinitionId(latestProcessDefinition.getId());
+    variables.setCamunda7ProcessDefinitionId(data.getProcessDefinition().getId());
+
+    variables.setCamunda7JobDefinitions(
+        data.getJobDefinitions().stream()
+            .collect(Collectors.toMap(JobDefinitionDto::getId, JobDefinitionDto::getActivityId)));
     return variables;
   }
 
   @JobWorker(type = USER_TASK_JOB_TYPE, timeout = 1000L, autoComplete = false)
   public void userTask(
       ActivatedJob job, @VariablesAsType ProcessInstanceMigrationVariables variables) {
-    if (job.getBpmnProcessId().equals("ProcessInstanceMigrationProcess")
-        && job.getElementId().equals("SelectProcessInstancesToMigrateTask")) {
-      LOG.info("Found selection task {}", job.getKey());
-      selectionService.addTask(
-          new ProcessInstanceSelectionTask(
-              job.getKey(),
-              job.getProcessInstanceKey(),
-              variables.getBpmnProcessId(),
-              variables.getCamunda7ProcessDefinitionId(),
-              TaskState.CREATED));
-    }
+    String formKey = job.getCustomHeaders().get(USER_TASK_FORM_KEY_HEADER_NAME);
+    taskMappingService
+        .createUserTaskData(formKey, variables)
+        .ifPresent(
+            data ->
+                migrationTaskService.addTask(
+                    new UserTask(
+                        job.getKey(),
+                        job.getProcessInstanceKey(),
+                        formKey,
+                        data,
+                        TaskState.CREATED)));
   }
 }

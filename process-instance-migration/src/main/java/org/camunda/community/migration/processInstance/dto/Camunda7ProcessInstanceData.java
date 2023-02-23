@@ -3,12 +3,40 @@ package org.camunda.community.migration.processInstance.dto;
 import com.fasterxml.jackson.databind.JsonNode;
 import java.util.List;
 import java.util.Map;
+import org.camunda.community.migration.processInstance.service.ProcessInstanceMigrationHintRule.ProcessInstanceMigrationHintRuleContext;
 
-public class Camunda7ProcessInstanceData {
+public class Camunda7ProcessInstanceData implements ProcessInstanceMigrationHintRuleContext {
   private String processInstanceId;
   private String processDefinitionKey;
+  private String businessKey;
   private Map<String, ProcessVariableData> processVariables;
   private List<ActivityData> activities;
+  private List<String> migrationHints;
+  private List<JobData> jobData;
+
+  public List<JobData> getJobData() {
+    return jobData;
+  }
+
+  public void setJobData(List<JobData> jobData) {
+    this.jobData = jobData;
+  }
+
+  public String getBusinessKey() {
+    return businessKey;
+  }
+
+  public void setBusinessKey(String businessKey) {
+    this.businessKey = businessKey;
+  }
+
+  public List<String> getMigrationHints() {
+    return migrationHints;
+  }
+
+  public void setMigrationHints(List<String> migrationHints) {
+    this.migrationHints = migrationHints;
+  }
 
   public String getProcessInstanceId() {
     return processInstanceId;
@@ -40,6 +68,27 @@ public class Camunda7ProcessInstanceData {
 
   public void setActivities(List<ActivityData> activities) {
     this.activities = activities;
+  }
+
+  @Override
+  public String toString() {
+    return "Camunda7ProcessInstanceData{"
+        + "processInstanceId='"
+        + processInstanceId
+        + '\''
+        + ", processDefinitionKey='"
+        + processDefinitionKey
+        + '\''
+        + ", businessKey='"
+        + businessKey
+        + '\''
+        + ", processVariables="
+        + processVariables
+        + ", activities="
+        + activities
+        + ", migrationHints="
+        + migrationHints
+        + '}';
   }
 
   public static class ProcessVariableData {
@@ -78,6 +127,15 @@ public class Camunda7ProcessInstanceData {
   public static class ActivityData {
     private String id;
     private String type;
+    private Boolean leaf;
+
+    public Boolean getLeaf() {
+      return leaf;
+    }
+
+    public void setLeaf(Boolean leaf) {
+      this.leaf = leaf;
+    }
 
     public String getId() {
       return id;
@@ -98,6 +156,32 @@ public class Camunda7ProcessInstanceData {
     @Override
     public String toString() {
       return "ActivityData{" + "id='" + id + '\'' + ", type='" + type + '\'' + '}';
+    }
+  }
+
+  public static class JobData {
+    private String id;
+    private String jobDefinitionId;
+
+    public String getId() {
+      return id;
+    }
+
+    public void setId(String id) {
+      this.id = id;
+    }
+
+    public String getJobDefinitionId() {
+      return jobDefinitionId;
+    }
+
+    public void setJobDefinitionId(String jobDefinitionId) {
+      this.jobDefinitionId = jobDefinitionId;
+    }
+
+    @Override
+    public String toString() {
+      return "JobData{" + "id='" + id + '\'' + ", jobDefinitionId='" + jobDefinitionId + '\'' + '}';
     }
   }
 }

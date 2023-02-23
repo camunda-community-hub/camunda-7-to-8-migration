@@ -2,8 +2,9 @@ package org.camunda.community.migration.processInstance.dto;
 
 import io.camunda.operate.dto.ProcessDefinition;
 import io.camunda.zeebe.model.bpmn.BpmnModelInstance;
+import org.camunda.community.migration.processInstance.service.ProcessDefinitionMigrationHintRule.ProcessDefinitionMigrationHintRuleContext;
 
-public class Camunda8ProcessDefinitionData {
+public class Camunda8ProcessDefinitionData implements ProcessDefinitionMigrationHintRuleContext {
   private ProcessDefinition processDefinition;
   private BpmnModelInstance bpmnModelInstance;
 

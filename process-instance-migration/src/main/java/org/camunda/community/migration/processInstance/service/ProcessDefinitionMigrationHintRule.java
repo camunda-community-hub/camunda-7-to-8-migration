@@ -1,24 +1,31 @@
 package org.camunda.community.migration.processInstance.service;
 
+import io.camunda.operate.dto.ProcessDefinition;
+import io.camunda.zeebe.model.bpmn.BpmnModelInstance;
 import java.util.Optional;
 import java.util.function.Predicate;
-import org.camunda.community.migration.processInstance.dto.Camunda8ProcessDefinitionData;
 
 public interface ProcessDefinitionMigrationHintRule {
-  Optional<String> createHint(Camunda8ProcessDefinitionData data);
+  Optional<String> createHint(ProcessDefinitionMigrationHintRuleContext data);
+
+  interface ProcessDefinitionMigrationHintRuleContext {
+    public ProcessDefinition getProcessDefinition();
+
+    public BpmnModelInstance getBpmnModelInstance();
+  }
 
   class ProcessDefinitionMigrationHintRuleImpl implements ProcessDefinitionMigrationHintRule {
     private final String hint;
-    private final Predicate<Camunda8ProcessDefinitionData> condition;
+    private final Predicate<ProcessDefinitionMigrationHintRuleContext> condition;
 
     public ProcessDefinitionMigrationHintRuleImpl(
-        String hint, Predicate<Camunda8ProcessDefinitionData> condition) {
+        String hint, Predicate<ProcessDefinitionMigrationHintRuleContext> condition) {
       this.hint = hint;
       this.condition = condition;
     }
 
     @Override
-    public Optional<String> createHint(Camunda8ProcessDefinitionData data) {
+    public Optional<String> createHint(ProcessDefinitionMigrationHintRuleContext data) {
       if (condition.test(data)) {
         return Optional.of(hint);
       }

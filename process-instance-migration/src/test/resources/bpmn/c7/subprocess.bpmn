@@ -22,7 +22,7 @@
         <bpmn:outgoing>Flow_1gmm6dp</bpmn:outgoing>
       </bpmn:startEvent>
       <bpmn:sequenceFlow id="Flow_1gmm6dp" sourceRef="SStartEvent" targetRef="InSubprocessTaskTask" />
-      <bpmn:userTask id="InSubprocessTaskTask" name="In Subprocess Task">
+      <bpmn:userTask id="InSubprocessTaskTask" name="In Subprocess Task" camunda:asyncBefore="true">
         <bpmn:incoming>Flow_1gmm6dp</bpmn:incoming>
         <bpmn:outgoing>Flow_01ug0x0</bpmn:outgoing>
       </bpmn:userTask>

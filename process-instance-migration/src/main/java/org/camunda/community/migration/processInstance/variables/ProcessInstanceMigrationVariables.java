@@ -10,11 +10,38 @@ public class ProcessInstanceMigrationVariables {
   private String bpmnProcessId;
   private String camunda7ProcessDefinitionId;
   private String camunda7ProcessInstanceId;
+  private List<String> camunda7ProcessInstanceIds;
   private Long camunda8ProcessInstanceKey;
   private List<String> activityIds;
   private Map<String, Object> variables;
   private Boolean alreadyConverted;
   private List<String> conversionHints;
+  private Map<String, String> camunda7JobDefinitions;
+  private Map<String, String> selectedJobDefinitions;
+
+  public List<String> getCamunda7ProcessInstanceIds() {
+    return camunda7ProcessInstanceIds;
+  }
+
+  public void setCamunda7ProcessInstanceIds(List<String> camunda7ProcessInstanceIds) {
+    this.camunda7ProcessInstanceIds = camunda7ProcessInstanceIds;
+  }
+
+  public Map<String, String> getSelectedJobDefinitions() {
+    return selectedJobDefinitions;
+  }
+
+  public void setSelectedJobDefinitions(Map<String, String> selectedJobDefinitions) {
+    this.selectedJobDefinitions = selectedJobDefinitions;
+  }
+
+  public Map<String, String> getCamunda7JobDefinitions() {
+    return camunda7JobDefinitions;
+  }
+
+  public void setCamunda7JobDefinitions(Map<String, String> camunda7JobDefinitions) {
+    this.camunda7JobDefinitions = camunda7JobDefinitions;
+  }
 
   public List<String> getConversionHints() {
     return conversionHints;

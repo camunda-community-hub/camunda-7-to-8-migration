@@ -1,5 +1,6 @@
 package org.camunda.community.migration.processInstance.service;
 
+import static org.camunda.community.migration.processInstance.ProcessConstants.BpmnProcessId.*;
 import static org.camunda.community.migration.processInstance.ProcessConstants.Message.*;
 
 import io.camunda.operate.CamundaOperateClient;
@@ -46,6 +47,18 @@ public class Camunda8Service {
         .join();
   }
 
+  public ProcessInstanceEvent startProcessInstanceMigrationRouter(String bpmnProcessId) {
+    ProcessInstanceMigrationVariables variables = new ProcessInstanceMigrationVariables();
+    variables.setBpmnProcessId(bpmnProcessId);
+    return zeebeClient
+        .newCreateInstanceCommand()
+        .bpmnProcessId(ROUTER_PROCESS)
+        .latestVersion()
+        .variables(variables)
+        .send()
+        .join();
+  }
+
   public ProcessInstanceEvent startMigratedProcessInstance(
       String bpmnProcessId, List<String> activityIds, Map<String, Object> variables) {
     CreateProcessInstanceCommandStep3 command =
@@ -56,6 +69,10 @@ public class Camunda8Service {
             .variables(variables);
     activityIds.forEach(command::startBeforeElement);
     return command.send().join();
+  }
+
+  public void completeTask(long jobKey, Object result) {
+    zeebeClient.newCompleteCommand(jobKey).variables(result).send().join();
   }
 
   public void selectProcessInstances(long jobKey, List<String> processInstances) {
@@ -90,5 +107,9 @@ public class Camunda8Service {
     } catch (OperateException e) {
       throw new RuntimeException(e);
     }
+  }
+
+  public void cancelProcessInstance(Long processInstanceKey) {
+    zeebeClient.newCancelInstanceCommand(processInstanceKey).send().join();
   }
 }

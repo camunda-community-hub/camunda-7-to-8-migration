@@ -3,28 +3,47 @@ package org.camunda.community.migration.processInstance.service;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.NullNode;
 import com.fasterxml.jackson.databind.node.TextNode;
-import java.util.Collections;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 import org.camunda.community.migration.processInstance.client.Camunda7Client;
-import org.camunda.community.migration.processInstance.dto.ActivityInstanceDto;
+import org.camunda.community.migration.processInstance.client.Camunda7Client.Camunda7JobConfiguration;
+import org.camunda.community.migration.processInstance.client.Camunda7Client.Camunda7JobType;
+import org.camunda.community.migration.processInstance.dto.Camunda7ProcessDefinitionData;
 import org.camunda.community.migration.processInstance.dto.Camunda7ProcessInstanceData;
 import org.camunda.community.migration.processInstance.dto.Camunda7ProcessInstanceData.ActivityData;
+import org.camunda.community.migration.processInstance.dto.Camunda7ProcessInstanceData.JobData;
 import org.camunda.community.migration.processInstance.dto.Camunda7ProcessInstanceData.ProcessVariableData;
-import org.camunda.community.migration.processInstance.dto.ProcessDefinitionDto;
-import org.camunda.community.migration.processInstance.dto.ProcessInstanceDto;
+import org.camunda.community.migration.processInstance.dto.client.ActivityInstanceDto;
+import org.camunda.community.migration.processInstance.dto.client.ProcessDefinitionDto;
+import org.camunda.community.migration.processInstance.dto.client.ProcessInstanceDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
 public class Camunda7Service {
   private final Camunda7Client camunda7Client;
+  private final Set<ProcessInstanceMigrationHintRule> processInstanceMigrationHintRules;
 
   @Autowired
-  public Camunda7Service(Camunda7Client camunda7Client) {
+  public Camunda7Service(
+      Camunda7Client camunda7Client,
+      Set<ProcessInstanceMigrationHintRule> processInstanceMigrationHintRules) {
     this.camunda7Client = camunda7Client;
+    this.processInstanceMigrationHintRules = processInstanceMigrationHintRules;
+  }
+
+  private List<String> getMigrationHints(Camunda7ProcessInstanceData processData) {
+    return processInstanceMigrationHintRules.stream()
+        .map(rule -> rule.createHint(processData))
+        .filter(Optional::isPresent)
+        .map(Optional::get)
+        .collect(Collectors.toList());
   }
 
   public Camunda7ProcessInstanceData getProcessData(String camunda7ProcessInstanceId) {
@@ -43,7 +62,6 @@ public class Camunda7Service {
             ? NullNode.getInstance()
             : TextNode.valueOf(processInstance.getBusinessKey());
     variables.put("businessKey", ProcessVariableData.of(businessKey, camunda7ProcessInstanceId));
-
     camunda7Client
         .getVariableInstances(camunda7ProcessInstanceId)
         .forEach(
@@ -55,26 +73,57 @@ public class Camunda7Service {
     // activity ids
     ActivityInstanceDto activities = camunda7Client.getActivityInstances(camunda7ProcessInstanceId);
     processData.setActivities(extractFromTree(activities));
+    processData.setMigrationHints(getMigrationHints(processData));
+    processData.setBusinessKey(processInstance.getBusinessKey());
+    processData.setJobData(getJobs(camunda7ProcessInstanceId));
     return processData;
+  }
+
+  private List<JobData> getJobs(String camunda7ProcessInstanceId) {
+    return camunda7Client.getJobs(camunda7ProcessInstanceId).stream()
+        .map(
+            dto -> {
+              JobData data = new JobData();
+              data.setJobDefinitionId(dto.getJobDefinitionId());
+              data.setId(dto.getId());
+              return data;
+            })
+        .collect(Collectors.toList());
   }
 
   private List<ActivityData> extractFromTree(ActivityInstanceDto activityInstanceDto) {
     ActivityData data = new ActivityData();
     data.setId(activityInstanceDto.getActivityId());
     data.setType(activityInstanceDto.getActivityType());
-    if (activityInstanceDto.getChildActivityInstances() == null
-        || activityInstanceDto.getChildActivityInstances().isEmpty()) {
-      return Collections.singletonList(data);
-    } else {
-      List<ActivityData> result =
+    data.setLeaf(true);
+    List<ActivityData> result = new ArrayList<>();
+    if (!data.getType().equals("processDefinition")) {
+      result.add(data);
+    }
+    if (activityInstanceDto.getChildActivityInstances() != null
+        && !activityInstanceDto.getChildActivityInstances().isEmpty()) {
+      data.setLeaf(false);
+      result.addAll(
           activityInstanceDto.getChildActivityInstances().stream()
               .flatMap(dto -> extractFromTree(dto).stream())
-              .collect(Collectors.toList());
-      if (!data.getType().equals("processDefinition")) {
-        result.add(data);
-      }
-      return result;
+              .collect(Collectors.toList()));
     }
+    if (activityInstanceDto.getChildTransitionInstances() != null
+        && !activityInstanceDto.getChildTransitionInstances().isEmpty()) {
+      data.setLeaf(false);
+      result.addAll(
+          activityInstanceDto.getChildTransitionInstances().stream()
+              .map(
+                  transitionInstanceDto -> {
+                    ActivityData transitionData = new ActivityData();
+                    transitionData.setId(transitionInstanceDto.getActivityId());
+                    transitionData.setType(transitionInstanceDto.getActivityType());
+                    transitionData.setLeaf(true);
+                    return transitionData;
+                  })
+              .collect(Collectors.toList()));
+    }
+    return result;
   }
 
   public void suspendProcessDefinition(String processDefinitionId, boolean suspended) {
@@ -93,9 +142,44 @@ public class Camunda7Service {
     return camunda7Client.getProcessInstancesByProcessDefinition(processDefinitionId);
   }
 
-  public ProcessDefinitionDto getLatestProcessDefinition(String bpmnProcessId) {
+  public Camunda7ProcessDefinitionData getLatestProcessDefinition(String bpmnProcessId) {
+    Camunda7ProcessDefinitionData data = new Camunda7ProcessDefinitionData();
     List<ProcessDefinitionDto> processDefinitionByKey =
         camunda7Client.getLatestProcessDefinitionByKey(bpmnProcessId);
-    return processDefinitionByKey.isEmpty() ? null : processDefinitionByKey.get(0);
+    data.setProcessDefinition(
+        processDefinitionByKey.isEmpty() ? null : processDefinitionByKey.get(0));
+    if (data.getProcessDefinition() != null) {
+      data.setJobDefinitions(
+          camunda7Client.getJobDefinitions(
+              Camunda7JobType.ASYNC_CONTINUATION,
+              Camunda7JobConfiguration.ASYNC_BEFORE,
+              data.getProcessDefinition().getId()));
+    }
+    return data;
+  }
+
+  public void suspendJobDefinitions(Set<String> selectedJobDefinitions) {
+    selectedJobDefinitions.forEach(jobId -> camunda7Client.suspendJobDefinition(jobId, true));
+  }
+
+  public List<Camunda7ProcessInstanceData>
+      getProcessInstancesByProcessDefinitionIdAndExclusiveActivityIds(
+          String camunda7ProcessDefinitionId, Collection<String> activityIds) {
+    return camunda7Client
+        .getProcessInstancesByProcessDefinitionAndActivityIds(
+            camunda7ProcessDefinitionId, activityIds)
+        .stream()
+        .map(pi -> getProcessData(pi.getId()))
+        .filter(
+            pi ->
+                pi.getActivities().stream()
+                    .filter(ActivityData::getLeaf)
+                    .map(ActivityData::getId)
+                    .allMatch(activityIds::contains))
+        .collect(Collectors.toList());
+  }
+
+  public void continueJobDefinitions(Set<String> selectedJobDefinitions) {
+    selectedJobDefinitions.forEach(jobId -> camunda7Client.suspendJobDefinition(jobId, false));
   }
 }
