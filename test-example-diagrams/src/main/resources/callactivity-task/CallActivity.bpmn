@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_1c11fw3" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.8.0" modeler:executionPlatform="Camunda Platform" modeler:executionPlatformVersion="7.18.0">
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_1c11fw3" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.8.0" modeler:executionPlatform="Camunda Platform" modeler:executionPlatformVersion="7.18.0">
   <bpmn:collaboration id="parent">
     <bpmn:participant id="Participant_0dl2a0j" name="Parent" processRef="CallActvityParent" />
     <bpmn:participant id="Participant_1l802dq" name="Child" processRef="CallActvityChild" />
@@ -29,18 +29,6 @@
     <bpmn:endEvent id="Event_0bpgroy" name="End request">
       <bpmn:incoming>Flow_0xmjrmo</bpmn:incoming>
     </bpmn:endEvent>
-    <bpmn:subProcess id="Activity_1js03sv" triggeredByEvent="true">
-      <bpmn:startEvent id="Event_104czhl">
-        <bpmn:outgoing>Flow_0ynsgn7</bpmn:outgoing>
-        <bpmn:timerEventDefinition id="TimerEventDefinition_012h6c2">
-          <bpmn:timeDuration xsi:type="bpmn:tFormalExpression">PT5M</bpmn:timeDuration>
-        </bpmn:timerEventDefinition>
-      </bpmn:startEvent>
-      <bpmn:endEvent id="Event_1omk5ju">
-        <bpmn:incoming>Flow_0ynsgn7</bpmn:incoming>
-      </bpmn:endEvent>
-      <bpmn:sequenceFlow id="Flow_0ynsgn7" sourceRef="Event_104czhl" targetRef="Event_1omk5ju" />
-    </bpmn:subProcess>
   </bpmn:process>
   <bpmn:process id="CallActvityChild" name="CallActvityChild" isExecutable="true">
     <bpmn:parallelGateway id="Gateway_0728nlh">
@@ -113,19 +101,6 @@
           <dc:Bounds x="790" y="185" width="61" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_0ftls02_di" bpmnElement="Activity_1js03sv" isExpanded="true">
-        <dc:Bounds x="190" y="230" width="350" height="128" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Event_1omk5ju_di" bpmnElement="Event_1omk5ju">
-        <dc:Bounds x="322" y="250" width="36" height="36" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Event_10brgoa_di" bpmnElement="Event_104czhl">
-        <dc:Bounds x="230" y="250" width="36" height="36" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNEdge id="Flow_0ynsgn7_di" bpmnElement="Flow_0ynsgn7">
-        <di:waypoint x="266" y="268" />
-        <di:waypoint x="322" y="268" />
-      </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0clro87_di" bpmnElement="Flow_0clro87">
         <di:waypoint x="215" y="160" />
         <di:waypoint x="480" y="160" />
