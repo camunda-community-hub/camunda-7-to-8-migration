@@ -14,14 +14,8 @@
             "employeAccount": "EMPLOYEE-88833F",
             "employeeName": "Walter"
           }
-        },
-        {
-          "type": "USERTASK",
-          "delay": "PT0.1S",
-          "waitingTime": "PT10S",
-          "activityId": "Activity_child_Review",
-          "variables": {}
         }
+
       ]
     }
   ]
