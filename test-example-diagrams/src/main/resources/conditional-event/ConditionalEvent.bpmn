@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_1c11fw3" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.8.0" modeler:executionPlatform="Camunda Platform" modeler:executionPlatformVersion="7.18.0">
+  <bpmn:collaboration id="Conditionnal_Id">
+    <bpmn:participant id="Participant_0dl2a0j" name="Conditional Event" processRef="ConditionalEvent" />
+  </bpmn:collaboration>
+  <bpmn:process id="ConditionalEvent" name="ConditionalEvent" isExecutable="true">
+    <bpmn:userTask id="Activity_Review_1" name="Review 1" camunda:asyncAfter="true">
+      <bpmn:incoming>Flow_0749330</bpmn:incoming>
+      <bpmn:outgoing>Flow_1mr5hz4</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:endEvent id="Event_0o6hs1k" name="end Request">
+      <bpmn:incoming>Flow_17ynxnq</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:startEvent id="Start_ConditionalEvent" name="Start request">
+      <bpmn:outgoing>Flow_0749330</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:userTask id="Activity_Final_Review" name="Final review">
+      <bpmn:incoming>Flow_1l8w2r6</bpmn:incoming>
+      <bpmn:outgoing>Flow_17ynxnq</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:intermediateCatchEvent id="Event_1v9nbph" name="Temperature is 100°">
+      <bpmn:incoming>Flow_1mr5hz4</bpmn:incoming>
+      <bpmn:outgoing>Flow_1l8w2r6</bpmn:outgoing>
+      <bpmn:conditionalEventDefinition id="ConditionalEventDefinition_1r8kek1" camunda:variableName="temperature">
+        <bpmn:condition xsi:type="bpmn:tFormalExpression">${temperature &gt; 100}</bpmn:condition>
+      </bpmn:conditionalEventDefinition>
+    </bpmn:intermediateCatchEvent>
+    <bpmn:sequenceFlow id="Flow_0749330" sourceRef="Start_ConditionalEvent" targetRef="Activity_Review_1" />
+    <bpmn:sequenceFlow id="Flow_1mr5hz4" sourceRef="Activity_Review_1" targetRef="Event_1v9nbph" />
+    <bpmn:sequenceFlow id="Flow_17ynxnq" sourceRef="Activity_Final_Review" targetRef="Event_0o6hs1k" />
+    <bpmn:sequenceFlow id="Flow_1l8w2r6" sourceRef="Event_1v9nbph" targetRef="Activity_Final_Review" />
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Conditionnal_Id">
+      <bpmndi:BPMNShape id="Participant_0dl2a0j_di" bpmnElement="Participant_0dl2a0j" isHorizontal="true">
+        <dc:Bounds x="129" y="40" width="731" height="328" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_06r9g5m_di" bpmnElement="Activity_Review_1">
+        <dc:Bounds x="300" y="90" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0o6hs1k_di" bpmnElement="Event_0o6hs1k">
+        <dc:Bounds x="752" y="112" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="738" y="155" width="64" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="Start_ConditionalEvent">
+        <dc:Bounds x="192" y="102" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="178" y="145" width="64" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_12wmri6_di" bpmnElement="Activity_Final_Review">
+        <dc:Bounds x="600" y="90" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0q03qqh_di" bpmnElement="Event_1v9nbph">
+        <dc:Bounds x="472" y="112" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="454" y="155" width="73" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_0749330_di" bpmnElement="Flow_0749330">
+        <di:waypoint x="228" y="120" />
+        <di:waypoint x="300" y="120" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1mr5hz4_di" bpmnElement="Flow_1mr5hz4">
+        <di:waypoint x="400" y="130" />
+        <di:waypoint x="472" y="130" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_17ynxnq_di" bpmnElement="Flow_17ynxnq">
+        <di:waypoint x="700" y="130" />
+        <di:waypoint x="752" y="130" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1l8w2r6_di" bpmnElement="Flow_1l8w2r6">
+        <di:waypoint x="508" y="130" />
+        <di:waypoint x="600" y="130" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>
