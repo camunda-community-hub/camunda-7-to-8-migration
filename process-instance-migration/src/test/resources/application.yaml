@@ -9,4 +9,8 @@ operate:
       simple:
         username: demo
         password: demo
-
+zeebe:
+  client:
+    request-timeout: PT1M
+    job:
+      poll-interval: PT3S
