@@ -18,5 +18,7 @@ jobs:
         registry: ghcr.io
         username: ${{ github.actor }}
         password: ${{ secrets.GITHUB_TOKEN }}
-    - name: Build
+    - name: Verify Format
       run: mvn verify -PcheckFormat -B
+    - name: Enforce rules
+      run: mvn enforcer:enforce -B
