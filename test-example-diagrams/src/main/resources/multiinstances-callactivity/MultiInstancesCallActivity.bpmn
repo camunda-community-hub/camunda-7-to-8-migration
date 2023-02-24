@@ -58,7 +58,7 @@
         <camunda:inputOutput>
           <camunda:inputParameter name="decision" />
         </camunda:inputOutput>
-        <camunda:in sourceExpression="&#34;CollSeq&#34;" target="callActivityMarker" />
+        <camunda:in sourceExpression="${&#34;CollSeq&#34;}" target="callActivityMarker" />
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_07lutnr</bpmn:incoming>
       <bpmn:outgoing>Flow_17cm64o</bpmn:outgoing>
@@ -69,7 +69,7 @@
         <camunda:inputOutput>
           <camunda:inputParameter name="decision" />
         </camunda:inputOutput>
-        <camunda:in sourceExpression="&#34;LoopSeq&#34;" target="callActivityMarker" />
+        <camunda:in sourceExpression="${&#34;LoopSeq&#34;}" target="callActivityMarker" />
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_17s3ti6</bpmn:incoming>
       <bpmn:outgoing>Flow_05u8d2o</bpmn:outgoing>
@@ -82,7 +82,7 @@
         <camunda:inputOutput>
           <camunda:inputParameter name="decision" />
         </camunda:inputOutput>
-        <camunda:in sourceExpression="&#34;LoopPara&#34;" target="callActivityMarker" />
+        <camunda:in sourceExpression="${&#34;LoopPara&#34;}" target="callActivityMarker" />
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_0tt7smf</bpmn:incoming>
       <bpmn:outgoing>Flow_1pwe54o</bpmn:outgoing>
@@ -90,18 +90,6 @@
         <bpmn:loopCardinality xsi:type="bpmn:tFormalExpression">5</bpmn:loopCardinality>
       </bpmn:multiInstanceLoopCharacteristics>
     </bpmn:callActivity>
-    <bpmn:subProcess id="Activity_1js03sv" triggeredByEvent="true">
-      <bpmn:endEvent id="Event_1omk5ju">
-        <bpmn:incoming>Flow_0ynsgn7</bpmn:incoming>
-      </bpmn:endEvent>
-      <bpmn:startEvent id="Event_104czhl">
-        <bpmn:outgoing>Flow_0ynsgn7</bpmn:outgoing>
-        <bpmn:timerEventDefinition id="TimerEventDefinition_012h6c2">
-          <bpmn:timeDuration xsi:type="bpmn:tFormalExpression">PT5M</bpmn:timeDuration>
-        </bpmn:timerEventDefinition>
-      </bpmn:startEvent>
-      <bpmn:sequenceFlow id="Flow_0ynsgn7" sourceRef="Event_104czhl" targetRef="Event_1omk5ju" />
-    </bpmn:subProcess>
     <bpmn:textAnnotation id="TextAnnotation_0er6wjq">
       <bpmn:text>List of colors contains 5 items, 2 instances was executed</bpmn:text>
     </bpmn:textAnnotation>
@@ -124,7 +112,7 @@
       <bpmn:outgoing>Flow_1ycg3hx</bpmn:outgoing>
     </bpmn:startEvent>
     <bpmn:sequenceFlow id="Flow_1ycg3hx" sourceRef="Event_1g2v4qg" targetRef="Gateway_0w3rcdl" />
-    <bpmn:sequenceFlow id="Flow_1p83s50" sourceRef="review_call_para" targetRef="Event_0c8j888" />
+    <bpmn:sequenceFlow id="Flow_1p83s50" sourceRef="review_coll_para" targetRef="Event_0c8j888" />
     <bpmn:endEvent id="Event_0c8j888" name="End child">
       <bpmn:incoming>Flow_1p83s50</bpmn:incoming>
     </bpmn:endEvent>
@@ -136,43 +124,35 @@
       <bpmn:outgoing>Flow_1y5fz2u</bpmn:outgoing>
       <bpmn:outgoing>Flow_10mlc2h</bpmn:outgoing>
     </bpmn:exclusiveGateway>
-    <bpmn:sequenceFlow id="Flow_1508615" name="CollPara" sourceRef="Gateway_0w3rcdl" targetRef="review_call_para">
+    <bpmn:sequenceFlow id="Flow_1508615" name="CollPara" sourceRef="Gateway_0w3rcdl" targetRef="review_coll_para">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${callActivityMarker== "CollPara"}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
-    <bpmn:userTask id="review_call_para" name="Review Call Para">
+    <bpmn:userTask id="review_coll_para" name="Review Call Para">
       <bpmn:incoming>Flow_1508615</bpmn:incoming>
       <bpmn:outgoing>Flow_1p83s50</bpmn:outgoing>
     </bpmn:userTask>
-    <bpmn:sequenceFlow id="Flow_0nur4cp" name="LoopPara" sourceRef="Gateway_0w3rcdl" targetRef="Activity_13cvr0w">
+    <bpmn:sequenceFlow id="Flow_0nur4cp" name="LoopPara" sourceRef="Gateway_0w3rcdl" targetRef="review_loopcard_para">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${callActivityMarker=="LoopPara"}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
-    <bpmn:userTask id="Activity_13cvr0w" name="Loop Para">
+    <bpmn:userTask id="review_loopcard_para" name="LoopCardinality Para">
       <bpmn:incoming>Flow_0nur4cp</bpmn:incoming>
       <bpmn:outgoing>Flow_17swztp</bpmn:outgoing>
     </bpmn:userTask>
-    <bpmn:task id="Activity_1exxubh" name="Review CollSeq">
-      <bpmn:incoming>Flow_0ydyjl0</bpmn:incoming>
-      <bpmn:outgoing>Flow_0zlaajj</bpmn:outgoing>
-    </bpmn:task>
-    <bpmn:sequenceFlow id="Flow_0ydyjl0" name="CollSeq" sourceRef="Gateway_0w3rcdl" targetRef="Activity_1exxubh">
+    <bpmn:sequenceFlow id="Flow_0ydyjl0" name="CollSeq" sourceRef="Gateway_0w3rcdl" targetRef="review_coll_seq">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${callActivityMarker =="CollSeq"}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
-    <bpmn:task id="Activity_1o2w77t" name="Review Loop Seq">
-      <bpmn:incoming>Flow_1y5fz2u</bpmn:incoming>
-      <bpmn:outgoing>Flow_0hqmb09</bpmn:outgoing>
-    </bpmn:task>
-    <bpmn:sequenceFlow id="Flow_1y5fz2u" name="LoopSeq" sourceRef="Gateway_0w3rcdl" targetRef="Activity_1o2w77t">
+    <bpmn:sequenceFlow id="Flow_1y5fz2u" name="LoopSeq" sourceRef="Gateway_0w3rcdl" targetRef="review_loopcard_seq">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${callActivityMarker =="LoopSeq"}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
-    <bpmn:sequenceFlow id="Flow_17swztp" sourceRef="Activity_13cvr0w" targetRef="Event_09nhkno" />
+    <bpmn:sequenceFlow id="Flow_17swztp" sourceRef="review_loopcard_para" targetRef="Event_09nhkno" />
     <bpmn:endEvent id="Event_0cakvez">
       <bpmn:incoming>Flow_0zlaajj</bpmn:incoming>
     </bpmn:endEvent>
-    <bpmn:sequenceFlow id="Flow_0zlaajj" sourceRef="Activity_1exxubh" targetRef="Event_0cakvez" />
+    <bpmn:sequenceFlow id="Flow_0zlaajj" sourceRef="review_coll_seq" targetRef="Event_0cakvez" />
     <bpmn:endEvent id="Event_1xz5rl9">
       <bpmn:incoming>Flow_0hqmb09</bpmn:incoming>
     </bpmn:endEvent>
-    <bpmn:sequenceFlow id="Flow_0hqmb09" sourceRef="Activity_1o2w77t" targetRef="Event_1xz5rl9" />
+    <bpmn:sequenceFlow id="Flow_0hqmb09" sourceRef="review_loopcard_seq" targetRef="Event_1xz5rl9" />
     <bpmn:endEvent id="Event_09nhkno">
       <bpmn:incoming>Flow_17swztp</bpmn:incoming>
     </bpmn:endEvent>
@@ -184,6 +164,14 @@
     <bpmn:userTask id="Activity_1yf7gv4" name="No marker">
       <bpmn:incoming>Flow_10mlc2h</bpmn:incoming>
       <bpmn:outgoing>Flow_0hvtuz4</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:userTask id="review_coll_seq" name="Review CollSeq">
+      <bpmn:incoming>Flow_0ydyjl0</bpmn:incoming>
+      <bpmn:outgoing>Flow_0zlaajj</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:userTask id="review_loopcard_seq" name="Review Loop Seq">
+      <bpmn:incoming>Flow_1y5fz2u</bpmn:incoming>
+      <bpmn:outgoing>Flow_0hqmb09</bpmn:outgoing>
     </bpmn:userTask>
   </bpmn:process>
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
@@ -236,19 +224,6 @@
         <dc:Bounds x="730" y="320" width="100" height="80" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_0ftls02_di" bpmnElement="Activity_1js03sv" isExpanded="true">
-        <dc:Bounds x="510" y="60" width="350" height="128" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Event_1omk5ju_di" bpmnElement="Event_1omk5ju">
-        <dc:Bounds x="642" y="80" width="36" height="36" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Event_10brgoa_di" bpmnElement="Event_104czhl">
-        <dc:Bounds x="550" y="80" width="36" height="36" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNEdge id="Flow_0ynsgn7_di" bpmnElement="Flow_0ynsgn7">
-        <di:waypoint x="586" y="98" />
-        <di:waypoint x="642" y="98" />
-      </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="TextAnnotation_0er6wjq_di" bpmnElement="TextAnnotation_0er6wjq">
         <dc:Bounds x="530" y="250" width="100" height="84" />
         <bpmndi:BPMNLabel />
@@ -353,20 +328,12 @@
           <dc:Bounds x="366" y="718" width="87" height="27" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_1cosssa_di" bpmnElement="review_call_para">
+      <bpmndi:BPMNShape id="Activity_1cosssa_di" bpmnElement="review_coll_para">
         <dc:Bounds x="600" y="740" width="100" height="80" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_03gjhwp_di" bpmnElement="Activity_13cvr0w">
+      <bpmndi:BPMNShape id="Activity_03gjhwp_di" bpmnElement="review_loopcard_para">
         <dc:Bounds x="680" y="850" width="100" height="80" />
-        <bpmndi:BPMNLabel />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_1exxubh_di" bpmnElement="Activity_1exxubh">
-        <dc:Bounds x="760" y="950" width="100" height="80" />
-        <bpmndi:BPMNLabel />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_1o2w77t_di" bpmnElement="Activity_1o2w77t">
-        <dc:Bounds x="850" y="1040" width="100" height="80" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_0cakvez_di" bpmnElement="Event_0cakvez">
@@ -383,6 +350,12 @@
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_0d5agoh_di" bpmnElement="Activity_1yf7gv4">
         <dc:Bounds x="620" y="1120" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1olf2ry_di" bpmnElement="review_coll_seq">
+        <dc:Bounds x="760" y="950" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0f0wwgn_di" bpmnElement="review_loopcard_seq">
+        <dc:Bounds x="850" y="1040" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="Flow_1ycg3hx_di" bpmnElement="Flow_1ycg3hx">
         <di:waypoint x="308" y="780" />
