@@ -34,7 +34,7 @@
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="ParallelRendezVous_Id">
       <bpmndi:BPMNShape id="Participant_0dl2a0j_di" bpmnElement="Participant_0dl2a0j" isHorizontal="true">
-        <dc:Bounds x="129" y="100" width="910" height="200" />
+        <dc:Bounds x="129" y="40" width="910" height="260" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_06r9g5m_di" bpmnElement="Activity_Review_1">
