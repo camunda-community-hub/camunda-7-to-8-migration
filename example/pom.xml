@@ -6,21 +6,10 @@
   <parent>
     <artifactId>camunda-7-to-8-migration</artifactId>
     <groupId>org.camunda.community.migration</groupId>
-    <version>0.4.4</version>
+    <version>0.4.5-SNAPSHOT</version>
   </parent>
   <modules>
     <module>process-solution-camunda-7</module>
     <module>process-solution-migrated</module>
   </modules>
-  <build>
-    <plugins>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-release-plugin</artifactId>
-        <configuration>
-          <updateDependencies>false</updateDependencies>
-        </configuration>
-      </plugin>
-    </plugins>
-  </build>
 </project>
