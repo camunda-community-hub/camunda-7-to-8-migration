@@ -21,7 +21,7 @@ jobs:
     - name: Build
       run: mvn verify -PcheckFormat -B
     - name: Test examples
-      run: mvn test -f example
+      run: mvn test -f example -B
     - name: Check Test Fails
       if: failure()
       run: find . -name "*-output.txt" -print -exec cat {} \;
