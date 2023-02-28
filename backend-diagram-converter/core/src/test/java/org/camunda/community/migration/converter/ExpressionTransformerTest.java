@@ -20,6 +20,7 @@ public class ExpressionTransformerTest {
   @TestFactory
   public Stream<DynamicContainer> shouldResolveExpression() {
     return Stream.of(
+            expression("").isMappedTo("=null"),
             expression("${someVariable}").isMappedTo("=someVariable"),
             expression("someStaticValue").isMappedTo("someStaticValue"),
             expression("${var.innerField}").isMappedTo("=var.innerField"),
@@ -66,7 +67,7 @@ public class ExpressionTransformerTest {
         .map(
             data ->
                 DynamicContainer.dynamicContainer(
-                    data.getResult().getOldExpression(), data.getTests()));
+                    "Expression: " + data.getResult().getOldExpression(), data.getTests()));
   }
 
   private static class ExpressionTestBuilder {

@@ -29,7 +29,8 @@ public class BpmnConverterTest {
         "example-c7_2.bpmn",
         "java-delegate-class-c7.bpmn",
         "old-process.bpmn20.xml",
-        "collaboration.bpmn"
+        "collaboration.bpmn",
+        "empty-input-parameter.bpmn"
       })
   public void shouldConvert(String bpmnFile) {
     BpmnConverter converter = BpmnConverterFactory.getInstance().get();
@@ -326,6 +327,17 @@ public class BpmnConverterTest {
             Arrays.asList("Completion condition", "Method invocation is not possible in FEEL"));
 
     assertThat(messages.get(3).getSeverity()).isEqualTo(Severity.INFO);
+  }
+
+  @Test
+  void testEmptyInputParameterMapping() {
+    BpmnDiagramCheckResult result = loadAndCheck("empty-input-parameter.bpmn");
+    List<BpmnElementCheckMessage> messages = result.getResult("AUserTaskTask").getMessages();
+    assertThat(messages).hasSize(1);
+    BpmnElementCheckMessage message = messages.get(0);
+    assertThat(message.getMessage())
+        .isEqualTo(
+            "Element 'inputParameter' was transformed. Parameter 'inputParameterName': Please review transformed expression: '' -> '=null'.");
   }
 
   protected BpmnDiagramCheckResult loadAndCheck(String bpmnFile) {
