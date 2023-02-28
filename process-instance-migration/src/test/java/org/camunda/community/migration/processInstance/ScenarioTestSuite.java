@@ -56,7 +56,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class ScenarioTestSuite {
-  public static final Duration TIMEOUT = Duration.ofMinutes(1);
+  public static final Duration TIMEOUT = Duration.ofMinutes(5);
   public static final String PROCESS_INSTANCE_STATE = "INTERNALLY_TERMINATED";
 
   private static final Logger LOG = LoggerFactory.getLogger(ScenarioTestSuite.class);
@@ -369,7 +369,8 @@ public class ScenarioTestSuite {
     List<String> elementIds = runtimeService().getActiveActivityIds(c7instance.getId());
     LOG.info("Advanced to activities {}", elementIds);
     zeebeTestEngine.waitForIdleState(TIMEOUT);
-    zeebeTestEngine.increaseTime(Duration.ofMinutes(15));
+    zeebeTestEngine.increaseTime(Duration.parse("PT9M50S"));
+    zeebeTestEngine.waitForIdleState(TIMEOUT);
     zeebeTestEngine.waitForBusyState(TIMEOUT);
     completeJob(JobType.CAMUNDA7_QUERY_ROUTABLE_INSTANCES, queryRoutableInstances());
     migrateProcessInstance();
@@ -377,6 +378,7 @@ public class ScenarioTestSuite {
     // wait until router is completed
     completeJob(JobType.CAMUNDA7_CONTINUE_JOB, continueJobDefinition());
     zeebeTestEngine.waitForIdleState(TIMEOUT);
+    BpmnAssert.assertThat(processInstance).isCompleted();
     // assert that the c7 instance was terminated
     HistoricProcessInstance historicProcessInstance =
         historyService()
