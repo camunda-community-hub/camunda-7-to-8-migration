@@ -59,7 +59,7 @@
       <bpmn:startEvent id="Event_0oxxe3f" name="1 day">
         <bpmn:outgoing>Flow_0ccskj0</bpmn:outgoing>
         <bpmn:timerEventDefinition id="TimerEventDefinition_1e207rx">
-          <bpmn:timeDuration xsi:type="bpmn:tFormalExpression">PT1M</bpmn:timeDuration>
+          <bpmn:timeDuration xsi:type="bpmn:tFormalExpression">P1D</bpmn:timeDuration>
         </bpmn:timerEventDefinition>
       </bpmn:startEvent>
       <bpmn:endEvent id="Event_0zt9d42">
