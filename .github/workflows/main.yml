@@ -32,7 +32,6 @@ jobs:
           maven-release-options: -Dspotless.apply.skip
           maven-additional-options: -Dspotless.apply.skip
           release-version: ${{ github.event.release.tag_name }}
-          release-profile: community-action-maven-release
           nexus-usr: ${{ secrets.NEXUS_USR }}
           nexus-psw: ${{ secrets.NEXUS_PSW }}
           maven-usr: ${{ secrets.MAVEN_CENTRAL_DEPLOYMENT_USR }}
