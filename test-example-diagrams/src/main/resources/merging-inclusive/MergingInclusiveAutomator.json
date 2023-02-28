@@ -1,5 +1,5 @@
 {
-  "name": "MultiInstances Call Activity",
+  "name": "Merging Parallel Activities",
   "processId": "MergingInclusive",
   "executions": [
     {
@@ -120,9 +120,3 @@
     }
   ]
 }
-
-
-
-
-
-
