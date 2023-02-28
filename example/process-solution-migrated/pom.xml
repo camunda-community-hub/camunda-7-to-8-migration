@@ -4,14 +4,55 @@
 
   <modelVersion>4.0.0</modelVersion>
 
-  <parent>
-    <groupId>org.camunda.community.migration</groupId>
-    <artifactId>migration-examples-parent</artifactId>
-    <version>1.0.0-SNAPSHOT</version>
-  </parent>
-
+  <groupId>org.camunda.community.migration</groupId>
   <artifactId>sample-process-solution-migrated</artifactId>
+  <version>1.0.0-SNAPSHOT</version>
 
+  <properties>
+    <encoding>UTF-8</encoding>
+    <project.build.sourceEncoding>${encoding}</project.build.sourceEncoding>
+    <project.build.resourceEncoding>${encoding}</project.build.resourceEncoding>
+    <version.java>1.8</version.java>
+    <maven.compiler.source>${version.java}</maven.compiler.source>
+    <maven.compiler.target>${version.java}</maven.compiler.target>
+
+    <version.spring-boot>2.7.8</version.spring-boot>
+    <version.camunda>7.18.0</version.camunda>
+    <version.adapter>0.4.3</version.adapter>
+    <version.zeebe>8.1.8</version.zeebe>
+
+    <plugin.version.maven-surefire-plugin>3.0.0-M9</plugin.version.maven-surefire-plugin>
+  </properties>
+
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-dependencies</artifactId>
+        <version>${version.spring-boot}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.camunda.bpm</groupId>
+        <artifactId>camunda-bom</artifactId>
+        <version>${version.camunda}</version>
+        <scope>import</scope>
+        <type>pom</type>
+      </dependency>
+      <dependency>
+        <groupId>org.camunda.community.migration</groupId>
+        <artifactId>camunda-7-adapter</artifactId>
+        <version>${version.adapter}</version>
+      </dependency>
+      <!-- Testcontainers is required as we run on Java 1.8 here. 'spring-zeebe-test' can be used with Java 17 upwards-->
+      <dependency>
+        <groupId>io.camunda</groupId>
+        <artifactId>spring-zeebe-test-testcontainer</artifactId>
+        <version>${version.zeebe}</version>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
 
   <dependencies>
     <dependency>
@@ -29,6 +70,14 @@
       <plugin>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-maven-plugin</artifactId>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <version>${plugin.version.maven-surefire-plugin}</version>
+        <configuration>
+          <redirectTestOutputToFile>true</redirectTestOutputToFile>
+        </configuration>
       </plugin>
     </plugins>
   </build>
