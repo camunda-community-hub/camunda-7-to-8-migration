@@ -9,7 +9,6 @@
     "lint": "eslint . --fix --ignore-path .gitignore"
   },
   "dependencies": {
-    "@babel/types": "^7.21.2",
     "@mdi/font": "7.0.96",
     "core-js": "^3.8.3",
     "pinia": "^2.0.23",
@@ -20,6 +19,7 @@
     "webfontloader": "^1.0.0"
   },
   "devDependencies": {
+    "@babel/types": "^7.21.2",
     "@types/node": "^18.11.9",
     "@types/webfontloader": "^1.6.35",
     "@vitejs/plugin-vue": "^3.0.3",
