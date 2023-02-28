@@ -26,6 +26,9 @@ public class ExpressionTransformer {
     if (expression == null) {
       return null;
     }
+    if (expression.length() == 0) {
+      return "=null";
+    }
     // split into expressions and non-expressions
     List<String> nonExpressions =
         Arrays.stream(expression.split("(#|\\$)\\{.*}"))
