@@ -13,7 +13,7 @@ This projects contains:
 * [A process diagram converter](./backend-diagram-converter) that is implemented in Java and performs checks and migration
     - [A web frontend](./backend-diagram-converter/webapp) with graphical output of the conversion result
     - [A command line tool](./backend-diagram-converter/cli) to support mass conversion
-
+* [A Process Instance Migration Tool](./process-instance-migration) to migrate instances of a converted process definition to Camunda Platform 8
 
 
 ## Use Snapshot Versions
