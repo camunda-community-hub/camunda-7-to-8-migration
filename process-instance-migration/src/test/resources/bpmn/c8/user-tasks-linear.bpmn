@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?><bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:conversion="http://camunda.org/schema/conversion/1.0" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:modeler="http://camunda.org/schema/modeler/1.0" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" exporter="Camunda Modeler" exporterVersion="5.7.0" expressionLanguage="http://www.w3.org/1999/XPath" id="Definitions_144wdug" modeler:executionPlatform="Camunda Cloud" modeler:executionPlatformVersion="8.1.0" targetNamespace="http://bpmn.io/schema/bpmn" typeLanguage="http://www.w3.org/2001/XMLSchema">
+  <bpmn:process id="UserTasksLinearProcess" isClosed="false" isExecutable="true" name="User Tasks Linear" processType="None">
+    <bpmn:startEvent id="ProcessStartedStartEvent" isInterrupting="true" name="Process started" parallelMultiple="false">
+      <bpmn:outgoing>Flow_0gxmjzt</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:sequenceFlow id="Flow_0gxmjzt" sourceRef="ProcessStartedStartEvent" targetRef="UserTask1Task"/>
+    <bpmn:sequenceFlow id="Flow_1xjxh7h" sourceRef="UserTask1Task" targetRef="UserTask2Task"/>
+    <bpmn:sequenceFlow id="Flow_0aoh0px" sourceRef="UserTask2Task" targetRef="UserTask3Task"/>
+    <bpmn:sequenceFlow id="Flow_0oyiuuc" sourceRef="UserTask3Task" targetRef="UserTask4Task"/>
+    <bpmn:endEvent id="ProcessEndedEndEvent" name="Process ended">
+      <bpmn:incoming>Flow_00vddcr</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_00vddcr" sourceRef="UserTask4Task" targetRef="ProcessEndedEndEvent"/>
+    <bpmn:userTask completionQuantity="1" id="UserTask1Task" implementation="##unspecified" isForCompensation="false" name="User Task 1" startQuantity="1">
+      <bpmn:incoming>Flow_0gxmjzt</bpmn:incoming>
+      <bpmn:outgoing>Flow_1xjxh7h</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:userTask completionQuantity="1" id="UserTask2Task" implementation="##unspecified" isForCompensation="false" name="User Task 2" startQuantity="1">
+      <bpmn:incoming>Flow_1xjxh7h</bpmn:incoming>
+      <bpmn:outgoing>Flow_0aoh0px</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:userTask completionQuantity="1" id="UserTask3Task" implementation="##unspecified" isForCompensation="false" name="User Task 3" startQuantity="1">
+      <bpmn:incoming>Flow_0aoh0px</bpmn:incoming>
+      <bpmn:outgoing>Flow_0oyiuuc</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:userTask completionQuantity="1" id="UserTask4Task" implementation="##unspecified" isForCompensation="false" name="User Task 4" startQuantity="1">
+      <bpmn:incoming>Flow_0oyiuuc</bpmn:incoming>
+      <bpmn:outgoing>Flow_00vddcr</bpmn:outgoing>
+    </bpmn:userTask>
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane bpmnElement="UserTasksLinearProcess" id="BPMNPlane_1">
+      <bpmndi:BPMNShape bpmnElement="ProcessStartedStartEvent" id="_BPMNShape_StartEvent_2">
+        <dc:Bounds height="36" width="36" x="179" y="99"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds height="14" width="77" x="159" y="142"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="ProcessEndedEndEvent" id="Event_0ifi1nf_di">
+        <dc:Bounds height="36" width="36" x="912" y="99"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds height="14" width="74" x="893" y="142"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="UserTask1Task" id="Activity_03bkbfs_di">
+        <dc:Bounds height="80" width="100" x="270" y="77"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="UserTask2Task" id="Activity_193xe78_di">
+        <dc:Bounds height="80" width="100" x="430" y="77"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="UserTask3Task" id="Activity_0631nsy_di">
+        <dc:Bounds height="80" width="100" x="590" y="77"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="UserTask4Task" id="Activity_0n0p6j3_di">
+        <dc:Bounds height="80" width="100" x="750" y="77"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge bpmnElement="Flow_0gxmjzt" id="Flow_0gxmjzt_di">
+        <di:waypoint x="215" y="117"/>
+        <di:waypoint x="270" y="117"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="Flow_00vddcr" id="Flow_00vddcr_di">
+        <di:waypoint x="850" y="117"/>
+        <di:waypoint x="912" y="117"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="Flow_1xjxh7h" id="Flow_1xjxh7h_di">
+        <di:waypoint x="370" y="117"/>
+        <di:waypoint x="430" y="117"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="Flow_0aoh0px" id="Flow_0aoh0px_di">
+        <di:waypoint x="530" y="117"/>
+        <di:waypoint x="590" y="117"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="Flow_0oyiuuc" id="Flow_0oyiuuc_di">
+        <di:waypoint x="690" y="117"/>
+        <di:waypoint x="750" y="117"/>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

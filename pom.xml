@@ -20,6 +20,8 @@
     <maven.compiler.source>1.8</maven.compiler.source>
     <maven.compiler.target>1.8</maven.compiler.target>
     <version.zeebe>8.1.8</version.zeebe>
+    <version.spring-zeebe-starter>8.1.8</version.spring-zeebe-starter>
+    <version.zeebe-process-test-extension-testcontainer>8.1.8</version.zeebe-process-test-extension-testcontainer>
     <version.camunda.platform>7.18.0</version.camunda.platform>
     <version.jsoup>1.15.4</version.jsoup>
     <version.spring-boot>2.7.8</version.spring-boot>
@@ -27,6 +29,8 @@
     <version.commons-io>2.11.0</version.commons-io>
     <version.slack-api-client>1.27.3</version.slack-api-client>
     <version.opencsv>5.7.1</version.opencsv>
+    <version.operate-client>1.3.3</version.operate-client>
+    <version.camunda-bpm-assert>15.0.0</version.camunda-bpm-assert>
 
     <plugin.version.function-maven-plugin>0.10.1</plugin.version.function-maven-plugin>
     <plugin.version.maven-enforcer-plugin>3.2.1</plugin.version.maven-enforcer-plugin>
@@ -42,6 +46,7 @@
     <plugin.version.maven-resources-plugin>2.6</plugin.version.maven-resources-plugin>
     <plugin.version.maven-assembly-plugin>3.5.0</plugin.version.maven-assembly-plugin>
     <plugin.version.maven-release-plugin>3.0.0-M7</plugin.version.maven-release-plugin>
+    <plugin.version.frontend-maven-plugin>1.12.1</plugin.version.frontend-maven-plugin>
   </properties>
 
   <dependencyManagement>
@@ -87,8 +92,24 @@
       </dependency>
       <dependency>
         <groupId>io.camunda</groupId>
-        <artifactId>spring-zeebe-test-testcontainer</artifactId>
+        <artifactId>zeebe-protocol</artifactId>
         <version>${version.zeebe}</version>
+      </dependency>
+      <dependency>
+        <groupId>io.camunda</groupId>
+        <artifactId>camunda-operate-client-java</artifactId>
+        <version>${version.operate-client}</version>
+      </dependency>
+      <dependency>
+        <groupId>io.camunda</groupId>
+        <artifactId>spring-zeebe-test-testcontainer</artifactId>
+        <version>${version.spring-zeebe-starter}</version>
+        <scope>test</scope>
+      </dependency>
+      <dependency>
+        <groupId>io.camunda</groupId>
+        <artifactId>spring-zeebe-test</artifactId>
+        <version>${version.spring-zeebe-starter}</version>
         <scope>test</scope>
       </dependency>
       <dependency>
@@ -111,6 +132,11 @@
         <groupId>com.opencsv</groupId>
         <artifactId>opencsv</artifactId>
         <version>${version.opencsv}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.camunda.bpm.assert</groupId>
+        <artifactId>camunda-bpm-assert</artifactId>
+        <version>${version.camunda-bpm-assert}</version>
       </dependency>
       <dependency>
         <groupId>org.camunda.community.migration</groupId>
@@ -235,6 +261,11 @@
           <artifactId>maven-release-plugin</artifactId>
           <version>${plugin.version.maven-release-plugin}</version>
         </plugin>
+        <plugin>
+          <groupId>com.github.eirslett</groupId>
+          <artifactId>frontend-maven-plugin</artifactId>
+          <version>${plugin.version.frontend-maven-plugin}</version>
+        </plugin>
       </plugins>
     </pluginManagement>
     <plugins>
@@ -296,7 +327,7 @@
   <modules>
     <module>camunda-7-adapter</module>
     <module>backend-diagram-converter</module>
-    <module>example</module>
+    <module>process-instance-migration</module>
     <module>test-example-diagrams</module>
   </modules>
 </project>

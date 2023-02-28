@@ -1,0 +1,8 @@
+operate:
+  client:
+    base-url: http://localhost:8081
+    authentication:
+      simple:
+        username: demo
+        password: demo
+

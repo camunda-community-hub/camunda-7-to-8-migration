@@ -18,7 +18,10 @@ jobs:
         registry: ghcr.io
         username: ${{ github.actor }}
         password: ${{ secrets.GITHUB_TOKEN }}
-    - name: Verify Format
+    - name: Build
       run: mvn verify -PcheckFormat -B
-    - name: Enforce rules
-      run: mvn enforcer:enforce -B
+    - name: Test examples
+      run: mvn test -f example -B
+    - name: Check Test Fails
+      if: failure()
+      run: find . -name "*-output.txt" -print -exec cat {} \;
