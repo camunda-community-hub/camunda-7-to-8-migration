@@ -1,12 +1,13 @@
 package org.camunda.community.migration.processInstance;
 
+import static org.camunda.bpm.engine.test.assertions.bpmn.AbstractAssertions.*;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
-import org.camunda.bpm.engine.ProcessEngine;
 import org.camunda.bpm.engine.management.JobDefinition;
 import org.camunda.bpm.engine.repository.ProcessDefinition;
 import org.camunda.bpm.engine.runtime.ActivityInstance;
@@ -29,11 +30,9 @@ import org.springframework.stereotype.Component;
 @Component
 @Primary
 public class Camunda7EmbeddedClient implements Camunda7Client {
-  private final ProcessEngine processEngine;
   private final ObjectMapper objectMapper;
 
-  public Camunda7EmbeddedClient(ProcessEngine processEngine, ObjectMapper objectMapper) {
-    this.processEngine = processEngine;
+  public Camunda7EmbeddedClient(ObjectMapper objectMapper) {
     this.objectMapper = objectMapper;
   }
 
@@ -42,7 +41,7 @@ public class Camunda7EmbeddedClient implements Camunda7Client {
       Camunda7JobType jobType,
       Camunda7JobConfiguration jobConfiguration,
       String processDefinitionId) {
-    return processEngine
+    return processEngine()
         .getManagementService()
         .createJobDefinitionQuery()
         .processDefinitionId(processDefinitionId)
@@ -57,30 +56,30 @@ public class Camunda7EmbeddedClient implements Camunda7Client {
   @Override
   public void suspendJobDefinition(String jobDefinitionId, boolean suspended) {
     if (suspended) {
-      processEngine.getManagementService().suspendJobDefinitionById(jobDefinitionId, true);
+      processEngine().getManagementService().suspendJobDefinitionById(jobDefinitionId, true);
     } else {
-      processEngine.getManagementService().activateJobDefinitionById(jobDefinitionId, true);
+      processEngine().getManagementService().activateJobDefinitionById(jobDefinitionId, true);
     }
   }
 
   @Override
   public VersionDto getVersion() {
     VersionDto versionDto = new VersionDto();
-    versionDto.setVersion(processEngine.getClass().getPackage().getImplementationVersion());
+    versionDto.setVersion(processEngine().getClass().getPackage().getImplementationVersion());
     return versionDto;
   }
 
   @Override
   public void suspendProcessDefinitionById(String processDefinitionId, boolean suspended) {
     if (suspended) {
-      processEngine
+      processEngine()
           .getRepositoryService()
           .updateProcessDefinitionSuspensionState()
           .byProcessDefinitionId(processDefinitionId)
           .includeProcessInstances(true)
           .suspend();
     } else {
-      processEngine
+      processEngine()
           .getRepositoryService()
           .updateProcessDefinitionSuspensionState()
           .byProcessDefinitionId(processDefinitionId)
@@ -92,7 +91,7 @@ public class Camunda7EmbeddedClient implements Camunda7Client {
   @Override
   public ProcessInstanceDto getProcessInstance(String processInstanceId) {
     return Optional.of(
-            processEngine
+            processEngine()
                 .getRuntimeService()
                 .createProcessInstanceQuery()
                 .processInstanceId(processInstanceId)
@@ -104,7 +103,7 @@ public class Camunda7EmbeddedClient implements Camunda7Client {
   @Override
   public ProcessDefinitionDto getProcessDefinition(String processDefinitionId) {
     return Optional.of(
-            processEngine
+            processEngine()
                 .getRepositoryService()
                 .createProcessDefinitionQuery()
                 .processDefinitionId(processDefinitionId)
@@ -115,25 +114,25 @@ public class Camunda7EmbeddedClient implements Camunda7Client {
 
   @Override
   public ActivityInstanceDto getActivityInstances(String processInstanceId) {
-    return Optional.of(processEngine.getRuntimeService().getActivityInstance(processInstanceId))
+    return Optional.of(processEngine().getRuntimeService().getActivityInstance(processInstanceId))
         .map(this::mapFrom)
         .orElse(null);
   }
 
   @Override
   public void cancelProcessInstance(String processInstanceId) {
-    processEngine.getRuntimeService().deleteProcessInstance(processInstanceId, null);
+    processEngine().getRuntimeService().deleteProcessInstance(processInstanceId, null);
   }
 
   @Override
   public void setVariable(String processInstanceId, String variableName, Object variableValue) {
-    processEngine.getRuntimeService().setVariable(processInstanceId, variableName, variableValue);
+    processEngine().getRuntimeService().setVariable(processInstanceId, variableName, variableValue);
   }
 
   @Override
   public List<ProcessInstanceDto> getProcessInstancesByProcessDefinition(
       String processDefinitionId) {
-    return processEngine
+    return processEngine()
         .getRuntimeService()
         .createProcessInstanceQuery()
         .processDefinitionId(processDefinitionId)
@@ -146,7 +145,7 @@ public class Camunda7EmbeddedClient implements Camunda7Client {
   @Override
   public List<ProcessInstanceDto> getProcessInstancesByProcessDefinitionAndActivityIds(
       String processDefinitionId, Collection<String> activityIds) {
-    return processEngine
+    return processEngine()
         .getRuntimeService()
         .createProcessInstanceQuery()
         .processDefinitionId(processDefinitionId)
@@ -160,7 +159,7 @@ public class Camunda7EmbeddedClient implements Camunda7Client {
   @Override
   public ProcessDefinitionDto getLatestProcessDefinitionByKey(String processDefinitionKey) {
     return Optional.of(
-            processEngine
+            processEngine()
                 .getRepositoryService()
                 .createProcessDefinitionQuery()
                 .processDefinitionKey(processDefinitionKey)
@@ -172,7 +171,7 @@ public class Camunda7EmbeddedClient implements Camunda7Client {
 
   @Override
   public List<VariableInstanceDto> getVariableInstances(String processInstanceId) {
-    return processEngine
+    return processEngine()
         .getRuntimeService()
         .createVariableInstanceQuery()
         .processInstanceIdIn(processInstanceId)
@@ -184,7 +183,7 @@ public class Camunda7EmbeddedClient implements Camunda7Client {
 
   @Override
   public List<JobDto> getJobs(String camunda7ProcessInstanceId) {
-    return processEngine
+    return processEngine()
         .getManagementService()
         .createJobQuery()
         .processInstanceId(camunda7ProcessInstanceId)

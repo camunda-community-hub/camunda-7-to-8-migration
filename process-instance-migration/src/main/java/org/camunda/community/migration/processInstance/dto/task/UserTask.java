@@ -2,14 +2,21 @@ package org.camunda.community.migration.processInstance.dto.task;
 
 public class UserTask {
   private final Long key;
+  private final String name;
   private final Long processInstanceKey;
   private final String type;
   private final UserTaskData data;
   private final TaskState state;
 
   public UserTask(
-      Long key, Long processInstanceKey, String type, UserTaskData data, TaskState state) {
+      Long key,
+      String name,
+      Long processInstanceKey,
+      String type,
+      UserTaskData data,
+      TaskState state) {
     this.key = key;
+    this.name = name;
     this.processInstanceKey = processInstanceKey;
     this.type = type;
     this.data = data;
@@ -32,8 +39,12 @@ public class UserTask {
     return state;
   }
 
+  public String getName() {
+    return name;
+  }
+
   public UserTask state(TaskState taskState) {
-    return new UserTask(key, processInstanceKey, type, data, taskState);
+    return new UserTask(key, name, processInstanceKey, type, data, taskState);
   }
 
   public Long getProcessInstanceKey() {

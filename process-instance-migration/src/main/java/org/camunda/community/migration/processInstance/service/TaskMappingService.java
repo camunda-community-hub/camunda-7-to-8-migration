@@ -30,8 +30,13 @@ public class TaskMappingService {
       TO_USER_TASK_MAPPING = new HashMap<>();
   private static final Map<String, Function<UserTaskData, UserTaskDataDto>> TO_DTO_MAPPING =
       new HashMap<>();
+  private static final Map<String, String> TASK_NAME_MAPPING = new HashMap<>();
 
   static {
+    TASK_NAME_MAPPING.put(SELECT_PROCESS_INSTANCES, "Select Process Instances");
+    TASK_NAME_MAPPING.put(CREATE_AND_DEPLOY_CONVERSION, "Create and deploy Conversion");
+    TASK_NAME_MAPPING.put(SELECT_JOB_DEFINITION, "Select job definition");
+    TASK_NAME_MAPPING.put(CANCEL_ROUTE_EXECUTION, "Cancel route execution");
     TO_USER_TASK_MAPPING.put(
         SELECT_PROCESS_INSTANCES,
         (variables, service) ->
@@ -115,6 +120,10 @@ public class TaskMappingService {
   @Autowired
   public TaskMappingService(Camunda7Service camunda7Service) {
     this.camunda7Service = camunda7Service;
+  }
+
+  public String getTaskName(String type) {
+    return TASK_NAME_MAPPING.get(type);
   }
 
   public Optional<UserTaskData> createUserTaskData(

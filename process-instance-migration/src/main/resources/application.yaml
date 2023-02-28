@@ -4,6 +4,7 @@ zeebe:
       plaintext: true
     broker:
       gateway-address: localhost:26500
+    request-timeout: PT60S
 
 
 server.port: 8090
@@ -17,5 +18,6 @@ operate:
 
 camunda7:
   client:
-    base-url: http://localhost:8080/engine-rest
+    base-url: http://localhost:8080
+    rest-api-context: engine-rest
     check-on-init: true

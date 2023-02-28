@@ -44,7 +44,9 @@ public class Camunda7ClientConfiguration {
 
   @Bean
   public Consumer<RestTemplate> baseUrlSetter() {
-    String baseUrl = properties.getBaseUrl();
+    String baseUrl =
+        (properties.getBaseUrl() + "/" + properties.getRestApiContext())
+            .replaceAll("([^:])\\/\\/", "$1/");
     LOG.info("Base URL: {}", baseUrl);
     DefaultUriBuilderFactory templateHandler = new DefaultUriBuilderFactory(baseUrl);
     return restTemplate -> restTemplate.setUriTemplateHandler(templateHandler);

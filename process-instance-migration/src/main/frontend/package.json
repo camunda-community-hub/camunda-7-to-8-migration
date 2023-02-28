@@ -9,12 +9,13 @@
     "lint": "eslint . --fix --ignore-path .gitignore"
   },
   "dependencies": {
+    "@babel/types": "^7.21.2",
     "@mdi/font": "7.0.96",
     "core-js": "^3.8.3",
     "pinia": "^2.0.23",
     "roboto-fontface": "*",
     "vue": "^3.2.13",
-    "vue-router": "^4.0.0",
+    "vue-router": "^4.0.13",
     "vuetify": "^3.0.0",
     "webfontloader": "^1.0.0"
   },

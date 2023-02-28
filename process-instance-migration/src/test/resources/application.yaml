@@ -1,7 +1,3 @@
-camunda:
-  bpm:
-    auto-deployment-enabled: false
-
 operate:
   client:
     base-url: http://localhost:8081
@@ -9,8 +5,4 @@ operate:
       simple:
         username: demo
         password: demo
-zeebe:
-  client:
-    request-timeout: PT1M
-    job:
-      poll-interval: PT3S
+

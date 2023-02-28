@@ -20,6 +20,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import org.camunda.bpm.engine.runtime.ProcessInstance;
+import org.camunda.bpm.engine.test.junit5.ProcessEngineExtension;
 import org.camunda.community.migration.processInstance.dto.Camunda7ProcessInstanceData;
 import org.camunda.community.migration.processInstance.dto.Camunda8ProcessDefinitionData;
 import org.camunda.community.migration.processInstance.service.Camunda7Service;
@@ -29,12 +30,14 @@ import org.camunda.community.migration.processInstance.service.ProcessInstanceMi
 import org.camunda.community.migration.processInstance.variables.ProcessInstanceMigrationVariables;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 
 @SpringBootTest
 @ZeebeSpringTest
+@ExtendWith(ProcessEngineExtension.class)
 public class ProcessInstanceMigrationAppTest {
   @Autowired Camunda8Service camunda8Service;
   @MockBean CamundaOperateClient operateClient;

@@ -6,6 +6,12 @@ const routes = [
     path: '/',
     component: () => import('@/views/Home.vue'),
   },
+  {
+    path: '/task/:taskKey',
+    name: 'task',
+    component: () => import('@/views/Task.vue'),
+    props: true
+  }
 ]
 
 const router = createRouter({

@@ -9,6 +9,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import org.camunda.community.migration.processInstance.dto.task.UserTask;
 import org.camunda.community.migration.processInstance.dto.task.UserTask.TaskState;
+import org.camunda.community.migration.processInstance.variables.ProcessInstanceMigrationVariables;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,7 +32,7 @@ public class MigrationTaskService {
     timeouts.forEach(
         (key, timeout) -> {
           if (timeout.isBefore(LocalDateTime.now())) {
-            LOG.info("Task {} timed out", key);
+            LOG.info("Task with key '{}' timed out", key);
             taskList.remove(key);
             removed.add(key);
           }
@@ -47,17 +48,18 @@ public class MigrationTaskService {
   }
 
   public void addTask(UserTask task) {
-    timeouts.put(task.getKey(), LocalDateTime.now().plusMinutes(5));
+    timeouts.put(task.getKey(), LocalDateTime.now().plusMinutes(1));
     if (task.getState().equals(TaskState.CREATED)) {
       UserTask fromList = taskList.get(task.getKey());
       if (fromList != null && fromList.getState().equals(TaskState.COMPLETED)) {
         return;
       }
     }
+    LOG.info("Added task with key '{}'", task.getKey());
     taskList.put(task.getKey(), task);
   }
 
-  public UserTask complete(long jobKey, Object result) {
+  public UserTask complete(long jobKey, ProcessInstanceMigrationVariables result) {
     UserTask fromList = taskList.get(jobKey);
     if (fromList != null) {
       camunda8Service.completeTask(jobKey, result);
@@ -65,6 +67,6 @@ public class MigrationTaskService {
       taskList.put(jobKey, fromList);
       return fromList;
     }
-    throw new IllegalStateException("Task with id '" + jobKey + "' does not exist");
+    throw new IllegalStateException("Task with key '" + jobKey + "' does not exist");
   }
 }

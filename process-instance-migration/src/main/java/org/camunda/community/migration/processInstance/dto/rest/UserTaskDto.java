@@ -4,9 +4,27 @@ import org.camunda.community.migration.processInstance.dto.task.UserTask.TaskSta
 
 public class UserTaskDto {
   private Long key;
+  private Long processInstanceKey;
+  private String name;
   private String type;
   private UserTaskDataDto data;
   private TaskState state;
+
+  public Long getProcessInstanceKey() {
+    return processInstanceKey;
+  }
+
+  public void setProcessInstanceKey(Long processInstanceKey) {
+    this.processInstanceKey = processInstanceKey;
+  }
+
+  public String getName() {
+    return name;
+  }
+
+  public void setName(String name) {
+    this.name = name;
+  }
 
   public Long getKey() {
     return key;

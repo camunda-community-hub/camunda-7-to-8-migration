@@ -15,9 +15,11 @@ import io.camunda.zeebe.client.api.response.PublishMessageResponse;
 import io.camunda.zeebe.model.bpmn.Bpmn;
 import java.io.ByteArrayInputStream;
 import java.time.Duration;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import org.camunda.community.migration.processInstance.dto.Camunda8ProcessDefinitionData;
 import org.camunda.community.migration.processInstance.variables.ProcessInstanceMigrationVariables;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -71,7 +73,7 @@ public class Camunda8Service {
     return command.send().join();
   }
 
-  public void completeTask(long jobKey, Object result) {
+  public void completeTask(long jobKey, ProcessInstanceMigrationVariables result) {
     zeebeClient.newCompleteCommand(jobKey).variables(result).send().join();
   }
 
@@ -89,7 +91,8 @@ public class Camunda8Service {
     SearchQuery query = new SearchQuery();
     query.setFilter(filter);
     try {
-      return operateClient.searchProcessDefinitions(query);
+      return Optional.ofNullable(operateClient.searchProcessDefinitions(query))
+          .orElseGet(ArrayList::new);
     } catch (OperateException e) {
       throw new RuntimeException(e);
     }

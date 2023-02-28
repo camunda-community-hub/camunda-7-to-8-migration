@@ -16,7 +16,7 @@
     <encoding>UTF-8</encoding>
     <project.build.sourceEncoding>${encoding}</project.build.sourceEncoding>
     <project.build.resourceEncoding>${encoding}</project.build.resourceEncoding>
-    <version.java>1.8</version.java>
+    <version.java>17</version.java>
     <maven.compiler.source>1.8</maven.compiler.source>
     <maven.compiler.target>1.8</maven.compiler.target>
     <version.zeebe>8.1.8</version.zeebe>
@@ -46,6 +46,7 @@
     <plugin.version.maven-resources-plugin>2.6</plugin.version.maven-resources-plugin>
     <plugin.version.maven-assembly-plugin>3.5.0</plugin.version.maven-assembly-plugin>
     <plugin.version.maven-release-plugin>3.0.0-M7</plugin.version.maven-release-plugin>
+    <plugin.version.frontend-maven-plugin>1.12.1</plugin.version.frontend-maven-plugin>
   </properties>
 
   <dependencyManagement>
@@ -102,7 +103,13 @@
       <dependency>
         <groupId>io.camunda</groupId>
         <artifactId>spring-zeebe-test-testcontainer</artifactId>
-        <version>${version.zeebe}</version>
+        <version>${version.spring-zeebe-starter}</version>
+        <scope>test</scope>
+      </dependency>
+      <dependency>
+        <groupId>io.camunda</groupId>
+        <artifactId>spring-zeebe-test</artifactId>
+        <version>${version.spring-zeebe-starter}</version>
         <scope>test</scope>
       </dependency>
       <dependency>
@@ -254,6 +261,11 @@
           <artifactId>maven-release-plugin</artifactId>
           <version>${plugin.version.maven-release-plugin}</version>
         </plugin>
+        <plugin>
+          <groupId>com.github.eirslett</groupId>
+          <artifactId>frontend-maven-plugin</artifactId>
+          <version>${plugin.version.frontend-maven-plugin}</version>
+        </plugin>
       </plugins>
     </pluginManagement>
     <plugins>
@@ -315,7 +327,6 @@
   <modules>
     <module>camunda-7-adapter</module>
     <module>backend-diagram-converter</module>
-    <module>example</module>
     <module>process-instance-migration</module>
     <module>test-example-diagrams</module>
   </modules>

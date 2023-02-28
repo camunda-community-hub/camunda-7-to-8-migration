@@ -7,7 +7,17 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class Camunda7ClientProperties {
   private String baseUrl;
+  private String restApiContext;
   private Boolean checkOnInit;
+  private Camunda7ClientAuthentication authentication = new Camunda7ClientAuthentication();
+
+  public String getRestApiContext() {
+    return restApiContext;
+  }
+
+  public void setRestApiContext(String restApiContext) {
+    this.restApiContext = restApiContext;
+  }
 
   public Boolean getCheckOnInit() {
     return checkOnInit;
@@ -16,8 +26,6 @@ public class Camunda7ClientProperties {
   public void setCheckOnInit(Boolean checkOnInit) {
     this.checkOnInit = checkOnInit;
   }
-
-  private Camunda7ClientAuthentication authentication = new Camunda7ClientAuthentication();
 
   public Camunda7ClientAuthentication getAuthentication() {
     return authentication;

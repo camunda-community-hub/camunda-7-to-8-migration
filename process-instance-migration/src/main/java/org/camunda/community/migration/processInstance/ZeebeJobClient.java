@@ -57,7 +57,8 @@ public class ZeebeJobClient {
   }
 
   @JobWorker(type = JobType.CAMUNDA7_SUSPEND)
-  public void suspendProcessInstance(@VariablesAsType ProcessInstanceMigrationVariables variables) {
+  public void suspendProcessDefinition(
+      @VariablesAsType ProcessInstanceMigrationVariables variables) {
     LOG.info("Suspending process definition '{}'", variables.getCamunda7ProcessDefinitionId());
     camunda7Service.suspendProcessDefinition(variables.getCamunda7ProcessDefinitionId(), true);
   }
@@ -186,7 +187,11 @@ public class ZeebeJobClient {
     return variables;
   }
 
-  @JobWorker(type = USER_TASK_JOB_TYPE, timeout = 1000L, autoComplete = false)
+  @JobWorker(
+      type = USER_TASK_JOB_TYPE,
+      timeout = 1000L,
+      autoComplete = false,
+      requestTimeout = 1000L)
   public void userTask(
       ActivatedJob job, @VariablesAsType ProcessInstanceMigrationVariables variables) {
     String formKey = job.getCustomHeaders().get(USER_TASK_FORM_KEY_HEADER_NAME);
@@ -197,6 +202,7 @@ public class ZeebeJobClient {
                 migrationTaskService.addTask(
                     new UserTask(
                         job.getKey(),
+                        taskMappingService.getTaskName(formKey),
                         job.getProcessInstanceKey(),
                         formKey,
                         data,
