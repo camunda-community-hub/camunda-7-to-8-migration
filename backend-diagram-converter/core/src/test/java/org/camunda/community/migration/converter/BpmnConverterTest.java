@@ -30,7 +30,7 @@ public class BpmnConverterTest {
         "java-delegate-class-c7.bpmn",
         "old-process.bpmn20.xml",
         "collaboration.bpmn",
-        "internal-script.bpmn"
+        "internal-script.bpmn",
         "collaboration.bpmn",
         "empty-input-parameter.bpmn"
       })
