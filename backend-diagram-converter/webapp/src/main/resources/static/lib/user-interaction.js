@@ -8,6 +8,7 @@ const appendDocumentation = document.getElementById("appendDocumentation");
 const checkContainer = document.getElementById("checkContainer");
 const resultArea = document.getElementById("accordionExample");
 const arrangedResultsArea = document.getElementById("arrangedResults");
+const backendVersion = document.getElementById("backendVersion");
 
 const severityClasses = {
   "WARNING": "text-bg-warning",
@@ -66,7 +67,6 @@ const createFormattedResultWrapper = file => {
 
 const createFormattedResultForFile = file => {
   return  file.results.map(createFormattedResult).filter(e => e !== undefined);
-
 }
 
 const downloadResponse = async response => {
@@ -79,6 +79,15 @@ const downloadResponse = async response => {
     a.click();
   });
 };
+
+fetch('/version')
+  .then(res => {
+    return res.text();
+  })
+  .then(backendVersion => {
+    document.getElementById('backendVersion').insertAdjacentText('beforeend', backendVersion)
+  })
+  .catch(error => console.log("Error while fetching version: ", error));
 
 check.addEventListener("click", async () => {
   const formData = await createFormData();
@@ -169,7 +178,6 @@ async function addElementMarkers(checkResult) {
           canvas.addMarker(result.elementId, 'conversion-review')
         }
       }
-
     }
   })
 }
