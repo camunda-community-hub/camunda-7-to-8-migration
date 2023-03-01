@@ -56,9 +56,9 @@
             </goals>
           </execution>
           <execution>
-            <id>build-version</id>
+            <id>build-info</id>
             <goals>
-              <goal>build-image</goal>
+              <goal>build-info</goal>
             </goals>
             <phase>deploy</phase>
             <configuration>

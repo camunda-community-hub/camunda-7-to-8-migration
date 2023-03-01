@@ -17,13 +17,13 @@
       <h3>Usage</h3>
       <p>When you upload a file, you will see the process diagram with overlays from the property info plugin. This should give a first glance about the usage of execution and task listeners or other hidden configurations.</p>
 
-      <p>After pressing a button, the results from the diagram checks are shown below the diagram. The results consist of <mark class="text-bg-secondary">INFO</mark> , <mark class="text-bg-info">REVIEW</mark>, <mark class="text-bg-info">TASK</mark> and <mark class="text-bg-warning">WARNING</mark> output.</p>
+      <p>After pressing a button, the results from the diagram checks are shown below the diagram. The results consist of <mark class="text-bg-secondary">INFO</mark> , <mark class="text-bg-info">REVIEW</mark>, <mark class="text-bg-warning">TASK</mark> and <mark class="text-bg-warning">WARNING</mark> output.</p>
 
       <ul class="row">
         <li><mark class="text-bg-secondary">INFO</mark> is just the feedback what happend during the conversion.</li>
-        <li><mark class="text-bg-info">REVIEW</mark> is a hint, that you should check the conversion result. Right now a simplified converion of expression used. Depending on your special expression, the result may not work in the Zeebe engine.</li>
-        <li><mark class="text-bg-info">TASK</mark> is a hint that you have to add addtinal information to enable the conversion result for the Zeebe engine.</li>
-        <li><mark class="text-bg-warning">WARNING</mark> is a hint that you may to do something in your process automation project. For example if an element of the original process is not jet supported by the Zeebe engine.</li>
+        <li><mark class="text-bg-info">REVIEW</mark> is a hint, that you should check the conversion result. Right now, there is only a simplified conversion of expressions available. Some results may not work in the Zeebe engine.</li>
+        <li><mark class="text-bg-warning">TASK</mark> is a hint that you have to change the conversion result or add additional information to make it working the Zeebe engine.</li>
+        <li><mark class="text-bg-warning">WARNING</mark> is a hint that you may have to do something in your process automation project. For example if an element of the original process is not yet supported by the Zeebe engine.</li>
       </ul>
       <p>The results are shown in two different ways. By default the user friendly table is opened. As an alternative, a machine readable JSON format is available below.</p>
 
