@@ -5,9 +5,9 @@ const downloadCsv = document.getElementById("downloadCsv");
 const fileUpload = document.getElementById("formFile");
 const appendDocumentation = document.getElementById("appendDocumentation");
 
-const checkContainer = document.getElementById("checkContainer");
-const resultArea = document.getElementById("accordionExample");
+const resultArea = document.getElementById("checkResults");
 const arrangedResultsArea = document.getElementById("arrangedResults");
+const rawResultArea = document.getElementById("rawResults");
 const backendVersion = document.getElementById("backendVersion");
 
 const severityClasses = {
@@ -104,7 +104,7 @@ fetch("/version")
   .then((backendVersion) => {
     document
       .getElementById("backendVersion")
-      .insertAdjacentText("beforeend", backendVersion);
+      .insertAdjacentText("beforeend", " " + backendVersion);
   })
   .catch((error) => console.log("Error while fetching version: ", error));
 
@@ -121,7 +121,7 @@ check.addEventListener("click", async () => {
     },
   }).then((response) => {
     response.json().then((json) => {
-      checkContainer.innerHTML = JSON.stringify(json, null, 2);
+      rawResultArea.innerHTML = JSON.stringify(json, null, 2);
       arrangedResultsArea.innerHTML = "";
       structureMessages(json);
       createFormattedResultWrapper(json);
@@ -174,6 +174,7 @@ if (fileUpload.files.length > 0) {
 fileUpload.addEventListener("change", () => {
   if (fileUpload.files.length !== 0) {
     reader.readAsText(fileUpload.files[0]);
+    resultArea.hidden = true;
   }
 });
 
