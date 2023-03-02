@@ -11,11 +11,13 @@ import org.camunda.community.migration.converter.BpmnDiagramCheckResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.info.BuildProperties;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -26,10 +28,12 @@ import org.springframework.web.multipart.MultipartFile;
 public class ConverterController {
   private static final Logger LOG = LoggerFactory.getLogger(ConverterController.class);
   private final BpmnConverterService bpmnConverter;
+  private final BuildProperties buildProperties;
 
   @Autowired
-  public ConverterController(BpmnConverterService bpmnConverter) {
+  public ConverterController(BpmnConverterService bpmnConverter, BuildProperties buildProperties) {
     this.bpmnConverter = bpmnConverter;
+    this.buildProperties = buildProperties;
   }
 
   @PostMapping(
@@ -97,5 +101,12 @@ public class ConverterController {
     } catch (Exception e) {
       return ResponseEntity.internalServerError().body(e.getMessage());
     }
+  }
+
+  @GetMapping(value = "/version", produces = MediaType.TEXT_PLAIN_VALUE)
+  public ResponseEntity<String> getVersion() {
+    String implementationVersion = buildProperties.getVersion();
+    LOG.debug("Version: {}", implementationVersion);
+    return ResponseEntity.ok().body(implementationVersion);
   }
 }

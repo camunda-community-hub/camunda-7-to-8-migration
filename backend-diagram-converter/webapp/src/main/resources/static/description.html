@@ -1,42 +1,108 @@
-<html>
+<!DOCTYPE html>
+<html lang="en">
   <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Diagram Converter Details</title>
-    <link rel="icon" type="image/png" href="/images/favicon.png">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/css/bootstrap.min.css" rel="stylesheet"
-          integrity="sha384-iYQeCzEYFbKjA/T2uDLTpkwGzCiq6soy8tYaI1GyVh/UjpbCx/TYkiZhlZB6+fzT" crossorigin="anonymous">
+    <link rel="icon" type="image/png" href="/images/favicon.png" />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-iYQeCzEYFbKjA/T2uDLTpkwGzCiq6soy8tYaI1GyVh/UjpbCx/TYkiZhlZB6+fzT"
+      crossorigin="anonymous"
+    />
   </head>
   <body>
     <div class="container-fluid">
       <h1>Details about the Diagram Converter</h1>
-      <p>The diagram converter converts BPMN diagrams for Camunda Platform 7 into diagrams for Camunda Platform 8.</p>
+      <p>
+        The diagram converter converts BPMN diagrams for Camunda Platform 7 into
+        diagrams for Camunda Platform 8.
+      </p>
 
-      <p>As there are architectural differences between Camunda Platform 7 and Camunda Platform 8, there are some situations where you have add additional informations to the converted process model before you can deploy it successfully, for example in Message recieve events.</p>
+      <p>
+        As there are architectural differences between Camunda Platform 7 and
+        Camunda Platform 8, there are some situations where you have add
+        additional informations to the converted process model before you can
+        deploy it successfully, for example in Message recieve events.
+      </p>
 
       <h3>Usage</h3>
-      <p>When you upload a file, you will see the process diagram with overlays from the property info plugin. This should give a first glance about the usage of execution and task listeners or other hidden configurations.</p>
+      <p>
+        When you upload a file, you will see the process diagram with overlays
+        from the property info plugin. This should give a first glance about the
+        usage of execution and task listeners or other hidden configurations.
+      </p>
 
-      <p>After pressing a button, the results from the diagram checks are shown below the diagram. The results consist of <mark class="text-bg-secondary">INFO</mark> , <mark class="text-bg-info">REVIEW</mark>, <mark class="text-bg-info">TASK</mark> and <mark class="text-bg-warning">WARNING</mark> output.</p>
+      <p>
+        After pressing a button, the results from the diagram checks are shown
+        below the diagram. The results consist of
+        <mark class="text-bg-secondary">INFO</mark> ,
+        <mark class="text-bg-info">REVIEW</mark>,
+        <mark class="text-bg-warning">TASK</mark> and
+        <mark class="text-bg-warning">WARNING</mark> output.
+      </p>
 
       <ul class="row">
-        <li><mark class="text-bg-secondary">INFO</mark> is just the feedback what happend during the conversion.</li>
-        <li><mark class="text-bg-info">REVIEW</mark> is a hint, that you should check the conversion result. Right now a simplified converion of expression used. Depending on your special expression, the result may not work in the Zeebe engine.</li>
-        <li><mark class="text-bg-info">TASK</mark> is a hint that you have to add addtinal information to enable the conversion result for the Zeebe engine.</li>
-        <li><mark class="text-bg-warning">WARNING</mark> is a hint that you may to do something in your process automation project. For example if an element of the original process is not jet supported by the Zeebe engine.</li>
+        <li>
+          <mark class="text-bg-secondary">INFO</mark> is just the feedback what
+          happend during the conversion.
+        </li>
+        <li>
+          <mark class="text-bg-info">REVIEW</mark> is a hint, that you should
+          check the conversion result. Right now, there is only a simplified
+          conversion of expressions available. Some results may not work in the
+          Zeebe engine.
+        </li>
+        <li>
+          <mark class="text-bg-warning">TASK</mark> is a hint that you have to
+          change the conversion result or add additional information to make it
+          working the Zeebe engine.
+        </li>
+        <li>
+          <mark class="text-bg-warning">WARNING</mark> is a hint that you may
+          have to do something in your process automation project. For example
+          if an element of the original process is not yet supported by the
+          Zeebe engine.
+        </li>
       </ul>
-      <p>The results are shown in two different ways. By default the user friendly table is opened. As an alternative, a machine readable JSON format is available below.</p>
+      <p>
+        The results are shown in two different ways. By default the user
+        friendly table is opened. As an alternative, a machine readable JSON
+        format is available below.
+      </p>
 
       <h3>Options</h3>
       <p>You have different options to use the online diagram converter.</p>
 
-      <p>Pressing Check only displays the result of the check. The colors of the check results get applied to diagram as well. Blue for <mark class="text-bg-info">REVIEW</mark> , yellow for <mark class="text-bg-warning">TASK</mark> and <mark class="text-bg-warning">WARNING</mark>. As a rule of thumb, the more yellow your diagram gets, the more you have to double-check and amend the conversion result.</p>
+      <p>
+        Pressing Check only displays the result of the check. The colors of the
+        check results get applied to diagram as well. Blue for
+        <mark class="text-bg-info">REVIEW</mark> , yellow for
+        <mark class="text-bg-warning">TASK</mark> and
+        <mark class="text-bg-warning">WARNING</mark>. As a rule of thumb, the
+        more yellow your diagram gets, the more you have to double-check and
+        amend the conversion result.
+      </p>
 
-      <p>When you convert and download the uploaded diagram, you will find a new file with the prefix c8-converted-&lt;original filename&gt; in your download folder.</p>
+      <p>
+        When you convert and download the uploaded diagram, you will find a new
+        file with the prefix c8-converted-&lt;original filename&gt; in your
+        download folder.
+      </p>
 
-      <p>You can download the check result as a CSV file for further project management or effort estimation. The diagram is not converted.</p>
-      
-      <p>All messages from the check will be added in a conversion namespace to the converted diagram. As this is only available in the XML view, you add the check messages additional to the documentation sections of each element. It allows to see the messages in property panel of the Camunda Modeler or with the property info plugin as overlays in the diagram.</p>
+      <p>
+        You can download the check result as a CSV file for further project
+        management or effort estimation. The diagram is not converted.
+      </p>
+
+      <p>
+        All messages from the check will be added in a conversion namespace to
+        the converted diagram. As this is only available in the XML view, you
+        add the check messages additional to the documentation sections of each
+        element. It allows to see the messages in property panel of the Camunda
+        Modeler or with the property info plugin as overlays in the diagram.
+      </p>
     </div>
   </body>
 </html>
