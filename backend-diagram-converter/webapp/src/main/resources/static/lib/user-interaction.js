@@ -158,7 +158,6 @@ convert.addEventListener("click", async () => {
 
 async function showBpmn(bpmnXML) {
   const bpmnViewer = await getBpmnViewer();
-  console.log("viewer loaded");
   openDiagram(bpmnXML, bpmnViewer);
   showPropertyInfos(bpmnViewer);
 }
@@ -194,28 +193,10 @@ async function addElementMarkers(checkResult) {
           (message) => message.severity === "REVIEW"
         );
         if (isWarning) {
-          console.log(
-            "marker for ",
-            result.elementId,
-            result.elementName,
-            "WARNING"
-          );
           canvas.addMarker(result.elementId, "conversion-warning");
         } else if (isTask) {
-          console.log(
-            "marker for ",
-            result.elementId,
-            result.elementName,
-            "TASK"
-          );
           canvas.addMarker(result.elementId, "conversion-task");
         } else if (isReview) {
-          console.log(
-            "marker for ",
-            result.elementId,
-            result.elementName,
-            "REVIEW"
-          );
           canvas.addMarker(result.elementId, "conversion-review");
         }
       }
