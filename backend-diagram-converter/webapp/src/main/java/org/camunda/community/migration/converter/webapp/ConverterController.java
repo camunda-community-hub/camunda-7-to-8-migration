@@ -5,7 +5,6 @@ import java.io.InputStream;
 import java.io.StringWriter;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.Optional;
 import org.camunda.bpm.model.bpmn.Bpmn;
 import org.camunda.bpm.model.bpmn.BpmnModelInstance;
 import org.camunda.community.migration.converter.BpmnDiagramCheckResult;
@@ -32,9 +31,7 @@ public class ConverterController {
   private final BuildProperties buildProperties;
 
   @Autowired
-  public ConverterController(
-      BpmnConverterService bpmnConverter,
-      @Autowired(required = false) BuildProperties buildProperties) {
+  public ConverterController(BpmnConverterService bpmnConverter, BuildProperties buildProperties) {
     this.bpmnConverter = bpmnConverter;
     this.buildProperties = buildProperties;
   }
@@ -108,10 +105,7 @@ public class ConverterController {
 
   @GetMapping(value = "/version", produces = MediaType.TEXT_PLAIN_VALUE)
   public ResponseEntity<String> getVersion() {
-    String implementationVersion =
-        Optional.ofNullable(buildProperties)
-            .map(BuildProperties::getVersion)
-            .orElseGet(() -> getClass().getPackage().getImplementationVersion());
+    String implementationVersion = buildProperties.getVersion();
     LOG.debug("Version: {}", implementationVersion);
     return ResponseEntity.ok().body(implementationVersion);
   }

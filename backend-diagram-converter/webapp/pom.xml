@@ -52,13 +52,13 @@
         <executions>
           <execution>
             <goals>
+              <goal>build-info</goal>
               <goal>repackage</goal>
             </goals>
           </execution>
           <execution>
             <id>build-version</id>
             <goals>
-              <goal>build-info</goal>
               <goal>build-image</goal>
             </goals>
             <phase>deploy</phase>
