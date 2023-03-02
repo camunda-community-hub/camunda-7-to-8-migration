@@ -5,6 +5,7 @@ import java.io.InputStream;
 import java.io.StringWriter;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Optional;
 import org.camunda.bpm.model.bpmn.Bpmn;
 import org.camunda.bpm.model.bpmn.BpmnModelInstance;
 import org.camunda.community.migration.converter.BpmnDiagramCheckResult;
@@ -28,13 +29,15 @@ import org.springframework.web.multipart.MultipartFile;
 public class ConverterController {
   private static final Logger LOG = LoggerFactory.getLogger(ConverterController.class);
   private final BpmnConverterService bpmnConverter;
+  private final BuildProperties buildProperties;
 
   @Autowired
-  public ConverterController(BpmnConverterService bpmnConverter) {
+  public ConverterController(
+      BpmnConverterService bpmnConverter,
+      @Autowired(required = false) BuildProperties buildProperties) {
     this.bpmnConverter = bpmnConverter;
+    this.buildProperties = buildProperties;
   }
-
-  @Autowired BuildProperties buildProperties;
 
   @PostMapping(
       value = "/check",
@@ -105,7 +108,10 @@ public class ConverterController {
 
   @GetMapping(value = "/version", produces = MediaType.TEXT_PLAIN_VALUE)
   public ResponseEntity<String> getVersion() {
-    String implementationVersion = buildProperties.getVersion();
+    String implementationVersion =
+        Optional.ofNullable(buildProperties)
+            .map(BuildProperties::getVersion)
+            .orElseGet(() -> getClass().getPackage().getImplementationVersion());
     LOG.debug("Version: {}", implementationVersion);
     return ResponseEntity.ok().body(implementationVersion);
   }
