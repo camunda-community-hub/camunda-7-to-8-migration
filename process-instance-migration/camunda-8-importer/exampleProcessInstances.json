@@ -1,0 +1,65 @@
+[
+  {
+    "processInstance": {
+      "id": "1e88a1fa-b9a0-11ed-8966-3ce1a1c19785",
+      "processId": "invoice",
+      "name": "Invoice Reciept",
+      "activities": [
+        { "approveInvoice": { "type": "userTask", "name": "Approve Invoice" } }
+      ],
+      "variables": {
+        "amount": 300.0,
+        "approverGroups": ["accounting", "sales"],
+        "creditor": "Moby Ferries",
+        "invoiceCategory": "Travel Expenses",
+        "invoiceDocument": "Some file reference",
+        "invoiceNumber": "837hfz6e-hneze"
+      }
+    }
+  },
+  {
+    "processInstance": {
+      "id": "9c6321ec-5b7f-11ed-9848-3ce1a1c19785",
+      "processId": "invoice",
+      "name": "Invoice Reciept",
+      "activities": [
+        {
+          "reviewInvoice": {
+            "type": "callActivty",
+            "name": "Review Invoice",
+            "processInstance": {
+              "id": "9c6d5b56-5b7f-11ed-9848-3ce1a1c19785",
+              "processId": "ReviewInvoice",
+              "name": "Review Invoice",
+              "activities": [
+                {
+                  "reviewInvoice": {
+                    "type": "userTask",
+                    "name": "Review Invoice"
+                  }
+                }
+              ],
+              "variables": {
+                "amount": 10.99,
+                "creditor": "Papa Steve's all you can eat",
+                "invoiceCategory": "Travel Expenses",
+                "invoiceDocument": "another file reference",
+                "invoiceNumber": "PSACE-5342",
+                "reviewer": "john"
+              }
+            }
+          }
+        }
+      ],
+      "variables": {
+        "amount": 10.99,
+        "approved": false,
+        "approverGroups": ["accounting", "sales"],
+        "creditor": "Papa Steve's all you can eat",
+        "invoiceCategory": "Travel Expenses",
+        "invoiceDocument": "another file reference",
+        "invoiceNumber": "PSACE-5342"
+      }
+    }
+  }
+]
