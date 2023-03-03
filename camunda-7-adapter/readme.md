@@ -1,12 +1,17 @@
 # Spring Boot Adapter to re-use Java Delegates, Delegate Expressions, Expressions or External Tasks from Camunda Platform 7 in Camunda Platform 8
 
-This library allows to reuse Java delegates, Delegate Expressions, Expressions or External Tasks from process solutions developed for Camunda Platform 7 (with Spring/Spring Boot) within Camunda Platform 8.
+This library allows to reuse Java delegates, Delegate Expressions, Expressions
+or External Tasks from process solutions developed for Camunda Platform 7 (with
+Spring/Spring Boot) within Camunda Platform 8.
 
 The adapter requires to use Spring Boot.
 
-Details on how service tasks are adapted are described in this [migration guide](https://docs.camunda.io/docs/guides/migrating-from-Camunda-Platform/#migration-tooling).
+Details on how service tasks are adapted are described in this
+[migration guide](https://docs.camunda.io/docs/guides/migrating-from-Camunda-Platform/#migration-tooling).
 
-**Important note:*** This adapter does not aim to cover every possible situation, but it might work out-of-the-box for some cases or give you jump-start to extend it to suite your needs.
+**Important note:\*** This adapter does not aim to cover every possible
+situation, but it might work out-of-the-box for some cases or give you
+jump-start to extend it to suite your needs.
 
 # How to use
 
@@ -19,13 +24,14 @@ Add the dependency to the adapter library (double-check for the latest version):
 <dependency>
   <groupId>org.camunda.community.migration</groupId>
   <artifactId>camunda-7-adapter</artifactId>
-  <version>0.1.1</version>
+  <version>0.4.4</version>
 </dependency>
 ```
 
 ## Import adapter
 
-Import the adapter into your Spring Boot application as shown in the [example application](../example/process-solution-migrated/src/main/java/org/camunda/community/migration/example/Application.java):
+Import the adapter into your Spring Boot application as shown in the
+[example application](../example/process-solution-migrated/src/main/java/org/camunda/community/migration/example/Application.java):
 
 ```java
 
@@ -38,11 +44,15 @@ public class Application {
 }
 ```
 
-This will start a job worker that subscribes to `camunda-7-adapter` as well as workers for each `@ExternalTaskSubscription` with Zeebe Task Type equal to External Task Topic Name.
+This will start a job worker that subscribes to `camunda-7-adapter` as well as
+workers for each `@ExternalTaskSubscription` with Zeebe Task Type equal to
+External Task Topic Name.
 
 ## Using migration worker
 
-To use that worker, add the `taskType="camunda-7-adapter"` to your service task and add task headers for a java delegate class, delegate expression or expression, e.g.:
+To use that worker, add the `taskType="camunda-7-adapter"` to your service task
+and add task headers for a java delegate class, delegate expression or
+expression, e.g.:
 
 ```xml
 
@@ -80,7 +90,8 @@ To use that worker, add the `taskType="camunda-7-adapter"` to your service task 
 </bpmn:serviceTask>
 ```
 
-The external task workers can be mapped by using the `taskType` and insert the `topicName` there.
+The external task workers can be mapped by using the `taskType` and insert the
+`topicName` there.
 
 ```xml
 
@@ -93,4 +104,6 @@ The external task workers can be mapped by using the `taskType` and insert the `
 
 ## Example
 
-Check out [the full example](../example/process-solution-migrated/src/main/resources/process.bpmn) for more details.
+Check out
+[the full example](../example/process-solution-migrated/src/main/resources/process.bpmn)
+for more details.
