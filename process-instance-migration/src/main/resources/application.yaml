@@ -6,8 +6,6 @@ zeebe:
       gateway-address: localhost:26500
     request-timeout: PT60S
 
-
-server.port: 8090
 operate:
   client:
     base-url: http://localhost:8081
@@ -18,6 +16,6 @@ operate:
 
 camunda7:
   client:
-    base-url: http://localhost:8080
+    base-url: http://localhost:8082
     rest-api-context: engine-rest
     check-on-init: true
