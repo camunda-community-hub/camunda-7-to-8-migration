@@ -1,10 +1,8 @@
-name: Deploy artifacts with Maven
+name: Build, test and deploy artifacts with Maven
 on:
-  push:
-    branches: [main]
+  workflow_dispatch: { }
   release:
-    types: [published]
-  workflow_dispatch:
+    types: [ published ]
 jobs:
   publish-maven:
     runs-on: ubuntu-latest
@@ -53,9 +51,12 @@ jobs:
           asset_path: ${{ steps.release.outputs.artifacts_archive_path }}
           asset_name: camunda-7-to-8-migration.zip
           asset_content_type: application/zip
-      - name: Check Test Fails
+      - name: Publish Unit Test Results
+        id: publish
+        uses: EnricoMi/publish-unit-test-result-action@v1
         if: failure()
-        run: find . -name "*-output.txt" -print -exec cat {} \;
+        with:
+          files: target/surefire-reports/*.xml
   publish-modeler-plugin:
     runs-on: ubuntu-latest
     steps:
