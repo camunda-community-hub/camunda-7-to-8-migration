@@ -24,7 +24,7 @@ jobs:
       run: mvn test -f example -B
     - name: Publish Unit Test Results
       id: publish
-      uses: EnricoMi/publish-unit-test-result-action@v1
+      uses: EnricoMi/publish-unit-test-result-action@v2
       if: failure()
       with:
         files: target/surefire-reports/*.xml
