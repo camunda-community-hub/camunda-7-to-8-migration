@@ -22,6 +22,9 @@ jobs:
       run: mvn verify -PcheckFormat -B
     - name: Test examples
       run: mvn test -f example -B
-    - name: Check Test Fails
+    - name: Publish Unit Test Results
+      id: publish
+      uses: EnricoMi/publish-unit-test-result-action@v1
       if: failure()
-      run: find . -name "*-output.txt" -print -exec cat {} \;
+      with:
+        files: target/surefire-reports/*.xml
