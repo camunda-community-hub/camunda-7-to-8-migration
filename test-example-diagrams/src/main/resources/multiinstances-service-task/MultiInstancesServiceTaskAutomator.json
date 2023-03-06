@@ -48,31 +48,31 @@
           "numberOfExecutions": 1,
           "variables": {}
         }
-      ]
-    }
-  ],
-  "verifications": {
-    "activities": [
-      {
-        "type": "SERVICETASK",
-        "activityId": "Activity_Coll_Para",
-        "numberOfTasks": 2
-      },
-      {
-        "type": "SERVICETASK",
-        "activityId": "Activity_Card_Para",
-        "numberOfTasks": 16
-      },
-      {
-        "type": "SERVICETASK",
-        "activityId": "Activity_Coll_Seq",
-        "numberOfTasks": 1
-      },
-      {
-        "type": "SERVICETASK",
-        "activityId": "Activity_Card_Seq",
-        "numberOfTasks": 1
+      ],
+      "verifications": {
+        "activities": [
+          {
+            "type": "SERVICETASK",
+            "activityId": "Activity_Coll_Para",
+            "numberOfTasks": 2
+          },
+          {
+            "type": "SERVICETASK",
+            "activityId": "Activity_Card_Para",
+            "numberOfTasks": 16
+          },
+          {
+            "type": "SERVICETASK",
+            "activityId": "Activity_Coll_Seq",
+            "numberOfTasks": 1
+          },
+          {
+            "type": "SERVICETASK",
+            "activityId": "Activity_Card_Seq",
+            "numberOfTasks": 1
+          }
+        ]
       }
-    ]
-  }
+    }
+  ]
 }
