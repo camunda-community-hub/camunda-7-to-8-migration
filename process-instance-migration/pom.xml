@@ -8,7 +8,7 @@
     <version>0.10.4-SNAPSHOT</version>
   </parent>
   <modules>
-    <module>camunda-7-exporter</module>
+    <module>camunda-7-rest-exporter</module>
     <module>camunda-8-importer</module>
     <module>process-instance-migration-api</module>
     <module>webapp</module>
