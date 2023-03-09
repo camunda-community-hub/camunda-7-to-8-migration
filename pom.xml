@@ -187,6 +187,13 @@
           <groupId>org.springframework.boot</groupId>
           <artifactId>spring-boot-maven-plugin</artifactId>
           <version>${version.spring-boot}</version>
+          <configuration>
+            <image>
+              <env>
+                <BP_JVM_VERSION>17</BP_JVM_VERSION>
+              </env>
+            </image>
+          </configuration>
         </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
