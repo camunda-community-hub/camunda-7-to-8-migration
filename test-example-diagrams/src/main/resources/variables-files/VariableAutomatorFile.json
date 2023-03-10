@@ -1,0 +1,22 @@
+{
+  "name": "Variables File",
+  "processId": "VariablesFile",
+  "executions": [
+    {
+      "name": "Manage different variables",
+      "comment": "Create different variables",
+      "steps": [
+        {
+          "type": "STARTEVENT",
+          "activityId": "Start_Variables",
+          "variables": {
+
+          },
+          "variablesoperation": {
+            "picture": "loadfile('Camunda-logo.png')"
+        }
+        }
+      ]
+    }
+  ]
+}

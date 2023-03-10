@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_1c11fw3" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.8.0" modeler:executionPlatform="Camunda Platform" modeler:executionPlatformVersion="7.18.0">
   <bpmn:collaboration id="parent">
-    <bpmn:participant id="Participant_0dl2a0j" name="Variables" processRef="Variables" />
+    <bpmn:participant id="Participant_0dl2a0j" name="VariablesSimpleTypes" processRef="VariablesSimpleTypes" />
   </bpmn:collaboration>
-  <bpmn:process id="Variables" name="Variables" isExecutable="true">
+  <bpmn:process id="VariablesSimpleTypes" name="VariablesSimpleTypes" isExecutable="true">
     <bpmn:startEvent id="Start_Variables" name="Start request">
       <bpmn:outgoing>Flow_0clro87</bpmn:outgoing>
     </bpmn:startEvent>
@@ -39,18 +39,14 @@
     <bpmn:dataObject id="DataObject_17vksry" />
     <bpmn:dataObjectReference id="DataObjectReference_1sj052z" name="name&#10;(String)" dataObjectRef="DataObject_03luwmf" />
     <bpmn:dataObject id="DataObject_03luwmf" />
-    <bpmn:dataObjectReference id="DataObjectReference_036gnhp" name="dateSubmission&#10;(DATETIME)" dataObjectRef="DataObject_0fqovb7" />
-    <bpmn:dataObject id="DataObject_0fqovb7" />
-    <bpmn:dataObjectReference id="DataObjectReference_0btuu0o" name="Picture(FileValue)" dataObjectRef="DataObject_1lw0kfd" />
-    <bpmn:dataObject id="DataObject_1lw0kfd" />
     <bpmn:dataObjectReference id="DataObjectReference_0cdv385" name="address&#10;(list-string)" dataObjectRef="DataObject_1kohbu9" />
     <bpmn:dataObject id="DataObject_1kohbu9" />
-    <bpmn:dataObjectReference id="DataObjectReference_1b7agm1" name="contact&#10;(json)" dataObjectRef="DataObject_1qg00dg" />
-    <bpmn:dataObject id="DataObject_1qg00dg" />
     <bpmn:dataObjectReference id="DataObjectReference_00g5saz" name="description&#10;(text)" dataObjectRef="DataObject_1nri4gk" />
     <bpmn:dataObject id="DataObject_1nri4gk" />
     <bpmn:dataObjectReference id="DataObjectReference_1pw9qyd" name="Age&#10;(int)" dataObjectRef="DataObject_0ang6ph" />
     <bpmn:dataObject id="DataObject_0ang6ph" />
+    <bpmn:dataObjectReference id="DataObjectReference_036gnhp" name="dateSubmission&#10;(DATETIME)" dataObjectRef="DataObject_0fqovb7" />
+    <bpmn:dataObject id="DataObject_0fqovb7" />
   </bpmn:process>
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="parent">
@@ -79,52 +75,10 @@
           <dc:Bounds x="471" y="442" width="78" height="40" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="DataObjectReference_0qu0ncw_di" bpmnElement="DataObjectReference_0qu0ncw">
-        <dc:Bounds x="302" y="85" width="36" height="50" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="301" y="142" width="41" height="27" />
-        </bpmndi:BPMNLabel>
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="DataObjectReference_1sj052z_di" bpmnElement="DataObjectReference_1sj052z">
-        <dc:Bounds x="352" y="115" width="36" height="50" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="352" y="172" width="37" height="27" />
-        </bpmndi:BPMNLabel>
-      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="BPMNShape_1lignxu" bpmnElement="DataObjectReference_036gnhp">
-        <dc:Bounds x="642" y="245" width="36" height="50" />
+        <dc:Bounds x="592" y="205" width="36" height="50" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="622" y="302" width="79" height="27" />
-        </bpmndi:BPMNLabel>
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="BPMNShape_0uq66m9" bpmnElement="DataObjectReference_0btuu0o">
-        <dc:Bounds x="582" y="215" width="36" height="50" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="558" y="272" width="87" height="14" />
-        </bpmndi:BPMNLabel>
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="BPMNShape_19oykzd" bpmnElement="DataObjectReference_0cdv385">
-        <dc:Bounds x="522" y="185" width="36" height="50" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="515" y="242" width="52" height="27" />
-        </bpmndi:BPMNLabel>
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="DataObjectReference_1b7agm1_di" bpmnElement="DataObjectReference_1b7agm1">
-        <dc:Bounds x="462" y="165" width="36" height="50" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="464" y="222" width="36" height="27" />
-        </bpmndi:BPMNLabel>
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="BPMNShape_0jp42xc" bpmnElement="DataObjectReference_00g5saz">
-        <dc:Bounds x="412" y="135" width="36" height="50" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="405" y="192" width="54" height="27" />
-        </bpmndi:BPMNLabel>
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="DataObjectReference_1pw9qyd_di" bpmnElement="DataObjectReference_1pw9qyd">
-        <dc:Bounds x="252" y="55" width="36" height="50" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="260" y="112" width="20" height="27" />
+          <dc:Bounds x="572" y="262" width="79" height="27" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_0gd9dhy_di" bpmnElement="Activity_1p302q7" isExpanded="true">
@@ -143,6 +97,36 @@
         <di:waypoint x="728" y="430" />
         <di:waypoint x="782" y="430" />
       </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="DataObjectReference_0qu0ncw_di" bpmnElement="DataObjectReference_0qu0ncw">
+        <dc:Bounds x="302" y="85" width="36" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="301" y="142" width="41" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DataObjectReference_1sj052z_di" bpmnElement="DataObjectReference_1sj052z">
+        <dc:Bounds x="352" y="115" width="36" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="352" y="172" width="37" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_19oykzd" bpmnElement="DataObjectReference_0cdv385">
+        <dc:Bounds x="522" y="185" width="36" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="515" y="242" width="52" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_0jp42xc" bpmnElement="DataObjectReference_00g5saz">
+        <dc:Bounds x="412" y="135" width="36" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="405" y="192" width="54" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DataObjectReference_1pw9qyd_di" bpmnElement="DataObjectReference_1pw9qyd">
+        <dc:Bounds x="252" y="55" width="36" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="260" y="112" width="20" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="Flow_0clro87_di" bpmnElement="Flow_0clro87">
         <di:waypoint x="215" y="340" />
         <di:waypoint x="480" y="340" />
