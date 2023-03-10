@@ -1,4 +1,4 @@
-# Timer event
+# Simple service task
 
 ## Definition
 The process contains a service task. After migration, service task must be available
