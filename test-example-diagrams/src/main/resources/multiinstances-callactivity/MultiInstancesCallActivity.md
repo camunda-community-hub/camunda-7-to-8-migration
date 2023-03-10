@@ -1,4 +1,4 @@
-# Multi Instance Service Task
+# Multi Instance Call Activity
 
 ## Definition
 Four multi instance task are created, with all combinations:
