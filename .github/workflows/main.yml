@@ -24,6 +24,11 @@ jobs:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Login to Docker Hub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKERHUB_USR }}
+          password: ${{ secrets.DOCKERHUB_PSW }}
       - name: Deploy SNAPSHOT / Release
         uses: camunda-community-hub/community-action-maven-release@v1
         with:
