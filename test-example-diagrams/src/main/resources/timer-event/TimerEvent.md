@@ -1,4 +1,4 @@
-# Receive Event
+# Timer Event
 
 ## Definition
 A process instance is waiting at a timer event
