@@ -31,7 +31,7 @@ import org.camunda.community.migration.processInstance.api.model.data.impl.UserT
       name = ActivityNodeData.BUSINESS_RULE_TASK),
   @JsonSubTypes.Type(value = SubProcessDataImpl.class, name = ActivityNodeData.SUB_PROCESS)
 })
-public interface ActivityNodeData extends NamedNodeData, VariableScopeData {
+public interface ActivityNodeData extends NamedNodeData, VariableScopeData, IdentifiedActivityData {
   String CALL_ACTIVITY = "callActivity";
   String USER_TASK = "userTask";
   String MULTI_INSTANCE = "multiInstance";
@@ -50,5 +50,8 @@ public interface ActivityNodeData extends NamedNodeData, VariableScopeData {
 
   interface ActivityNodeDataBuilder<
           T extends ActivityNodeDataBuilder<T, R>, R extends ActivityNodeData>
-      extends FinalBuildStep<R>, NamedNodeDataBuilder<T>, VariableScopeDataBuilder<T> {}
+      extends FinalBuildStep<R>,
+          NamedNodeDataBuilder<T>,
+          VariableScopeDataBuilder<T>,
+          IdentifiedActivityDataBuilder<T> {}
 }

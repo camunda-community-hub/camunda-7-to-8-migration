@@ -2,11 +2,12 @@ package org.camunda.community.migration.processInstance.api.model.data.impl;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import java.util.List;
+import java.util.Objects;
 import org.camunda.community.migration.processInstance.api.model.data.MultiInstanceData;
 import org.camunda.community.migration.processInstance.api.model.data.chunk.ActivityNodeData;
 import org.camunda.community.migration.processInstance.api.model.data.impl.chunk.ActivityNodeDataImpl;
 
-public class MultiInstanceDataImpl extends ActivityNodeDataImpl implements MultiInstanceData {
+public final class MultiInstanceDataImpl extends ActivityNodeDataImpl implements MultiInstanceData {
   private List<ActivityNodeData> instances;
   private String inputElementName;
   private List<JsonNode> completedInstanceElementValues;
@@ -36,5 +37,22 @@ public class MultiInstanceDataImpl extends ActivityNodeDataImpl implements Multi
 
   public void setInstances(List<ActivityNodeData> instances) {
     this.instances = instances;
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (o == null || getClass() != o.getClass()) return false;
+    if (!super.equals(o)) return false;
+    MultiInstanceDataImpl that = (MultiInstanceDataImpl) o;
+    return Objects.equals(instances, that.instances)
+        && Objects.equals(inputElementName, that.inputElementName)
+        && Objects.equals(completedInstanceElementValues, that.completedInstanceElementValues);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(
+        super.hashCode(), instances, inputElementName, completedInstanceElementValues);
   }
 }

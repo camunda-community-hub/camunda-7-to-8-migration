@@ -3,6 +3,7 @@ package org.camunda.community.migration.processInstance.exporter;
 import static org.assertj.core.api.Assertions.*;
 import static org.camunda.bpm.engine.test.assertions.bpmn.BpmnAwareTests.*;
 import static org.camunda.community.migration.processInstance.api.model.data.Builder.*;
+import static org.camunda.community.migration.processInstance.api.model.data.Builder.Json.*;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.camunda.bpm.engine.runtime.ProcessInstance;

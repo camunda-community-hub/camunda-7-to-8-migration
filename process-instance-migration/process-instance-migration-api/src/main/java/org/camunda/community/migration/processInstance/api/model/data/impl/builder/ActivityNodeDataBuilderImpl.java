@@ -30,6 +30,12 @@ public abstract class ActivityNodeDataBuilderImpl<
     return builder();
   }
 
+  @Override
+  public B withActivityId(String activityId) {
+    data().setActivityId(activityId);
+    return builder();
+  }
+
   protected abstract B builder();
 
   protected abstract ActivityNodeDataImpl data();

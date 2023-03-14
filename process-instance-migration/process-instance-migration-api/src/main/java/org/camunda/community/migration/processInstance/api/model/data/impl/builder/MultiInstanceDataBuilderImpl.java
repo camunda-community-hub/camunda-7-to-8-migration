@@ -3,7 +3,6 @@ package org.camunda.community.migration.processInstance.api.model.data.impl.buil
 import static org.camunda.community.migration.processInstance.api.model.data.impl.builder.BuilderUtil.*;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import java.util.Collection;
 import org.camunda.community.migration.processInstance.api.model.data.MultiInstanceData;
 import org.camunda.community.migration.processInstance.api.model.data.MultiInstanceData.MultiInstanceDataBuilder;
 import org.camunda.community.migration.processInstance.api.model.data.chunk.ActivityNodeData;
@@ -21,7 +20,7 @@ public class MultiInstanceDataBuilderImpl
   }
 
   @Override
-  public MultiInstanceDataBuilder withInstances(Collection<ActivityNodeData> instances) {
+  public MultiInstanceDataBuilder withInstances(Iterable<ActivityNodeData> instances) {
     instances.forEach(this::withInstance);
     return this;
   }
@@ -39,6 +38,13 @@ public class MultiInstanceDataBuilderImpl
         data::getCompletedInstanceElementValues,
         data::setCompletedInstanceElementValues,
         completedInstanceElementValue);
+    return this;
+  }
+
+  @Override
+  public MultiInstanceDataBuilder withCompletedInstanceElementValues(
+      Iterable<JsonNode> completedInstanceElementValues) {
+    completedInstanceElementValues.forEach(this::withCompletedInstanceElementValue);
     return this;
   }
 

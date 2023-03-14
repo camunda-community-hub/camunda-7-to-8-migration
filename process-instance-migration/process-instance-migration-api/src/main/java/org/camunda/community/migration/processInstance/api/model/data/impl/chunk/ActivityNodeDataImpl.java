@@ -2,11 +2,13 @@ package org.camunda.community.migration.processInstance.api.model.data.impl.chun
 
 import com.fasterxml.jackson.databind.JsonNode;
 import java.util.Map;
+import java.util.Objects;
 import org.camunda.community.migration.processInstance.api.model.data.chunk.ActivityNodeData;
 
 public abstract class ActivityNodeDataImpl implements ActivityNodeData {
   private String name;
   private Map<String, JsonNode> variables;
+  private String activityId;
 
   @Override
   public String getName() {
@@ -24,5 +26,29 @@ public abstract class ActivityNodeDataImpl implements ActivityNodeData {
 
   public void setVariables(Map<String, JsonNode> variables) {
     this.variables = variables;
+  }
+
+  @Override
+  public String getActivityId() {
+    return activityId;
+  }
+
+  public void setActivityId(String activityId) {
+    this.activityId = activityId;
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (o == null || !getClass().isAssignableFrom(o.getClass())) return false;
+    ActivityNodeDataImpl that = (ActivityNodeDataImpl) o;
+    return Objects.equals(name, that.name)
+        && Objects.equals(variables, that.variables)
+        && Objects.equals(activityId, that.activityId);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(name, variables, activityId);
   }
 }

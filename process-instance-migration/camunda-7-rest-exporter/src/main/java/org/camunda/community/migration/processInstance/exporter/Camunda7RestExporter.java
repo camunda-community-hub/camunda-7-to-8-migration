@@ -168,11 +168,17 @@ public class Camunda7RestExporter implements ProcessInstanceDataExporter {
   }
 
   @Override
-  public void onMigrationStarted(String processInstanceId) {}
+  public void onMigrationStarted(String processInstanceId) {
+    // TODO suspend process instance
+  }
 
   @Override
-  public void onMigrationSuccess(String processInstanceId, long processInstanceKey) {}
+  public void onMigrationSuccess(String processInstanceId, long processInstanceKey) {
+    // TODO eventually cancel process instance
+  }
 
   @Override
-  public void onMigrationFailed(String processInstanceId) {}
+  public void onMigrationFailed(String processInstanceId) {
+    // TODO continue process instance
+  }
 }

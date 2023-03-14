@@ -34,85 +34,88 @@ import org.camunda.community.migration.processInstance.api.model.data.impl.build
 import org.camunda.community.migration.processInstance.api.model.data.impl.builder.TaskDataBuilderImpl;
 import org.camunda.community.migration.processInstance.api.model.data.impl.builder.UserTaskDataBuilderImpl;
 
-public class Builder {
-  public static ProcessInstanceMetadataBuilder processInstanceMetadata() {
+public interface Builder {
+  static ProcessInstanceMetadataBuilder processInstanceMetadata() {
     return new ProcessInstanceMetadataBuilderImpl();
   }
 
-  public static ProcessInstanceDataBuilder processInstanceData() {
+  static ProcessInstanceDataBuilder processInstanceData() {
     return new ProcessInstanceDataBuilderImpl();
   }
 
-  public static UserTaskDataBuilder userTaskData() {
+  static UserTaskDataBuilder userTaskData() {
     return new UserTaskDataBuilderImpl();
   }
 
-  public static CallActivityDataBuilder callActivityData() {
+  static CallActivityDataBuilder callActivityData() {
     return new CallActivityBuilderImpl();
   }
 
-  public static MultiInstanceDataBuilder multiInstanceData() {
+  static MultiInstanceDataBuilder multiInstanceData() {
     return new MultiInstanceDataBuilderImpl();
   }
 
-  public static TaskDataBuilder taskData() {
+  static TaskDataBuilder taskData() {
     return new TaskDataBuilderImpl();
   }
 
-  public static ServiceTaskDataBuilder serviceTaskData() {
+  static ServiceTaskDataBuilder serviceTaskData() {
     return new ServiceTaskDataBuilderImpl();
   }
 
-  public static ScriptTaskDataBuilder scriptTaskData() {
+  static ScriptTaskDataBuilder scriptTaskData() {
     return new ScriptTaskDataBuilderImpl();
   }
 
-  public static SendTaskDataBuilder sendTaskData() {
+  static SendTaskDataBuilder sendTaskData() {
     return new SendTaskDataBuilderImpl();
   }
 
-  public static ReceiveTaskDataBuilder receiveTaskData() {
+  static ReceiveTaskDataBuilder receiveTaskData() {
     return new ReceiveTaskDataBuilderImpl();
   }
 
-  public static ManualTaskDataBuilder manualTaskData() {
+  static ManualTaskDataBuilder manualTaskData() {
     return new ManualTaskDataBuilderImpl();
   }
 
-  public static BusinessRuleTaskDataBuilder businessRuleTaskData() {
+  static BusinessRuleTaskDataBuilder businessRuleTaskData() {
     return new BusinessRuleTaskDataBuilderImpl();
   }
 
-  public static SubProcessDataBuilder subProcessData() {
+  static SubProcessDataBuilder subProcessData() {
     return new SubProcessDataBuilderImpl();
   }
 
-  public static TextNode text(String text) {
-    return JsonNodeFactory.instance.textNode(text);
-  }
+  interface Json {
 
-  public static NumericNode number(long number) {
-    return JsonNodeFactory.instance.numberNode(number);
-  }
-
-  public static NumericNode number(double number) {
-    return JsonNodeFactory.instance.numberNode(number);
-  }
-
-  public static BooleanNode bool(boolean bool) {
-    return JsonNodeFactory.instance.booleanNode(bool);
-  }
-
-  @SafeVarargs
-  public static <T extends JsonNode> ArrayNode array(T... elements) {
-    ArrayNode array = JsonNodeFactory.instance.arrayNode();
-    for (JsonNode element : elements) {
-      array.add(element);
+    static TextNode text(String text) {
+      return JsonNodeFactory.instance.textNode(text);
     }
-    return array;
-  }
 
-  public static NullNode nul() {
-    return JsonNodeFactory.instance.nullNode();
+    static NumericNode number(long number) {
+      return JsonNodeFactory.instance.numberNode(number);
+    }
+
+    static NumericNode number(double number) {
+      return JsonNodeFactory.instance.numberNode(number);
+    }
+
+    static BooleanNode bool(boolean bool) {
+      return JsonNodeFactory.instance.booleanNode(bool);
+    }
+
+    @SafeVarargs
+    static <T extends JsonNode> ArrayNode array(T... elements) {
+      ArrayNode array = JsonNodeFactory.instance.arrayNode();
+      for (JsonNode element : elements) {
+        array.add(element);
+      }
+      return array;
+    }
+
+    static NullNode nul() {
+      return JsonNodeFactory.instance.nullNode();
+    }
   }
 }
