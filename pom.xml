@@ -37,7 +37,7 @@
     <plugin.version.maven-install-plugin>3.1.0</plugin.version.maven-install-plugin>
     <plugin.version.maven-resources-plugin>3.3.0</plugin.version.maven-resources-plugin>
     <plugin.version.maven-shade-plugin>3.4.1</plugin.version.maven-shade-plugin>
-    <plugin.version.maven-surefire-plugin>3.0.0-M9</plugin.version.maven-surefire-plugin>
+    <plugin.version.maven-surefire-plugin>3.0.0</plugin.version.maven-surefire-plugin>
     <plugin.version.spotless-maven-plugin>2.35.0</plugin.version.spotless-maven-plugin>
     <plugin.version.maven-compiler-plugin>3.11.0</plugin.version.maven-compiler-plugin>
     <plugin.version.native-maven-plugin>0.9.20</plugin.version.native-maven-plugin>
