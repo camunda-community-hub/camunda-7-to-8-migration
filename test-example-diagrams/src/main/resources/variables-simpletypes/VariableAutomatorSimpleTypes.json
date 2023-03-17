@@ -1,0 +1,31 @@
+{
+  "name": "Variables",
+  "processId": "VariablesSimpleTypes",
+  "executions": [
+    {
+      "name": "Manage different variables",
+      "comment": "Create different variables",
+      "steps": [
+        {
+          "type": "STARTEVENT",
+          "activityId": "Start_Variables",
+          "variables": {
+            "age": 34,
+            "amount": 134.56,
+            "name": "Walter Bates",
+            "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Leo vel fringilla est ullamcorper. Egestas congue quisque egestas diam in arcu cursus euismod. Dolor purus non enim praesent elementum facilisis leo vel fringilla. Et odio pellentesque diam volutpat commodo sed egestas egestas fringilla. Diam volutpat commodo sed egestas egestas fringilla phasellus faucibus scelerisque. Aliquam id diam maecenas ultricies mi eget mauris. Mi in nulla posuere sollicitudin aliquam ultrices sagittis orci a. Mattis rhoncus urna neque viverra justo. Sed euismod nisi porta lorem. Dignissim diam quis enim lobortis scelerisque fermentum dui faucibus in.\n\nMorbi tristique senectus et netus et. Sit amet dictum sit amet. Auctor eu augue ut lectus arcu bibendum at varius. Est ultricies integer quis auctor elit sed vulputate mi sit. Sit amet consectetur adipiscing elit. Aliquet porttitor lacus luctus accumsan tortor posuere. Arcu risus quis varius quam quisque id diam vel quam. Ac orci phasellus egestas tellus rutrum tellus pellentesque eu. Odio ut sem nulla pharetra diam sit amet. Maecenas ultricies mi eget mauris pharetra et ultrices neque. Sed risus pretium quam vulputate dignissim. Magna ac placerat vestibulum lectus mauris ultrices. Purus sit amet volutpat consequat mauris nunc. Elementum tempus egestas sed sed. Purus ut faucibus pulvinar elementum integer enim neque. Sed turpis tincidunt id aliquet risus feugiat in. Enim tortor at auctor urna nunc id cursus metus. Viverra mauris in aliquam sem fringilla ut morbi.\n\nNeque sodales ut etiam sit. Nullam vehicula ipsum a arcu cursus vitae. Suspendisse in est ante in. Mattis rhoncus urna neque viverra. Volutpat lacus laoreet non curabitur gravida arcu. Malesuada pellentesque elit eget gravida cum sociis natoque. Nam aliquam sem et tortor consequat id porta nibh venenatis. Semper auctor neque vitae tempus quam pellentesque nec. Dolor magna eget est lorem ipsum dolor sit. Ultricies integer quis auctor elit sed vulputate mi sit. Lobortis feugiat vivamus at augue eget arcu dictum varius. Commodo nulla facilisi nullam vehicula ipsum a arcu. Dignissim convallis aenean et tortor at risus viverra. Sit amet mauris commodo quis imperdiet massa tincidunt nunc. Feugiat nisl pretium fusce id velit ut tortor pretium viverra. Dolor sit amet consectetur adipiscing elit ut aliquam purus sit. Mauris augue neque gravida in. Malesuada nunc vel risus commodo viverra maecenas accumsan.\n\nTincidunt vitae semper quis lectus nulla at volutpat diam ut. Ultrices tincidunt arcu non sodales neque sodales ut etiam sit. Fames ac turpis egestas sed tempus urna et pharetra pharetra. Laoreet suspendisse interdum consectetur libero id faucibus nisl. Quis hendrerit dolor magna eget est lorem. Nunc sed augue lacus viverra vitae. Ut morbi tincidunt augue interdum velit euismod in pellentesque. Mattis nunc sed blandit libero volutpat sed. Et malesuada fames ac turpis egestas. Et ligula ullamcorper malesuada proin. Dignissim suspendisse in est ante. Mauris sit amet massa vitae tortor. Volutpat diam ut venenatis tellus in metus vulputate eu scelerisque. Cursus in hac habitasse platea dictumst quisque sagittis purus. Odio pellentesque diam volutpat commodo sed egestas egestas fringilla phasellus. In fermentum posuere urna nec tincidunt. Sit amet nulla facilisi morbi tempus iaculis urna.\n\nNisi scelerisque eu ultrices vitae auctor eu augue. Integer feugiat scelerisque varius morbi. Leo in vitae turpis massa sed elementum tempus. Vivamus arcu felis bibendum ut tristique et egestas. In vitae turpis massa sed elementum. Sit amet justo donec enim. Suscipit tellus mauris a diam. Facilisi cras fermentum odio eu feugiat pretium nibh ipsum consequat. Blandit cursus risus at ultrices mi. Sed risus pretium quam vulputate dignissim suspendisse. Morbi blandit cursus risus at ultrices mi tempus imperdiet. Fames ac turpis egestas sed tempus.",
+            "address": [
+              "1-Berlin",
+              "2-Boston",
+              "3-Paris",
+              "4-Sydney"
+            ]
+          },
+          "variablesoperation": {
+          "dateSubmission": "stringtodate(DATETIME,'2012-04-23T18:25:43Z')"
+         }
+        }
+      ]
+    }
+  ]
+}

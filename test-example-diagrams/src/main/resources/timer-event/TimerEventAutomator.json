@@ -1,0 +1,23 @@
+{
+  "name": "Timer Event",
+  "processId": "TimerEvent",
+  "executions": [
+    {
+      "name": "Load Timer Event",
+      "steps": [
+        {
+          "type": "STARTEVENT",
+          "activityId": "Start_TimerEvent",
+          "variables": {}
+        },
+        {
+          "type": "USERTASK",
+          "delay": "PT0.1S",
+          "waitingTime": "PT20S",
+          "activityId": "Activity_Review_1",
+          "variables": {}
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,89 @@
+{
+  "name": "Merging Inclusive Activities",
+  "processId": "MergingParallel",
+  "executions": [
+    {
+      "name": "ProcessInstance 0 token",
+      "comment": "All activities are waiting",
+      "steps": [
+        {
+          "type": "STARTEVENT",
+          "activityId": "Start_MergingParallel",
+          "variables": {
+            "comment": "No merging token"
+          }
+        }
+      ]
+    },
+    {
+      "name": "ProcessInstance 1 token",
+      "comment": "One review validate, one token is waiting",
+      "steps": [
+        {
+          "type": "STARTEVENT",
+          "activityId": "Start_MergingParallel",
+          "variables": {
+            "comment": "One merging token"
+          }
+        },
+        {
+          "type": "USERTASK",
+          "waitingTime": "PT20S",
+          "activityId": "Activity_Review_1"
+        }
+      ]
+    },
+    {
+      "name": "ProcessInstance 2 tokens",
+      "comment": "two review validate, two tokens are waiting",
+      "steps": [
+        {
+          "type": "STARTEVENT",
+          "activityId": "Start_MergingParallel",
+          "variables": {
+            "comment": "two merging tokens"
+          }
+        },
+        {
+          "type": "USERTASK",
+          "waitingTime": "PT20S",
+          "activityId": "Activity_Review_1"
+        },
+        {
+          "type": "USERTASK",
+          "waitingTime": "PT20S",
+          "activityId": "Activity_Review_2"
+        }
+      ]
+    },
+    {
+      "name": "ProcessInstance 3 tokens",
+      "comment": "three review validate, three tokens are waiting",
+      "steps": [
+        {
+          "type": "STARTEVENT",
+          "activityId": "Start_MergingParallel",
+          "variables": {
+            "comment": "three merging tokens"
+          }
+        },
+        {
+          "type": "USERTASK",
+          "waitingTime": "PT20S",
+          "activityId": "Activity_Review_1"
+        },
+        {
+          "type": "USERTASK",
+          "waitingTime": "PT20S",
+          "activityId": "Activity_Review_2"
+        },
+        {
+          "type": "USERTASK",
+          "waitingTime": "PT20S",
+          "activityId": "Activity_Review_3"
+        }
+      ]
+    }
+  ]
+}
+

@@ -1,0 +1,17 @@
+{
+  "name": "Simple Service Task",
+  "processId": "SimpleServiceTask",
+  "modeVerification": "STRICT",
+  "executions": [
+    {
+      "name": "Load ServiceTask",
+      "steps": [
+        {
+          "type": "STARTEVENT",
+          "activityId": "Start_SimpleServiceTask",
+          "variables": {}
+        }
+      ]
+    }
+  ]
+}

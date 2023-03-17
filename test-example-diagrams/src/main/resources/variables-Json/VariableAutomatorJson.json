@@ -1,0 +1,24 @@
+{
+  "name": "Variables Json",
+  "processId": "VariablesJson",
+  "executions": [
+    {
+      "name": "Manage different variables",
+      "comment": "Create different variables",
+      "steps": [
+        {
+          "type": "STARTEVENT",
+          "activityId": "Start_Variables",
+          "variables": {
+
+            "contact": {
+              "firstName": "walter",
+              "lastName": "Bates",
+              "Email": "walter.bates@camunda.com"
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

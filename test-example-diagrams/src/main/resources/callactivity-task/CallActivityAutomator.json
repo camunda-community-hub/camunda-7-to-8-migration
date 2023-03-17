@@ -1,0 +1,21 @@
+{
+  "name": "Call Activity",
+  "processId": "CallActvityParent",
+  "executions": [
+    {
+      "name": "Call Activity",
+      "steps": [
+        {
+          "type": "STARTEVENT",
+          "activityId": "Start_CallActivity",
+          "variables": {
+            "amount": 1000,
+            "companyAccount": "COMPANY-7HHD44F",
+            "employeAccount": "EMPLOYEE-88833F",
+            "employeeName": "Walter"
+          }
+        }
+      ]
+    }
+  ]
+}

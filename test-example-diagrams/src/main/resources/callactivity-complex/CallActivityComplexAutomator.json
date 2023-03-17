@@ -1,0 +1,55 @@
+{
+  "name": "Call Activity Complex",
+  "processId": "CallActivityComplexParent",
+  "executions": [
+    {
+      "name": "basic call",
+      "steps": [
+        {
+          "type": "STARTEVENT",
+          "activityId": "Start_CallActivityComplex",
+          "variables": {
+            "amount": 1000,
+            "companyAccount": "COMPANY-7HHD44F",
+            "employeAccount": "EMPLOYEE-88833F",
+            "employeeName": "Walter",
+            "automaticAccept": false,
+            "listAccounts": [
+              "blue"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "loop call",
+      "steps": [
+        {
+          "type": "STARTEVENT",
+          "activityId": "Start_CallActivityComplex",
+          "variables": {
+            "amount": 1000,
+            "companyAccount": "COMPANY-7HHD44F",
+            "employeAccount": "EMPLOYEE-88833F",
+            "employeeName": "Walter",
+            "automaticAcceptEurope": true
+          }
+        },
+        {
+          "type": "USERTASK",
+          "delay": "PT0.1S",
+          "waitingTime": "PT20S",
+          "activityId": "Activity_DecideLevelSecretAndNumber",
+          "variables": {
+            "listAccounts": [
+              "blue",
+              "red",
+              "green",
+              "yellow"
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

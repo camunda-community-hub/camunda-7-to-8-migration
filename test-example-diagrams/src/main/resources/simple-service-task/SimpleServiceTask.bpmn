@@ -1,29 +1,29 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_1c11fw3" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.8.0" modeler:executionPlatform="Camunda Platform" modeler:executionPlatformVersion="7.18.0">
-  <bpmn:collaboration id="Collaboration_0e0h89z">
-    <bpmn:participant id="Participant_1ic0c6g" name="SimpleUserTask" processRef="SimpleUserTask" />
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_1c11fw3" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.8.0" modeler:executionPlatform="Camunda Platform" modeler:executionPlatformVersion="7.18.0">
+  <bpmn:collaboration id="Collaboration_0syam1q">
+    <bpmn:participant id="Participant_1vqq6k2" name="Simple service task" processRef="SimpleServiceTask" />
   </bpmn:collaboration>
-  <bpmn:process id="SimpleUserTask" name="SimpleUserTask" isExecutable="true">
-    <bpmn:startEvent id="Start_SimpleUserTask" name="Start request">
+  <bpmn:process id="SimpleServiceTask" name="SimpleServiceTask" isExecutable="true">
+    <bpmn:startEvent id="Start_SimpleServiceTask" name="Start request">
       <bpmn:outgoing>Flow_0clro87</bpmn:outgoing>
     </bpmn:startEvent>
     <bpmn:endEvent id="Event_0bpgroy" name="End request">
       <bpmn:incoming>Flow_0xmjrmo</bpmn:incoming>
     </bpmn:endEvent>
-    <bpmn:userTask id="Activity_0il7un2" name="Review">
+    <bpmn:serviceTask id="Activity_0il7un2" name="Review" camunda:type="external" camunda:topic="SimpleServiceTask-service">
       <bpmn:incoming>Flow_0clro87</bpmn:incoming>
       <bpmn:outgoing>Flow_0xmjrmo</bpmn:outgoing>
-    </bpmn:userTask>
-    <bpmn:sequenceFlow id="Flow_0clro87" sourceRef="Start_SimpleUserTask" targetRef="Activity_0il7un2" />
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_0clro87" sourceRef="Start_SimpleServiceTask" targetRef="Activity_0il7un2" />
     <bpmn:sequenceFlow id="Flow_0xmjrmo" sourceRef="Activity_0il7un2" targetRef="Event_0bpgroy" />
   </bpmn:process>
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
-    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Collaboration_0e0h89z">
-      <bpmndi:BPMNShape id="Participant_1ic0c6g_di" bpmnElement="Participant_1ic0c6g" isHorizontal="true">
-        <dc:Bounds x="129" y="100" width="600" height="258" />
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Collaboration_0syam1q">
+      <bpmndi:BPMNShape id="Participant_1vqq6k2_di" bpmnElement="Participant_1vqq6k2" isHorizontal="true">
+        <dc:Bounds x="129" y="100" width="600" height="150" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="Start_SimpleUserTask">
+      <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="Start_SimpleServiceTask">
         <dc:Bounds x="179" y="142" width="36" height="36" />
         <bpmndi:BPMNLabel>
           <dc:Bounds x="165" y="185" width="64" height="14" />
@@ -35,9 +35,8 @@
           <dc:Bounds x="480" y="185" width="61" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_0cpol4f_di" bpmnElement="Activity_0il7un2">
+      <bpmndi:BPMNShape id="Activity_00q9yod_di" bpmnElement="Activity_0il7un2">
         <dc:Bounds x="300" y="120" width="100" height="80" />
-        <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="Flow_0clro87_di" bpmnElement="Flow_0clro87">
         <di:waypoint x="215" y="160" />

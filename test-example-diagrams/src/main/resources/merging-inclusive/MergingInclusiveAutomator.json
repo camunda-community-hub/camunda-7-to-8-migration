@@ -1,0 +1,122 @@
+{
+  "name": "Merging Parallel Activities",
+  "processId": "MergingInclusive",
+  "executions": [
+    {
+      "name": "ProcessInstance square: 1 token",
+      "comment": "The first process instance, two conditions were true, one token is waiting",
+      "steps": [
+        {
+          "type": "STARTEVENT",
+          "activityId": "Start_MergingInclusive",
+          "variables": {
+            "shape": "square",
+            "color": "red",
+            "paint": "outline"
+          }
+        },
+        {
+          "type": "USERTASK",
+          "delay": "PT0.1S",
+          "waitingTime": "PT20S",
+          "activityId": "Activity_square",
+          "variables": {}
+        }
+      ]
+    },
+    {
+      "name": "ProcessInstance square/blue: 2 tokens",
+      "comment": "The first process instance, three conditions were true, two tokens are waiting",
+      "steps": [
+        {
+          "type": "STARTEVENT",
+          "activityId": "Start_MergingInclusive",
+          "variables": {
+            "shape": "square",
+            "color": "blue",
+            "paint": "outline"
+          }
+        },
+        {
+          "type": "USERTASK",
+          "delay": "PT0.1S",
+          "waitingTime": "PT20S",
+          "activityId": "Activity_square",
+          "variables": {}
+        },
+        {
+          "type": "USERTASK",
+          "delay": "PT0.1S",
+          "waitingTime": "PT20S",
+          "activityId": "Activity_blue",
+          "variables": {}
+        }
+      ]
+    },
+    {
+      "name": "ProcessInstance square/blue/Fill: 3 tokens",
+      "comment": "The first process instance, fourth conditions were true, three tokens are waiting",
+      "steps": [
+        {
+          "type": "STARTEVENT",
+          "activityId": "Start_MergingInclusive",
+          "variables": {
+            "shape": "square",
+            "color": "blue",
+            "paint": "fill"
+          }
+        },
+        {
+          "type": "USERTASK",
+          "delay": "PT0.1S",
+          "waitingTime": "PT20S",
+          "activityId": "Activity_square",
+          "variables": {}
+        },
+        {
+          "type": "USERTASK",
+          "delay": "PT0.1S",
+          "waitingTime": "PT20S",
+          "activityId": "Activity_blue",
+          "variables": {}
+        },
+        {
+          "type": "USERTASK",
+          "delay": "PT0.1S",
+          "waitingTime": "PT20S",
+          "activityId": "Activity_fill",
+          "variables": {}
+        }
+      ]
+    },
+    {
+      "name": "ProcessInstance square/blue/Fill: 3 tokens",
+      "comment": "The first process instance, fourth conditions were true, two tokens are waiting",
+      "steps": [
+        {
+          "type": "STARTEVENT",
+          "activityId": "Start_MergingInclusive",
+          "variables": {
+            "shape": "square",
+            "color": "blue",
+            "paint": "fill"
+          }
+        },
+        {
+          "type": "USERTASK",
+          "delay": "PT0.1S",
+          "waitingTime": "PT20S",
+          "activityId": "Activity_square",
+          "variables": {}
+        },
+        {
+          "type": "USERTASK",
+          "delay": "PT0.1S",
+          "waitingTime": "PT20S",
+          "activityId": "Activity_fill",
+          "variables": {}
+        }
+      ]
+    }
+  ]
+}

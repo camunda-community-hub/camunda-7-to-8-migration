@@ -1,0 +1,36 @@
+{
+  "name": "MultiInstances User Task",
+  "processId": "MultiInstanceUserTaskLoopCard",
+  "executions": [
+    {
+      "name": "Classic path",
+      "steps": [
+        {
+          "type": "STARTEVENT",
+          "activityId": "Start_MultiInstanceUserTaskLoopCard",
+          "variables": {
+            "listOfColors": ["blue", "red","green", "Pink", "Orange" ]
+          }
+        },
+        {
+          "type": "USERTASK",
+          "delay": "PT0.1S",
+          "waitingTime": "PT10S",
+          "activityId": "Activity_Card_Para_Reviews",
+          "variables": {},
+          "numberOfExecutions": 2
+        },
+        {
+          "type": "USERTASK",
+          "delay": "PT0.1S",
+          "waitingTime": "PT10S",
+          "activityId": "Activity_Card_Seq_Reviews",
+          "variables": {},
+          "numberOfExecutions": 4
+        }
+
+
+      ]
+    }
+  ]
+}

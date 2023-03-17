@@ -1,0 +1,50 @@
+{
+  "name": "MultiInstances Call Activity",
+  "processId": "MultiInstancesCallActivity",
+  "executions": [
+    {
+      "name": "Happy path",
+      "steps": [
+        {
+          "type": "STARTEVENT",
+          "activityId": "Start_MultiInstancesCallActivity",
+          "variables": {
+            "listOfColors": ["blue", "red","green" ]
+          }
+        },
+        {
+          "comment" : "collection-parallel - 3 instances, 1 executed, 2 tasks active",
+          "type": "USERTASK",
+          "waitingTime": "PT20S",
+          "activityId": "review_coll_para",
+          "numberOfExecutions" : 1,
+          "variables": {}
+        },
+        {
+          "comment" : "collection-sequential - 3 instances, 1 executed, 1 task active",
+          "type": "USERTASK",
+          "waitingTime": "PT20S",
+          "activityId": "review_coll_seq",
+          "numberOfExecutions" : 1,
+          "variables": {}
+        },
+        {
+          "comment" : "LoopCardinality-parallel - 5 instances, 2 executed, 3 tasks actives",
+          "type": "USERTASK",
+          "waitingTime": "PT20S",
+          "activityId": "review_loopcard_para",
+          "numberOfExecutions" : 2,
+          "variables": {}
+        },
+        {
+          "comment" : " LoopCardinality-sequential - 5 instances 1 executed, 1 task active",
+          "type": "USERTASK",
+          "waitingTime": "PT20S",
+          "activityId": "review_loopcard_seq",
+          "numberOfExecutions" : 1,
+          "variables": {}
+        }
+      ]
+    }
+  ]
+}

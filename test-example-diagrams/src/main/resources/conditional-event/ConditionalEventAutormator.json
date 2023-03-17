@@ -1,0 +1,26 @@
+{
+  "name": "Conditional event",
+  "processId": "ConditionalEvent",
+  "executions": [
+    {
+      "name": "Conditional Event",
+      "steps": [
+        {
+          "type": "STARTEVENT",
+          "activityId": "Start_ConditionalEvent",
+          "variables": {
+            "temperature": 20
+          }
+        },
+        {
+          "type": "USERTASK",
+          "delay": "PT0.1S",
+          "waitingTime": "PT10S",
+          "activityId": "Activity_Review_1",
+          "variables": {}
+        }
+
+      ]
+    }
+  ]
+}
