@@ -147,3 +147,38 @@ camunda7:
     rest-api-context: engine-rest
     check-on-init: true
 ```
+
+## Execution
+
+
+### Compile the project
+1. Execute these commands:
+````
+cd process-instance-migration
+mvn install
+````
+
+2. Update the configuration:
+edit `src/main/resources/application.yaml`
+
+
+
+3. Start the program:
+```
+cd target
+java -jar ./process-instance-migration-0.5.1-SNAPSHOT.jar
+```
+
+
+4. Access the front end
+5. Acc
+
+Access the front end on http://localhost:8085
+
+### Docker image
+Get the docker image:
+````
+docker pull ghcr.io/camunda-community-hub/camunda-7-to-8-migration/process-instance-migration:0.5.1-snapshot
+````
+Update the configuration file
+ ???

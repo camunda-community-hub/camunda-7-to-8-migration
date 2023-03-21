@@ -1,3 +1,6 @@
+automatictest:
+  testfolder:
+
 zeebe:
   client:
     security:
@@ -20,4 +23,4 @@ camunda7:
     rest-api-context: engine-rest
     check-on-init: true
 
-server.port: 8085
+server.port: 8086
