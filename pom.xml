@@ -24,7 +24,7 @@
     <version.zeebe-process-test-extension-testcontainer>8.1.9</version.zeebe-process-test-extension-testcontainer>
     <version.camunda.platform>7.18.0</version.camunda.platform>
     <version.jsoup>1.15.4</version.jsoup>
-    <version.spring-boot>2.7.9</version.spring-boot>
+    <version.spring-boot>2.7.10</version.spring-boot>
     <version.picocli>4.7.1</version.picocli>
     <version.commons-io>2.11.0</version.commons-io>
     <version.slack-api-client>1.28.0</version.slack-api-client>
