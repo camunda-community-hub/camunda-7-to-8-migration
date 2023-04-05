@@ -1,5 +1,5 @@
 {
-  "name": "MultiInstances User Task",
+  "name": "MultiInstances User Task Loop Cardinality",
   "processId": "MultiInstanceUserTaskLoopCard",
   "executions": [
     {

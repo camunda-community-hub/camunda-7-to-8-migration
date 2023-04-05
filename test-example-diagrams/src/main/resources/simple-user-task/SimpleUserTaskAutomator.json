@@ -2,6 +2,20 @@
   "name": "Simple User Task",
   "processId": "SimpleUserTask",
   "modeVerification": "STRICT",
+  "deployments": [
+    {
+      "server": "CAMUNDA_7",
+      "type": "PROCESS",
+      "processFile": "SimpleUserTask.bpmn",
+      "policy": "ONLYNOTEXIST"
+    },
+    {
+      "server": "CAMUNDA_8",
+      "type": "PROCESS",
+      "processFile": "SimpleUserTask.bpmn",
+      "policy": "ONLYNOTEXIST"
+    }
+  ],
   "executions": [
     {
       "name": "Load UserTask",
@@ -9,9 +23,23 @@
         {
           "type": "STARTEVENT",
           "activityId": "Start_SimpleUserTask",
-          "variables": {}
+          "variables": {
+            "myMarkerMigration" : "ComplexeProcess-181"
+          }
         }
-      ]
+      ],
+      "verifications": {
+        "searchProcessInstanceByVariable" : {
+          "myMarkerMigration" : "ComplexeProcess-181"
+        },
+        "activities": [
+          {
+            "type": "USERTASK",
+            "activityId": "Activity_SimpleUserTask",
+            "numberOfTasks": 1
+          }
+        ]
+      }
     }
   ]
 }
