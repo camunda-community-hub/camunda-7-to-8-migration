@@ -6,13 +6,13 @@
     {
       "server": "CAMUNDA_7",
       "type": "PROCESS",
-      "processFile": "SimpleUserTask.bpmn",
+      "processFile": "SimpleUserTask_C7.bpmn",
       "policy": "ONLYNOTEXIST"
     },
     {
       "server": "CAMUNDA_8",
       "type": "PROCESS",
-      "processFile": "SimpleUserTask.bpmn",
+      "processFile": "SimpleUserTask_C8.bpmn",
       "policy": "ONLYNOTEXIST"
     }
   ],
@@ -22,7 +22,7 @@
       "steps": [
         {
           "type": "STARTEVENT",
-          "activityId": "Start_SimpleUserTask",
+          "taskId": "Start_SimpleUserTask",
           "variables": {
             "myMarkerMigration" : "ComplexeProcess-181"
           }
@@ -35,7 +35,7 @@
         "activities": [
           {
             "type": "USERTASK",
-            "activityId": "Activity_SimpleUserTask",
+            "taskId": "Activity_Review",
             "numberOfTasks": 1
           }
         ]
