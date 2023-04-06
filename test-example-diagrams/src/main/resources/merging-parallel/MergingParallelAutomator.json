@@ -8,7 +8,7 @@
       "steps": [
         {
           "type": "STARTEVENT",
-          "activityId": "Start_MergingParallel",
+          "taskId": "Start_MergingParallel",
           "variables": {
             "comment": "No merging token"
           }
@@ -21,7 +21,7 @@
       "steps": [
         {
           "type": "STARTEVENT",
-          "activityId": "Start_MergingParallel",
+          "taskId": "Start_MergingParallel",
           "variables": {
             "comment": "One merging token"
           }
@@ -29,7 +29,7 @@
         {
           "type": "USERTASK",
           "waitingTime": "PT20S",
-          "activityId": "Activity_Review_1"
+          "taskId": "Activity_Review_1"
         }
       ]
     },
@@ -39,7 +39,7 @@
       "steps": [
         {
           "type": "STARTEVENT",
-          "activityId": "Start_MergingParallel",
+          "taskId": "Start_MergingParallel",
           "variables": {
             "comment": "two merging tokens"
           }
@@ -47,12 +47,12 @@
         {
           "type": "USERTASK",
           "waitingTime": "PT20S",
-          "activityId": "Activity_Review_1"
+          "taskId": "Activity_Review_1"
         },
         {
           "type": "USERTASK",
           "waitingTime": "PT20S",
-          "activityId": "Activity_Review_2"
+          "taskId": "Activity_Review_2"
         }
       ]
     },
@@ -62,7 +62,7 @@
       "steps": [
         {
           "type": "STARTEVENT",
-          "activityId": "Start_MergingParallel",
+          "taskId": "Start_MergingParallel",
           "variables": {
             "comment": "three merging tokens"
           }
@@ -70,17 +70,17 @@
         {
           "type": "USERTASK",
           "waitingTime": "PT20S",
-          "activityId": "Activity_Review_1"
+          "taskId": "Activity_Review_1"
         },
         {
           "type": "USERTASK",
           "waitingTime": "PT20S",
-          "activityId": "Activity_Review_2"
+          "taskId": "Activity_Review_2"
         },
         {
           "type": "USERTASK",
           "waitingTime": "PT20S",
-          "activityId": "Activity_Review_3"
+          "taskId": "Activity_Review_3"
         }
       ]
     }

@@ -8,7 +8,7 @@
       "steps": [
         {
           "type": "STARTEVENT",
-          "activityId": "Start_Variables",
+          "taskId": "Start_Variables",
           "variables": {
             "age": 34,
             "amount": 134.56,
