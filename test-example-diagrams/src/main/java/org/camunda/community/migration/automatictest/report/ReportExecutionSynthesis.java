@@ -1,10 +1,9 @@
 package org.camunda.community.migration.automatictest.report;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.util.ArrayList;
 import java.util.List;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class ReportExecutionSynthesis extends ReportExecution {
   static Logger logger = LoggerFactory.getLogger(ReportExecutionLog.class);
@@ -22,9 +21,8 @@ public class ReportExecutionSynthesis extends ReportExecution {
     String messageLine = "| " + completeBlank(currentTestPkg.getName(), 40, false);
     messageLine += " | " + completeBlank(isSuccess ? " CORRECT " : " FAIL ", 9, false);
     messageLine += " | " + completeBlank(executionTime + " ms", 10, true);
-    messageLine += " | " + completeBlank(message, 50, false) + " |";
+    messageLine += " | " + completeBlank(message, 300, false) + " |";
     reportLine.add(messageLine);
-
   }
 
   private String completeBlank(String info, int lengthExpected, boolean before) {
@@ -48,4 +46,3 @@ public class ReportExecutionSynthesis extends ReportExecution {
     }
   }
 }
-

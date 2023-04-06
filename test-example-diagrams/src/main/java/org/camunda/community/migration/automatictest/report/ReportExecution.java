@@ -10,7 +10,6 @@ public abstract class ReportExecution {
   private long startCurrentExecution;
   private long cumulTimeExecution;
 
-
   protected TestPkg currentTestPkg;
 
   public void startExecution(TestPkg testPkg) {
@@ -26,22 +25,21 @@ public abstract class ReportExecution {
     } else {
       nbErrors++;
     }
-
   }
 
   /**
    * Abstract method: report a debug message
+   *
    * @param message message to report
    */
   public abstract void reportDebug(String message);
 
   /**
    * report the end,
+   *
    * @param isSuccess true if the execution is successful
    * @param message message to report
    * @param executionTime time of execution (in ms)
    */
   public abstract void reportEnd(boolean isSuccess, String message, long executionTime);
-
 }
-

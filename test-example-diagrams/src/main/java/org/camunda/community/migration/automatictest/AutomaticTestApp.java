@@ -13,4 +13,3 @@ public class AutomaticTestApp {
     SpringApplication.run(AutomaticTestApp.class, args);
   }
 }
-

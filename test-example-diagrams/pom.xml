@@ -44,7 +44,7 @@
     <dependency>
       <groupId>org.camunda.automator</groupId>
       <artifactId>process-execution-automator</artifactId>
-      <version>1.0.0</version>
+      <version>1.1.1</version>
     </dependency>
 
 
@@ -103,8 +103,8 @@
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
         <configuration>
-          <source>11</source>
-          <target>11</target>
+          <source>16</source>
+          <target>16</target>
         </configuration>
       </plugin>
     </plugins>

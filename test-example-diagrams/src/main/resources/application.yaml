@@ -1,13 +1,23 @@
 automatictest:
   testfolder:
+  forceListTestsName: Simple User Task
+  exitAfterExecution: true
+
 
 zeebe:
   client:
     security:
-      plaintext: true
+      plaintext: "true"
     broker:
-      gateway-address: localhost:26500
+      gateway-address: 127.0.0.1:26500
     request-timeout: PT60S
+
+    saas:
+      register:
+      region:
+      clusterid:
+      clientid:
+      clientsecret:
 
 operate:
   client:
@@ -16,6 +26,11 @@ operate:
       simple:
         username: demo
         password: demo
+tasklist:
+  client:
+    base-url: http://localhost:8082
+
+
 
 camunda7:
   client:

@@ -13,11 +13,7 @@ public class ReportExecutionLog extends ReportExecution {
 
   @Override
   public void reportEnd(boolean isSuccess, String message, long executionTime) {
-    if (isSuccess)
-      logger.info(message);
-    else
-      logger.error(message);
-
+    if (isSuccess) logger.info(message);
+    else logger.error(message);
   }
-
 }
