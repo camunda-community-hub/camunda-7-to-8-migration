@@ -27,7 +27,7 @@
     <version.spring-boot>2.7.10</version.spring-boot>
     <version.picocli>4.7.1</version.picocli>
     <version.commons-io>2.11.0</version.commons-io>
-    <version.slack-api-client>1.28.0</version.slack-api-client>
+    <version.slack-api-client>1.29.2</version.slack-api-client>
     <version.opencsv>5.7.1</version.opencsv>
     <version.operate-client>8.1.7.0</version.operate-client>
     <version.camunda-bpm-assert>15.0.0</version.camunda-bpm-assert>
