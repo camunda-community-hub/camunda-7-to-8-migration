@@ -2,7 +2,7 @@ package org.camunda.community.migration.processInstance.api.model.data.impl.buil
 
 import static org.camunda.community.migration.processInstance.api.model.data.impl.builder.BuilderUtil.*;
 
-import com.fasterxml.jackson.databind.JsonNode;
+import java.util.List;
 import org.camunda.community.migration.processInstance.api.model.data.MultiInstanceData;
 import org.camunda.community.migration.processInstance.api.model.data.MultiInstanceData.MultiInstanceDataBuilder;
 import org.camunda.community.migration.processInstance.api.model.data.chunk.ActivityNodeData;
@@ -26,25 +26,17 @@ public class MultiInstanceDataBuilderImpl
   }
 
   @Override
-  public MultiInstanceDataBuilder withInputElementName(String inputElementName) {
-    data.setInputElementName(inputElementName);
-    return this;
-  }
-
-  @Override
-  public MultiInstanceDataBuilder withCompletedInstanceElementValue(
-      JsonNode completedInstanceElementValue) {
+  public MultiInstanceDataBuilder withCompletedInstanceLoopCounter(Integer loopCounter) {
     addListEntry(
-        data::getCompletedInstanceElementValues,
-        data::setCompletedInstanceElementValues,
-        completedInstanceElementValue);
+        data::getCompletedInstanceLoopCounters,
+        data::setCompletedInstanceLoopCounters,
+        loopCounter);
     return this;
   }
 
   @Override
-  public MultiInstanceDataBuilder withCompletedInstanceElementValues(
-      Iterable<JsonNode> completedInstanceElementValues) {
-    completedInstanceElementValues.forEach(this::withCompletedInstanceElementValue);
+  public MultiInstanceDataBuilder withCompletedInstanceLoopCounters(List<Integer> loopCounters) {
+    loopCounters.forEach(this::withCompletedInstanceLoopCounter);
     return this;
   }
 

@@ -210,6 +210,16 @@
         <artifactId>process-instance-migration-api</artifactId>
         <version>${project.version}</version>
       </dependency>
+      <dependency>
+        <groupId>org.camunda.community.migration</groupId>
+        <artifactId>process-instance-migration-camunda-7-base-exporter</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.camunda.community.migration</groupId>
+        <artifactId>test-example-diagrams</artifactId>
+        <version>${project.version}</version>
+      </dependency>
     </dependencies>
   </dependencyManagement>
   <build>

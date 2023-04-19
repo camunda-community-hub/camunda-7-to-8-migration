@@ -9,29 +9,37 @@ import com.fasterxml.jackson.databind.node.NumericNode;
 import com.fasterxml.jackson.databind.node.TextNode;
 import org.camunda.community.migration.processInstance.api.model.data.BusinessRuleTaskData.BusinessRuleTaskDataBuilder;
 import org.camunda.community.migration.processInstance.api.model.data.CallActivityData.CallActivityDataBuilder;
-import org.camunda.community.migration.processInstance.api.model.data.ManualTaskData.ManualTaskDataBuilder;
+import org.camunda.community.migration.processInstance.api.model.data.ExclusiveGatewayData.ExclusiveGatewayDataBuilder;import org.camunda.community.migration.processInstance.api.model.data.ManualTaskData.ManualTaskDataBuilder;
+import org.camunda.community.migration.processInstance.api.model.data.MessageIntermediateCatchEventData.MessageIntermediateCatchEventDataBuilder;
 import org.camunda.community.migration.processInstance.api.model.data.MultiInstanceData.MultiInstanceDataBuilder;
+import org.camunda.community.migration.processInstance.api.model.data.ParallelGatewayData.ParallelGatewayDataBuilder;
 import org.camunda.community.migration.processInstance.api.model.data.ProcessInstanceData.ProcessInstanceDataBuilder;
 import org.camunda.community.migration.processInstance.api.model.data.ProcessInstanceMetadata.ProcessInstanceMetadataBuilder;
 import org.camunda.community.migration.processInstance.api.model.data.ReceiveTaskData.ReceiveTaskDataBuilder;
 import org.camunda.community.migration.processInstance.api.model.data.ScriptTaskData.ScriptTaskDataBuilder;
 import org.camunda.community.migration.processInstance.api.model.data.SendTaskData.SendTaskDataBuilder;
 import org.camunda.community.migration.processInstance.api.model.data.ServiceTaskData.ServiceTaskDataBuilder;
+import org.camunda.community.migration.processInstance.api.model.data.StartEventData.StartEventDataBuilder;
 import org.camunda.community.migration.processInstance.api.model.data.SubProcessData.SubProcessDataBuilder;
 import org.camunda.community.migration.processInstance.api.model.data.TaskData.TaskDataBuilder;
+import org.camunda.community.migration.processInstance.api.model.data.TransactionData.TransactionDataBuilder;
 import org.camunda.community.migration.processInstance.api.model.data.UserTaskData.UserTaskDataBuilder;
 import org.camunda.community.migration.processInstance.api.model.data.impl.builder.BusinessRuleTaskDataBuilderImpl;
 import org.camunda.community.migration.processInstance.api.model.data.impl.builder.CallActivityBuilderImpl;
-import org.camunda.community.migration.processInstance.api.model.data.impl.builder.ManualTaskDataBuilderImpl;
+import org.camunda.community.migration.processInstance.api.model.data.impl.builder.ExclusiveGatewayDataBuilderImpl;import org.camunda.community.migration.processInstance.api.model.data.impl.builder.ManualTaskDataBuilderImpl;
+import org.camunda.community.migration.processInstance.api.model.data.impl.builder.MessageIntermediateCatchEventDataBuilderImpl;
 import org.camunda.community.migration.processInstance.api.model.data.impl.builder.MultiInstanceDataBuilderImpl;
+import org.camunda.community.migration.processInstance.api.model.data.impl.builder.ParallelGatewayDataBuilderImpl;
 import org.camunda.community.migration.processInstance.api.model.data.impl.builder.ProcessInstanceDataBuilderImpl;
 import org.camunda.community.migration.processInstance.api.model.data.impl.builder.ProcessInstanceMetadataBuilderImpl;
 import org.camunda.community.migration.processInstance.api.model.data.impl.builder.ReceiveTaskDataBuilderImpl;
 import org.camunda.community.migration.processInstance.api.model.data.impl.builder.ScriptTaskDataBuilderImpl;
 import org.camunda.community.migration.processInstance.api.model.data.impl.builder.SendTaskDataBuilderImpl;
 import org.camunda.community.migration.processInstance.api.model.data.impl.builder.ServiceTaskDataBuilderImpl;
+import org.camunda.community.migration.processInstance.api.model.data.impl.builder.StartEventDataBuilderImpl;
 import org.camunda.community.migration.processInstance.api.model.data.impl.builder.SubProcessDataBuilderImpl;
 import org.camunda.community.migration.processInstance.api.model.data.impl.builder.TaskDataBuilderImpl;
+import org.camunda.community.migration.processInstance.api.model.data.impl.builder.TransactionDataBuilderImpl;
 import org.camunda.community.migration.processInstance.api.model.data.impl.builder.UserTaskDataBuilderImpl;
 
 public interface Builder {
@@ -87,6 +95,26 @@ public interface Builder {
     return new SubProcessDataBuilderImpl();
   }
 
+  static MessageIntermediateCatchEventDataBuilder messageIntermediateCatchEventData() {
+    return new MessageIntermediateCatchEventDataBuilderImpl();
+  }
+
+  static StartEventDataBuilder startEventData() {
+    return new StartEventDataBuilderImpl();
+  }
+
+  static TransactionDataBuilder transactionData() {
+    return new TransactionDataBuilderImpl();
+  }
+
+  static ExclusiveGatewayDataBuilder exclusiveGatewayData(){
+    return new ExclusiveGatewayDataBuilderImpl();
+  }
+
+  static ParallelGatewayDataBuilder parallelGatewayData(){
+    return new ParallelGatewayDataBuilderImpl();
+  }
+
   interface Json {
 
     static TextNode text(String text) {
@@ -94,6 +122,10 @@ public interface Builder {
     }
 
     static NumericNode number(long number) {
+      return JsonNodeFactory.instance.numberNode(number);
+    }
+
+    static NumericNode number(int number) {
       return JsonNodeFactory.instance.numberNode(number);
     }
 

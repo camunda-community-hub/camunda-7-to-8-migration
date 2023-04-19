@@ -31,10 +31,9 @@ public abstract class ActivityNodeDataBuilderImpl<
   }
 
   @Override
-  public B withActivityId(String activityId) {
-    data().setActivityId(activityId);
-    return builder();
-  }
+  public B withExecuted(Boolean executed) {
+    data().setExecuted(executed);
+    return builder();  }
 
   protected abstract B builder();
 

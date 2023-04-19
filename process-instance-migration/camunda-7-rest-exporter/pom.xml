@@ -9,7 +9,7 @@
   <dependencies>
     <dependency>
       <groupId>org.camunda.community.migration</groupId>
-      <artifactId>process-instance-migration-api</artifactId>
+      <artifactId>process-instance-migration-camunda-7-base-exporter</artifactId>
     </dependency>
     <dependency>
       <groupId>org.camunda.community</groupId>

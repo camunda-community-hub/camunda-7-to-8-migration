@@ -6,4 +6,14 @@
     <groupId>org.camunda.community.migration</groupId>
     <version>0.5.1-SNAPSHOT</version>
   </parent>
+  <dependencies>
+    <dependency>
+      <groupId>org.camunda.community.migration</groupId>
+      <artifactId>process-instance-migration-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>io.camunda</groupId>
+      <artifactId>zeebe-client-java</artifactId>
+    </dependency>
+  </dependencies>
 </project>

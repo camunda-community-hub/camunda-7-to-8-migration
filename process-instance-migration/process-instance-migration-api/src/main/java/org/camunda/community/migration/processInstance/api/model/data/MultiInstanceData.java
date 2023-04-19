@@ -1,15 +1,12 @@
 package org.camunda.community.migration.processInstance.api.model.data;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import java.util.List;
 import org.camunda.community.migration.processInstance.api.model.data.chunk.ActivityNodeData;
 
 public interface MultiInstanceData extends ActivityNodeData {
   List<ActivityNodeData> getInstances();
 
-  String getInputElementName();
-
-  List<JsonNode> getCompletedInstanceElementValues();
+  List<Integer> getCompletedInstanceLoopCounters();
 
   interface MultiInstanceDataBuilder
       extends ActivityNodeDataBuilder<MultiInstanceDataBuilder, MultiInstanceData> {
@@ -17,12 +14,8 @@ public interface MultiInstanceData extends ActivityNodeData {
 
     MultiInstanceDataBuilder withInstances(Iterable<ActivityNodeData> instances);
 
-    MultiInstanceDataBuilder withInputElementName(String inputElementName);
+    MultiInstanceDataBuilder withCompletedInstanceLoopCounter(Integer loopCounter);
 
-    MultiInstanceDataBuilder withCompletedInstanceElementValue(
-        JsonNode completedInstanceElementValue);
-
-    MultiInstanceDataBuilder withCompletedInstanceElementValues(
-        Iterable<JsonNode> completedInstanceElementValues);
+    MultiInstanceDataBuilder withCompletedInstanceLoopCounters(List<Integer> loopCounters);
   }
 }

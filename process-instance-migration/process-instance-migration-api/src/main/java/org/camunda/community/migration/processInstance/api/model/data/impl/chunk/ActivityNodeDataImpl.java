@@ -8,7 +8,7 @@ import org.camunda.community.migration.processInstance.api.model.data.chunk.Acti
 public abstract class ActivityNodeDataImpl implements ActivityNodeData {
   private String name;
   private Map<String, JsonNode> variables;
-  private String activityId;
+  private Boolean executed;
 
   @Override
   public String getName() {
@@ -29,12 +29,12 @@ public abstract class ActivityNodeDataImpl implements ActivityNodeData {
   }
 
   @Override
-  public String getActivityId() {
-    return activityId;
+  public Boolean getExecuted() {
+    return executed;
   }
 
-  public void setActivityId(String activityId) {
-    this.activityId = activityId;
+  public void setExecuted(Boolean executed) {
+    this.executed = executed;
   }
 
   @Override
@@ -42,13 +42,11 @@ public abstract class ActivityNodeDataImpl implements ActivityNodeData {
     if (this == o) return true;
     if (o == null || !getClass().isAssignableFrom(o.getClass())) return false;
     ActivityNodeDataImpl that = (ActivityNodeDataImpl) o;
-    return Objects.equals(name, that.name)
-        && Objects.equals(variables, that.variables)
-        && Objects.equals(activityId, that.activityId);
+    return Objects.equals(name, that.name) && Objects.equals(variables, that.variables);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(name, variables, activityId);
+    return Objects.hash(name, variables);
   }
 }

@@ -147,7 +147,7 @@ public class ApiIntegrityTest {
   private String findGetterMethodName(String methodName) {
     return Stream.of(
             entry("withVariable", "getVariables"),
-            entry("withCompletedInstanceElementValue", "getCompletedInstanceElementValues"),
+            entry("withCompletedInstanceLoopCounter", "getCompletedInstanceLoopCounters"),
             entry("withActivity", "getActivities"),
             entry("withInstance", "getInstances"))
         .collect(Collectors.toMap(MapEntry::getKey, MapEntry::getValue))
@@ -216,15 +216,15 @@ public class ApiIntegrityTest {
                   d.builderArgs = new Object[] {processInstanceData};
                 }),
             new MethodNameFilteringTestDataVisitor(
-                "withCompletedInstanceElementValue",
+                "withCompletedInstanceLoopCounter",
                 d -> {
-                  d.expectedGetterValue = Collections.singletonList(text("foo"));
-                  d.builderArgs = new Object[] {text("foo")};
+                  d.expectedGetterValue = Collections.singletonList(3);
+                  d.builderArgs = new Object[] {3};
                 }),
             new MethodNameFilteringTestDataVisitor(
-                "withCompletedInstanceElementValues",
+                "withCompletedInstanceLoopCounters",
                 d -> {
-                  Iterable<JsonNode> values = Collections.singletonList(text("foo"));
+                  Iterable<Integer> values = Collections.singletonList(3);
                   d.expectedGetterValue = values;
                   d.builderArgs = new Object[] {values};
                 }))

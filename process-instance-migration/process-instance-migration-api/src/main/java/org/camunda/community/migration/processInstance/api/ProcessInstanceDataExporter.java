@@ -1,5 +1,6 @@
 package org.camunda.community.migration.processInstance.api;
 
+import org.camunda.community.migration.processInstance.api.ProcessInstanceMigrationContext.ProcessInstanceMigrationSuccessfulContext;
 import org.camunda.community.migration.processInstance.api.model.Page;
 import org.camunda.community.migration.processInstance.api.model.data.ProcessInstanceData;
 import org.camunda.community.migration.processInstance.api.model.data.ProcessInstanceMetadata;
@@ -33,26 +34,25 @@ public interface ProcessInstanceDataExporter {
    * <p>Is called before the process instance data is fetched (using {@link
    * ProcessInstanceDataExporter#get})
    *
-   * @param processInstanceId the processInstanceId of the process instance to migrate
+   * @param context the given context for the process instance migration start
    */
-  void onMigrationStarted(String processInstanceId);
+  void onMigrationStarted(ProcessInstanceMigrationContext context);
 
   /**
    * Invoked if the process instance was migrated successfully
    *
    * <p>Here, the acknowledgment happens after a process instance was migrated from the old system.
    *
-   * @param processInstanceId the processInstanceId of the migrated source process instance
-   * @param processInstanceKey the processInstanceKey of the migrated target process instance
+   * @param context the given context for the process instance migration success
    */
-  void onMigrationSuccess(String processInstanceId, long processInstanceKey);
+  void onMigrationSuccess(ProcessInstanceMigrationSuccessfulContext context);
 
   /**
    * Invoked if the process instance migration failed
    *
    * <p>Here, the compensation for a failed process instance migration can take place
    *
-   * @param processInstanceId the processInstanceId of the process instance not migrated
+   * @param context the given context for the process instance migration fail
    */
-  void onMigrationFailed(String processInstanceId);
+  void onMigrationFailed(ProcessInstanceMigrationContext context);
 }

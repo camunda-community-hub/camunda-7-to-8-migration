@@ -1,5 +1,6 @@
 package org.camunda.community.migration.processInstance.api.model.data.impl;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import org.camunda.community.migration.processInstance.api.model.data.SubProcessData;

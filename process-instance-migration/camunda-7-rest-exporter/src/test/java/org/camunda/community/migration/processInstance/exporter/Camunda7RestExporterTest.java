@@ -2,7 +2,6 @@ package org.camunda.community.migration.processInstance.exporter;
 
 import static org.assertj.core.api.Assertions.*;
 import static org.camunda.bpm.engine.test.assertions.bpmn.BpmnAwareTests.*;
-import static org.camunda.community.migration.processInstance.api.model.data.Builder.*;
 import static org.camunda.community.migration.processInstance.api.model.data.Builder.Json.*;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -12,6 +11,8 @@ import org.camunda.bpm.model.bpmn.BpmnModelInstance;
 import org.camunda.community.migration.processInstance.api.model.data.ProcessInstanceData;
 import org.camunda.community.migration.processInstance.api.model.data.UserTaskData;
 import org.camunda.community.migration.processInstance.api.model.data.chunk.ActivityNodeData;
+import org.camunda.community.rest.client.api.JobApi;
+import org.camunda.community.rest.client.api.JobDefinitionApi;
 import org.camunda.community.rest.client.api.ProcessDefinitionApi;
 import org.camunda.community.rest.client.api.ProcessInstanceApi;
 import org.camunda.community.rest.client.api.VariableInstanceApi;
@@ -27,15 +28,17 @@ public class Camunda7RestExporterTest {
 
   @Test
   void shouldFetchUserTaskProcessData() {
+    ObjectMapper objectMapper = new ObjectMapper();
     ApiClient apiClient = new ApiClient();
     apiClient.setBasePath("http://localhost:" + port + "/engine-rest");
-    Camunda7RestService camunda7RestService =
-        new Camunda7RestService(
+    RestProcessEngineService camunda7RestService =
+        new RestProcessEngineService(
             new ProcessDefinitionApi(apiClient),
             new ProcessInstanceApi(apiClient),
-            new VariableInstanceApi(apiClient));
-    Camunda7RestExporter exporter =
-        new Camunda7RestExporter(camunda7RestService, new ObjectMapper());
+            new VariableInstanceApi(apiClient),
+            new JobApi(apiClient),
+            new JobDefinitionApi(apiClient),objectMapper);
+    Camunda7Exporter exporter = new Camunda7Exporter(camunda7RestService);
     BpmnModelInstance testProcess =
         Bpmn.createExecutableProcess("testProcess")
             .name("Test Process")

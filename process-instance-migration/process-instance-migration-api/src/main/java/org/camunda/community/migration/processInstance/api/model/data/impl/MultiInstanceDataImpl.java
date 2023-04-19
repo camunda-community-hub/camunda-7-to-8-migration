@@ -1,6 +1,5 @@
 package org.camunda.community.migration.processInstance.api.model.data.impl;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import java.util.List;
 import java.util.Objects;
 import org.camunda.community.migration.processInstance.api.model.data.MultiInstanceData;
@@ -9,25 +8,15 @@ import org.camunda.community.migration.processInstance.api.model.data.impl.chunk
 
 public final class MultiInstanceDataImpl extends ActivityNodeDataImpl implements MultiInstanceData {
   private List<ActivityNodeData> instances;
-  private String inputElementName;
-  private List<JsonNode> completedInstanceElementValues;
+  private List<Integer> completedInstanceLoopCounters;
 
   @Override
-  public List<JsonNode> getCompletedInstanceElementValues() {
-    return completedInstanceElementValues;
+  public List<Integer> getCompletedInstanceLoopCounters() {
+    return completedInstanceLoopCounters;
   }
 
-  public void setCompletedInstanceElementValues(List<JsonNode> completedInstanceElementValues) {
-    this.completedInstanceElementValues = completedInstanceElementValues;
-  }
-
-  @Override
-  public String getInputElementName() {
-    return inputElementName;
-  }
-
-  public void setInputElementName(String inputElementName) {
-    this.inputElementName = inputElementName;
+  public void setCompletedInstanceLoopCounters(List<Integer> completedInstanceLoopCounters) {
+    this.completedInstanceLoopCounters = completedInstanceLoopCounters;
   }
 
   @Override
@@ -46,13 +35,11 @@ public final class MultiInstanceDataImpl extends ActivityNodeDataImpl implements
     if (!super.equals(o)) return false;
     MultiInstanceDataImpl that = (MultiInstanceDataImpl) o;
     return Objects.equals(instances, that.instances)
-        && Objects.equals(inputElementName, that.inputElementName)
-        && Objects.equals(completedInstanceElementValues, that.completedInstanceElementValues);
+        && Objects.equals(completedInstanceLoopCounters, that.completedInstanceLoopCounters);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(
-        super.hashCode(), instances, inputElementName, completedInstanceElementValues);
+    return Objects.hash(super.hashCode(), instances, completedInstanceLoopCounters);
   }
 }
