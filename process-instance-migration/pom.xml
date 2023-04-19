@@ -15,8 +15,8 @@
       <artifactId>spring-boot-starter-web</artifactId>
     </dependency>
     <dependency>
-      <groupId>io.camunda</groupId>
-      <artifactId>spring-zeebe-starter</artifactId>
+      <groupId>io.camunda.spring</groupId>
+      <artifactId>spring-boot-starter-camunda</artifactId>
       <exclusions>
         <exclusion>
           <groupId>org.camunda.feel</groupId>
@@ -38,8 +38,8 @@
       <artifactId>camunda-operate-client-java</artifactId>
     </dependency>
     <dependency>
-      <groupId>io.camunda</groupId>
-      <artifactId>spring-zeebe-test-testcontainer</artifactId>
+      <groupId>io.camunda.spring</groupId>
+      <artifactId>spring-boot-starter-camunda-test-testcontainer</artifactId>
       <scope>test</scope>
     </dependency>
     <dependency>

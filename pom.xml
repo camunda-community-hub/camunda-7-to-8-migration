@@ -19,10 +19,10 @@
     <version.java>1.8</version.java>
     <maven.compiler.source>1.8</maven.compiler.source>
     <maven.compiler.target>1.8</maven.compiler.target>
-    <version.zeebe>8.1.9</version.zeebe>
-    <version.spring-zeebe-starter>8.1.17</version.spring-zeebe-starter>
-    <version.zeebe-process-test-extension-testcontainer>8.1.9</version.zeebe-process-test-extension-testcontainer>
-    <version.camunda.platform>7.18.0</version.camunda.platform>
+    <version.zeebe>8.2.2</version.zeebe>
+    <version.spring-boot-starter-camunda>8.2.0</version.spring-boot-starter-camunda>
+    <version.zeebe-process-test-extension-testcontainer>8.2.2</version.zeebe-process-test-extension-testcontainer>
+    <version.camunda.platform>7.19.0</version.camunda.platform>
     <version.jsoup>1.16.1</version.jsoup>
     <version.spring-boot>2.7.11</version.spring-boot>
     <version.picocli>4.7.3</version.picocli>
@@ -81,9 +81,9 @@
         <version>${version.commons-io}</version>
       </dependency>
       <dependency>
-        <groupId>io.camunda</groupId>
-        <artifactId>spring-zeebe-starter</artifactId>
-        <version>${version.spring-zeebe-starter}</version>
+        <groupId>io.camunda.spring</groupId>
+        <artifactId>spring-boot-starter-camunda</artifactId>
+        <version>${version.spring-boot-starter-camunda}</version>
       </dependency>
       <dependency>
         <groupId>io.camunda</groupId>
@@ -101,9 +101,9 @@
         <version>${version.operate-client}</version>
       </dependency>
       <dependency>
-        <groupId>io.camunda</groupId>
-        <artifactId>spring-zeebe-test-testcontainer</artifactId>
-        <version>${version.spring-zeebe-starter}</version>
+        <groupId>io.camunda.spring</groupId>
+        <artifactId>spring-boot-starter-camunda-test-testcontainer</artifactId>
+        <version>${version.spring-boot-starter-camunda}</version>
         <scope>test</scope>
       </dependency>
       <dependency>
