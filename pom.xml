@@ -83,7 +83,7 @@
       <dependency>
         <groupId>io.camunda</groupId>
         <artifactId>spring-zeebe-starter</artifactId>
-        <version>${version.zeebe}</version>
+        <version>${version.spring-zeebe-starter}</version>
       </dependency>
       <dependency>
         <groupId>io.camunda</groupId>
