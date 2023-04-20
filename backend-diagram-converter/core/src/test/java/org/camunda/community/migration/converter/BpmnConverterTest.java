@@ -380,6 +380,85 @@ public class BpmnConverterTest {
             "Element 'inputParameter' was transformed. Parameter 'inputParameterName': Please review transformed expression: '' -> '=null'.");
   }
 
+  @Test
+  void testSignalEvents() {
+    BpmnDiagramCheckResult result = loadAndCheck("signal-events.bpmn");
+    // Start Event
+    assertThat(result.getResult("SignalStartStartEvent"))
+        .isNotNull()
+        .extracting(BpmnElementCheckResult::getMessages)
+        .asList()
+        .isEmpty();
+    // intermediate throw event
+    assertThat(result.getResult("SignalThrowEvent"))
+        .isNotNull()
+        .extracting(BpmnElementCheckResult::getMessages)
+        .matches(l -> l.size() == 1, "Has one entry")
+        .extracting(l -> l.get(0))
+        .extracting(m -> m.getMessage())
+        .isEqualTo(
+            "Element 'Signal Intermediate Throw Event' is not supported in Zeebe version '8.2.0'. Please review.");
+    // intermediate catch event
+    assertThat(result.getResult("SignalCatchEvent"))
+        .isNotNull()
+        .extracting(BpmnElementCheckResult::getMessages)
+        .matches(l -> l.size() == 1, "Has one entry")
+        .extracting(l -> l.get(0))
+        .extracting(m -> m.getMessage())
+        .isEqualTo(
+            "Element 'Signal Intermediate Catch Event' is not supported in Zeebe version '8.2.0'. Please review.");
+
+    // end event
+    assertThat(result.getResult("SignalEndEndEvent"))
+        .isNotNull()
+        .extracting(BpmnElementCheckResult::getMessages)
+        .matches(l -> l.size() == 1, "Has one entry")
+        .extracting(l -> l.get(0))
+        .extracting(m -> m.getMessage())
+        .isEqualTo(
+            "Element 'Signal End Event' is not supported in Zeebe version '8.2.0'. Please review.");
+
+    // boundary event interrupting
+    assertThat(result.getResult("SignalAttachedBoundaryEvent"))
+        .isNotNull()
+        .extracting(BpmnElementCheckResult::getMessages)
+        .matches(l -> l.size() == 1, "Has one entry")
+        .extracting(l -> l.get(0))
+        .extracting(m -> m.getMessage())
+        .isEqualTo(
+            "Element 'Signal Boundary Event' is not supported in Zeebe version '8.2.0'. Please review.");
+
+    // boundary event non-interrupting
+    assertThat(result.getResult("SignalAttachedNoninterruptingBoundaryEvent"))
+        .isNotNull()
+        .extracting(BpmnElementCheckResult::getMessages)
+        .matches(l -> l.size() == 1, "Has one entry")
+        .extracting(l -> l.get(0))
+        .extracting(m -> m.getMessage())
+        .isEqualTo(
+            "Element 'Non-interrupting Signal Boundary Event' is not supported in Zeebe version '8.2.0'. Please review.");
+
+    // event sub process start event interrupting
+    assertThat(result.getResult("SignalEventSubprocesStartStartEvent"))
+        .isNotNull()
+        .extracting(BpmnElementCheckResult::getMessages)
+        .matches(l -> l.size() == 1, "Has one entry")
+        .extracting(l -> l.get(0))
+        .extracting(m -> m.getMessage())
+        .isEqualTo(
+            "Element 'Event Sub Process Signal Start Event' is not supported in Zeebe version '8.2.0'. Please review.");
+
+    // event sub process start event non interrupting
+    assertThat(result.getResult("SignalEventSubprocessStartNoninterruptingStartEvent"))
+        .isNotNull()
+        .extracting(BpmnElementCheckResult::getMessages)
+        .matches(l -> l.size() == 1, "Has one entry")
+        .extracting(l -> l.get(0))
+        .extracting(m -> m.getMessage())
+        .isEqualTo(
+            "Element 'Non-interrupting Event Sub Process Signal Start Event' is not supported in Zeebe version '8.2.0'. Please review.");
+  }
+
   protected BpmnDiagramCheckResult loadAndCheck(String bpmnFile) {
     ConverterProperties properties = ConverterPropertiesFactory.getInstance().get();
     return loadAndCheckAgainstVersion(bpmnFile, properties.getPlatformVersion());
