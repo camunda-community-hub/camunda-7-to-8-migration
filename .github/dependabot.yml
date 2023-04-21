@@ -1,23 +1,26 @@
 version: 2
 updates:
-
 - package-ecosystem: maven
   directory: "/"
   schedule:
     interval: daily
   labels:
   - "dependencies"
-
-- package-ecosystem: "github-actions"
+  commit-message:
+    prefix: "deps:"
+- package-ecosystem: github-actions
   directory: "/"
   schedule:
-    interval: "daily"
+    interval: daily
   labels:
   - "dependencies"
-  
-- package-ecosystem: 'npm'
-  directory: '/'
+  commit-message:
+    prefix: "deps:"
+- package-ecosystem: npm
+  directory: "/"
   schedule:
-    interval: 'daily'
+    interval: daily
   labels:
   - "dependencies"
+  commit-message:
+    prefix: "deps:"
