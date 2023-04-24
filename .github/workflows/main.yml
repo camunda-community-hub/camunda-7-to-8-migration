@@ -61,9 +61,9 @@ jobs:
       - name: Publish Unit Test Results
         id: publish
         uses: EnricoMi/publish-unit-test-result-action@v2
-        if: failure()
+        if: always()
         with:
-          files: target/surefire-reports/*.xml
+          files: '**/target/surefire-reports/*.xml'
 #  publish-modeler-plugin:
 #    runs-on: ubuntu-latest
 #    steps:
