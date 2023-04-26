@@ -29,7 +29,7 @@
     <version.commons-io>2.11.0</version.commons-io>
     <version.slack-api-client>1.29.2</version.slack-api-client>
     <version.opencsv>5.7.1</version.opencsv>
-    <version.operate-client>8.1.7.2</version.operate-client>
+    <version.operate-client>8.1.8</version.operate-client>
     <version.camunda-bpm-assert>15.0.0</version.camunda-bpm-assert>
 
     <plugin.version.function-maven-plugin>0.10.1</plugin.version.function-maven-plugin>
