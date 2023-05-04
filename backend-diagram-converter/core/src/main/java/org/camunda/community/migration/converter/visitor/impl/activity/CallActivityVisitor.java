@@ -26,13 +26,10 @@ public class CallActivityVisitor extends AbstractActivityVisitor {
 
   @Override
   protected void postCreationVisitor(DomElementVisitorContext context) {
-    // TODO check if CMMN is called
     ExpressionTransformationResult transformationResult =
         ExpressionTransformer.transform(
             context.getElement().getAttribute(NamespaceUri.BPMN, CALLED_ELEMENT));
-    if (transformationResult == null) {
-      context.addMessage(MessageFactory.callActivityNoCalledElementHint());
-    } else {
+    if (transformationResult != null) {
       context.addConversion(
           CallActivityConvertible.class,
           conversion ->

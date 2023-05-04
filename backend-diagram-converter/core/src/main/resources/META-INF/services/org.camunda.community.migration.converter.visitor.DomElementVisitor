@@ -136,3 +136,5 @@ org.camunda.community.migration.converter.visitor.impl.EscalationRefVisitor
 org.camunda.community.migration.converter.visitor.impl.ErrorRefVisitor
 org.camunda.community.migration.converter.visitor.impl.SignalRefVisitor
 org.camunda.community.migration.converter.visitor.impl.MessageRefVisitor
+org.camunda.community.migration.converter.visitor.impl.StandardLoopCharacteristicsVisitor
+org.camunda.community.migration.converter.visitor.impl.IsForCompensationVisitor

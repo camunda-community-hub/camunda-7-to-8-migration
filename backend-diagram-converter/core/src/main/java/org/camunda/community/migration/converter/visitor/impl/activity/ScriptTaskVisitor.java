@@ -62,8 +62,6 @@ public class ScriptTaskVisitor extends AbstractActivityVisitor {
             MessageFactory.scriptJobType(
                 context.getElement().getLocalName(), context.getProperties().getScriptJobType()));
       }
-    } else {
-      context.addMessage(MessageFactory.scriptFormatMissing());
     }
   }
 

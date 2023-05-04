@@ -1,10 +1,12 @@
 package org.camunda.community.migration.converter.visitor.impl;
 
 import org.camunda.community.migration.converter.DomElementVisitorContext;
+import org.camunda.community.migration.converter.convertible.Convertible;
+import org.camunda.community.migration.converter.convertible.ParticipantConvertible;
 import org.camunda.community.migration.converter.version.SemanticVersion;
-import org.camunda.community.migration.converter.visitor.AbstractBpmnElementVisitor;
+import org.camunda.community.migration.converter.visitor.AbstractProcessElementVisitor;
 
-public class ParticipantVisitor extends AbstractBpmnElementVisitor {
+public class ParticipantVisitor extends AbstractProcessElementVisitor {
 
   @Override
   public String localName() {
@@ -17,7 +19,7 @@ public class ParticipantVisitor extends AbstractBpmnElementVisitor {
   }
 
   @Override
-  protected void visitBpmnElement(DomElementVisitorContext context) {
-    // do nothing
+  protected Convertible createConvertible(DomElementVisitorContext context) {
+    return new ParticipantConvertible();
   }
 }

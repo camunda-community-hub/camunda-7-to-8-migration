@@ -5,9 +5,6 @@ import static org.camunda.community.migration.converter.NamespaceUri.*;
 import java.util.Optional;
 import org.apache.commons.lang3.StringUtils;
 import org.camunda.community.migration.converter.DomElementVisitorContext;
-import org.camunda.community.migration.converter.message.Message;
-import org.camunda.community.migration.converter.message.MessageFactory;
-import org.camunda.community.migration.converter.version.SemanticVersion;
 
 public abstract class AbstractEventDefinitionVisitor extends AbstractBpmnElementVisitor {
 
@@ -17,21 +14,7 @@ public abstract class AbstractEventDefinitionVisitor extends AbstractBpmnElement
   }
 
   @Override
-  protected Message supportedInFutureVersionMessage(
-      DomElementVisitorContext context, SemanticVersion availableFrom) {
-    return MessageFactory.elementAvailableInFutureVersion(
-        buildFullEventName(context),
-        context.getProperties().getPlatformVersion(),
-        availableFrom.toString());
-  }
-
-  @Override
-  protected Message cannotBeConvertedMessage(DomElementVisitorContext context) {
-    return MessageFactory.elementNotSupportedHint(
-        buildFullEventName(context), context.getProperties().getPlatformVersion());
-  }
-
-  protected String buildFullEventName(DomElementVisitorContext context) {
+  protected String elementNameForMessage(DomElementVisitorContext context) {
     String fullEventName = "";
     if (!isInterrupting(context)) {
       fullEventName += "Non-interrupting ";
