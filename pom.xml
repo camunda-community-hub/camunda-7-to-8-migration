@@ -23,7 +23,7 @@
     <version.spring-zeebe-starter>8.1.17</version.spring-zeebe-starter>
     <version.zeebe-process-test-extension-testcontainer>8.1.9</version.zeebe-process-test-extension-testcontainer>
     <version.camunda.platform>7.18.0</version.camunda.platform>
-    <version.jsoup>1.15.4</version.jsoup>
+    <version.jsoup>1.16.1</version.jsoup>
     <version.spring-boot>2.7.11</version.spring-boot>
     <version.picocli>4.7.3</version.picocli>
     <version.commons-io>2.11.0</version.commons-io>
