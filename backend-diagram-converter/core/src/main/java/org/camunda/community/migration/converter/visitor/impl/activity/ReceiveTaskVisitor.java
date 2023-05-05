@@ -1,5 +1,7 @@
 package org.camunda.community.migration.converter.visitor.impl.activity;
 
+import static org.camunda.community.migration.converter.NamespaceUri.*;
+
 import org.camunda.community.migration.converter.DomElementVisitorContext;
 import org.camunda.community.migration.converter.convertible.Convertible;
 import org.camunda.community.migration.converter.convertible.ReceiveTaskConvertible;
@@ -19,6 +21,10 @@ public class ReceiveTaskVisitor extends AbstractActivityVisitor {
 
   @Override
   protected SemanticVersion availableFrom(DomElementVisitorContext context) {
+    String instantiate = context.getElement().getAttribute(BPMN, "instantiate");
+    if (Boolean.parseBoolean(instantiate)) {
+      return null;
+    }
     return SemanticVersion._8_0_0;
   }
 }

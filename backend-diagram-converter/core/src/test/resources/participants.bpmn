@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_1gbx4qr" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.10.0" modeler:executionPlatform="Camunda Platform" modeler:executionPlatformVersion="7.19.0">
+  <bpmn:collaboration id="Collaboration_0vac655">
+    <bpmn:participant id="PoolParticipant" name="Pool" processRef="ParticipantsTestProcess" />
+  </bpmn:collaboration>
+  <bpmn:process id="ParticipantsTestProcess" name="Participants Test" isExecutable="true">
+    <bpmn:laneSet id="LaneSet_09e94ui">
+      <bpmn:lane id="LaneLane" name="Lane" />
+      <bpmn:lane id="Lane_0pei05n" />
+    </bpmn:laneSet>
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Collaboration_0vac655">
+      <bpmndi:BPMNShape id="Participant_1yuypl6_di" bpmnElement="PoolParticipant" isHorizontal="true">
+        <dc:Bounds x="160" y="80" width="600" height="250" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Lane_0g9ph3i_di" bpmnElement="LaneLane" isHorizontal="true">
+        <dc:Bounds x="190" y="80" width="570" height="125" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Lane_0pei05n_di" bpmnElement="Lane_0pei05n" isHorizontal="true">
+        <dc:Bounds x="190" y="205" width="570" height="125" />
+      </bpmndi:BPMNShape>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

@@ -1,6 +1,7 @@
 package org.camunda.community.migration.converter.message;
 
 import static org.assertj.core.api.Assertions.*;
+import static org.camunda.community.migration.converter.message.MessageFactory.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 import org.camunda.community.migration.converter.expression.ExpressionTransformationResult;
@@ -307,8 +308,7 @@ public class MessageFactoryTest {
   @Test
   void shouldBuildCamundaScript() {
     Message message =
-        MessageFactory.camundaScript(
-            "script", "var message = \"hello world\"", "javascript", "taskListener");
+        MessageFactory.camundaScript("var message = \"hello world\"", "javascript", "taskListener");
     assertNotNull(message);
     assertThat(message.getMessage())
         .isEqualTo(
@@ -324,7 +324,7 @@ public class MessageFactoryTest {
 
   @Test
   void shouldBuildCandidateGroups() {
-    Message message = MessageFactory.candidateGroups(random(), random(), result());
+    Message message = MessageFactory.candidateGroups(result());
     assertNotNull(message);
     assertNotNull(message.getMessage());
   }
@@ -383,5 +383,95 @@ public class MessageFactoryTest {
     assertThat(message.getMessage())
         .isEqualTo(
             "Element 'inclusiveGateway' is not supported in Zeebe version '8.0.0'. It is available in version '8.1.0'.");
+  }
+
+  @Test
+  void shouldBuildEscalationCode() {
+    Message message = MessageFactory.escalationCode("old", "new");
+    assertNotNull(message);
+    assertNotNull(message.getMessage());
+    assertNotNull(message.getSeverity());
+    assertThat(message.getMessage())
+        .isEqualTo("Escalation code is transformed from 'old' to 'new'. Please review.");
+  }
+
+  @Test
+  void shouldBuildErrorCode() {
+    Message message = MessageFactory.errorCode("old", "new");
+    assertNotNull(message);
+    assertNotNull(message.getMessage());
+    assertNotNull(message.getSeverity());
+    assertThat(message.getMessage())
+        .isEqualTo("Error code is transformed from 'old' to 'new'. Please review.");
+  }
+
+  @Test
+  void shouldBuildInternalScript() {
+    Message message = MessageFactory.internalScript();
+    assertNotNull(message);
+    assertNotNull(message.getMessage());
+    assertNotNull(message.getSeverity());
+    assertThat(message.getMessage()).isEqualTo("Script is transformed to Zeebe script.");
+  }
+
+  @Test
+  void shouldBuildResultVariableInternalScript() {
+    Message message = MessageFactory.resultVariableInternalScript();
+    assertNotNull(message);
+    assertNotNull(message.getMessage());
+    assertNotNull(message.getSeverity());
+    assertThat(message.getMessage())
+        .isEqualTo("Result variable is set to Zeebe script result variable.");
+  }
+
+  @Test
+  void shouldBuildCandidateUsers() {
+    Message message = MessageFactory.candidateUsers(result());
+    assertNotNull(message);
+    assertNotNull(message.getMessage());
+    assertNotNull(message.getSeverity());
+    assertThat(message.getMessage())
+        .isEqualTo(
+            "Attribute 'candidateUsers' on 'userTask' was mapped. Please review transformed expression: '${test}' -> '=test'.");
+  }
+
+  @Test
+  void shouldBuildDueDate() {
+    Message message = MessageFactory.dueDate(result());
+    assertNotNull(message);
+    assertNotNull(message.getMessage());
+    assertNotNull(message.getSeverity());
+    assertThat(message.getMessage())
+        .isEqualTo(
+            "Attribute 'dueDate' on 'userTask' was mapped. Please review transformed expression: '${test}' -> '=test'.");
+  }
+
+  @Test
+  void shouldBuildFollowUpDate() {
+    Message message = MessageFactory.followUpDate(result());
+    assertNotNull(message);
+    assertNotNull(message.getMessage());
+    assertNotNull(message.getSeverity());
+    assertThat(message.getMessage())
+        .isEqualTo(
+            "Attribute 'followUpDate' on 'userTask' was mapped. Please review transformed expression: '${test}' -> '=test'.");
+  }
+
+  @Test
+  void shouldBuildErrorCodeNoExpression() {
+    Message message = errorCodeNoExpression();
+    assertNotNull(message);
+    assertNotNull(message.getMessage());
+    assertNotNull(message.getSeverity());
+    assertThat(message.getMessage()).isEqualTo("Error code cannot be an expression.");
+  }
+
+  @Test
+  void shouldBuildEscalationCodeNoExpression() {
+    Message message = escalationCodeNoExpression();
+    assertNotNull(message);
+    assertNotNull(message.getMessage());
+    assertNotNull(message.getSeverity());
+    assertThat(message.getMessage()).isEqualTo("Escalation code cannot be an expression.");
   }
 }

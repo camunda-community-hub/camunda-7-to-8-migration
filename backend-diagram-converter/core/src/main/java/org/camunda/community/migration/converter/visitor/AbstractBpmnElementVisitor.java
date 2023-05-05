@@ -1,5 +1,6 @@
 package org.camunda.community.migration.converter.visitor;
 
+import org.apache.commons.lang3.StringUtils;
 import org.camunda.community.migration.converter.DomElementVisitorContext;
 import org.camunda.community.migration.converter.NamespaceUri;
 import org.camunda.community.migration.converter.message.Message;
@@ -36,13 +37,17 @@ public abstract class AbstractBpmnElementVisitor extends AbstractElementVisitor 
   protected Message supportedInFutureVersionMessage(
       DomElementVisitorContext context, SemanticVersion availableFrom) {
     return MessageFactory.elementAvailableInFutureVersion(
-        context.getElement().getLocalName(),
+        elementNameForMessage(context),
         context.getProperties().getPlatformVersion(),
         availableFrom.toString());
   }
 
   protected Message cannotBeConvertedMessage(DomElementVisitorContext context) {
     return MessageFactory.elementNotSupportedHint(
-        context.getElement().getLocalName(), context.getProperties().getPlatformVersion());
+        elementNameForMessage(context), context.getProperties().getPlatformVersion());
+  }
+
+  protected String elementNameForMessage(DomElementVisitorContext context) {
+    return StringUtils.capitalize(context.getElement().getLocalName().replaceAll("([A-Z])", " $1"));
   }
 }

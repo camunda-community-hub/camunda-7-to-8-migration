@@ -19,6 +19,6 @@ public class TaskVisitor extends AbstractActivityVisitor {
 
   @Override
   protected SemanticVersion availableFrom(DomElementVisitorContext context) {
-    return null;
+    return SemanticVersion._8_2_0;
   }
 }

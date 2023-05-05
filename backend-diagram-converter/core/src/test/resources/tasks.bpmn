@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_1gbx4qr" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.10.0" modeler:executionPlatform="Camunda Platform" modeler:executionPlatformVersion="7.19.0">
+  <bpmn:process id="TasksTestProcess" name="Tasks Test" isExecutable="true">
+    <bpmn:task id="UndefinedTask" name="Undefined" />
+    <bpmn:serviceTask id="ServiceTask" name="Service" />
+    <bpmn:userTask id="UserTask" name="User" />
+    <bpmn:receiveTask id="ReceiveInstantiatedTask" name="Receive (instantiated)" instantiate="true" />
+    <bpmn:receiveTask id="ReceiveTask" name="Receive" />
+    <bpmn:sendTask id="SendTask" name="Send" />
+    <bpmn:businessRuleTask id="BusinessRuleTask" name="Business Rule" />
+    <bpmn:scriptTask id="ScriptTask" name="Script" />
+    <bpmn:manualTask id="ManualTask" name="Manual" />
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="TasksTestProcess">
+      <bpmndi:BPMNShape id="Activity_0cupurf_di" bpmnElement="UndefinedTask">
+        <dc:Bounds x="160" y="80" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0fif97a_di" bpmnElement="ServiceTask">
+        <dc:Bounds x="320" y="80" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0bwh0ro_di" bpmnElement="UserTask">
+        <dc:Bounds x="480" y="80" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1wusy40_di" bpmnElement="ReceiveInstantiatedTask">
+        <dc:Bounds x="1440" y="80" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_086bq80_di" bpmnElement="ReceiveTask">
+        <dc:Bounds x="650" y="80" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1uzprlp_di" bpmnElement="SendTask">
+        <dc:Bounds x="820" y="80" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0aper5i_di" bpmnElement="BusinessRuleTask">
+        <dc:Bounds x="990" y="80" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1byx12f_di" bpmnElement="ScriptTask">
+        <dc:Bounds x="1140" y="80" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0z86z5p_di" bpmnElement="ManualTask">
+        <dc:Bounds x="1290" y="80" width="100" height="80" />
+      </bpmndi:BPMNShape>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

@@ -24,7 +24,6 @@ public class CandidateGroupsVisitor extends AbstractSupportedAttributeVisitor {
             userTaskConversion
                 .getZeebeAssignmentDefinition()
                 .setCandidateGroups(candidateGroups.getNewExpression()));
-    return MessageFactory.candidateGroups(
-        attributeLocalName(), context.getElement().getLocalName(), candidateGroups);
+    return MessageFactory.candidateGroups(candidateGroups);
   }
 }

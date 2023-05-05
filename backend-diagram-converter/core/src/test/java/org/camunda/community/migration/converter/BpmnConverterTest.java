@@ -1,6 +1,7 @@
 package org.camunda.community.migration.converter;
 
 import static org.assertj.core.api.Assertions.*;
+import static org.camunda.community.migration.converter.TestUtil.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.io.ByteArrayInputStream;
@@ -29,6 +30,8 @@ public class BpmnConverterTest {
         "example-c7_2.bpmn",
         "java-delegate-class-c7.bpmn",
         "old-process.bpmn20.xml",
+        "collaboration.bpmn",
+        "internal-script.bpmn",
         "collaboration.bpmn",
         "empty-input-parameter.bpmn"
       })
@@ -117,12 +120,12 @@ public class BpmnConverterTest {
     assertThat(forkGateway.getMessages()).hasSize(1);
     assertThat(forkGateway.getMessages().get(0).getMessage())
         .isEqualTo(
-            "Element 'inclusiveGateway' is not supported in Zeebe version '8.0.0'. It is available in version '8.1.0'.");
+            "Element 'Inclusive Gateway' is not supported in Zeebe version '8.0.0'. It is available in version '8.1.0'.");
     BpmnElementCheckResult joinGateway = result.getResult("JoinGateway");
     assertThat(joinGateway.getMessages()).hasSize(1);
     assertThat(joinGateway.getMessages().get(0).getMessage())
         .isEqualTo(
-            "Element 'inclusiveGateway' is not supported in Zeebe version '8.0.0'. Please review.");
+            "Element 'Inclusive Gateway' is not supported in Zeebe version '8.0.0'. Please review.");
   }
 
   @Test
@@ -221,6 +224,44 @@ public class BpmnConverterTest {
     List<BpmnElementCheckMessage> messages = checkResult.getMessages();
     assertThat(messages).hasSize(2);
     assertThat(messages.get(0).getMessage()).isEqualTo("A Conditional flow is not supported.");
+  }
+
+  @Test
+  void testInternalScript_8_2() {
+    BpmnDiagramCheckResult result = loadAndCheckAgainstVersion("internal-script.bpmn", "8.2.0");
+    assertThat(result)
+        .isNotNull()
+        .extracting(r -> r.getResult("FeelScriptTask"))
+        .isNotNull()
+        .extracting(BpmnElementCheckResult::getMessages)
+        .asList()
+        .hasSize(2);
+    assertThat(result.getResult("FeelScriptTask").getMessages().get(0).getMessage())
+        .isEqualTo("Result variable is set to Zeebe script result variable.");
+    assertThat(result.getResult("FeelScriptTask").getMessages().get(1).getMessage())
+        .isEqualTo("Script is transformed to Zeebe script.");
+  }
+
+  @Test
+  void testInternalScript_8_1() {
+    BpmnDiagramCheckResult result = loadAndCheckAgainstVersion("internal-script.bpmn", "8.1.0");
+    assertThat(result)
+        .isNotNull()
+        .extracting(r -> r.getResult("FeelScriptTask"))
+        .isNotNull()
+        .extracting(BpmnElementCheckResult::getMessages)
+        .asList()
+        .hasSize(4);
+    assertThat(result.getResult("FeelScriptTask").getMessages().get(0).getMessage())
+        .isEqualTo("Script format 'feel' was set to header 'scriptFormat'. Please review.");
+    assertThat(result.getResult("FeelScriptTask").getMessages().get(1).getMessage())
+        .isEqualTo(
+            "Element 'scriptTask' was transformed. Currently, script tasks are implemented like service tasks with job type 'script'. Please review your implementation.");
+    assertThat(result.getResult("FeelScriptTask").getMessages().get(2).getMessage())
+        .isEqualTo(
+            "Attribute 'resultVariable' on 'scriptTask' was mapped. Is now available as header 'resultVariable'.");
+    assertThat(result.getResult("FeelScriptTask").getMessages().get(3).getMessage())
+        .isEqualTo("Script was set to header 'script'. Please review.");
   }
 
   @Test
@@ -340,24 +381,15 @@ public class BpmnConverterTest {
             "Element 'inputParameter' was transformed. Parameter 'inputParameterName': Please review transformed expression: '' -> '=null'.");
   }
 
-  protected BpmnDiagramCheckResult loadAndCheck(String bpmnFile) {
-    ConverterProperties properties = ConverterPropertiesFactory.getInstance().get();
-    return loadAndCheckAgainstVersion(bpmnFile, properties.getPlatformVersion());
-  }
-
-  protected BpmnDiagramCheckResult loadAndCheckAgainstVersion(
-      String bpmnFile, String targetVersion) {
-    BpmnConverter converter = BpmnConverterFactory.getInstance().get();
-    BpmnModelInstance modelInstance =
-        Bpmn.readModelFromStream(getClass().getClassLoader().getResourceAsStream(bpmnFile));
-    DefaultConverterProperties properties = new DefaultConverterProperties();
-    properties.setPlatformVersion(targetVersion);
-    BpmnDiagramCheckResult result =
-        converter.check(
-            bpmnFile,
-            modelInstance,
-            false,
-            ConverterPropertiesFactory.getInstance().merge(properties));
-    return result;
+  @Test
+  void testExecutionListenerWithoutImpl() {
+    BpmnDiagramCheckResult result = loadAndCheck("execution-listener-no-impl.bpmn");
+    List<BpmnElementCheckMessage> messages =
+        result.getResult("ListenerWithoutImplTask").getMessages();
+    assertThat(messages).hasSize(1);
+    BpmnElementCheckMessage message = messages.get(0);
+    assertThat(message.getMessage())
+        .isEqualTo(
+            "Listener at 'start' with implementation 'null' cannot be transformed. Execution Listeners do not exist in Zeebe.");
   }
 }

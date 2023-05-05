@@ -7,3 +7,6 @@ org.camunda.community.migration.converter.conversion.MessageConversion
 org.camunda.community.migration.converter.conversion.SequenceFlowConversion
 org.camunda.community.migration.converter.conversion.ServiceTaskConversion
 org.camunda.community.migration.converter.conversion.UserTaskConversion
+org.camunda.community.migration.converter.conversion.ErrorConversion
+org.camunda.community.migration.converter.conversion.EscalationConversion
+org.camunda.community.migration.converter.conversion.ScriptTaskConversion

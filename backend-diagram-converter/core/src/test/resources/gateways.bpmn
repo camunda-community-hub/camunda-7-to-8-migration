@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_1gbx4qr" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.10.0" modeler:executionPlatform="Camunda Platform" modeler:executionPlatformVersion="7.19.0">
+  <bpmn:process id="GatewaysTestProcess" name="Gateways Test" isExecutable="true">
+    <bpmn:exclusiveGateway id="ExclusiveGateway" name="Exclusive" />
+    <bpmn:parallelGateway id="ParallelGateway" name="Parallel" />
+    <bpmn:inclusiveGateway id="InclusiveInclusiveGateway" name="Inclusive" />
+    <bpmn:complexGateway id="ComplexGateway" name="Complex" />
+    <bpmn:eventBasedGateway id="EventBasedGateway" name="Event based" />
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="GatewaysTestProcess">
+      <bpmndi:BPMNShape id="Gateway_186u92u_di" bpmnElement="ExclusiveGateway" isMarkerVisible="true">
+        <dc:Bounds x="155" y="85" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="157" y="142" width="47" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_078gt5b_di" bpmnElement="ParallelGateway">
+        <dc:Bounds x="275" y="85" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="282" y="142" width="37" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_1uotj22_di" bpmnElement="InclusiveInclusiveGateway">
+        <dc:Bounds x="395" y="85" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="399" y="142" width="43" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_0sn2x84_di" bpmnElement="ComplexGateway">
+        <dc:Bounds x="525" y="85" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="528" y="142" width="44" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_13o0kzg_di" bpmnElement="EventBasedGateway">
+        <dc:Bounds x="675" y="85" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="669" y="142" width="62" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

@@ -26,6 +26,17 @@ public class BpmnDiagramCheckResult {
     this.filename = filename;
   }
 
+  @Override
+  public String toString() {
+    return "BpmnDiagramCheckResult{"
+        + "results="
+        + results
+        + ", filename='"
+        + filename
+        + '\''
+        + '}';
+  }
+
   public enum Severity {
     WARNING,
     TASK,
@@ -76,6 +87,27 @@ public class BpmnDiagramCheckResult {
     public List<String> getReferencedBy() {
       return referencedBy;
     }
+
+    @Override
+    public String toString() {
+      return "BpmnElementCheckResult{"
+          + "messages="
+          + messages
+          + ", references="
+          + references
+          + ", referencedBy="
+          + referencedBy
+          + ", elementId='"
+          + elementId
+          + '\''
+          + ", elementName='"
+          + elementName
+          + '\''
+          + ", elementType='"
+          + elementType
+          + '\''
+          + '}';
+    }
   }
 
   public static class BpmnElementCheckMessage {
@@ -105,6 +137,20 @@ public class BpmnDiagramCheckResult {
 
     public void setLink(String link) {
       this.link = link;
+    }
+
+    @Override
+    public String toString() {
+      return "BpmnElementCheckMessage{"
+          + "severity="
+          + severity
+          + ", message='"
+          + message
+          + '\''
+          + ", link='"
+          + link
+          + '\''
+          + '}';
     }
   }
 }

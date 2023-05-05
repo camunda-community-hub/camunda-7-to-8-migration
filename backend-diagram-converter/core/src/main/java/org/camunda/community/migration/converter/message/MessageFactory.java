@@ -68,16 +68,12 @@ public class MessageFactory {
             .build());
   }
 
-  public static Message candidateGroups(
-      String attributeLocalName,
-      String elementLocalName,
-      ExpressionTransformationResult transformationResult) {
+  public static Message candidateGroups(ExpressionTransformationResult transformationResult) {
     return INSTANCE.composeMessage(
         "candidate-groups",
         ContextBuilder.builder()
             .context(
-                supportedAttributeExpression(
-                    attributeLocalName, elementLocalName, transformationResult))
+                supportedAttributeExpression("candidateGroups", "userTask", transformationResult))
             .build());
   }
 
@@ -484,12 +480,11 @@ public class MessageFactory {
     return INSTANCE.emptyMessage();
   }
 
-  public static Message camundaScript(
-      String elementLocalName, String script, String scriptFormat, String parentElement) {
+  public static Message camundaScript(String script, String scriptFormat, String parentElement) {
     return INSTANCE.composeMessage(
         "camunda-script",
         ContextBuilder.builder()
-            .context(elementNotTransformablePrefix(elementLocalName))
+            .context(elementNotTransformablePrefix("script"))
             .entry("script", script)
             .entry("scriptFormat", scriptFormat)
             .entry("parentElement", parentElement)
@@ -581,6 +576,59 @@ public class MessageFactory {
 
   public static Message conditionalFlow() {
     return INSTANCE.staticMessage("conditional-flow");
+  }
+
+  public static Message escalationCode(String oldCode, String newCode) {
+    return INSTANCE.composeMessage(
+        "escalation-code",
+        ContextBuilder.builder().entry("oldCode", oldCode).entry("newCode", newCode).build());
+  }
+
+  public static Message errorCode(String oldCode, String newCode) {
+    return INSTANCE.composeMessage(
+        "error-code",
+        ContextBuilder.builder().entry("oldCode", oldCode).entry("newCode", newCode).build());
+  }
+
+  public static Message internalScript() {
+    return INSTANCE.staticMessage("internal-script");
+  }
+
+  public static Message resultVariableInternalScript() {
+    return INSTANCE.staticMessage("result-variable-internal-script");
+  }
+
+  public static Message candidateUsers(ExpressionTransformationResult transformationResult) {
+    return INSTANCE.composeMessage(
+        "candidate-users",
+        ContextBuilder.builder()
+            .context(
+                supportedAttributeExpression("candidateUsers", "userTask", transformationResult))
+            .build());
+  }
+
+  public static Message followUpDate(ExpressionTransformationResult transformationResult) {
+    return INSTANCE.composeMessage(
+        "follow-up-date",
+        ContextBuilder.builder()
+            .context(supportedAttributeExpression("followUpDate", "userTask", transformationResult))
+            .build());
+  }
+
+  public static Message dueDate(ExpressionTransformationResult transformationResult) {
+    return INSTANCE.composeMessage(
+        "due-date",
+        ContextBuilder.builder()
+            .context(supportedAttributeExpression("dueDate", "userTask", transformationResult))
+            .build());
+  }
+
+  public static Message errorCodeNoExpression() {
+    return INSTANCE.staticMessage("error-code-no-expression");
+  }
+
+  public static Message escalationCodeNoExpression() {
+    return INSTANCE.staticMessage("escalation-code-no-expression");
   }
 
   private Message composeMessage(String templateName, Map<String, String> context) {

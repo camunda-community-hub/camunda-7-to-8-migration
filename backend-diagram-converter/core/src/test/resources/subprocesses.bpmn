@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_1gbx4qr" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.10.0" modeler:executionPlatform="Camunda Platform" modeler:executionPlatformVersion="7.19.0">
+  <bpmn:process id="SubprocessesTestProcess" name="Subprocesses Test" isExecutable="true">
+    <bpmn:subProcess id="SubprocessSubProcess" name="Subprocess" />
+    <bpmn:callActivity id="CallActivityCallActivity" name="Call Activity" />
+    <bpmn:subProcess id="EventSubprocessSubProcess" name="Event Subprocess" triggeredByEvent="true" />
+    <bpmn:transaction id="TransactionTransaction" name="Transaction" />
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="SubprocessesTestProcess">
+      <bpmndi:BPMNShape id="Activity_1afk6v6_di" bpmnElement="CallActivityCallActivity">
+        <dc:Bounds x="310" y="80" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0o4t2nt_di" bpmnElement="SubprocessSubProcess">
+        <dc:Bounds x="160" y="80" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1tnpo6a_di" bpmnElement="EventSubprocessSubProcess">
+        <dc:Bounds x="460" y="80" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0xrxd4m_di" bpmnElement="TransactionTransaction">
+        <dc:Bounds x="610" y="80" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_0yye7xo">
+    <bpmndi:BPMNPlane id="BPMNPlane_0p7twsh" bpmnElement="SubprocessSubProcess" />
+  </bpmndi:BPMNDiagram>
+  <bpmndi:BPMNDiagram>
+    <bpmndi:BPMNPlane bpmnElement="TransactionTransaction" />
+  </bpmndi:BPMNDiagram>
+  <bpmndi:BPMNDiagram>
+    <bpmndi:BPMNPlane bpmnElement="EventSubprocessSubProcess" />
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

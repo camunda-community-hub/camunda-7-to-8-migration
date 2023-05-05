@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_1gbx4qr" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.10.0" modeler:executionPlatform="Camunda Platform" modeler:executionPlatformVersion="7.19.0">
+  <bpmn:process id="TimerTestProcess" name="Timer Test" isExecutable="true">
+    <bpmn:task id="Activity_1yxxd3u">
+      <bpmn:incoming>Flow_077ee0x</bpmn:incoming>
+      <bpmn:outgoing>Flow_18f7qx0</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:sequenceFlow id="Flow_077ee0x" sourceRef="TimerStartStartEvent" targetRef="Activity_1yxxd3u" />
+    <bpmn:sequenceFlow id="Flow_18f7qx0" sourceRef="Activity_1yxxd3u" targetRef="TimerCatchEvent" />
+    <bpmn:endEvent id="Event_15g5g5i">
+      <bpmn:incoming>Flow_1w2qiul</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_1w2qiul" sourceRef="TimerAttachedNoninterruptingBoundaryEvent" targetRef="Event_15g5g5i" />
+    <bpmn:endEvent id="Event_0wyeqnk">
+      <bpmn:incoming>Flow_0wb3zc0</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_0wb3zc0" sourceRef="TimerAttachedBoundaryEvent" targetRef="Event_0wyeqnk" />
+    <bpmn:subProcess id="Activity_04s405s" triggeredByEvent="true">
+      <bpmn:endEvent id="Event_15410wr">
+        <bpmn:incoming>Flow_0snfpo7</bpmn:incoming>
+      </bpmn:endEvent>
+      <bpmn:sequenceFlow id="Flow_0snfpo7" sourceRef="TimerEventSubprocesStartStartEvent" targetRef="Event_15410wr" />
+      <bpmn:startEvent id="TimerEventSubprocesStartStartEvent" name="Timer Event Subproces Start">
+        <bpmn:outgoing>Flow_0snfpo7</bpmn:outgoing>
+        <bpmn:timerEventDefinition id="TimerEventDefinition_0u8az0g" />
+      </bpmn:startEvent>
+    </bpmn:subProcess>
+    <bpmn:subProcess id="Activity_133t9hu" triggeredByEvent="true">
+      <bpmn:endEvent id="Event_084r2a1">
+        <bpmn:incoming>Flow_0kf10yb</bpmn:incoming>
+      </bpmn:endEvent>
+      <bpmn:sequenceFlow id="Flow_0kf10yb" sourceRef="TimerEventSubprocessStartNoninterruptingStartEvent" targetRef="Event_084r2a1" />
+      <bpmn:startEvent id="TimerEventSubprocessStartNoninterruptingStartEvent" name="Timer Event Subprocess Start non-interrupting" isInterrupting="false">
+        <bpmn:outgoing>Flow_0kf10yb</bpmn:outgoing>
+        <bpmn:timerEventDefinition id="TimerEventDefinition_0k0ekw5" />
+      </bpmn:startEvent>
+    </bpmn:subProcess>
+    <bpmn:startEvent id="TimerStartStartEvent" name="Timer Start">
+      <bpmn:outgoing>Flow_077ee0x</bpmn:outgoing>
+      <bpmn:timerEventDefinition id="TimerEventDefinition_0h0ynfr" />
+    </bpmn:startEvent>
+    <bpmn:boundaryEvent id="TimerAttachedNoninterruptingBoundaryEvent" name="Timer Attached non-interrupting" cancelActivity="false" attachedToRef="Activity_1yxxd3u">
+      <bpmn:outgoing>Flow_1w2qiul</bpmn:outgoing>
+      <bpmn:timerEventDefinition id="TimerEventDefinition_1k70ngz" />
+    </bpmn:boundaryEvent>
+    <bpmn:boundaryEvent id="TimerAttachedBoundaryEvent" name="Timer Attached" attachedToRef="Activity_1yxxd3u">
+      <bpmn:outgoing>Flow_0wb3zc0</bpmn:outgoing>
+      <bpmn:timerEventDefinition id="TimerEventDefinition_05f47mx" />
+    </bpmn:boundaryEvent>
+    <bpmn:intermediateCatchEvent id="TimerCatchEvent" name="Timer Catch">
+      <bpmn:incoming>Flow_18f7qx0</bpmn:incoming>
+      <bpmn:timerEventDefinition id="TimerEventDefinition_0f3q33d" />
+    </bpmn:intermediateCatchEvent>
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="TimerTestProcess">
+      <bpmndi:BPMNShape id="Activity_1yxxd3u_di" bpmnElement="Activity_1yxxd3u">
+        <dc:Bounds x="270" y="187" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_15g5g5i_di" bpmnElement="Event_15g5g5i">
+        <dc:Bounds x="382" y="82" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0wyeqnk_di" bpmnElement="Event_0wyeqnk">
+        <dc:Bounds x="382" y="332" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_011qb37_di" bpmnElement="Activity_04s405s" isExpanded="true">
+        <dc:Bounds x="260" y="450" width="190" height="120" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_15410wr_di" bpmnElement="Event_15410wr">
+        <dc:Bounds x="392" y="512" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0xy4hdr_di" bpmnElement="TimerEventSubprocesStartStartEvent">
+        <dc:Bounds x="300" y="512" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="279" y="555" width="79" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_0snfpo7_di" bpmnElement="Flow_0snfpo7">
+        <di:waypoint x="336" y="530" />
+        <di:waypoint x="392" y="530" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="BPMNShape_1h3tl70" bpmnElement="Activity_133t9hu" isExpanded="true">
+        <dc:Bounds x="260" y="590" width="190" height="120" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_1sgprr5" bpmnElement="Event_084r2a1">
+        <dc:Bounds x="392" y="652" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1u625pb_di" bpmnElement="TimerEventSubprocessStartNoninterruptingStartEvent">
+        <dc:Bounds x="300" y="652" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="276" y="695" width="85" height="40" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="BPMNEdge_0850zm7" bpmnElement="Flow_0kf10yb">
+        <di:waypoint x="336" y="670" />
+        <di:waypoint x="392" y="670" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="Event_017j19i_di" bpmnElement="TimerStartStartEvent">
+        <dc:Bounds x="179" y="209" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="171" y="252" width="54" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1ez16a0_di" bpmnElement="TimerCatchEvent">
+        <dc:Bounds x="532" y="209" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="521" y="252" width="60" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1ie9fhr_di" bpmnElement="TimerAttachedBoundaryEvent">
+        <dc:Bounds x="292" y="249" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="274" y="292" width="74" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1i5udtt_di" bpmnElement="TimerAttachedNoninterruptingBoundaryEvent">
+        <dc:Bounds x="292" y="169" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="272" y="212" width="78" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_077ee0x_di" bpmnElement="Flow_077ee0x">
+        <di:waypoint x="215" y="227" />
+        <di:waypoint x="270" y="227" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_18f7qx0_di" bpmnElement="Flow_18f7qx0">
+        <di:waypoint x="370" y="227" />
+        <di:waypoint x="532" y="227" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1w2qiul_di" bpmnElement="Flow_1w2qiul">
+        <di:waypoint x="310" y="169" />
+        <di:waypoint x="310" y="100" />
+        <di:waypoint x="382" y="100" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0wb3zc0_di" bpmnElement="Flow_0wb3zc0">
+        <di:waypoint x="310" y="285" />
+        <di:waypoint x="310" y="350" />
+        <di:waypoint x="382" y="350" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>
