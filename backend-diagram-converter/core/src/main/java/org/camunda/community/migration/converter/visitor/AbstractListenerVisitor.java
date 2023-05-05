@@ -25,7 +25,11 @@ public abstract class AbstractListenerVisitor extends AbstractCamundaElementVisi
       listenerImplementation = context.getElement().getAttribute("expression");
     }
     if (listenerImplementation == null
-        && context.getElement().getChildElementsByNameNs(NamespaceUri.CAMUNDA, "script") != null) {
+        && context.getElement().getChildElementsByNameNs(NamespaceUri.CAMUNDA, "script") != null
+        && !context
+            .getElement()
+            .getChildElementsByNameNs(NamespaceUri.CAMUNDA, "script")
+            .isEmpty()) {
       listenerImplementation =
           context
               .getElement()

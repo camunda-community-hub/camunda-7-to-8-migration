@@ -18,6 +18,7 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 import org.camunda.bpm.model.bpmn.BpmnModelInstance;
+import org.camunda.bpm.model.bpmn.impl.BpmnParser;
 import org.camunda.bpm.model.xml.impl.util.ModelIoException;
 import org.camunda.bpm.model.xml.instance.DomDocument;
 import org.camunda.bpm.model.xml.instance.DomElement;
@@ -32,6 +33,7 @@ import org.slf4j.LoggerFactory;
 
 public class BpmnConverter {
   private static final Logger LOG = LoggerFactory.getLogger(BpmnConverter.class);
+  private final BpmnParser bpmnParser = new BpmnParser();
   private final List<DomElementVisitor> visitors;
   private final List<Conversion> conversions;
   private final NotificationService notificationService;
@@ -152,6 +154,7 @@ public class BpmnConverter {
   }
 
   public void printXml(DomDocument document, boolean prettyPrint, Writer writer) {
+    bpmnParser.validateModel(document);
     StreamResult result = new StreamResult(writer);
     TransformerFactory transformerFactory = TransformerFactory.newInstance();
     try (InputStream in = getClass().getClassLoader().getResourceAsStream("prettyprint.xsl")) {

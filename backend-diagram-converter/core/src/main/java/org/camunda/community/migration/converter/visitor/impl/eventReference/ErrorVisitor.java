@@ -29,6 +29,14 @@ public class ErrorVisitor extends AbstractEventReferenceVisitor {
 
   @Override
   protected void postCreationVisitor(DomElementVisitorContext context) {
+    String errorCode = context.getElement().getAttribute(BPMN, "errorCode");
+    ExpressionTransformationResult expressionTransformationResult =
+        ExpressionTransformer.transform(errorCode);
+    if (expressionTransformationResult.getNewExpression().startsWith("=")) {
+      context.addMessage(MessageFactory.errorCodeNoExpression());
+    }
+    // this can be enabled as soon as error codes can be expressions
+    /*
     if (SemanticVersion.parse(context.getProperties().getPlatformVersion()).ordinal()
         >= SemanticVersion._8_2_0.ordinal()) {
       String errorCode = context.getElement().getAttribute(BPMN, "errorCode");
@@ -48,6 +56,6 @@ public class ErrorVisitor extends AbstractEventReferenceVisitor {
                   expressionTransformationResult.getNewExpression()));
         }
       }
-    }
+    }*/
   }
 }

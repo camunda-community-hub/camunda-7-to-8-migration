@@ -237,7 +237,7 @@ public class BpmnConverterTest {
         .asList()
         .hasSize(2);
     assertThat(result.getResult("FeelScriptTask").getMessages().get(0).getMessage())
-        .isEqualTo("Result variable is set to Zeebe script result variable. Please review.");
+        .isEqualTo("Result variable is set to Zeebe script result variable.");
     assertThat(result.getResult("FeelScriptTask").getMessages().get(1).getMessage())
         .isEqualTo("Script is transformed to Zeebe script.");
   }
@@ -379,5 +379,17 @@ public class BpmnConverterTest {
     assertThat(message.getMessage())
         .isEqualTo(
             "Element 'inputParameter' was transformed. Parameter 'inputParameterName': Please review transformed expression: '' -> '=null'.");
+  }
+
+  @Test
+  void testExecutionListenerWithoutImpl() {
+    BpmnDiagramCheckResult result = loadAndCheck("execution-listener-no-impl.bpmn");
+    List<BpmnElementCheckMessage> messages =
+        result.getResult("ListenerWithoutImplTask").getMessages();
+    assertThat(messages).hasSize(1);
+    BpmnElementCheckMessage message = messages.get(0);
+    assertThat(message.getMessage())
+        .isEqualTo(
+            "Listener at 'start' with implementation 'null' cannot be transformed. Execution Listeners do not exist in Zeebe.");
   }
 }

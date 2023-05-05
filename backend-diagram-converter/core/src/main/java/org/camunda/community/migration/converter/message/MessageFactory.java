@@ -623,6 +623,14 @@ public class MessageFactory {
             .build());
   }
 
+  public static Message errorCodeNoExpression() {
+    return INSTANCE.staticMessage("error-code-no-expression");
+  }
+
+  public static Message escalationCodeNoExpression() {
+    return INSTANCE.staticMessage("escalation-code-no-expression");
+  }
+
   private Message composeMessage(String templateName, Map<String, String> context) {
     ComposedMessage message = new ComposedMessage();
     MessageTemplate template = messageTemplateProvider.getMessageTemplate(templateName);

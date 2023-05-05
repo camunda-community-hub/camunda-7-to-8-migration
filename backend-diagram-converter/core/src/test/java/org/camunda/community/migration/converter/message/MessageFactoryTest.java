@@ -1,6 +1,7 @@
 package org.camunda.community.migration.converter.message;
 
 import static org.assertj.core.api.Assertions.*;
+import static org.camunda.community.migration.converter.message.MessageFactory.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 import org.camunda.community.migration.converter.expression.ExpressionTransformationResult;
@@ -420,7 +421,7 @@ public class MessageFactoryTest {
     assertNotNull(message.getMessage());
     assertNotNull(message.getSeverity());
     assertThat(message.getMessage())
-        .isEqualTo("Result variable is set to Zeebe script result variable. Please review.");
+        .isEqualTo("Result variable is set to Zeebe script result variable.");
   }
 
   @Test
@@ -454,5 +455,23 @@ public class MessageFactoryTest {
     assertThat(message.getMessage())
         .isEqualTo(
             "Attribute 'followUpDate' on 'userTask' was mapped. Please review transformed expression: '${test}' -> '=test'.");
+  }
+
+  @Test
+  void shouldBuildErrorCodeNoExpression() {
+    Message message = errorCodeNoExpression();
+    assertNotNull(message);
+    assertNotNull(message.getMessage());
+    assertNotNull(message.getSeverity());
+    assertThat(message.getMessage()).isEqualTo("Error code cannot be an expression.");
+  }
+
+  @Test
+  void shouldBuildEscalationCodeNoExpression() {
+    Message message = escalationCodeNoExpression();
+    assertNotNull(message);
+    assertNotNull(message.getMessage());
+    assertNotNull(message.getSeverity());
+    assertThat(message.getMessage()).isEqualTo("Escalation code cannot be an expression.");
   }
 }
