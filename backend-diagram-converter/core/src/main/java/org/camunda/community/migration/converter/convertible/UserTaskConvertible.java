@@ -28,6 +28,15 @@ public class UserTaskConvertible extends AbstractActivityConvertible {
   public static class ZeebeAssignmentDefinition {
     private String assignee;
     private String candidateGroups;
+    private String candidateUsers;
+
+    public String getCandidateUsers() {
+      return candidateUsers;
+    }
+
+    public void setCandidateUsers(String candidateUsers) {
+      this.candidateUsers = candidateUsers;
+    }
 
     public String getAssignee() {
       return assignee;

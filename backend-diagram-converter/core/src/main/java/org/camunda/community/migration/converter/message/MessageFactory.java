@@ -603,6 +603,19 @@ public class MessageFactory {
     return INSTANCE.staticMessage("result-variable-internal-script");
   }
 
+  public static Message candidateUsers(
+      String attributeLocalName,
+      String elementLocalName,
+      ExpressionTransformationResult transformationResult) {
+    return INSTANCE.composeMessage(
+        "candidate-users",
+        ContextBuilder.builder()
+            .context(
+                supportedAttributeExpression(
+                    attributeLocalName, elementLocalName, transformationResult))
+            .build());
+  }
+
   private Message composeMessage(String templateName, Map<String, String> context) {
     ComposedMessage message = new ComposedMessage();
     MessageTemplate template = messageTemplateProvider.getMessageTemplate(templateName);

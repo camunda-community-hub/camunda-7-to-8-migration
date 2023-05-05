@@ -1,7 +1,8 @@
 package org.camunda.community.migration.converter.visitor.impl.eventReference;
 
+import static org.camunda.community.migration.converter.NamespaceUri.*;
+
 import org.camunda.community.migration.converter.DomElementVisitorContext;
-import org.camunda.community.migration.converter.NamespaceUri;
 import org.camunda.community.migration.converter.convertible.Convertible;
 import org.camunda.community.migration.converter.convertible.ErrorConvertible;
 import org.camunda.community.migration.converter.expression.ExpressionTransformationResult;
@@ -30,7 +31,7 @@ public class ErrorVisitor extends AbstractEventReferenceVisitor {
   protected void postCreationVisitor(DomElementVisitorContext context) {
     if (SemanticVersion.parse(context.getProperties().getPlatformVersion()).ordinal()
         >= SemanticVersion._8_2_0.ordinal()) {
-      String errorCode = context.getElement().getAttribute(NamespaceUri.BPMN, "errorCode");
+      String errorCode = context.getElement().getAttribute(BPMN, "errorCode");
       if (errorCode != null) {
         ExpressionTransformationResult expressionTransformationResult =
             ExpressionTransformer.transform(errorCode);
