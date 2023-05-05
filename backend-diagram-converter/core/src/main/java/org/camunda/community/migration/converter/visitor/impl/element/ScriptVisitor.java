@@ -16,10 +16,7 @@ public class ScriptVisitor extends AbstractCamundaElementVisitor {
     String scriptFormat = context.getElement().getAttribute("scriptFormat");
     String script = detectScript(context);
     return MessageFactory.camundaScript(
-        context.getElement().getLocalName(),
-        script,
-        scriptFormat,
-        context.getElement().getParentElement().getLocalName());
+        script, scriptFormat, context.getElement().getParentElement().getLocalName());
   }
 
   private String detectScript(DomElementVisitorContext context) {

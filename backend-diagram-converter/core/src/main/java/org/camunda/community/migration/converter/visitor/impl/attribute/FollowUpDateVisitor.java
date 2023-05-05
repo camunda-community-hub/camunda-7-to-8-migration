@@ -8,18 +8,18 @@ import org.camunda.community.migration.converter.message.Message;
 import org.camunda.community.migration.converter.message.MessageFactory;
 import org.camunda.community.migration.converter.visitor.AbstractSupportedAttributeVisitor;
 
-public class DueDateVisitor extends AbstractSupportedAttributeVisitor {
+public class FollowUpDateVisitor extends AbstractSupportedAttributeVisitor {
   @Override
   public String attributeLocalName() {
-    return "dueDate";
+    return "followUpDate";
   }
 
   @Override
   protected Message visitSupportedAttribute(DomElementVisitorContext context, String attribute) {
-    ExpressionTransformationResult dueDate = ExpressionTransformer.transform(attribute);
+    ExpressionTransformationResult followUpDate = ExpressionTransformer.transform(attribute);
     context.addConversion(
         UserTaskConvertible.class,
-        conv -> conv.getZeebeTaskSchedule().setDueDate(dueDate.getNewExpression()));
-    return MessageFactory.dueDate(dueDate);
+        conv -> conv.getZeebeTaskSchedule().setFollowUpDate(followUpDate.getNewExpression()));
+    return MessageFactory.followUpDate(followUpDate);
   }
 }

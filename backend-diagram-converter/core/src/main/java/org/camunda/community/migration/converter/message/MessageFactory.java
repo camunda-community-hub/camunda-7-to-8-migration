@@ -68,16 +68,12 @@ public class MessageFactory {
             .build());
   }
 
-  public static Message candidateGroups(
-      String attributeLocalName,
-      String elementLocalName,
-      ExpressionTransformationResult transformationResult) {
+  public static Message candidateGroups(ExpressionTransformationResult transformationResult) {
     return INSTANCE.composeMessage(
         "candidate-groups",
         ContextBuilder.builder()
             .context(
-                supportedAttributeExpression(
-                    attributeLocalName, elementLocalName, transformationResult))
+                supportedAttributeExpression("candidateGroups", "userTask", transformationResult))
             .build());
   }
 
@@ -484,12 +480,11 @@ public class MessageFactory {
     return INSTANCE.emptyMessage();
   }
 
-  public static Message camundaScript(
-      String elementLocalName, String script, String scriptFormat, String parentElement) {
+  public static Message camundaScript(String script, String scriptFormat, String parentElement) {
     return INSTANCE.composeMessage(
         "camunda-script",
         ContextBuilder.builder()
-            .context(elementNotTransformablePrefix(elementLocalName))
+            .context(elementNotTransformablePrefix("script"))
             .entry("script", script)
             .entry("scriptFormat", scriptFormat)
             .entry("parentElement", parentElement)
@@ -603,16 +598,28 @@ public class MessageFactory {
     return INSTANCE.staticMessage("result-variable-internal-script");
   }
 
-  public static Message candidateUsers(
-      String attributeLocalName,
-      String elementLocalName,
-      ExpressionTransformationResult transformationResult) {
+  public static Message candidateUsers(ExpressionTransformationResult transformationResult) {
     return INSTANCE.composeMessage(
         "candidate-users",
         ContextBuilder.builder()
             .context(
-                supportedAttributeExpression(
-                    attributeLocalName, elementLocalName, transformationResult))
+                supportedAttributeExpression("candidateUsers", "userTask", transformationResult))
+            .build());
+  }
+
+  public static Message followUpDate(ExpressionTransformationResult transformationResult) {
+    return INSTANCE.composeMessage(
+        "follow-up-date",
+        ContextBuilder.builder()
+            .context(supportedAttributeExpression("followUpDate", "userTask", transformationResult))
+            .build());
+  }
+
+  public static Message dueDate(ExpressionTransformationResult transformationResult) {
+    return INSTANCE.composeMessage(
+        "due-date",
+        ContextBuilder.builder()
+            .context(supportedAttributeExpression("dueDate", "userTask", transformationResult))
             .build());
   }
 

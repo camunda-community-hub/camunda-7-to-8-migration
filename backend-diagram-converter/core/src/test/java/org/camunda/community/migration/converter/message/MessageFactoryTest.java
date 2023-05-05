@@ -307,8 +307,7 @@ public class MessageFactoryTest {
   @Test
   void shouldBuildCamundaScript() {
     Message message =
-        MessageFactory.camundaScript(
-            "script", "var message = \"hello world\"", "javascript", "taskListener");
+        MessageFactory.camundaScript("var message = \"hello world\"", "javascript", "taskListener");
     assertNotNull(message);
     assertThat(message.getMessage())
         .isEqualTo(
@@ -324,7 +323,7 @@ public class MessageFactoryTest {
 
   @Test
   void shouldBuildCandidateGroups() {
-    Message message = MessageFactory.candidateGroups(random(), random(), result());
+    Message message = MessageFactory.candidateGroups(result());
     assertNotNull(message);
     assertNotNull(message.getMessage());
   }
@@ -422,5 +421,38 @@ public class MessageFactoryTest {
     assertNotNull(message.getSeverity());
     assertThat(message.getMessage())
         .isEqualTo("Result variable is set to Zeebe script result variable. Please review.");
+  }
+
+  @Test
+  void shouldBuildCandidateUsers() {
+    Message message = MessageFactory.candidateUsers(result());
+    assertNotNull(message);
+    assertNotNull(message.getMessage());
+    assertNotNull(message.getSeverity());
+    assertThat(message.getMessage())
+        .isEqualTo(
+            "Attribute 'candidateUsers' on 'userTask' was mapped. Please review transformed expression: '${test}' -> '=test'.");
+  }
+
+  @Test
+  void shouldBuildDueDate() {
+    Message message = MessageFactory.dueDate(result());
+    assertNotNull(message);
+    assertNotNull(message.getMessage());
+    assertNotNull(message.getSeverity());
+    assertThat(message.getMessage())
+        .isEqualTo(
+            "Attribute 'dueDate' on 'userTask' was mapped. Please review transformed expression: '${test}' -> '=test'.");
+  }
+
+  @Test
+  void shouldBuildFollowUpDate() {
+    Message message = MessageFactory.followUpDate(result());
+    assertNotNull(message);
+    assertNotNull(message.getMessage());
+    assertNotNull(message.getSeverity());
+    assertThat(message.getMessage())
+        .isEqualTo(
+            "Attribute 'followUpDate' on 'userTask' was mapped. Please review transformed expression: '${test}' -> '=test'.");
   }
 }
