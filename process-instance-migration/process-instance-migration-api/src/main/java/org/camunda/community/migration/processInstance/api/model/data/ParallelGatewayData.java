@@ -4,7 +4,6 @@ import org.camunda.community.migration.processInstance.api.model.data.chunk.Acti
 
 public interface ParallelGatewayData extends ActivityNodeData {
 
-
   interface ParallelGatewayDataBuilder
       extends ActivityNodeDataBuilder<ParallelGatewayDataBuilder, ParallelGatewayData> {}
 }

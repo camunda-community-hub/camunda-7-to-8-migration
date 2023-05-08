@@ -2,7 +2,6 @@ package org.camunda.community.migration.processInstance.api.model.data.impl.buil
 
 import static org.camunda.community.migration.processInstance.api.model.data.impl.builder.BuilderUtil.*;
 
-import java.util.List;
 import java.util.Map;
 import org.camunda.community.migration.processInstance.api.model.data.TransactionData;
 import org.camunda.community.migration.processInstance.api.model.data.TransactionData.TransactionDataBuilder;

@@ -4,7 +4,7 @@
   <parent>
     <artifactId>process-instance-migration-parent</artifactId>
     <groupId>org.camunda.community.migration</groupId>
-    <version>0.5.1-SNAPSHOT</version>
+    <version>0.6.2-SNAPSHOT</version>
   </parent>
   <dependencies>
     <dependency>

@@ -3,8 +3,6 @@ package org.camunda.community.migration.processInstance.api.model.data.impl.buil
 import static org.camunda.community.migration.processInstance.api.model.data.impl.builder.BuilderUtil.*;
 
 import com.fasterxml.jackson.databind.JsonNode;
-
-import java.util.List;
 import java.util.Map;
 import org.camunda.community.migration.processInstance.api.model.FinalBuildStep.FinalBuildStepImpl;
 import org.camunda.community.migration.processInstance.api.model.data.ProcessInstanceData;

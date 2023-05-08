@@ -6,8 +6,13 @@ import org.camunda.community.migration.processInstance.importer.visitor.typed.Ty
 
 public class ScriptTaskDataVisitor extends AbstractActivityNodeDataVisitor<ScriptTaskData> {
 
-@Override protected void doHandle(TypedActivityNodeDataVisitorContext<ScriptTaskData> context) {
-// nothing to do
-  }@Override protected Class<ScriptTaskData> getType() {
-  return ScriptTaskData.class;
-  }}
+  @Override
+  protected void doHandle(TypedActivityNodeDataVisitorContext<ScriptTaskData> context) {
+    // nothing to do
+  }
+
+  @Override
+  protected Class<ScriptTaskData> getType() {
+    return ScriptTaskData.class;
+  }
+}

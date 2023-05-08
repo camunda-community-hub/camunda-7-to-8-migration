@@ -9,7 +9,8 @@ import com.fasterxml.jackson.databind.node.NumericNode;
 import com.fasterxml.jackson.databind.node.TextNode;
 import org.camunda.community.migration.processInstance.api.model.data.BusinessRuleTaskData.BusinessRuleTaskDataBuilder;
 import org.camunda.community.migration.processInstance.api.model.data.CallActivityData.CallActivityDataBuilder;
-import org.camunda.community.migration.processInstance.api.model.data.ExclusiveGatewayData.ExclusiveGatewayDataBuilder;import org.camunda.community.migration.processInstance.api.model.data.ManualTaskData.ManualTaskDataBuilder;
+import org.camunda.community.migration.processInstance.api.model.data.ExclusiveGatewayData.ExclusiveGatewayDataBuilder;
+import org.camunda.community.migration.processInstance.api.model.data.ManualTaskData.ManualTaskDataBuilder;
 import org.camunda.community.migration.processInstance.api.model.data.MessageIntermediateCatchEventData.MessageIntermediateCatchEventDataBuilder;
 import org.camunda.community.migration.processInstance.api.model.data.MultiInstanceData.MultiInstanceDataBuilder;
 import org.camunda.community.migration.processInstance.api.model.data.ParallelGatewayData.ParallelGatewayDataBuilder;
@@ -26,7 +27,8 @@ import org.camunda.community.migration.processInstance.api.model.data.Transactio
 import org.camunda.community.migration.processInstance.api.model.data.UserTaskData.UserTaskDataBuilder;
 import org.camunda.community.migration.processInstance.api.model.data.impl.builder.BusinessRuleTaskDataBuilderImpl;
 import org.camunda.community.migration.processInstance.api.model.data.impl.builder.CallActivityBuilderImpl;
-import org.camunda.community.migration.processInstance.api.model.data.impl.builder.ExclusiveGatewayDataBuilderImpl;import org.camunda.community.migration.processInstance.api.model.data.impl.builder.ManualTaskDataBuilderImpl;
+import org.camunda.community.migration.processInstance.api.model.data.impl.builder.ExclusiveGatewayDataBuilderImpl;
+import org.camunda.community.migration.processInstance.api.model.data.impl.builder.ManualTaskDataBuilderImpl;
 import org.camunda.community.migration.processInstance.api.model.data.impl.builder.MessageIntermediateCatchEventDataBuilderImpl;
 import org.camunda.community.migration.processInstance.api.model.data.impl.builder.MultiInstanceDataBuilderImpl;
 import org.camunda.community.migration.processInstance.api.model.data.impl.builder.ParallelGatewayDataBuilderImpl;
@@ -107,11 +109,11 @@ public interface Builder {
     return new TransactionDataBuilderImpl();
   }
 
-  static ExclusiveGatewayDataBuilder exclusiveGatewayData(){
+  static ExclusiveGatewayDataBuilder exclusiveGatewayData() {
     return new ExclusiveGatewayDataBuilderImpl();
   }
 
-  static ParallelGatewayDataBuilder parallelGatewayData(){
+  static ParallelGatewayDataBuilder parallelGatewayData() {
     return new ParallelGatewayDataBuilderImpl();
   }
 

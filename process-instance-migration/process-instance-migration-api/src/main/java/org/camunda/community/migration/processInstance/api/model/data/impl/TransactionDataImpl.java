@@ -1,6 +1,5 @@
 package org.camunda.community.migration.processInstance.api.model.data.impl;
 
-import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import org.camunda.community.migration.processInstance.api.model.data.TransactionData;
@@ -31,4 +30,5 @@ public class TransactionDataImpl extends ActivityNodeDataImpl implements Transac
   @Override
   public int hashCode() {
     return Objects.hash(super.hashCode(), activities);
-  }}
+  }
+}

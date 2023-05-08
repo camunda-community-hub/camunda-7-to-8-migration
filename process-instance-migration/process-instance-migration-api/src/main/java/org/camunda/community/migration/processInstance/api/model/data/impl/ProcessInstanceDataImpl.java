@@ -1,8 +1,6 @@
 package org.camunda.community.migration.processInstance.api.model.data.impl;
 
 import com.fasterxml.jackson.databind.JsonNode;
-
-import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import org.camunda.community.migration.processInstance.api.model.data.ProcessInstanceData;

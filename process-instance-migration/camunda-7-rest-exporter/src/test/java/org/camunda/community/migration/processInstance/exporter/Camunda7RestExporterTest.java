@@ -37,7 +37,8 @@ public class Camunda7RestExporterTest {
             new ProcessInstanceApi(apiClient),
             new VariableInstanceApi(apiClient),
             new JobApi(apiClient),
-            new JobDefinitionApi(apiClient),objectMapper);
+            new JobDefinitionApi(apiClient),
+            objectMapper);
     Camunda7Exporter exporter = new Camunda7Exporter(camunda7RestService);
     BpmnModelInstance testProcess =
         Bpmn.createExecutableProcess("testProcess")

@@ -3,7 +3,7 @@
   <parent>
     <artifactId>process-instance-migration-parent</artifactId>
     <groupId>org.camunda.community.migration</groupId>
-    <version>0.5.1-SNAPSHOT</version>
+    <version>0.6.2-SNAPSHOT</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
 
@@ -15,8 +15,8 @@
       <artifactId>spring-boot-starter-web</artifactId>
     </dependency>
     <dependency>
-      <groupId>io.camunda</groupId>
-      <artifactId>spring-zeebe-starter</artifactId>
+      <groupId>io.camunda.spring</groupId>
+      <artifactId>spring-boot-starter-camunda</artifactId>
       <exclusions>
         <exclusion>
           <groupId>org.camunda.feel</groupId>
@@ -38,8 +38,8 @@
       <artifactId>camunda-operate-client-java</artifactId>
     </dependency>
     <dependency>
-      <groupId>io.camunda</groupId>
-      <artifactId>spring-zeebe-test-testcontainer</artifactId>
+      <groupId>io.camunda.spring</groupId>
+      <artifactId>spring-boot-starter-camunda-test-testcontainer</artifactId>
       <scope>test</scope>
     </dependency>
     <dependency>

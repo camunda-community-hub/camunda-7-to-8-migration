@@ -20,8 +20,7 @@ public class DataSerializationTest {
             .withId("1e88a1fa-b9a0-11ed-8966-3ce1a1c19785")
             .withName("Invoice Receipt")
             .withActivity(
-                "approveInvoice",
-                Builder.userTaskData().withName("Approve invoice").build())
+                "approveInvoice", Builder.userTaskData().withName("Approve invoice").build())
             .withVariable("amount", number(300.0D))
             .withVariable("approverGroups", array(text("accounting"), text("sales")))
             .withVariable("creditor", text("Moby Ferries"))
@@ -35,25 +34,22 @@ public class DataSerializationTest {
             .withName("Invoice Receipt")
             .withActivity(
                 "reviewInvoice",
-
-                    callActivityData()
-                        .withName("Review Invoice")
-                        .withProcessInstance(
-                            processInstanceData()
-                                .withBpmnProcessId("ReviewInvoice")
-                                .withName("Review Invoice")
-                                .withActivity(
-                                    "reviewInvoice",
-
-                                        userTaskData().withName("Review Invoice").build())
-                                .build())
-                        .withVariable("amount", number(300.0D))
-                        .withVariable("approverGroups", array(text("accounting"), text("sales")))
-                        .withVariable("creditor", text("Moby Ferries"))
-                        .withVariable("invoiceCategory", text("Travel expenses"))
-                        .withVariable("invoiceDocument", text("Some file reference"))
-                        .withVariable("invoiceNumber", text("837hfz6e-hneze"))
-                        .build())
+                callActivityData()
+                    .withName("Review Invoice")
+                    .withProcessInstance(
+                        processInstanceData()
+                            .withBpmnProcessId("ReviewInvoice")
+                            .withName("Review Invoice")
+                            .withActivity(
+                                "reviewInvoice", userTaskData().withName("Review Invoice").build())
+                            .build())
+                    .withVariable("amount", number(300.0D))
+                    .withVariable("approverGroups", array(text("accounting"), text("sales")))
+                    .withVariable("creditor", text("Moby Ferries"))
+                    .withVariable("invoiceCategory", text("Travel expenses"))
+                    .withVariable("invoiceDocument", text("Some file reference"))
+                    .withVariable("invoiceNumber", text("837hfz6e-hneze"))
+                    .build())
             .withVariable("amount", number(300.0D))
             .withVariable("approverGroups", array(text("accounting"), text("sales")))
             .withVariable("creditor", text("Moby Ferries"))
@@ -92,9 +88,7 @@ public class DataSerializationTest {
             .withBpmnProcessId("invoice")
             .withId("1e88a1fa-b9a0-11ed-8966-3ce1a1c19785")
             .withName("Invoice Receipt")
-            .withActivity(
-                "approveInvoice",
-                userTaskData().withName("Approve invoice").build())
+            .withActivity("approveInvoice", userTaskData().withName("Approve invoice").build())
             .withVariable("amount", number(300.0D))
             .withVariable("approverGroups", array(text("accounting"), text("sales")))
             .withVariable("creditor", text("Moby Ferries"))
@@ -122,25 +116,22 @@ public class DataSerializationTest {
             .withName("Invoice Receipt")
             .withActivity(
                 "reviewInvoice",
-
-                    callActivityData()
-                        .withName("Review Invoice")
-                        .withProcessInstance(
-                            processInstanceData()
-                                .withBpmnProcessId("ReviewInvoice")
-                                .withName("Review Invoice")
-                                .withActivity(
-                                    "reviewInvoice",
-
-                                        userTaskData().withName("Review Invoice").build())
-                                .build())
-                        .withVariable("amount", number(300.0D))
-                        .withVariable("approverGroups", array(text("accounting"), text("sales")))
-                        .withVariable("creditor", text("Moby Ferries"))
-                        .withVariable("invoiceCategory", text("Travel expenses"))
-                        .withVariable("invoiceDocument", text("Some file reference"))
-                        .withVariable("invoiceNumber", text("837hfz6e-hneze"))
-                        .build())
+                callActivityData()
+                    .withName("Review Invoice")
+                    .withProcessInstance(
+                        processInstanceData()
+                            .withBpmnProcessId("ReviewInvoice")
+                            .withName("Review Invoice")
+                            .withActivity(
+                                "reviewInvoice", userTaskData().withName("Review Invoice").build())
+                            .build())
+                    .withVariable("amount", number(300.0D))
+                    .withVariable("approverGroups", array(text("accounting"), text("sales")))
+                    .withVariable("creditor", text("Moby Ferries"))
+                    .withVariable("invoiceCategory", text("Travel expenses"))
+                    .withVariable("invoiceDocument", text("Some file reference"))
+                    .withVariable("invoiceNumber", text("837hfz6e-hneze"))
+                    .build())
             .withVariable("amount", number(300.0D))
             .withVariable("approverGroups", array(text("accounting"), text("sales")))
             .withVariable("creditor", text("Moby Ferries"))

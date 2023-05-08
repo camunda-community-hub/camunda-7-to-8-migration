@@ -1,6 +1,5 @@
 package org.camunda.community.migration.processInstance.api.model.data.chunk;
 
-import java.util.List;
 import java.util.Map;
 
 public interface ActivityContainerData {

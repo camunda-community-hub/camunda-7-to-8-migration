@@ -33,7 +33,8 @@ public abstract class ActivityNodeDataBuilderImpl<
   @Override
   public B withExecuted(Boolean executed) {
     data().setExecuted(executed);
-    return builder();  }
+    return builder();
+  }
 
   protected abstract B builder();
 

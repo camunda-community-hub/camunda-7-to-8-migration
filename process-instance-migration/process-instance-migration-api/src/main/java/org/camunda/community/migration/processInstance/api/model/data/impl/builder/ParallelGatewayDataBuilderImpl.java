@@ -5,8 +5,10 @@ import org.camunda.community.migration.processInstance.api.model.data.ParallelGa
 import org.camunda.community.migration.processInstance.api.model.data.impl.ParallelGatewayDataImpl;
 import org.camunda.community.migration.processInstance.api.model.data.impl.chunk.ActivityNodeDataImpl;
 
-public class ParallelGatewayDataBuilderImpl extends ActivityNodeDataBuilderImpl<ParallelGatewayDataBuilder, ParallelGatewayData, ParallelGatewayDataImpl> implements
-                                                                                                             ParallelGatewayDataBuilder {
+public class ParallelGatewayDataBuilderImpl
+    extends ActivityNodeDataBuilderImpl<
+        ParallelGatewayDataBuilder, ParallelGatewayData, ParallelGatewayDataImpl>
+    implements ParallelGatewayDataBuilder {
   @Override
   protected ParallelGatewayDataImpl createData() {
     return new ParallelGatewayDataImpl();
