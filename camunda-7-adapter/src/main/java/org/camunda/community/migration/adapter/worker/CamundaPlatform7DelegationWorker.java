@@ -5,16 +5,14 @@ import io.camunda.zeebe.client.api.response.ActivatedJob;
 import io.camunda.zeebe.client.api.worker.JobClient;
 import io.camunda.zeebe.spring.client.annotation.JobWorker;
 import io.camunda.zeebe.spring.client.exception.ZeebeBpmnError;
-import java.util.HashMap;
-import java.util.Map;
 import org.camunda.bpm.engine.ArtifactFactory;
-import org.camunda.bpm.engine.delegate.BpmnError;
-import org.camunda.bpm.engine.delegate.DelegateExecution;
-import org.camunda.bpm.engine.delegate.JavaDelegate;
-import org.camunda.bpm.engine.delegate.VariableScope;
+import org.camunda.bpm.engine.delegate.*;
 import org.camunda.community.migration.adapter.execution.ZeebeJobDelegateExecution;
 import org.camunda.community.migration.adapter.juel.JuelExpressionResolver;
 import org.springframework.stereotype.Component;
+
+import java.util.HashMap;
+import java.util.Map;
 
 @Component
 public class CamundaPlatform7DelegationWorker {
@@ -36,13 +34,22 @@ public class CamundaPlatform7DelegationWorker {
     String delegateExpression = job.getCustomHeaders().get("delegateExpression");
     String expression = job.getCustomHeaders().get("expression");
     String resultVariable = job.getCustomHeaders().get("resultVariable");
-
+    String startListener = job.getCustomHeaders().get("executionListener.start");
+    String endListener = job.getCustomHeaders().get("executionListener.end");
     // and delegate depending on exact way of implementation
     Map<String, Object> resultPayload = null;
     DelegateExecution execution = wrapDelegateExecution(job);
     // this is required as we add the execution to the variables scope for expression evaluation
     VariableScope variableScope = wrapDelegateExecution(job);
     try {
+      if (startListener != null) {
+        ExecutionListener executionListener =
+                (ExecutionListener)
+                        expressionResolver.evaluate(startListener, variableScope, execution);
+        executionListener.notify(execution);
+        resultPayload = execution.getVariables();
+      }
+
       if (delegateClass != null) {
         JavaDelegate javaDelegate = loadJavaDelegate(delegateClass);
         javaDelegate.execute(execution);
@@ -63,6 +70,14 @@ public class CamundaPlatform7DelegationWorker {
         throw new RuntimeException(
             "Either 'class' or 'delegateExpression' or 'expression' must be specified in task headers for job :"
                 + job);
+      }
+
+      if (endListener != null) {
+        ExecutionListener executionListener =
+                (ExecutionListener)
+                        expressionResolver.evaluate(endListener, variableScope, execution);
+        executionListener.notify(execution);
+        resultPayload = execution.getVariables();
       }
 
       CompleteJobCommandStep1 completeCommand = client.newCompleteCommand(job.getKey());
