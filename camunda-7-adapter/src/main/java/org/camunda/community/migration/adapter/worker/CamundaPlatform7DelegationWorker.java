@@ -42,6 +42,13 @@ public class CamundaPlatform7DelegationWorker {
     // this is required as we add the execution to the variables scope for expression evaluation
     VariableScope variableScope = wrapDelegateExecution(job);
     try {
+
+      if (startListener == null && endListener == null && delegateClass == null && delegateExpression == null && expression != null) {
+        throw new RuntimeException(
+                "Either 'executionListener.start' or 'class' or 'delegateExpression' or 'expression' or executionListener.end must be specified in task headers for job :"
+                        + job);
+      }
+
       if (startListener != null) {
         ExecutionListener executionListener =
                 (ExecutionListener)
@@ -66,10 +73,6 @@ public class CamundaPlatform7DelegationWorker {
           resultPayload = new HashMap<>();
           resultPayload.put(resultVariable, result);
         }
-      } else {
-        throw new RuntimeException(
-            "Either 'class' or 'delegateExpression' or 'expression' must be specified in task headers for job :"
-                + job);
       }
 
       if (endListener != null) {
