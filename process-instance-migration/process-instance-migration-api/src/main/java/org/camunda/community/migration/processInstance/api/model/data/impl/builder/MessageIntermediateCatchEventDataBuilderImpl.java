@@ -3,10 +3,10 @@ package org.camunda.community.migration.processInstance.api.model.data.impl.buil
 import org.camunda.community.migration.processInstance.api.model.data.MessageIntermediateCatchEventData;
 import org.camunda.community.migration.processInstance.api.model.data.MessageIntermediateCatchEventData.MessageIntermediateCatchEventDataBuilder;
 import org.camunda.community.migration.processInstance.api.model.data.impl.MessageIntermediateCatchEventDataImpl;
-import org.camunda.community.migration.processInstance.api.model.data.impl.chunk.ActivityNodeDataImpl;
+import org.camunda.community.migration.processInstance.api.model.data.impl.chunk.CommonActivityNodeDataImpl;
 
 public class MessageIntermediateCatchEventDataBuilderImpl
-    extends ActivityNodeDataBuilderImpl<
+    extends CommonActivityNodeDataBuilderImpl<
         MessageIntermediateCatchEventDataBuilder,
         MessageIntermediateCatchEventData,
         MessageIntermediateCatchEventDataImpl>
@@ -22,7 +22,7 @@ public class MessageIntermediateCatchEventDataBuilderImpl
   }
 
   @Override
-  protected ActivityNodeDataImpl data() {
+  protected CommonActivityNodeDataImpl data() {
     return data;
   }
 }

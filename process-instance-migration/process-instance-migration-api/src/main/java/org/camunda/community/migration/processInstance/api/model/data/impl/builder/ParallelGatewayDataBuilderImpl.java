@@ -3,10 +3,10 @@ package org.camunda.community.migration.processInstance.api.model.data.impl.buil
 import org.camunda.community.migration.processInstance.api.model.data.ParallelGatewayData;
 import org.camunda.community.migration.processInstance.api.model.data.ParallelGatewayData.ParallelGatewayDataBuilder;
 import org.camunda.community.migration.processInstance.api.model.data.impl.ParallelGatewayDataImpl;
-import org.camunda.community.migration.processInstance.api.model.data.impl.chunk.ActivityNodeDataImpl;
+import org.camunda.community.migration.processInstance.api.model.data.impl.chunk.CommonActivityNodeDataImpl;
 
 public class ParallelGatewayDataBuilderImpl
-    extends ActivityNodeDataBuilderImpl<
+    extends CommonActivityNodeDataBuilderImpl<
         ParallelGatewayDataBuilder, ParallelGatewayData, ParallelGatewayDataImpl>
     implements ParallelGatewayDataBuilder {
   @Override
@@ -20,7 +20,7 @@ public class ParallelGatewayDataBuilderImpl
   }
 
   @Override
-  protected ActivityNodeDataImpl data() {
+  protected CommonActivityNodeDataImpl data() {
     return data;
   }
 }

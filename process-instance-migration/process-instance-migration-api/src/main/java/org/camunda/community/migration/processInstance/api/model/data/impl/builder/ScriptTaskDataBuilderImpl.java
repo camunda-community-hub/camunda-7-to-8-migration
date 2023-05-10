@@ -3,10 +3,11 @@ package org.camunda.community.migration.processInstance.api.model.data.impl.buil
 import org.camunda.community.migration.processInstance.api.model.data.ScriptTaskData;
 import org.camunda.community.migration.processInstance.api.model.data.ScriptTaskData.ScriptTaskDataBuilder;
 import org.camunda.community.migration.processInstance.api.model.data.impl.ScriptTaskDataImpl;
-import org.camunda.community.migration.processInstance.api.model.data.impl.chunk.ActivityNodeDataImpl;
+import org.camunda.community.migration.processInstance.api.model.data.impl.chunk.CommonActivityNodeDataImpl;
 
 public class ScriptTaskDataBuilderImpl
-    extends ActivityNodeDataBuilderImpl<ScriptTaskDataBuilder, ScriptTaskData, ScriptTaskDataImpl>
+    extends CommonActivityNodeDataBuilderImpl<
+        ScriptTaskDataBuilder, ScriptTaskData, ScriptTaskDataImpl>
     implements ScriptTaskDataBuilder {
   @Override
   protected ScriptTaskDataBuilder builder() {
@@ -14,7 +15,7 @@ public class ScriptTaskDataBuilderImpl
   }
 
   @Override
-  protected ActivityNodeDataImpl data() {
+  protected CommonActivityNodeDataImpl data() {
     return data;
   }
 

@@ -9,6 +9,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
+import java.util.stream.Stream;
 import org.camunda.community.migration.processInstance.api.ProcessInstanceDataExporter;
 import org.camunda.community.migration.processInstance.api.ProcessInstanceMigrationContext;
 import org.camunda.community.migration.processInstance.api.ProcessInstanceMigrationContext.ProcessInstanceMigrationSuccessfulContext;
@@ -16,6 +17,8 @@ import org.camunda.community.migration.processInstance.api.model.Page;
 import org.camunda.community.migration.processInstance.api.model.data.ProcessInstanceData;
 import org.camunda.community.migration.processInstance.api.model.data.ProcessInstanceMetadata;
 import org.camunda.community.migration.processInstance.api.model.data.chunk.ActivityNodeData;
+import org.camunda.community.migration.processInstance.api.model.data.chunk.CommonActivityNodeData;
+import org.camunda.community.migration.processInstance.api.model.data.chunk.CommonActivityNodeData.CommonActivityNodeDataBuilder;
 import org.camunda.community.migration.processInstance.exporter.api.ActivityInstance;
 import org.camunda.community.migration.processInstance.exporter.api.ProcessDefinition;
 import org.camunda.community.migration.processInstance.exporter.api.ProcessEngineService;
@@ -73,13 +76,13 @@ public class Camunda7Exporter implements ProcessInstanceDataExporter {
   private Map<String, ActivityNodeData> buildActivities(List<ActivityInstance> activityInstances) {
     return activityInstances.stream()
         .collect(
-            Collectors.toMap(
+            Collectors.groupingBy(
                 activityInstance ->
                     activityInstance.getActivityId().replaceAll("#multiInstanceBody", ""),
-                this::buildActivity));
+                Collectors.collectingAndThen(Collectors.toList(), this::buildActivity)));
   }
 
-  private List<ActivityNodeData> buildActivitiesWithoutIdAndTransition(
+  private List<CommonActivityNodeData> buildActivitiesWithoutIdAndTransition(
       List<ActivityInstance> activityInstances) {
     return activityInstances.stream()
         .filter(activityInstance -> !activityInstance.isTransition())
@@ -87,20 +90,44 @@ public class Camunda7Exporter implements ProcessInstanceDataExporter {
         .collect(Collectors.toList());
   }
 
-  private String equalString(String s1, String s2) {
-    if (s1 == null) {
-      return s2;
-    }
-    if (Objects.equals(s1, s2)) {
-      return s1;
-    }
-    throw new IllegalStateException("Strings are not equal");
+  private String equalString(Stream<String> strings) {
+    return equalString(strings.collect(Collectors.toList()));
   }
 
-  private ActivityNodeData buildActivity(ActivityInstance activityInstance) {
+  private String equalString(List<String> strings) {
+    String result = null;
+    for (String s : strings) {
+      if (s != null) {
+        if (result == null) {
+          result = s;
+        } else {
+          if (!Objects.equals(s, result)) {
+            throw new IllegalStateException("Strings are not equal");
+          }
+        }
+      }
+    }
+    return result;
+  }
+
+  private ActivityNodeData buildActivity(List<ActivityInstance> activityInstances) {
+    String activityName =
+        equalString(activityInstances.stream().map(ActivityInstance::getActivityName));
+    if (activityInstances.size() == 1) {
+      return buildActivity(activityInstances.get(0));
+    } else {
+      return multiExecutionData()
+          .withName(activityName)
+          .withActivities(
+              activityInstances.stream().map(this::buildActivity).collect(Collectors.toList()))
+          .build();
+    }
+  }
+
+  private CommonActivityNodeData buildActivity(ActivityInstance activityInstance) {
     switch (activityInstance.getActivityType()) {
       case "multiInstanceBody":
-        List<ActivityNodeData> instances =
+        List<CommonActivityNodeData> instances =
             buildActivitiesWithoutIdAndTransition(activityInstance.getChildActivityInstances());
         List<Integer> activeLoopCounters =
             instances.stream()
@@ -158,6 +185,32 @@ public class Camunda7Exporter implements ProcessInstanceDataExporter {
         return decorate(exclusiveGatewayData(), activityInstance).build();
       case PARALLEL_GATEWAY:
         return decorate(parallelGatewayData(), activityInstance).build();
+      case EVENT_BASED_GATEWAY:
+        return decorate(eventBasedGateway(), activityInstance).build();
+      case INCLUSIVE_GATEWAY:
+        return decorate(inclusiveGateway(), activityInstance).build();
+      case INTERMEDIATE_EVENT:
+        return decorate(intermediateThrowEvent(), activityInstance).build();
+      case END_EVENT:
+        return decorate(endEvent(), activityInstance).build();
+      case MESSAGE_START_EVENT:
+        return decorate(messageStartEvent(), activityInstance).build();
+      case MESSAGE_INTERMEDIATE_THROW_EVENT:
+        return decorate(messageIntermediateThrowEvent(), activityInstance).build();
+      case MESSAGE_END_EVENT:
+        return decorate(messageEndEvent(), activityInstance).build();
+      case MESSAGE_BOUNDARY_EVENT:
+        return decorate(messageBoundaryEvent(), activityInstance).build();
+      case SIGNAL_START_EVENT:
+        return decorate(signalStartEvent(), activityInstance).build();
+      case SIGNAL_INTERMEDIATE_THROW_EVENT:
+        return decorate(signalIntermediateThrowEvent(), activityInstance).build();
+      case SIGNAL_INTERMEDIATE_CATCH_EVENT:
+        return decorate(signalIntermediateCatchEvent(), activityInstance).build();
+      case SIGNAL_END_EVENT:
+        return decorate(signalEndEvent(), activityInstance).build();
+      case SIGNAL_BOUNDARY_EVENT:
+        return decorate(signalBoundaryEvent(), activityInstance).build();
       default:
         throw new RuntimeException(
             "No handler defined for activity type '" + activityInstance.getActivityType() + "'");
@@ -184,7 +237,7 @@ public class Camunda7Exporter implements ProcessInstanceDataExporter {
     return buildProcessInstance(processInstances.get(0).getId());
   }
 
-  private <T extends ActivityNodeDataBuilder<T, ?>> T decorate(
+  private <T extends CommonActivityNodeDataBuilder<T, ?>> T decorate(
       T builder, ActivityInstance activityInstance) {
     return builder
         .withName(activityInstance.getActivityName())

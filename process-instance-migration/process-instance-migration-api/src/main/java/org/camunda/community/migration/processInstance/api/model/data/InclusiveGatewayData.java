@@ -1,8 +1,8 @@
 package org.camunda.community.migration.processInstance.api.model.data;
 
-import org.camunda.community.migration.processInstance.api.model.data.chunk.ActivityNodeData;
+import org.camunda.community.migration.processInstance.api.model.data.chunk.CommonActivityNodeData;
 
-public interface InclusiveGatewayData extends ActivityNodeData {
+public interface InclusiveGatewayData extends CommonActivityNodeData {
   interface InclusiveGatewayDataBuilder
-      extends ActivityNodeDataBuilder<InclusiveGatewayDataBuilder, InclusiveGatewayData> {}
+      extends CommonActivityNodeDataBuilder<InclusiveGatewayDataBuilder, InclusiveGatewayData> {}
 }

@@ -1,12 +1,12 @@
 package org.camunda.community.migration.processInstance.api.model.data;
 
-import org.camunda.community.migration.processInstance.api.model.data.chunk.ActivityNodeData;
+import org.camunda.community.migration.processInstance.api.model.data.chunk.CommonActivityNodeData;
 
-public interface CallActivityData extends ActivityNodeData {
+public interface CallActivityData extends CommonActivityNodeData {
   ProcessInstanceData getProcessInstance();
 
   interface CallActivityDataBuilder
-      extends ActivityNodeDataBuilder<CallActivityDataBuilder, CallActivityData> {
+      extends CommonActivityNodeDataBuilder<CallActivityDataBuilder, CallActivityData> {
     CallActivityDataBuilder withProcessInstance(ProcessInstanceData processInstance);
   }
 }

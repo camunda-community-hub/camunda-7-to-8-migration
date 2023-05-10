@@ -3,10 +3,11 @@ package org.camunda.community.migration.processInstance.api.model.data.impl.buil
 import org.camunda.community.migration.processInstance.api.model.data.StartEventData;
 import org.camunda.community.migration.processInstance.api.model.data.StartEventData.StartEventDataBuilder;
 import org.camunda.community.migration.processInstance.api.model.data.impl.StartEventDataImpl;
-import org.camunda.community.migration.processInstance.api.model.data.impl.chunk.ActivityNodeDataImpl;
+import org.camunda.community.migration.processInstance.api.model.data.impl.chunk.CommonActivityNodeDataImpl;
 
 public class StartEventDataBuilderImpl
-    extends ActivityNodeDataBuilderImpl<StartEventDataBuilder, StartEventData, StartEventDataImpl>
+    extends CommonActivityNodeDataBuilderImpl<
+        StartEventDataBuilder, StartEventData, StartEventDataImpl>
     implements StartEventDataBuilder {
   @Override
   protected StartEventDataImpl createData() {
@@ -19,7 +20,7 @@ public class StartEventDataBuilderImpl
   }
 
   @Override
-  protected ActivityNodeDataImpl data() {
+  protected CommonActivityNodeDataImpl data() {
     return data;
   }
 }

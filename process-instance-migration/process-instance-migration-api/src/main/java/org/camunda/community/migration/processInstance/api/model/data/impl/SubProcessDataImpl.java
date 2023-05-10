@@ -4,9 +4,9 @@ import java.util.Map;
 import java.util.Objects;
 import org.camunda.community.migration.processInstance.api.model.data.SubProcessData;
 import org.camunda.community.migration.processInstance.api.model.data.chunk.ActivityNodeData;
-import org.camunda.community.migration.processInstance.api.model.data.impl.chunk.ActivityNodeDataImpl;
+import org.camunda.community.migration.processInstance.api.model.data.impl.chunk.CommonActivityNodeDataImpl;
 
-public final class SubProcessDataImpl extends ActivityNodeDataImpl implements SubProcessData {
+public final class SubProcessDataImpl extends CommonActivityNodeDataImpl implements SubProcessData {
   private Map<String, ActivityNodeData> activities;
 
   @Override

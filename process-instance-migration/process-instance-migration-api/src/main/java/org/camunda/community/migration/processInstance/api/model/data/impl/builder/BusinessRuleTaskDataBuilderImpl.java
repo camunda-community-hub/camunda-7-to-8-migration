@@ -3,10 +3,10 @@ package org.camunda.community.migration.processInstance.api.model.data.impl.buil
 import org.camunda.community.migration.processInstance.api.model.data.BusinessRuleTaskData;
 import org.camunda.community.migration.processInstance.api.model.data.BusinessRuleTaskData.BusinessRuleTaskDataBuilder;
 import org.camunda.community.migration.processInstance.api.model.data.impl.BusinessRuleTaskDataImpl;
-import org.camunda.community.migration.processInstance.api.model.data.impl.chunk.ActivityNodeDataImpl;
+import org.camunda.community.migration.processInstance.api.model.data.impl.chunk.CommonActivityNodeDataImpl;
 
 public class BusinessRuleTaskDataBuilderImpl
-    extends ActivityNodeDataBuilderImpl<
+    extends CommonActivityNodeDataBuilderImpl<
         BusinessRuleTaskDataBuilder, BusinessRuleTaskData, BusinessRuleTaskDataImpl>
     implements BusinessRuleTaskDataBuilder {
   @Override
@@ -15,7 +15,7 @@ public class BusinessRuleTaskDataBuilderImpl
   }
 
   @Override
-  protected ActivityNodeDataImpl data() {
+  protected CommonActivityNodeDataImpl data() {
     return data;
   }
 

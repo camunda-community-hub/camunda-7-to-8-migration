@@ -1,8 +1,8 @@
 package org.camunda.community.migration.processInstance.api.model.data;
 
-import org.camunda.community.migration.processInstance.api.model.data.chunk.ActivityNodeData;
+import org.camunda.community.migration.processInstance.api.model.data.chunk.CommonActivityNodeData;
 
-public interface UserTaskData extends ActivityNodeData {
+public interface UserTaskData extends CommonActivityNodeData {
   interface UserTaskDataBuilder
-      extends ActivityNodeDataBuilder<UserTaskDataBuilder, UserTaskData> {}
+      extends CommonActivityNodeDataBuilder<UserTaskDataBuilder, UserTaskData> {}
 }

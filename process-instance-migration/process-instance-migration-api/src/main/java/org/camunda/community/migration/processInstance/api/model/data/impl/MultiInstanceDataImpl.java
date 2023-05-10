@@ -4,9 +4,10 @@ import java.util.List;
 import java.util.Objects;
 import org.camunda.community.migration.processInstance.api.model.data.MultiInstanceData;
 import org.camunda.community.migration.processInstance.api.model.data.chunk.ActivityNodeData;
-import org.camunda.community.migration.processInstance.api.model.data.impl.chunk.ActivityNodeDataImpl;
+import org.camunda.community.migration.processInstance.api.model.data.impl.chunk.CommonActivityNodeDataImpl;
 
-public final class MultiInstanceDataImpl extends ActivityNodeDataImpl implements MultiInstanceData {
+public final class MultiInstanceDataImpl extends CommonActivityNodeDataImpl
+    implements MultiInstanceData {
   private List<ActivityNodeData> instances;
   private List<Integer> completedInstanceLoopCounters;
 

@@ -7,10 +7,10 @@ import org.camunda.community.migration.processInstance.api.model.data.Transactio
 import org.camunda.community.migration.processInstance.api.model.data.TransactionData.TransactionDataBuilder;
 import org.camunda.community.migration.processInstance.api.model.data.chunk.ActivityNodeData;
 import org.camunda.community.migration.processInstance.api.model.data.impl.TransactionDataImpl;
-import org.camunda.community.migration.processInstance.api.model.data.impl.chunk.ActivityNodeDataImpl;
+import org.camunda.community.migration.processInstance.api.model.data.impl.chunk.CommonActivityNodeDataImpl;
 
 public class TransactionDataBuilderImpl
-    extends ActivityNodeDataBuilderImpl<
+    extends CommonActivityNodeDataBuilderImpl<
         TransactionDataBuilder, TransactionData, TransactionDataImpl>
     implements TransactionDataBuilder {
   @Override
@@ -36,7 +36,7 @@ public class TransactionDataBuilderImpl
   }
 
   @Override
-  protected ActivityNodeDataImpl data() {
+  protected CommonActivityNodeDataImpl data() {
     return data;
   }
 }

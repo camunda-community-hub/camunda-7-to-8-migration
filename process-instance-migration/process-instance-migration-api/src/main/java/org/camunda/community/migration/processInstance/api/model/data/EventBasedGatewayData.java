@@ -1,8 +1,8 @@
 package org.camunda.community.migration.processInstance.api.model.data;
 
-import org.camunda.community.migration.processInstance.api.model.data.chunk.ActivityNodeData;
+import org.camunda.community.migration.processInstance.api.model.data.chunk.CommonActivityNodeData;
 
-public interface EventBasedGatewayData extends ActivityNodeData {
+public interface EventBasedGatewayData extends CommonActivityNodeData {
   interface EventBasedGatewayDataBuilder
-      extends ActivityNodeDataBuilder<EventBasedGatewayDataBuilder, EventBasedGatewayData> {}
+      extends CommonActivityNodeDataBuilder<EventBasedGatewayDataBuilder, EventBasedGatewayData> {}
 }

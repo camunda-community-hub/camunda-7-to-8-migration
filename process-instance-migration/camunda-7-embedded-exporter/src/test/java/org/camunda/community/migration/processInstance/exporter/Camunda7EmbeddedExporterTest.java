@@ -26,6 +26,7 @@ import org.camunda.community.migration.processInstance.api.model.data.StartEvent
 import org.camunda.community.migration.processInstance.api.model.data.SubProcessData;
 import org.camunda.community.migration.processInstance.api.model.data.UserTaskData;
 import org.camunda.community.migration.processInstance.api.model.data.chunk.ActivityNodeData;
+import org.camunda.community.migration.processInstance.api.model.data.chunk.CommonActivityNodeData;
 import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -193,6 +194,8 @@ public class Camunda7EmbeddedExporterTest {
   private ActivityNodeData findForLoopCounter(
       MultiInstanceData multiInstanceData, int loopCounter) {
     return multiInstanceData.getInstances().stream()
+        .filter(a -> CommonActivityNodeData.class.isAssignableFrom(a.getClass()))
+        .map(CommonActivityNodeData.class::cast)
         .filter(a -> a.getVariables().get("loopCounter").asInt() == loopCounter)
         .findFirst()
         .get();

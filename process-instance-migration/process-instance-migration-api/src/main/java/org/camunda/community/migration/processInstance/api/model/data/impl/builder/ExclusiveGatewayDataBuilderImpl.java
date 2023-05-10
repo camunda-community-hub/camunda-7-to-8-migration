@@ -3,10 +3,10 @@ package org.camunda.community.migration.processInstance.api.model.data.impl.buil
 import org.camunda.community.migration.processInstance.api.model.data.ExclusiveGatewayData;
 import org.camunda.community.migration.processInstance.api.model.data.ExclusiveGatewayData.ExclusiveGatewayDataBuilder;
 import org.camunda.community.migration.processInstance.api.model.data.impl.ExclusiveGatewayDataImpl;
-import org.camunda.community.migration.processInstance.api.model.data.impl.chunk.ActivityNodeDataImpl;
+import org.camunda.community.migration.processInstance.api.model.data.impl.chunk.CommonActivityNodeDataImpl;
 
 public class ExclusiveGatewayDataBuilderImpl
-    extends ActivityNodeDataBuilderImpl<
+    extends CommonActivityNodeDataBuilderImpl<
         ExclusiveGatewayDataBuilder, ExclusiveGatewayData, ExclusiveGatewayDataImpl>
     implements ExclusiveGatewayDataBuilder {
   @Override
@@ -20,7 +20,7 @@ public class ExclusiveGatewayDataBuilderImpl
   }
 
   @Override
-  protected ActivityNodeDataImpl data() {
+  protected CommonActivityNodeDataImpl data() {
     return data;
   }
 }

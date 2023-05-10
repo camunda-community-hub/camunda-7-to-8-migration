@@ -1,8 +1,8 @@
 package org.camunda.community.migration.processInstance.api.model.data;
 
-import org.camunda.community.migration.processInstance.api.model.data.chunk.ActivityNodeData;
+import org.camunda.community.migration.processInstance.api.model.data.chunk.CommonActivityNodeData;
 
-public interface SendTaskData extends ActivityNodeData {
+public interface SendTaskData extends CommonActivityNodeData {
   interface SendTaskDataBuilder
-      extends ActivityNodeDataBuilder<SendTaskDataBuilder, SendTaskData> {}
+      extends CommonActivityNodeDataBuilder<SendTaskDataBuilder, SendTaskData> {}
 }

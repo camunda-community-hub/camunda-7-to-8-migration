@@ -3,10 +3,11 @@ package org.camunda.community.migration.processInstance.api.model.data.impl.buil
 import org.camunda.community.migration.processInstance.api.model.data.ManualTaskData;
 import org.camunda.community.migration.processInstance.api.model.data.ManualTaskData.ManualTaskDataBuilder;
 import org.camunda.community.migration.processInstance.api.model.data.impl.ManualTaskDataImpl;
-import org.camunda.community.migration.processInstance.api.model.data.impl.chunk.ActivityNodeDataImpl;
+import org.camunda.community.migration.processInstance.api.model.data.impl.chunk.CommonActivityNodeDataImpl;
 
 public class ManualTaskDataBuilderImpl
-    extends ActivityNodeDataBuilderImpl<ManualTaskDataBuilder, ManualTaskData, ManualTaskDataImpl>
+    extends CommonActivityNodeDataBuilderImpl<
+        ManualTaskDataBuilder, ManualTaskData, ManualTaskDataImpl>
     implements ManualTaskDataBuilder {
   @Override
   protected ManualTaskDataBuilder builder() {
@@ -14,7 +15,7 @@ public class ManualTaskDataBuilderImpl
   }
 
   @Override
-  protected ActivityNodeDataImpl data() {
+  protected CommonActivityNodeDataImpl data() {
     return data;
   }
 

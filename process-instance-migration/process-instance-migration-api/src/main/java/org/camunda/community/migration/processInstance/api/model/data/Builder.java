@@ -9,9 +9,18 @@ import com.fasterxml.jackson.databind.node.NumericNode;
 import com.fasterxml.jackson.databind.node.TextNode;
 import org.camunda.community.migration.processInstance.api.model.data.BusinessRuleTaskData.BusinessRuleTaskDataBuilder;
 import org.camunda.community.migration.processInstance.api.model.data.CallActivityData.CallActivityDataBuilder;
+import org.camunda.community.migration.processInstance.api.model.data.EndEventData.EndEventDataBuilder;
+import org.camunda.community.migration.processInstance.api.model.data.EventBasedGatewayData.EventBasedGatewayDataBuilder;
 import org.camunda.community.migration.processInstance.api.model.data.ExclusiveGatewayData.ExclusiveGatewayDataBuilder;
+import org.camunda.community.migration.processInstance.api.model.data.InclusiveGatewayData.InclusiveGatewayDataBuilder;
+import org.camunda.community.migration.processInstance.api.model.data.IntermediateThrowEventData.IntermediateThrowEventDataBuilder;
 import org.camunda.community.migration.processInstance.api.model.data.ManualTaskData.ManualTaskDataBuilder;
+import org.camunda.community.migration.processInstance.api.model.data.MessageBoundaryEventData.MessageBoundaryEventDataBuilder;
+import org.camunda.community.migration.processInstance.api.model.data.MessageEndEventData.MessageEndEventDataBuilder;
 import org.camunda.community.migration.processInstance.api.model.data.MessageIntermediateCatchEventData.MessageIntermediateCatchEventDataBuilder;
+import org.camunda.community.migration.processInstance.api.model.data.MessageIntermediateThrowEventData.MessageIntermediateThrowEventDataBuilder;
+import org.camunda.community.migration.processInstance.api.model.data.MessageStartEventData.MessageStartEventDataBuilder;
+import org.camunda.community.migration.processInstance.api.model.data.MultiExecutionData.MultiExecutionDataBuilder;
 import org.camunda.community.migration.processInstance.api.model.data.MultiInstanceData.MultiInstanceDataBuilder;
 import org.camunda.community.migration.processInstance.api.model.data.ParallelGatewayData.ParallelGatewayDataBuilder;
 import org.camunda.community.migration.processInstance.api.model.data.ProcessInstanceData.ProcessInstanceDataBuilder;
@@ -20,6 +29,11 @@ import org.camunda.community.migration.processInstance.api.model.data.ReceiveTas
 import org.camunda.community.migration.processInstance.api.model.data.ScriptTaskData.ScriptTaskDataBuilder;
 import org.camunda.community.migration.processInstance.api.model.data.SendTaskData.SendTaskDataBuilder;
 import org.camunda.community.migration.processInstance.api.model.data.ServiceTaskData.ServiceTaskDataBuilder;
+import org.camunda.community.migration.processInstance.api.model.data.SignalBoundaryEventData.SignalBoundaryEventDataBuilder;
+import org.camunda.community.migration.processInstance.api.model.data.SignalEndEventData.SignalEndEventDataBuilder;
+import org.camunda.community.migration.processInstance.api.model.data.SignalIntermediateCatchEventData.SignalIntermediateCatchEventDataBuilder;
+import org.camunda.community.migration.processInstance.api.model.data.SignalIntermediateThrowEventData.SignalIntermediateThrowEventDataBuilder;
+import org.camunda.community.migration.processInstance.api.model.data.SignalStartEventData.SignalStartEventDataBuilder;
 import org.camunda.community.migration.processInstance.api.model.data.StartEventData.StartEventDataBuilder;
 import org.camunda.community.migration.processInstance.api.model.data.SubProcessData.SubProcessDataBuilder;
 import org.camunda.community.migration.processInstance.api.model.data.TaskData.TaskDataBuilder;
@@ -27,9 +41,18 @@ import org.camunda.community.migration.processInstance.api.model.data.Transactio
 import org.camunda.community.migration.processInstance.api.model.data.UserTaskData.UserTaskDataBuilder;
 import org.camunda.community.migration.processInstance.api.model.data.impl.builder.BusinessRuleTaskDataBuilderImpl;
 import org.camunda.community.migration.processInstance.api.model.data.impl.builder.CallActivityBuilderImpl;
+import org.camunda.community.migration.processInstance.api.model.data.impl.builder.EndEventDataBuilderImpl;
+import org.camunda.community.migration.processInstance.api.model.data.impl.builder.EventBasedGatewayDataBuilderImpl;
 import org.camunda.community.migration.processInstance.api.model.data.impl.builder.ExclusiveGatewayDataBuilderImpl;
+import org.camunda.community.migration.processInstance.api.model.data.impl.builder.InclusiveGatewayDataBuilderImpl;
+import org.camunda.community.migration.processInstance.api.model.data.impl.builder.IntermediateThrowEventDataBuilderImpl;
 import org.camunda.community.migration.processInstance.api.model.data.impl.builder.ManualTaskDataBuilderImpl;
+import org.camunda.community.migration.processInstance.api.model.data.impl.builder.MessageBoundaryEventBuilderImpl;
+import org.camunda.community.migration.processInstance.api.model.data.impl.builder.MessageEndEventDataBuilderImpl;
 import org.camunda.community.migration.processInstance.api.model.data.impl.builder.MessageIntermediateCatchEventDataBuilderImpl;
+import org.camunda.community.migration.processInstance.api.model.data.impl.builder.MessageIntermediateThrowEventDataBuilderImpl;
+import org.camunda.community.migration.processInstance.api.model.data.impl.builder.MessageStartEventDataBuilderImpl;
+import org.camunda.community.migration.processInstance.api.model.data.impl.builder.MultiExecutionDataBuilderImpl;
 import org.camunda.community.migration.processInstance.api.model.data.impl.builder.MultiInstanceDataBuilderImpl;
 import org.camunda.community.migration.processInstance.api.model.data.impl.builder.ParallelGatewayDataBuilderImpl;
 import org.camunda.community.migration.processInstance.api.model.data.impl.builder.ProcessInstanceDataBuilderImpl;
@@ -38,6 +61,11 @@ import org.camunda.community.migration.processInstance.api.model.data.impl.build
 import org.camunda.community.migration.processInstance.api.model.data.impl.builder.ScriptTaskDataBuilderImpl;
 import org.camunda.community.migration.processInstance.api.model.data.impl.builder.SendTaskDataBuilderImpl;
 import org.camunda.community.migration.processInstance.api.model.data.impl.builder.ServiceTaskDataBuilderImpl;
+import org.camunda.community.migration.processInstance.api.model.data.impl.builder.SignalBoundaryEventDataBuilderImpl;
+import org.camunda.community.migration.processInstance.api.model.data.impl.builder.SignalEndEventDataBuilderImpl;
+import org.camunda.community.migration.processInstance.api.model.data.impl.builder.SignalIntermediateCatchEventDataBuilderImpl;
+import org.camunda.community.migration.processInstance.api.model.data.impl.builder.SignalIntermediateThrowEventDataBuilderImpl;
+import org.camunda.community.migration.processInstance.api.model.data.impl.builder.SignalStartEventDataBuilderImpl;
 import org.camunda.community.migration.processInstance.api.model.data.impl.builder.StartEventDataBuilderImpl;
 import org.camunda.community.migration.processInstance.api.model.data.impl.builder.SubProcessDataBuilderImpl;
 import org.camunda.community.migration.processInstance.api.model.data.impl.builder.TaskDataBuilderImpl;
@@ -115,6 +143,62 @@ public interface Builder {
 
   static ParallelGatewayDataBuilder parallelGatewayData() {
     return new ParallelGatewayDataBuilderImpl();
+  }
+
+  static MultiExecutionDataBuilder multiExecutionData() {
+    return new MultiExecutionDataBuilderImpl();
+  }
+
+  static EventBasedGatewayDataBuilder eventBasedGateway() {
+    return new EventBasedGatewayDataBuilderImpl();
+  }
+
+  static InclusiveGatewayDataBuilder inclusiveGateway() {
+    return new InclusiveGatewayDataBuilderImpl();
+  }
+
+  static IntermediateThrowEventDataBuilder intermediateThrowEvent() {
+    return new IntermediateThrowEventDataBuilderImpl();
+  }
+
+  static EndEventDataBuilder endEvent() {
+    return new EndEventDataBuilderImpl();
+  }
+
+  static MessageStartEventDataBuilder messageStartEvent() {
+    return new MessageStartEventDataBuilderImpl();
+  }
+
+  static MessageIntermediateThrowEventDataBuilder messageIntermediateThrowEvent() {
+    return new MessageIntermediateThrowEventDataBuilderImpl();
+  }
+
+  static MessageEndEventDataBuilder messageEndEvent() {
+    return new MessageEndEventDataBuilderImpl();
+  }
+
+  static MessageBoundaryEventDataBuilder messageBoundaryEvent() {
+    return new MessageBoundaryEventBuilderImpl();
+  }
+
+  static SignalStartEventDataBuilder signalStartEvent() {
+    return new SignalStartEventDataBuilderImpl();
+  }
+
+  static SignalIntermediateThrowEventDataBuilder signalIntermediateThrowEvent() {
+    return new SignalIntermediateThrowEventDataBuilderImpl();
+  }
+
+  static SignalIntermediateCatchEventDataBuilder signalIntermediateCatchEvent() {
+    return new SignalIntermediateCatchEventDataBuilderImpl();
+  }
+
+  static SignalEndEventDataBuilder signalEndEvent() {
+    return new SignalEndEventDataBuilderImpl();
+  }
+
+  static SignalBoundaryEventDataBuilder signalBoundaryEvent() {
+    return new SignalBoundaryEventDataBuilderImpl();
   }
 
   interface Json {

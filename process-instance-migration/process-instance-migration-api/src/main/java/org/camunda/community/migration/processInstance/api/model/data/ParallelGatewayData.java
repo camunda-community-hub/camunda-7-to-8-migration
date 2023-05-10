@@ -1,9 +1,9 @@
 package org.camunda.community.migration.processInstance.api.model.data;
 
-import org.camunda.community.migration.processInstance.api.model.data.chunk.ActivityNodeData;
+import org.camunda.community.migration.processInstance.api.model.data.chunk.CommonActivityNodeData;
 
-public interface ParallelGatewayData extends ActivityNodeData {
+public interface ParallelGatewayData extends CommonActivityNodeData {
 
   interface ParallelGatewayDataBuilder
-      extends ActivityNodeDataBuilder<ParallelGatewayDataBuilder, ParallelGatewayData> {}
+      extends CommonActivityNodeDataBuilder<ParallelGatewayDataBuilder, ParallelGatewayData> {}
 }

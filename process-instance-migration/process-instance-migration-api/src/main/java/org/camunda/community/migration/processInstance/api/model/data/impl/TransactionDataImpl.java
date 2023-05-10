@@ -4,9 +4,9 @@ import java.util.Map;
 import java.util.Objects;
 import org.camunda.community.migration.processInstance.api.model.data.TransactionData;
 import org.camunda.community.migration.processInstance.api.model.data.chunk.ActivityNodeData;
-import org.camunda.community.migration.processInstance.api.model.data.impl.chunk.ActivityNodeDataImpl;
+import org.camunda.community.migration.processInstance.api.model.data.impl.chunk.CommonActivityNodeDataImpl;
 
-public class TransactionDataImpl extends ActivityNodeDataImpl implements TransactionData {
+public class TransactionDataImpl extends CommonActivityNodeDataImpl implements TransactionData {
   private Map<String, ActivityNodeData> activities;
 
   @Override

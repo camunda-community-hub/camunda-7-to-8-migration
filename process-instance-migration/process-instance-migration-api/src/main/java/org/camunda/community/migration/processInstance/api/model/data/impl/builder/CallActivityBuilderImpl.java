@@ -4,10 +4,10 @@ import org.camunda.community.migration.processInstance.api.model.data.CallActivi
 import org.camunda.community.migration.processInstance.api.model.data.CallActivityData.CallActivityDataBuilder;
 import org.camunda.community.migration.processInstance.api.model.data.ProcessInstanceData;
 import org.camunda.community.migration.processInstance.api.model.data.impl.CallActivityDataImpl;
-import org.camunda.community.migration.processInstance.api.model.data.impl.chunk.ActivityNodeDataImpl;
+import org.camunda.community.migration.processInstance.api.model.data.impl.chunk.CommonActivityNodeDataImpl;
 
 public class CallActivityBuilderImpl
-    extends ActivityNodeDataBuilderImpl<
+    extends CommonActivityNodeDataBuilderImpl<
         CallActivityDataBuilder, CallActivityData, CallActivityDataImpl>
     implements CallActivityDataBuilder {
   @Override
@@ -27,7 +27,7 @@ public class CallActivityBuilderImpl
   }
 
   @Override
-  protected ActivityNodeDataImpl data() {
+  protected CommonActivityNodeDataImpl data() {
     return data;
   }
 }

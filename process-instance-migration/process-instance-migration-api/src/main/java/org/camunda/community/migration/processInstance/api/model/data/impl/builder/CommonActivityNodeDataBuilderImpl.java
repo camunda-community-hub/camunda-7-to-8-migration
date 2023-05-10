@@ -5,13 +5,15 @@ import static org.camunda.community.migration.processInstance.api.model.data.imp
 import com.fasterxml.jackson.databind.JsonNode;
 import java.util.Map;
 import org.camunda.community.migration.processInstance.api.model.FinalBuildStep.FinalBuildStepImpl;
-import org.camunda.community.migration.processInstance.api.model.data.chunk.ActivityNodeData;
-import org.camunda.community.migration.processInstance.api.model.data.chunk.ActivityNodeData.ActivityNodeDataBuilder;
-import org.camunda.community.migration.processInstance.api.model.data.impl.chunk.ActivityNodeDataImpl;
+import org.camunda.community.migration.processInstance.api.model.data.chunk.CommonActivityNodeData;
+import org.camunda.community.migration.processInstance.api.model.data.chunk.CommonActivityNodeData.CommonActivityNodeDataBuilder;
+import org.camunda.community.migration.processInstance.api.model.data.impl.chunk.CommonActivityNodeDataImpl;
 
-public abstract class ActivityNodeDataBuilderImpl<
-        B extends ActivityNodeDataBuilder<B, T>, T extends ActivityNodeData, I extends T>
-    extends FinalBuildStepImpl<T, I> implements ActivityNodeDataBuilder<B, T> {
+public abstract class CommonActivityNodeDataBuilderImpl<
+        B extends CommonActivityNodeDataBuilder<B, T>,
+        T extends CommonActivityNodeData,
+        I extends T>
+    extends FinalBuildStepImpl<T, I> implements CommonActivityNodeDataBuilder<B, T> {
   @Override
   public B withName(String name) {
     data().setName(name);
@@ -38,5 +40,5 @@ public abstract class ActivityNodeDataBuilderImpl<
 
   protected abstract B builder();
 
-  protected abstract ActivityNodeDataImpl data();
+  protected abstract CommonActivityNodeDataImpl data();
 }

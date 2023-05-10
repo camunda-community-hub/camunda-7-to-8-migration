@@ -3,9 +3,9 @@ package org.camunda.community.migration.processInstance.api.model.data.impl.chun
 import com.fasterxml.jackson.databind.JsonNode;
 import java.util.Map;
 import java.util.Objects;
-import org.camunda.community.migration.processInstance.api.model.data.chunk.ActivityNodeData;
+import org.camunda.community.migration.processInstance.api.model.data.chunk.CommonActivityNodeData;
 
-public abstract class ActivityNodeDataImpl implements ActivityNodeData {
+public abstract class CommonActivityNodeDataImpl implements CommonActivityNodeData {
   private String name;
   private Map<String, JsonNode> variables;
   private Boolean executed;
@@ -40,13 +40,15 @@ public abstract class ActivityNodeDataImpl implements ActivityNodeData {
   @Override
   public boolean equals(Object o) {
     if (this == o) return true;
-    if (o == null || !getClass().isAssignableFrom(o.getClass())) return false;
-    ActivityNodeDataImpl that = (ActivityNodeDataImpl) o;
-    return Objects.equals(name, that.name) && Objects.equals(variables, that.variables);
+    if (o == null || getClass() != o.getClass()) return false;
+    CommonActivityNodeDataImpl that = (CommonActivityNodeDataImpl) o;
+    return Objects.equals(name, that.name)
+        && Objects.equals(variables, that.variables)
+        && Objects.equals(executed, that.executed);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(name, variables);
+    return Objects.hash(name, variables, executed);
   }
 }

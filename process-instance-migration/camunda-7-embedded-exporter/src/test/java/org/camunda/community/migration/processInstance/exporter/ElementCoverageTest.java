@@ -1,6 +1,7 @@
 package org.camunda.community.migration.processInstance.exporter;
 
 import static org.camunda.bpm.engine.test.assertions.bpmn.BpmnAwareTests.*;
+import static org.junit.jupiter.api.DynamicContainer.*;
 import static org.junit.jupiter.api.DynamicTest.*;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -17,21 +18,36 @@ import org.camunda.bpm.engine.runtime.ProcessInstance;
 import org.camunda.bpm.engine.test.junit5.ProcessEngineExtension;
 import org.camunda.community.migration.processInstance.api.model.data.BusinessRuleTaskData;
 import org.camunda.community.migration.processInstance.api.model.data.CallActivityData;
+import org.camunda.community.migration.processInstance.api.model.data.EndEventData;
 import org.camunda.community.migration.processInstance.api.model.data.EventBasedGatewayData;
 import org.camunda.community.migration.processInstance.api.model.data.ExclusiveGatewayData;
 import org.camunda.community.migration.processInstance.api.model.data.InclusiveGatewayData;
+import org.camunda.community.migration.processInstance.api.model.data.IntermediateThrowEventData;
 import org.camunda.community.migration.processInstance.api.model.data.ManualTaskData;
+import org.camunda.community.migration.processInstance.api.model.data.MessageBoundaryEventData;
+import org.camunda.community.migration.processInstance.api.model.data.MessageEndEventData;
+import org.camunda.community.migration.processInstance.api.model.data.MessageIntermediateCatchEventData;
+import org.camunda.community.migration.processInstance.api.model.data.MessageIntermediateThrowEventData;
+import org.camunda.community.migration.processInstance.api.model.data.MessageStartEventData;
 import org.camunda.community.migration.processInstance.api.model.data.ParallelGatewayData;
 import org.camunda.community.migration.processInstance.api.model.data.ProcessInstanceData;
 import org.camunda.community.migration.processInstance.api.model.data.ReceiveTaskData;
 import org.camunda.community.migration.processInstance.api.model.data.ScriptTaskData;
 import org.camunda.community.migration.processInstance.api.model.data.SendTaskData;
 import org.camunda.community.migration.processInstance.api.model.data.ServiceTaskData;
+import org.camunda.community.migration.processInstance.api.model.data.SignalBoundaryEventData;
+import org.camunda.community.migration.processInstance.api.model.data.SignalEndEventData;
+import org.camunda.community.migration.processInstance.api.model.data.SignalIntermediateCatchEventData;
+import org.camunda.community.migration.processInstance.api.model.data.SignalIntermediateThrowEventData;
+import org.camunda.community.migration.processInstance.api.model.data.SignalStartEventData;
+import org.camunda.community.migration.processInstance.api.model.data.StartEventData;
 import org.camunda.community.migration.processInstance.api.model.data.SubProcessData;
 import org.camunda.community.migration.processInstance.api.model.data.TaskData;
 import org.camunda.community.migration.processInstance.api.model.data.TransactionData;
 import org.camunda.community.migration.processInstance.api.model.data.UserTaskData;
 import org.camunda.community.migration.processInstance.api.model.data.chunk.ActivityNodeData;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.DynamicContainer;
 import org.junit.jupiter.api.DynamicTest;
 import org.junit.jupiter.api.TestFactory;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -55,6 +71,7 @@ public class ElementCoverageTest {
   }
 
   @TestFactory
+  @DisplayName("Task Coverage")
   Stream<DynamicTest> taskCoverage() {
     return Stream.of(
         dynamicTest("Task", () -> performTest("bpmn/coverage/task.bpmn", TaskData.class)),
@@ -80,6 +97,7 @@ public class ElementCoverageTest {
   }
 
   @TestFactory
+  @DisplayName("Sub Process Coverage")
   Stream<DynamicTest> subProcessCoverage() {
     return Stream.of(
         dynamicTest(
@@ -101,6 +119,7 @@ public class ElementCoverageTest {
   }
 
   @TestFactory
+  @DisplayName("Gateway Coverage")
   Stream<DynamicTest> gatewayCoverage() {
     return Stream.of(
         dynamicTest(
@@ -116,6 +135,93 @@ public class ElementCoverageTest {
         dynamicTest(
             "Inclusive Gateway",
             () -> performTest("bpmn/coverage/inclusive-gateway.bpmn", InclusiveGatewayData.class)));
+  }
+
+  @TestFactory
+  @DisplayName("Event Coverage")
+  Stream<DynamicContainer> eventCoverage() {
+    return Stream.of(
+        dynamicContainer(
+            "None Events",
+            Stream.of(
+                dynamicTest(
+                    "Start",
+                    () -> performTest("bpmn/coverage/none-start-event.bpmn", StartEventData.class)),
+                dynamicTest(
+                    "Intermediate Throw",
+                    () ->
+                        performTest(
+                            "bpmn/coverage/none-intermediate-event.bpmn",
+                            IntermediateThrowEventData.class)),
+                dynamicTest(
+                    "End",
+                    () -> performTest("bpmn/coverage/none-end-event.bpmn", EndEventData.class)))),
+        dynamicContainer(
+            "Message Events",
+            Stream.of(
+                dynamicTest(
+                    "Start",
+                    () ->
+                        performTest(
+                            "bpmn/coverage/message-start-event.bpmn", MessageStartEventData.class)),
+                dynamicTest(
+                    "Intermediate Throw",
+                    () ->
+                        performTest(
+                            "bpmn/coverage/message-intermediate-throw-event.bpmn",
+                            MessageIntermediateThrowEventData.class)),
+                dynamicTest(
+                    "Intermediate Catch",
+                    () ->
+                        performTest(
+                            "bpmn/coverage/message-intermediate-catch-event.bpmn",
+                            MessageIntermediateCatchEventData.class)),
+                dynamicTest(
+                    "End",
+                    () ->
+                        performTest(
+                            "bpmn/coverage/message-end-event.bpmn", MessageEndEventData.class)),
+                dynamicTest(
+                    "Boundary Event",
+                    () ->
+                        performTest(
+                            "bpmn/coverage/message-boundary-event.bpmn",
+                            Collections.singletonList(
+                                pi -> runtimeService().correlateMessage("msg")),
+                            MessageBoundaryEventData.class)))),
+        dynamicContainer(
+            "Signal Events",
+            Stream.of(
+                dynamicTest(
+                    "Start",
+                    () ->
+                        performTest(
+                            "bpmn/coverage/signal-start-event.bpmn", SignalStartEventData.class)),
+                dynamicTest(
+                    "Intermediate Throw",
+                    () ->
+                        performTest(
+                            "bpmn/coverage/signal-intermediate-throw-event.bpmn",
+                            SignalIntermediateThrowEventData.class)),
+                dynamicTest(
+                    "Intermediate Catch",
+                    () ->
+                        performTest(
+                            "bpmn/coverage/signal-intermediate-catch-event.bpmn",
+                            SignalIntermediateCatchEventData.class)),
+                dynamicTest(
+                    "End",
+                    () ->
+                        performTest(
+                            "bpmn/coverage/signal-end-event.bpmn", SignalEndEventData.class)),
+                dynamicTest(
+                    "Boundary Event",
+                    () ->
+                        performTest(
+                            "bpmn/coverage/signal-boundary-event.bpmn",
+                            Collections.singletonList(
+                                pi -> runtimeService().createSignalEvent("msg").send()),
+                            SignalBoundaryEventData.class)))));
   }
 
   private void performTest(String resourceName, Class<? extends ActivityNodeData> expectedType) {

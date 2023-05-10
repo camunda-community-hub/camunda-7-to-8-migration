@@ -1,8 +1,8 @@
 package org.camunda.community.migration.processInstance.api.model.data;
 
-import org.camunda.community.migration.processInstance.api.model.data.chunk.ActivityNodeData;
+import org.camunda.community.migration.processInstance.api.model.data.chunk.CommonActivityNodeData;
 
-public interface BusinessRuleTaskData extends ActivityNodeData {
+public interface BusinessRuleTaskData extends CommonActivityNodeData {
   interface BusinessRuleTaskDataBuilder
-      extends ActivityNodeDataBuilder<BusinessRuleTaskDataBuilder, BusinessRuleTaskData> {}
+      extends CommonActivityNodeDataBuilder<BusinessRuleTaskDataBuilder, BusinessRuleTaskData> {}
 }

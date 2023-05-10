@@ -3,10 +3,10 @@ package org.camunda.community.migration.processInstance.api.model.data.impl.buil
 import org.camunda.community.migration.processInstance.api.model.data.SendTaskData;
 import org.camunda.community.migration.processInstance.api.model.data.SendTaskData.SendTaskDataBuilder;
 import org.camunda.community.migration.processInstance.api.model.data.impl.SendTaskDataImpl;
-import org.camunda.community.migration.processInstance.api.model.data.impl.chunk.ActivityNodeDataImpl;
+import org.camunda.community.migration.processInstance.api.model.data.impl.chunk.CommonActivityNodeDataImpl;
 
 public class SendTaskDataBuilderImpl
-    extends ActivityNodeDataBuilderImpl<SendTaskDataBuilder, SendTaskData, SendTaskDataImpl>
+    extends CommonActivityNodeDataBuilderImpl<SendTaskDataBuilder, SendTaskData, SendTaskDataImpl>
     implements SendTaskDataBuilder {
   @Override
   protected SendTaskDataBuilder builder() {
@@ -14,7 +14,7 @@ public class SendTaskDataBuilderImpl
   }
 
   @Override
-  protected ActivityNodeDataImpl data() {
+  protected CommonActivityNodeDataImpl data() {
     return data;
   }
 

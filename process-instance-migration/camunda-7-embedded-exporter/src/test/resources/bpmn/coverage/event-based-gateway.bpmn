@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_1mok7ff" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.11.0" modeler:executionPlatform="Camunda Platform" modeler:executionPlatformVersion="7.18.0">
+  <bpmn:process id="EventBasedGatewayProcess" name="Event Based Gateway" isExecutable="true">
+    <bpmn:startEvent id="ProcessStartedStartEvent" name="Process started">
+      <bpmn:outgoing>Flow_13bnbu3</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:sequenceFlow id="Flow_13bnbu3" sourceRef="ProcessStartedStartEvent" targetRef="EventBasedGatewayGateway" />
+    <bpmn:endEvent id="ProcessCompleteEndEvent" name="Process complete">
+      <bpmn:incoming>Flow_0so6of6</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:eventBasedGateway id="EventBasedGatewayGateway" name="Event Based Gateway" camunda:asyncBefore="true">
+      <bpmn:incoming>Flow_13bnbu3</bpmn:incoming>
+      <bpmn:outgoing>Flow_0gmbwwc</bpmn:outgoing>
+    </bpmn:eventBasedGateway>
+    <bpmn:intermediateCatchEvent id="MessageArrivedEvent" name="Message arrived">
+      <bpmn:incoming>Flow_0gmbwwc</bpmn:incoming>
+      <bpmn:outgoing>Flow_0so6of6</bpmn:outgoing>
+      <bpmn:messageEventDefinition id="MessageEventDefinition_1azw9ym" messageRef="Message_1euu5bi" />
+    </bpmn:intermediateCatchEvent>
+    <bpmn:sequenceFlow id="Flow_0gmbwwc" sourceRef="EventBasedGatewayGateway" targetRef="MessageArrivedEvent" />
+    <bpmn:sequenceFlow id="Flow_0so6of6" sourceRef="MessageArrivedEvent" targetRef="ProcessCompleteEndEvent" />
+  </bpmn:process>
+  <bpmn:message id="Message_1euu5bi" name="msg" />
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="EventBasedGatewayProcess">
+      <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="ProcessStartedStartEvent">
+        <dc:Bounds x="172" y="99" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="152" y="142" width="77" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_1yyc5qw_di" bpmnElement="EventBasedGatewayGateway">
+        <dc:Bounds x="475" y="92" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="469" y="68" width="63" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0xuucm3_di" bpmnElement="MessageArrivedEvent">
+        <dc:Bounds x="582" y="99" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="559" y="142" width="82" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1acybb3_di" bpmnElement="ProcessCompleteEndEvent">
+        <dc:Bounds x="672" y="99" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="646" y="142" width="88" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_13bnbu3_di" bpmnElement="Flow_13bnbu3">
+        <di:waypoint x="208" y="117" />
+        <di:waypoint x="475" y="117" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0gmbwwc_di" bpmnElement="Flow_0gmbwwc">
+        <di:waypoint x="525" y="117" />
+        <di:waypoint x="582" y="117" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0so6of6_di" bpmnElement="Flow_0so6of6">
+        <di:waypoint x="618" y="117" />
+        <di:waypoint x="672" y="117" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

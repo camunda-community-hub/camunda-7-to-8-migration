@@ -23,6 +23,7 @@ import org.assertj.core.api.Assertions;
 import org.assertj.core.data.MapEntry;
 import org.camunda.community.migration.processInstance.api.model.FinalBuildStep;
 import org.camunda.community.migration.processInstance.api.model.data.chunk.ActivityNodeData;
+import org.camunda.community.migration.processInstance.api.model.data.chunk.CommonActivityNodeData;
 import org.junit.jupiter.api.DynamicContainer;
 import org.junit.jupiter.api.DynamicTest;
 import org.junit.jupiter.api.TestFactory;
@@ -165,6 +166,12 @@ public class ApiIntegrityTest {
                   d.expectedGetterValue = "foo";
                   d.builderArgs = new Object[] {"foo"};
                 }),
+            new ParameterTypeFilteringTestDataVisitor(
+                Collections.singletonList(Boolean.class),
+                d -> {
+                  d.expectedGetterValue = true;
+                  d.builderArgs = new Object[] {true};
+                }),
             new MethodNameFilteringTestDataVisitor(
                 "withInstances",
                 d -> {
@@ -186,6 +193,22 @@ public class ApiIntegrityTest {
                   d.expectedGetterValue = variables;
                   d.builderArgs = new Object[] {variables};
                 }),
+            new MethodNameAndParameterTypeFilteringTestDataVisitor(
+                Collections.singletonList(List.class),
+                "withActivities",
+                d -> {
+                  d.expectedGetterValue = Collections.singletonList(manualTaskData().build());
+                  d.builderArgs =
+                      new Object[] {Collections.singletonList(manualTaskData().build())};
+                }),
+            new MethodNameAndParameterTypeFilteringTestDataVisitor(
+                Collections.singletonList(CommonActivityNodeData.class),
+                "withActivity",
+                d -> {
+                  ActivityNodeData taskData = manualTaskData().build();
+                  d.expectedGetterValue = Collections.singletonList(taskData);
+                  d.builderArgs = new Object[] {taskData};
+                }),
             new MethodNameFilteringTestDataVisitor(
                 "withVariable",
                 d -> {
@@ -193,7 +216,8 @@ public class ApiIntegrityTest {
                       Collections.<String, JsonNode>singletonMap("foo", text("bar"));
                   d.builderArgs = new Object[] {"foo", text("bar")};
                 }),
-            new MethodNameFilteringTestDataVisitor(
+            new MethodNameAndParameterTypeFilteringTestDataVisitor(
+                Collections.singletonList(Map.class),
                 "withActivities",
                 d -> {
                   Map<String, ActivityNodeData> activities =
@@ -201,7 +225,8 @@ public class ApiIntegrityTest {
                   d.expectedGetterValue = activities;
                   d.builderArgs = new Object[] {activities};
                 }),
-            new MethodNameFilteringTestDataVisitor(
+            new MethodNameAndParameterTypeFilteringTestDataVisitor(
+                Arrays.asList(String.class, ActivityNodeData.class),
                 "withActivity",
                 d -> {
                   ActivityNodeData taskData = manualTaskData().build();
@@ -275,6 +300,28 @@ public class ApiIntegrityTest {
     @Override
     public void visit(BuilderTestData testData) {
       if (testData.methodName.equals(methodName)) {
+        visitor.accept(testData);
+      }
+    }
+  }
+
+  private static class MethodNameAndParameterTypeFilteringTestDataVisitor
+      implements TestDataVisitor {
+    private final List<Class<?>> parameterTypes;
+    private final String methodName;
+    private final Consumer<BuilderTestData> visitor;
+
+    public MethodNameAndParameterTypeFilteringTestDataVisitor(
+        List<Class<?>> parameterTypes, String methodName, Consumer<BuilderTestData> visitor) {
+      this.parameterTypes = parameterTypes;
+      this.methodName = methodName;
+      this.visitor = visitor;
+    }
+
+    @Override
+    public void visit(BuilderTestData testData) {
+      if (testData.parameterTypes.equals(parameterTypes)
+          && testData.methodName.equals(methodName)) {
         visitor.accept(testData);
       }
     }

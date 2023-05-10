@@ -1,11 +1,11 @@
 package org.camunda.community.migration.processInstance.api.model.data;
 
 import org.camunda.community.migration.processInstance.api.model.data.chunk.ActivityContainerData;
-import org.camunda.community.migration.processInstance.api.model.data.chunk.ActivityNodeData;
+import org.camunda.community.migration.processInstance.api.model.data.chunk.CommonActivityNodeData;
 
-public interface SubProcessData extends ActivityNodeData, ActivityContainerData {
+public interface SubProcessData extends CommonActivityNodeData, ActivityContainerData {
 
   interface SubProcessDataBuilder
-      extends ActivityNodeDataBuilder<SubProcessDataBuilder, SubProcessData>,
+      extends CommonActivityNodeDataBuilder<SubProcessDataBuilder, SubProcessData>,
           ActivityContainerDataBuilder<SubProcessDataBuilder> {}
 }

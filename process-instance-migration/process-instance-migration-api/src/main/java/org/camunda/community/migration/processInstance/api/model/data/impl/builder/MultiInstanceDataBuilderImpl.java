@@ -7,10 +7,10 @@ import org.camunda.community.migration.processInstance.api.model.data.MultiInsta
 import org.camunda.community.migration.processInstance.api.model.data.MultiInstanceData.MultiInstanceDataBuilder;
 import org.camunda.community.migration.processInstance.api.model.data.chunk.ActivityNodeData;
 import org.camunda.community.migration.processInstance.api.model.data.impl.MultiInstanceDataImpl;
-import org.camunda.community.migration.processInstance.api.model.data.impl.chunk.ActivityNodeDataImpl;
+import org.camunda.community.migration.processInstance.api.model.data.impl.chunk.CommonActivityNodeDataImpl;
 
 public class MultiInstanceDataBuilderImpl
-    extends ActivityNodeDataBuilderImpl<
+    extends CommonActivityNodeDataBuilderImpl<
         MultiInstanceDataBuilder, MultiInstanceData, MultiInstanceDataImpl>
     implements MultiInstanceDataBuilder {
   @Override
@@ -20,7 +20,7 @@ public class MultiInstanceDataBuilderImpl
   }
 
   @Override
-  public MultiInstanceDataBuilder withInstances(Iterable<ActivityNodeData> instances) {
+  public MultiInstanceDataBuilder withInstances(Iterable<? extends ActivityNodeData> instances) {
     instances.forEach(this::withInstance);
     return this;
   }
@@ -51,7 +51,7 @@ public class MultiInstanceDataBuilderImpl
   }
 
   @Override
-  protected ActivityNodeDataImpl data() {
+  protected CommonActivityNodeDataImpl data() {
     return data;
   }
 }

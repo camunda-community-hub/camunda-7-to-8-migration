@@ -3,9 +3,10 @@ package org.camunda.community.migration.processInstance.api.model.data.impl;
 import java.util.Objects;
 import org.camunda.community.migration.processInstance.api.model.data.CallActivityData;
 import org.camunda.community.migration.processInstance.api.model.data.ProcessInstanceData;
-import org.camunda.community.migration.processInstance.api.model.data.impl.chunk.ActivityNodeDataImpl;
+import org.camunda.community.migration.processInstance.api.model.data.impl.chunk.CommonActivityNodeDataImpl;
 
-public final class CallActivityDataImpl extends ActivityNodeDataImpl implements CallActivityData {
+public final class CallActivityDataImpl extends CommonActivityNodeDataImpl
+    implements CallActivityData {
 
   private ProcessInstanceData processInstance;
 

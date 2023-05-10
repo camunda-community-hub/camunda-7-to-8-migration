@@ -5,10 +5,11 @@ import org.camunda.community.migration.processInstance.api.model.data.SubProcess
 import org.camunda.community.migration.processInstance.api.model.data.SubProcessData.SubProcessDataBuilder;
 import org.camunda.community.migration.processInstance.api.model.data.chunk.ActivityNodeData;
 import org.camunda.community.migration.processInstance.api.model.data.impl.SubProcessDataImpl;
-import org.camunda.community.migration.processInstance.api.model.data.impl.chunk.ActivityNodeDataImpl;
+import org.camunda.community.migration.processInstance.api.model.data.impl.chunk.CommonActivityNodeDataImpl;
 
 public class SubProcessDataBuilderImpl
-    extends ActivityNodeDataBuilderImpl<SubProcessDataBuilder, SubProcessData, SubProcessDataImpl>
+    extends CommonActivityNodeDataBuilderImpl<
+        SubProcessDataBuilder, SubProcessData, SubProcessDataImpl>
     implements SubProcessDataBuilder {
   @Override
   public SubProcessDataBuilder withActivity(String name, ActivityNodeData activity) {
@@ -28,7 +29,7 @@ public class SubProcessDataBuilderImpl
   }
 
   @Override
-  protected ActivityNodeDataImpl data() {
+  protected CommonActivityNodeDataImpl data() {
     return data;
   }
 

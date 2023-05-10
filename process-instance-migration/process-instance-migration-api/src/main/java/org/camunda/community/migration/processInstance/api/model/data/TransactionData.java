@@ -1,10 +1,10 @@
 package org.camunda.community.migration.processInstance.api.model.data;
 
 import org.camunda.community.migration.processInstance.api.model.data.chunk.ActivityContainerData;
-import org.camunda.community.migration.processInstance.api.model.data.chunk.ActivityNodeData;
+import org.camunda.community.migration.processInstance.api.model.data.chunk.CommonActivityNodeData;
 
-public interface TransactionData extends ActivityNodeData, ActivityContainerData {
+public interface TransactionData extends CommonActivityNodeData, ActivityContainerData {
   interface TransactionDataBuilder
-      extends ActivityNodeDataBuilder<TransactionDataBuilder, TransactionData>,
+      extends CommonActivityNodeDataBuilder<TransactionDataBuilder, TransactionData>,
           ActivityContainerDataBuilder<TransactionDataBuilder> {}
 }
