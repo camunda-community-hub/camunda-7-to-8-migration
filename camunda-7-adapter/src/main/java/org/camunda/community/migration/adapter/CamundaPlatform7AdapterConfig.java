@@ -3,6 +3,8 @@ package org.camunda.community.migration.adapter;
 import org.camunda.bpm.client.spring.annotation.EnableExternalTaskClient;
 import org.camunda.bpm.client.spring.impl.client.ClientConfiguration;
 import org.camunda.bpm.engine.ArtifactFactory;
+import org.camunda.bpm.engine.ManagementService;
+import org.camunda.bpm.engine.ProcessEngineServices;
 import org.camunda.bpm.engine.impl.el.JuelExpressionManager;
 import org.camunda.bpm.engine.impl.javax.el.ELContext;
 import org.camunda.bpm.engine.impl.javax.el.ExpressionFactory;
@@ -25,6 +27,7 @@ public class CamundaPlatform7AdapterConfig {
   public ExternalTaskWorkerRegistration workerRegistration() {
     ClientConfiguration configuration = new ClientConfiguration();
     configuration.setBaseUrl("http://localhost");
+
     return new ExternalTaskWorkerRegistration(configuration);
   }
 
