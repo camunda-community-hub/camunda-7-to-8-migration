@@ -1,6 +1,7 @@
 package org.camunda.community.migration.adapter.execution;
 
 import io.camunda.zeebe.client.api.response.ActivatedJob;
+import java.util.HashMap;
 
 /**
  * DelegateExecution implementation that can be initialized with an {@link ActivatedJob} and
@@ -12,10 +13,10 @@ public class ZeebeJobDelegateExecution extends AbstractDelegateExecution {
 
   private static final long serialVersionUID = 1L;
 
-  private ActivatedJob job;
+  private final ActivatedJob job;
 
   public ZeebeJobDelegateExecution(ActivatedJob job) {
-    super(job.getVariablesAsMap());
+    super(new HashMap<>(job.getVariablesAsMap()));
     this.job = job;
   }
 

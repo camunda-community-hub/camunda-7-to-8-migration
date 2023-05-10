@@ -6,7 +6,6 @@ import java.util.Map;
 import org.camunda.bpm.engine.impl.core.variable.CoreVariableInstance;
 import org.camunda.bpm.engine.impl.core.variable.scope.AbstractVariableScope;
 import org.camunda.bpm.engine.impl.core.variable.scope.SimpleVariableInstance;
-import org.camunda.bpm.engine.impl.core.variable.scope.SimpleVariableInstance.SimpleVariableInstanceFactory;
 import org.camunda.bpm.engine.impl.core.variable.scope.VariableInstanceFactory;
 import org.camunda.bpm.engine.impl.core.variable.scope.VariableInstanceLifecycleListener;
 import org.camunda.bpm.engine.impl.core.variable.scope.VariableStore;
@@ -17,10 +16,12 @@ import org.camunda.bpm.engine.impl.core.variable.scope.VariableStore;
  *
  * @author Falko Menge (Camunda)
  */
-public abstract class SimpleVariableScope extends AbstractVariableScope {
+public class SimpleVariableScope extends AbstractVariableScope {
 
   private static final long serialVersionUID = 1L;
 
+  protected VariableInstanceFactory<CoreVariableInstance> variableInstanceFactory =
+      (name, value, isTransient) -> new SimpleVariableInstance(name, value);
   protected VariableStore<SimpleVariableInstance> variableStore =
       new VariableStore<SimpleVariableInstance>();
 
@@ -39,7 +40,7 @@ public abstract class SimpleVariableScope extends AbstractVariableScope {
 
   @Override
   protected VariableInstanceFactory<CoreVariableInstance> getVariableInstanceFactory() {
-    return (VariableInstanceFactory) SimpleVariableInstanceFactory.INSTANCE;
+    return variableInstanceFactory;
   }
 
   @Override

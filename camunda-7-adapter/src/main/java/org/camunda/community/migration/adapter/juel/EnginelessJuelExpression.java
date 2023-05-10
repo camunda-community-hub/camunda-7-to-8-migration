@@ -1,7 +1,6 @@
 package org.camunda.community.migration.adapter.juel;
 
 import org.camunda.bpm.engine.ProcessEngineException;
-import org.camunda.bpm.engine.delegate.BaseDelegateExecution;
 import org.camunda.bpm.engine.delegate.VariableScope;
 import org.camunda.bpm.engine.impl.el.JuelExpression;
 import org.camunda.bpm.engine.impl.el.JuelExpressionManager;
@@ -21,8 +20,7 @@ public class EnginelessJuelExpression extends JuelExpression {
   }
 
   @Override
-  public Object getValue(VariableScope variableScope, BaseDelegateExecution contextExecution) {
-    variableScope.setVariable("execution", contextExecution);
+  public Object getValue(VariableScope variableScope) {
     ELContext elContext = expressionManager.getElContext(variableScope);
     try {
       return valueExpression.getValue(elContext);
@@ -47,8 +45,6 @@ public class EnginelessJuelExpression extends JuelExpression {
     } catch (Exception e) {
       throw new ProcessEngineException(
           "Error while evaluating expression: " + expressionText + ". Cause: " + e.getMessage(), e);
-    } finally {
-      variableScope.removeVariable("execution");
     }
   }
 }
