@@ -6,7 +6,6 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class SimpleJavaDelegate implements JavaDelegate {
-	@Override public void execute(DelegateExecution delegateExecution) throws Exception {
-
-	}
+  @Override
+  public void execute(DelegateExecution delegateExecution) throws Exception {}
 }

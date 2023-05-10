@@ -1,14 +1,12 @@
 package org.camunda.community.migration.detector.example;
 
 import org.camunda.bpm.engine.delegate.DelegateTask;
-import org.camunda.bpm.engine.delegate.TaskListener;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 
-@Component public class SimpleSpringTaskListener  {
+@Component
+public class SimpleSpringTaskListener {
 
-	@EventListener
-	public void randomName(DelegateTask delegateTask) {
-
-	}
+  @EventListener
+  public void randomName(DelegateTask delegateTask) {}
 }

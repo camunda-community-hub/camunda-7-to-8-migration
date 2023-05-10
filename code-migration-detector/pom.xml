@@ -27,7 +27,18 @@
 
     <modules>
         <module>core</module>
-        <module>example</module>
     </modules>
+
+    <profiles>
+        <profile>
+            <id>examples</id>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+            </activation>
+            <modules>
+                <module>example</module>
+            </modules>
+        </profile>
+    </profiles>
 
 </project>
