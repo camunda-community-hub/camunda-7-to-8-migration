@@ -61,6 +61,11 @@ public abstract class AbstractConvertCommand implements Callable<Integer> {
   @Option(names = "--check", description = "If enabled, no converted diagrams are exported")
   boolean check;
 
+  @Option(
+      names = "--disable-adapter",
+      description = "If enabled, the adapter job type will not be applied")
+  boolean adapterDisabled;
+
   public AbstractConvertCommand() {
     BpmnConverterFactory factory = BpmnConverterFactory.getInstance();
     factory.getNotificationServiceFactory().setInstance(new PrintNotificationServiceImpl());
@@ -136,6 +141,7 @@ public abstract class AbstractConvertCommand implements Callable<Integer> {
     DefaultConverterProperties properties = new DefaultConverterProperties();
     properties.setAdapterJobType(adapterJobType);
     properties.setPlatformVersion(platformVersion);
+    properties.setAdapterEnabled(!adapterDisabled);
     return properties;
   }
 

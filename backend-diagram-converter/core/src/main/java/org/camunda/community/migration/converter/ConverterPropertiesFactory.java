@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
 import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.function.Supplier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -52,32 +53,39 @@ public class ConverterPropertiesFactory extends AbstractFactory<ConverterPropert
         "script-format", properties::getScriptFormatHeader, properties::setScriptFormatHeader);
     readZeebePlatformInfo(
         "version", properties::getPlatformVersion, properties::setPlatformVersion);
+    readFlag("adapter-enabled", properties::getAdapterEnabled, properties::setAdapterEnabled);
   }
 
   private void readZeebeJobType(String jobType, Supplier<String> getter, Consumer<String> setter) {
     String key = String.join(DELIMITER, "zeebe-job-type", jobType);
-    readDefaultValue(key, getter, setter);
+    readDefaultValue(key, getter, setter, s -> s);
   }
 
   private void readZeebePlatformInfo(
       String info, Supplier<String> getter, Consumer<String> setter) {
     String key = String.join(DELIMITER, "zeebe-platform", info);
-    readDefaultValue(key, getter, setter);
+    readDefaultValue(key, getter, setter, s -> s);
   }
 
   private void readZeebeHeader(String header, Supplier<String> getter, Consumer<String> setter) {
     String key = String.join(DELIMITER, "zeebe-header", header);
-    readDefaultValue(key, getter, setter);
+    readDefaultValue(key, getter, setter, s -> s);
   }
 
-  private void readDefaultValue(String key, Supplier<String> getter, Consumer<String> setter) {
-    String currentValue = getter.get();
+  private void readFlag(String header, Supplier<Boolean> getter, Consumer<Boolean> setter) {
+    String key = String.join(DELIMITER, "flag", header);
+    readDefaultValue(key, getter, setter, Boolean::parseBoolean);
+  }
+
+  private <T> void readDefaultValue(
+      String key, Supplier<T> getter, Consumer<T> setter, Function<String, T> mapper) {
+    T currentValue = getter.get();
     if (currentValue != null) {
       LOG.debug("Converter property {} already set", key);
       return;
     }
     LOG.debug("Reading converter property {}", key);
-    String value = PROPERTIES.getProperty(key);
+    T value = mapper.apply(PROPERTIES.getProperty(key));
     if (value == null) {
       throw new RuntimeException(
           "No property found for key '" + key + "' while reading default values");

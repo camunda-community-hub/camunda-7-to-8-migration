@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import org.camunda.bpm.model.bpmn.Bpmn;
 import org.camunda.bpm.model.bpmn.BpmnModelInstance;
+import org.camunda.bpm.model.xml.instance.DomElement;
 import org.camunda.community.migration.converter.BpmnDiagramCheckResult.BpmnElementCheckMessage;
 import org.camunda.community.migration.converter.BpmnDiagramCheckResult.BpmnElementCheckResult;
 import org.camunda.community.migration.converter.BpmnDiagramCheckResult.Severity;
@@ -469,5 +470,24 @@ public class BpmnConverterTest {
     } else {
       assertThat(warningMessages).hasSize(1);
     }
+  }
+
+  @Test
+  void testAdapterDisabled() {
+    DefaultConverterProperties modified = new DefaultConverterProperties();
+    modified.setAdapterEnabled(false);
+    ConverterProperties properties = ConverterPropertiesFactory.getInstance().merge(modified);
+    BpmnConverter converter = BpmnConverterFactory.getInstance().get();
+    BpmnModelInstance modelInstance =
+        Bpmn.readModelFromStream(getClass().getClassLoader().getResourceAsStream("delegate.bpmn"));
+    converter.convert(modelInstance, false, properties);
+    List<DomElement> taskDefinition =
+        modelInstance
+            .getDocument()
+            .getElementById("serviceTask")
+            .getChildElementsByNameNs(BPMN, "extensionElements")
+            .get(0)
+            .getChildElementsByNameNs(ZEEBE, "taskDefinition");
+    assertThat(taskDefinition).isEmpty();
   }
 }

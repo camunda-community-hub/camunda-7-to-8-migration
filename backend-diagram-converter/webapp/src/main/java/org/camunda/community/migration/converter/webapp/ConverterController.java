@@ -84,10 +84,13 @@ public class ConverterController {
       @RequestParam("file") MultipartFile bpmnFile,
       @RequestParam("appendDocumentation") boolean appendDocumentation,
       @RequestParam(value = "adapterJobType", required = false) String adapterJobType,
-      @RequestParam(value = "platformVersion", required = false) String platformVersion) {
+      @RequestParam(value = "platformVersion", required = false) String platformVersion,
+      @RequestParam(value = "adapterEnabled", required = false, defaultValue = "true")
+          Boolean adapterEnabled) {
     try (InputStream in = bpmnFile.getInputStream()) {
       BpmnModelInstance modelInstance = Bpmn.readModelFromStream(in);
-      bpmnConverter.convert(modelInstance, appendDocumentation, adapterJobType, platformVersion);
+      bpmnConverter.convert(
+          modelInstance, appendDocumentation, adapterJobType, platformVersion, adapterEnabled);
       String bpmnXml = bpmnConverter.printXml(modelInstance.getDocument(), true);
       Resource file = new ByteArrayResource(bpmnXml.getBytes());
       return ResponseEntity.ok()

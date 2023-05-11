@@ -15,4 +15,6 @@ public interface ConverterProperties {
   String getScriptFormatHeader();
 
   String getPlatformVersion();
+
+  Boolean getAdapterEnabled();
 }

@@ -8,6 +8,16 @@ public class DefaultConverterProperties implements ConverterProperties {
   private String resourceHeader;
   private String scriptFormatHeader;
   private String platformVersion;
+  private Boolean adapterEnabled;
+
+  @Override
+  public Boolean getAdapterEnabled() {
+    return adapterEnabled;
+  }
+
+  public void setAdapterEnabled(boolean adapterEnabled) {
+    this.adapterEnabled = adapterEnabled;
+  }
 
   @Override
   public String getPlatformVersion() {

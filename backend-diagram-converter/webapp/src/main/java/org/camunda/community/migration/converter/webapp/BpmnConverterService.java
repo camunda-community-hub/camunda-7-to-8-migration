@@ -26,10 +26,12 @@ public class BpmnConverterService {
       BpmnModelInstance modelInstance,
       boolean appendDocumentation,
       String adapterJobType,
-      String platformVersion) {
+      String platformVersion,
+      Boolean adapterEnabled) {
     DefaultConverterProperties adaptedProperties = new DefaultConverterProperties();
     adaptedProperties.setAdapterJobType(adapterJobType);
     adaptedProperties.setPlatformVersion(platformVersion);
+    adaptedProperties.setAdapterEnabled(adapterEnabled);
     bpmnConverter.convert(
         modelInstance,
         appendDocumentation,

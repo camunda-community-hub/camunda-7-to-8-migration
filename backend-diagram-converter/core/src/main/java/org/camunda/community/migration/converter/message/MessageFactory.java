@@ -470,6 +470,15 @@ public class MessageFactory {
             .build());
   }
 
+  public static Message delegateImplementationNoAdapter(String implementationType, String binding) {
+    return INSTANCE.composeMessage(
+        "delegate-implementation-no-adapter",
+        ContextBuilder.builder()
+            .entry("implementationType", implementationType)
+            .entry("binding", binding)
+            .build());
+  }
+
   public static Message fieldContent(String elementLocalName) {
     return INSTANCE.composeMessage(
         "field-content",
