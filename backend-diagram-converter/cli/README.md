@@ -24,8 +24,8 @@ java -Dfile.encoding=UTF-8 -jar backend-diagram-converter-cli-version.jar
 ### Convert diagrams from the local file systems
 
 ```
-Usage: backend-diagram-converter-cli local [-dhoV] [--check] [--csv] [-nr]
-       [--adapter-job-type=<adapterJobType>]
+Usage: backend-diagram-converter-cli local [-dhoV] [--check] [--csv]
+       [--disable-adapter] [-nr] [--adapter-job-type=<adapterJobType>]
        [--platform-version=<platformVersion>] [--prefix=<prefix>] <file>
 Converts the diagram from the given directory or file
 
@@ -44,6 +44,8 @@ Options:
                                the results for all conversions
   -d, --documentation        If enabled, messages are also appended to
                                documentation
+      --disable-adapter      If enabled, the adapter job type will not be
+                               applied
   -h, --help                 Show this help message and exit.
       -nr, --not-recursive   If enabled, recursive search in subfolders will be
                                omitted
@@ -66,9 +68,9 @@ java -Dfile.encoding=UTF-8 -jar backend-diagram-converter-cli-v.v.v.jar local c:
 
 ```
 Usage: backend-diagram-converter-cli engine [-dhoV] [--check] [--csv]
-       [--adapter-job-type=<adapterJobType>] [-p=<password>]
-       [--platform-version=<platformVersion>] [--prefix=<prefix>]
-       [-t=<targetDirectory>] [-u=<username>] <url>
+       [--disable-adapter] [--adapter-job-type=<adapterJobType>]
+       [-p=<password>] [--platform-version=<platformVersion>]
+       [--prefix=<prefix>] [-t=<targetDirectory>] [-u=<username>] <url>
 Description: Converts the diagrams from the given process engine
 
 Execute as:
@@ -88,6 +90,7 @@ Options:
                             results for all conversions
   -d, --documentation     If enabled, messages are also appended to
                             documentation
+      --disable-adapter   If enabled, the adapter job type will not be applied
   -h, --help              Show this help message and exit.
   -o, --override          If enabled, existing files are overridden
   -p, --password=<password>
@@ -122,7 +125,7 @@ Enter the folder with the latest version and download
 You can start the jar file from the command line with
 
 ```shell
-java -jar backend-diagram-converter-cli-0.4.3.jar --help
+java -jar backend-diagram-converter-cli-v.v.v.jar --help
 ```
 
 ## Compile from source
