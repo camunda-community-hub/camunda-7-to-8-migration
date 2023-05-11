@@ -9,13 +9,23 @@ public class DefaultConverterProperties implements ConverterProperties {
   private String scriptFormatHeader;
   private String platformVersion;
   private Boolean adapterEnabled;
+  private Boolean appendDocumentation;
+
+  @Override
+  public Boolean getAppendDocumentation() {
+    return appendDocumentation;
+  }
+
+  public void setAppendDocumentation(Boolean appendDocumentation) {
+    this.appendDocumentation = appendDocumentation;
+  }
 
   @Override
   public Boolean getAdapterEnabled() {
     return adapterEnabled;
   }
 
-  public void setAdapterEnabled(boolean adapterEnabled) {
+  public void setAdapterEnabled(Boolean adapterEnabled) {
     this.adapterEnabled = adapterEnabled;
   }
 

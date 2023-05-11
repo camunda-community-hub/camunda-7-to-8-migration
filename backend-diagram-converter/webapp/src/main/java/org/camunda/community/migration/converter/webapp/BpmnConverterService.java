@@ -32,26 +32,23 @@ public class BpmnConverterService {
     adaptedProperties.setAdapterJobType(adapterJobType);
     adaptedProperties.setPlatformVersion(platformVersion);
     adaptedProperties.setAdapterEnabled(adapterEnabled);
+    adaptedProperties.setAppendDocumentation(appendDocumentation);
     bpmnConverter.convert(
-        modelInstance,
-        appendDocumentation,
-        ConverterPropertiesFactory.getInstance().merge(adaptedProperties));
+        modelInstance, ConverterPropertiesFactory.getInstance().merge(adaptedProperties));
   }
 
   public BpmnDiagramCheckResult check(
       String filename,
       BpmnModelInstance modelInstance,
-      boolean appendDocumentation,
       String adapterJobType,
-      String platformVersion) {
+      String platformVersion,
+      Boolean adapterEnabled) {
     DefaultConverterProperties adaptedProperties = new DefaultConverterProperties();
     adaptedProperties.setAdapterJobType(adapterJobType);
     adaptedProperties.setPlatformVersion(platformVersion);
+    adaptedProperties.setAdapterEnabled(adapterEnabled);
     return bpmnConverter.check(
-        filename,
-        modelInstance,
-        appendDocumentation,
-        ConverterPropertiesFactory.getInstance().merge(adaptedProperties));
+        filename, modelInstance, ConverterPropertiesFactory.getInstance().merge(adaptedProperties));
   }
 
   public String printXml(DomDocument document, boolean prettyPrint) {

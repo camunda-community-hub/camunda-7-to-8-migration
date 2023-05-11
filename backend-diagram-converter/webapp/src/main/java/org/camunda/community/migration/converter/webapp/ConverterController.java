@@ -44,15 +44,17 @@ public class ConverterController {
       @RequestParam("file") MultipartFile bpmnFile,
       @RequestParam(value = "adapterJobType", required = false) String adapterJobType,
       @RequestParam(value = "platformVersion", required = false) String platformVersion,
+      @RequestParam(value = "adapterEnabled", required = false, defaultValue = "true")
+          Boolean adapterEnabled,
       @RequestHeader(HttpHeaders.ACCEPT) String[] contentType) {
     try (InputStream in = bpmnFile.getInputStream()) {
       BpmnDiagramCheckResult diagramCheckResult =
           bpmnConverter.check(
               bpmnFile.getOriginalFilename(),
               Bpmn.readModelFromStream(in),
-              false,
               adapterJobType,
-              platformVersion);
+              platformVersion,
+              adapterEnabled);
       if (contentType == null
           || contentType.length == 0
           || Arrays.asList(contentType).contains(MediaType.APPLICATION_JSON_VALUE)) {
@@ -68,7 +70,9 @@ public class ConverterController {
             .contentType(MediaType.APPLICATION_OCTET_STREAM)
             .body(file);
       } else {
-        return ResponseEntity.badRequest().build();
+        String errorMessage = "Invalid content type '" + String.join("', '", contentType) + "'";
+        LOG.error("{}", errorMessage);
+        return ResponseEntity.badRequest().body(errorMessage);
       }
     } catch (IOException e) {
       LOG.error("Error while reading input stream of BPMN file", e);
@@ -82,7 +86,8 @@ public class ConverterController {
       consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
   public ResponseEntity<?> getFile(
       @RequestParam("file") MultipartFile bpmnFile,
-      @RequestParam("appendDocumentation") boolean appendDocumentation,
+      @RequestParam(value = "appendDocumentation", required = false, defaultValue = "false")
+          Boolean appendDocumentation,
       @RequestParam(value = "adapterJobType", required = false) String adapterJobType,
       @RequestParam(value = "platformVersion", required = false) String platformVersion,
       @RequestParam(value = "adapterEnabled", required = false, defaultValue = "true")

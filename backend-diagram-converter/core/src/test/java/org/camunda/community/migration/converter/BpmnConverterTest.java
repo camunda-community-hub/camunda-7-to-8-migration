@@ -45,7 +45,7 @@ public class BpmnConverterTest {
     BpmnModelInstance modelInstance =
         Bpmn.readModelFromStream(this.getClass().getClassLoader().getResourceAsStream(bpmnFile));
     printModel(modelInstance);
-    BpmnDiagramCheckResult result = converter.check(bpmnFile, modelInstance, false, properties);
+    BpmnDiagramCheckResult result = converter.check(bpmnFile, modelInstance, properties);
     printModel(modelInstance);
     StringWriter writer = new StringWriter();
     converter.printXml(modelInstance.getDocument(), true, writer);
@@ -70,7 +70,7 @@ public class BpmnConverterTest {
         Bpmn.readModelFromStream(
             this.getClass().getClassLoader().getResourceAsStream("c8_simple.bpmn"));
     Assertions.assertThrows(
-        RuntimeException.class, () -> converter.convert(modelInstance, false, properties));
+        RuntimeException.class, () -> converter.convert(modelInstance, properties));
   }
 
   @Test
@@ -480,7 +480,7 @@ public class BpmnConverterTest {
     BpmnConverter converter = BpmnConverterFactory.getInstance().get();
     BpmnModelInstance modelInstance =
         Bpmn.readModelFromStream(getClass().getClassLoader().getResourceAsStream("delegate.bpmn"));
-    converter.convert(modelInstance, false, properties);
+    converter.convert(modelInstance, properties);
     List<DomElement> taskDefinition =
         modelInstance
             .getDocument()

@@ -36,10 +36,7 @@ public class TestUtil {
     properties.setPlatformVersion(targetVersion);
     BpmnDiagramCheckResult result =
         converter.check(
-            bpmnFile,
-            modelInstance,
-            false,
-            ConverterPropertiesFactory.getInstance().merge(properties));
+            bpmnFile, modelInstance, ConverterPropertiesFactory.getInstance().merge(properties));
     return result;
   }
 

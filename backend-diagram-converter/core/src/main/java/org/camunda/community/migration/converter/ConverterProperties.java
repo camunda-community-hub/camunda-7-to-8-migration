@@ -17,4 +17,6 @@ public interface ConverterProperties {
   String getPlatformVersion();
 
   Boolean getAdapterEnabled();
+
+  Boolean getAppendDocumentation();
 }

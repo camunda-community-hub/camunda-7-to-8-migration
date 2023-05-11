@@ -54,6 +54,10 @@ public class ConverterPropertiesFactory extends AbstractFactory<ConverterPropert
     readZeebePlatformInfo(
         "version", properties::getPlatformVersion, properties::setPlatformVersion);
     readFlag("adapter-enabled", properties::getAdapterEnabled, properties::setAdapterEnabled);
+    readFlag(
+        "append-documentation",
+        properties::getAppendDocumentation,
+        properties::setAppendDocumentation);
   }
 
   private void readZeebeJobType(String jobType, Supplier<String> getter, Consumer<String> setter) {

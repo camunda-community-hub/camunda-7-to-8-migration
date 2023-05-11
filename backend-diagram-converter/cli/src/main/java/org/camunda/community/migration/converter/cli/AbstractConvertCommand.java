@@ -126,7 +126,6 @@ public abstract class AbstractConvertCommand implements Callable<Integer> {
       return converter.check(
           modelInstance.getKey().getAbsolutePath(),
           modelInstance.getValue(),
-          documentation,
           ConverterPropertiesFactory.getInstance().merge(converterProperties()));
     } catch (Exception e) {
       LOG_CLI.error("Problem while converting: {}", createMessage(e));
@@ -142,6 +141,7 @@ public abstract class AbstractConvertCommand implements Callable<Integer> {
     properties.setAdapterJobType(adapterJobType);
     properties.setPlatformVersion(platformVersion);
     properties.setAdapterEnabled(!adapterDisabled);
+    properties.setAppendDocumentation(documentation);
     return properties;
   }
 
