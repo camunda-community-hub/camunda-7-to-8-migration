@@ -80,13 +80,13 @@ aspects.
 The test will then look like this:
 
 ```java
-@AnalyzeClasses(packages = "org.camunda.community.migration.detector.example") 
+@AnalyzeClasses(packages = "org.camunda.community.migration.detector.example")
 public class SimpleDetectionTest {
 
-	@ArchTest 
+  @ArchTest
     public void testNoTaskListeners(JavaClasses classes) {
-		Camunda7MigrationRules.ensureNoTaskListener().check(classes);
-	}
+    Camunda7MigrationRules.ensureNoTaskListener().check(classes);
+  }
 
 }
 ```
@@ -94,10 +94,5 @@ public class SimpleDetectionTest {
 Please check the examples project for more details. The `example` folder contains a small example, how the test can be
 used. To run it locally, please make sure to active
 Maven Profile `examples` (by activating it in the IDE or by passing `-Pexamples` to your Maven build command).
-Currently, the examples contain one ArchUnit test `SimpleDetectionTest` with all tests disabled by `@ArchIgnore`. 
+Currently, the examples contain one ArchUnit test `SimpleDetectionTest` with all tests disabled by `@ArchIgnore`.
 Remove or comment out the annotation, and the run will break the build.
-
-
-
-
-
