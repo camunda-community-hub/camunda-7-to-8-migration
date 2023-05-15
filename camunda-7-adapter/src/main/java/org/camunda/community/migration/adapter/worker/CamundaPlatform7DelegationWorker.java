@@ -9,10 +9,15 @@ import org.camunda.bpm.engine.delegate.BpmnError;
 import org.camunda.bpm.engine.delegate.DelegateExecution;
 import org.camunda.bpm.engine.delegate.ExecutionListener;
 import org.camunda.bpm.engine.delegate.JavaDelegate;
+import org.camunda.bpm.engine.ArtifactFactory;
+import org.camunda.bpm.engine.delegate.*;
 import org.camunda.community.migration.adapter.execution.ZeebeJobDelegateExecution;
 import org.camunda.community.migration.adapter.juel.ClassResolver;
 import org.camunda.community.migration.adapter.juel.JuelExpressionResolver;
 import org.springframework.stereotype.Component;
+
+import java.util.HashMap;
+import java.util.Map;
 
 @Component
 public class CamundaPlatform7DelegationWorker {

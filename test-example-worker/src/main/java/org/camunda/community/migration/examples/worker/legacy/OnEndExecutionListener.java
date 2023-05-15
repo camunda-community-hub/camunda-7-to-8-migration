@@ -2,6 +2,7 @@ package org.camunda.community.migration.examples.worker.legacy;
 
 import org.camunda.bpm.engine.delegate.DelegateExecution;
 import org.camunda.bpm.engine.delegate.ExecutionListener;
+import org.camunda.community.migration.examples.worker.C7WorkerWithListeners;
 import org.springframework.stereotype.Component;
 
 import static org.camunda.community.migration.examples.worker.C7WorkerWithListeners.logger;
