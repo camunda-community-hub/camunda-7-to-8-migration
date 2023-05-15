@@ -5,12 +5,12 @@ import io.camunda.zeebe.client.api.response.ActivatedJob;
 import io.camunda.zeebe.client.api.worker.JobClient;
 import io.camunda.zeebe.spring.client.annotation.JobWorker;
 import io.camunda.zeebe.spring.client.exception.ZeebeBpmnError;
-import org.camunda.bpm.engine.ArtifactFactory;
 import org.camunda.bpm.engine.delegate.BpmnError;
 import org.camunda.bpm.engine.delegate.DelegateExecution;
 import org.camunda.bpm.engine.delegate.ExecutionListener;
 import org.camunda.bpm.engine.delegate.JavaDelegate;
 import org.camunda.community.migration.adapter.execution.ZeebeJobDelegateExecution;
+import org.camunda.community.migration.adapter.juel.ClassResolver;
 import org.camunda.community.migration.adapter.juel.JuelExpressionResolver;
 import org.springframework.stereotype.Component;
 
@@ -18,12 +18,12 @@ import org.springframework.stereotype.Component;
 public class CamundaPlatform7DelegationWorker {
 
   private final JuelExpressionResolver expressionResolver;
-  private final ArtifactFactory artifactFactory;
+  private final ClassResolver classResolver;
 
   public CamundaPlatform7DelegationWorker(
-      JuelExpressionResolver expressionResolver, ArtifactFactory artifactFactory) {
+      JuelExpressionResolver expressionResolver, ClassResolver classResolver) {
     this.expressionResolver = expressionResolver;
-    this.artifactFactory = artifactFactory;
+    this.classResolver = classResolver;
   }
 
   @JobWorker(type = "camunda-7-adapter", autoComplete = false)
@@ -45,7 +45,7 @@ public class CamundaPlatform7DelegationWorker {
           && endListener == null
           && delegateClass == null
           && delegateExpression == null
-          && expression != null) {
+          && expression == null) {
         throw new RuntimeException(
             "Either 'executionListener.start' or 'class' or 'delegateExpression' or 'expression' or executionListener.end must be specified in task headers for job :"
                 + job);
@@ -54,12 +54,13 @@ public class CamundaPlatform7DelegationWorker {
       if (startListener != null) {
         ExecutionListener executionListener =
             (ExecutionListener) expressionResolver.evaluate(startListener, execution);
+
         // modifies variables of execution
         executionListener.notify(execution);
       }
 
       if (delegateClass != null) {
-        JavaDelegate javaDelegate = loadJavaDelegate(delegateClass);
+        JavaDelegate javaDelegate = classResolver.loadJavaDelegate(delegateClass);
         javaDelegate.execute(execution);
       } else if (delegateExpression != null) {
         JavaDelegate javaDelegate =
@@ -80,23 +81,10 @@ public class CamundaPlatform7DelegationWorker {
       }
 
       CompleteJobCommandStep1 completeCommand = client.newCompleteCommand(job.getKey());
-
       completeCommand.variables(execution.getVariables());
       completeCommand.send().join();
     } catch (BpmnError e) {
       throw new ZeebeBpmnError(e.getErrorCode(), e.getMessage() == null ? "" : e.getMessage());
-    }
-  }
-
-  private JavaDelegate loadJavaDelegate(String delegateName) {
-    final ClassLoader contextClassLoader = Thread.currentThread().getContextClassLoader();
-    try {
-      Class<? extends JavaDelegate> clazz =
-          (Class<? extends JavaDelegate>) contextClassLoader.loadClass(delegateName);
-      return artifactFactory.getArtifact(clazz);
-    } catch (Exception e) {
-      throw new RuntimeException(
-          "Could not load delegation class '" + delegateName + "': " + e.getMessage(), e);
     }
   }
 }

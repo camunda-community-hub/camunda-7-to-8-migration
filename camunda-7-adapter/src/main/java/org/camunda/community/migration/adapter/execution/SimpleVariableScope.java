@@ -4,11 +4,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import org.camunda.bpm.engine.impl.core.variable.CoreVariableInstance;
-import org.camunda.bpm.engine.impl.core.variable.scope.AbstractVariableScope;
-import org.camunda.bpm.engine.impl.core.variable.scope.SimpleVariableInstance;
-import org.camunda.bpm.engine.impl.core.variable.scope.VariableInstanceFactory;
-import org.camunda.bpm.engine.impl.core.variable.scope.VariableInstanceLifecycleListener;
-import org.camunda.bpm.engine.impl.core.variable.scope.VariableStore;
+import org.camunda.bpm.engine.impl.core.variable.scope.*;
 
 /**
  * Simple VariableScope implementation that can be initialized with a Map and provides all variable
@@ -26,10 +22,10 @@ public class SimpleVariableScope extends AbstractVariableScope {
       new VariableStore<SimpleVariableInstance>();
 
   public SimpleVariableScope() {
-    super();
+    this(Collections.emptyMap());
   }
 
-  public SimpleVariableScope(Map<String, ? extends Object> variables) {
+  public SimpleVariableScope(Map<String, ?> variables) {
     super();
     setVariables(variables);
   }

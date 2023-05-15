@@ -1,17 +1,12 @@
 package org.camunda.community.migration.adapter.execution;
 
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Map;
-import java.util.Set;
 import org.camunda.bpm.engine.ProcessEngine;
 import org.camunda.bpm.engine.ProcessEngineServices;
 import org.camunda.bpm.engine.RepositoryService;
 import org.camunda.bpm.engine.delegate.DelegateExecution;
-import org.camunda.bpm.engine.delegate.VariableScope;
 import org.camunda.bpm.engine.runtime.Incident;
-import org.camunda.bpm.engine.variable.VariableMap;
-import org.camunda.bpm.engine.variable.value.TypedValue;
 import org.camunda.bpm.model.bpmn.BpmnModelInstance;
 import org.camunda.bpm.model.bpmn.instance.FlowElement;
 
@@ -24,21 +19,20 @@ import org.camunda.bpm.model.bpmn.instance.FlowElement;
  *
  * @author Falko Menge (Camunda)
  */
-public abstract class AbstractDelegateExecution implements DelegateExecution {
+public abstract class AbstractDelegateExecution extends SimpleVariableScope
+    implements DelegateExecution {
 
   private static final long serialVersionUID = 1L;
   public static final String VARIABLE_NAME_BUSINESS_KEY = "businessKey";
 
-  private final VariableScope variableScope = new SimpleVariableScope();
-
   protected RepositoryService repositoryService;
 
   public AbstractDelegateExecution() {
-    this(Collections.EMPTY_MAP);
+    this(Collections.emptyMap());
   }
 
   public AbstractDelegateExecution(Map<String, Object> variables) {
-    variableScope.setVariables(variables);
+    super(variables);
   }
 
   @Override
@@ -48,7 +42,7 @@ public abstract class AbstractDelegateExecution implements DelegateExecution {
 
   @Override
   public FlowElement getBpmnModelElementInstance() {
-    return getBpmnModelInstance().getModelElementById(getCurrentActivityId());
+    throw new UnsupportedOperationException();
   }
 
   @Override
@@ -131,150 +125,5 @@ public abstract class AbstractDelegateExecution implements DelegateExecution {
   @Override
   public void setVariable(String variableName, Object value, String activityId) {
     throw new UnsupportedOperationException();
-  }
-
-  @Override
-  public String getVariableScopeKey() {
-    return variableScope.getVariableScopeKey();
-  }
-
-  @Override
-  public Map<String, Object> getVariables() {
-    return variableScope.getVariables();
-  }
-
-  @Override
-  public VariableMap getVariablesTyped() {
-    return variableScope.getVariablesTyped();
-  }
-
-  @Override
-  public VariableMap getVariablesTyped(boolean b) {
-    return variableScope.getVariablesTyped(b);
-  }
-
-  @Override
-  public Map<String, Object> getVariablesLocal() {
-    return variableScope.getVariablesLocal();
-  }
-
-  @Override
-  public VariableMap getVariablesLocalTyped() {
-    return variableScope.getVariablesLocalTyped();
-  }
-
-  @Override
-  public VariableMap getVariablesLocalTyped(boolean b) {
-    return variableScope.getVariablesLocalTyped(b);
-  }
-
-  @Override
-  public Object getVariable(String s) {
-    return variableScope.getVariable(s);
-  }
-
-  @Override
-  public Object getVariableLocal(String s) {
-    return variableScope.getVariableLocal(s);
-  }
-
-  @Override
-  public <T extends TypedValue> T getVariableTyped(String s) {
-    return variableScope.getVariableTyped(s);
-  }
-
-  @Override
-  public <T extends TypedValue> T getVariableTyped(String s, boolean b) {
-    return variableScope.getVariableTyped(s, b);
-  }
-
-  @Override
-  public <T extends TypedValue> T getVariableLocalTyped(String s) {
-    return variableScope.getVariableLocalTyped(s);
-  }
-
-  @Override
-  public <T extends TypedValue> T getVariableLocalTyped(String s, boolean b) {
-    return variableScope.getVariableLocalTyped(s, b);
-  }
-
-  @Override
-  public Set<String> getVariableNames() {
-    return variableScope.getVariableNames();
-  }
-
-  @Override
-  public Set<String> getVariableNamesLocal() {
-    return variableScope.getVariableNamesLocal();
-  }
-
-  @Override
-  public void setVariable(String s, Object o) {
-    variableScope.setVariable(s, o);
-  }
-
-  @Override
-  public void setVariableLocal(String s, Object o) {
-    variableScope.setVariableLocal(s, o);
-  }
-
-  @Override
-  public void setVariables(Map<String, ?> map) {
-    variableScope.setVariables(map);
-  }
-
-  @Override
-  public void setVariablesLocal(Map<String, ?> map) {
-    variableScope.setVariablesLocal(map);
-  }
-
-  @Override
-  public boolean hasVariables() {
-    return variableScope.hasVariables();
-  }
-
-  @Override
-  public boolean hasVariablesLocal() {
-    return variableScope.hasVariablesLocal();
-  }
-
-  @Override
-  public boolean hasVariable(String s) {
-    return variableScope.hasVariable(s);
-  }
-
-  @Override
-  public boolean hasVariableLocal(String s) {
-    return variableScope.hasVariableLocal(s);
-  }
-
-  @Override
-  public void removeVariable(String s) {
-    variableScope.removeVariable(s);
-  }
-
-  @Override
-  public void removeVariableLocal(String s) {
-    variableScope.removeVariableLocal(s);
-  }
-
-  @Override
-  public void removeVariables(Collection<String> collection) {
-    variableScope.removeVariables(collection);
-  }
-
-  @Override
-  public void removeVariablesLocal(Collection<String> collection) {
-    variableScope.removeVariablesLocal(collection);
-  }
-
-  @Override
-  public void removeVariables() {
-    variableScope.removeVariables();
-  }
-
-  @Override
-  public void removeVariablesLocal() {
-    variableScope.removeVariablesLocal();
   }
 }
