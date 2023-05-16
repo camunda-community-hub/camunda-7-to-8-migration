@@ -15,6 +15,14 @@ public class TestUtil {
     return variables;
   }
 
+  public static BpmnModelInstance loadAndConvert(String bpmnFile) {
+    BpmnModelInstance modelInstance = loadModelInstance(bpmnFile);
+    BpmnConverter converter = BpmnConverterFactory.getInstance().get();
+    ConverterProperties properties = ConverterPropertiesFactory.getInstance().get();
+    converter.convert(modelInstance, false, properties);
+    return modelInstance;
+  }
+
   public static BpmnDiagramCheckResult loadAndCheck(String bpmnFile) {
     ConverterProperties properties = ConverterPropertiesFactory.getInstance().get();
     return loadAndCheckAgainstVersion(bpmnFile, properties.getPlatformVersion());
@@ -23,8 +31,7 @@ public class TestUtil {
   public static BpmnDiagramCheckResult loadAndCheckAgainstVersion(
       String bpmnFile, String targetVersion) {
     BpmnConverter converter = BpmnConverterFactory.getInstance().get();
-    BpmnModelInstance modelInstance =
-        Bpmn.readModelFromStream(TestUtil.class.getClassLoader().getResourceAsStream(bpmnFile));
+    BpmnModelInstance modelInstance = loadModelInstance(bpmnFile);
     DefaultConverterProperties properties = new DefaultConverterProperties();
     properties.setPlatformVersion(targetVersion);
     BpmnDiagramCheckResult result =
@@ -34,5 +41,9 @@ public class TestUtil {
             false,
             ConverterPropertiesFactory.getInstance().merge(properties));
     return result;
+  }
+
+  private static BpmnModelInstance loadModelInstance(String bpmnFile) {
+    return Bpmn.readModelFromStream(TestUtil.class.getClassLoader().getResourceAsStream(bpmnFile));
   }
 }
