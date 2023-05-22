@@ -16,7 +16,7 @@ public abstract class AbstractDelegateImplementationVisitor
 
   @Override
   protected Message visitSupportedAttribute(DomElementVisitorContext context, String attribute) {
-    if (context.getProperties().getAdapterEnabled()) {
+    if (context.getProperties().getDefaultJobTypeEnabled()) {
       context.addConversion(
           ServiceTaskConvertible.class,
           serviceTaskConversion ->
@@ -26,14 +26,14 @@ public abstract class AbstractDelegateImplementationVisitor
           serviceTaskConversion ->
               serviceTaskConversion
                   .getZeebeTaskDefinition()
-                  .setType(context.getProperties().getAdapterJobType()));
+                  .setType(context.getProperties().getDefaultJobType()));
       return MessageFactory.delegateImplementation(
           attributeLocalName(),
           context.getElement().getLocalName(),
           attribute,
-          context.getProperties().getAdapterJobType());
+          context.getProperties().getDefaultJobType());
     } else {
-      return MessageFactory.delegateImplementationNoAdapter(attributeLocalName(), attribute);
+      return MessageFactory.delegateImplementationNoDefaultJobType(attributeLocalName(), attribute);
     }
   }
 

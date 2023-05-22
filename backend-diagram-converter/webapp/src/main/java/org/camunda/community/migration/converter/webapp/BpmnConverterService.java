@@ -25,13 +25,13 @@ public class BpmnConverterService {
   public void convert(
       BpmnModelInstance modelInstance,
       boolean appendDocumentation,
-      String adapterJobType,
+      String defaultJobType,
       String platformVersion,
-      Boolean adapterEnabled) {
+      Boolean defaultJobTypeEnabled) {
     DefaultConverterProperties adaptedProperties = new DefaultConverterProperties();
-    adaptedProperties.setAdapterJobType(adapterJobType);
+    adaptedProperties.setDefaultJobType(defaultJobType);
     adaptedProperties.setPlatformVersion(platformVersion);
-    adaptedProperties.setAdapterEnabled(adapterEnabled);
+    adaptedProperties.setDefaultJobTypeEnabled(defaultJobTypeEnabled);
     adaptedProperties.setAppendDocumentation(appendDocumentation);
     bpmnConverter.convert(
         modelInstance, ConverterPropertiesFactory.getInstance().merge(adaptedProperties));
@@ -40,13 +40,13 @@ public class BpmnConverterService {
   public BpmnDiagramCheckResult check(
       String filename,
       BpmnModelInstance modelInstance,
-      String adapterJobType,
+      String defaultJobType,
       String platformVersion,
-      Boolean adapterEnabled) {
+      Boolean defaultJobTypeEnabled) {
     DefaultConverterProperties adaptedProperties = new DefaultConverterProperties();
-    adaptedProperties.setAdapterJobType(adapterJobType);
+    adaptedProperties.setDefaultJobType(defaultJobType);
     adaptedProperties.setPlatformVersion(platformVersion);
-    adaptedProperties.setAdapterEnabled(adapterEnabled);
+    adaptedProperties.setDefaultJobTypeEnabled(defaultJobTypeEnabled);
     return bpmnConverter.check(
         filename, modelInstance, ConverterPropertiesFactory.getInstance().merge(adaptedProperties));
   }

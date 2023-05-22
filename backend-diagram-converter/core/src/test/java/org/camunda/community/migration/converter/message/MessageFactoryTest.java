@@ -473,10 +473,10 @@ public class MessageFactoryTest {
   }
 
   @Test
-  void shouldBuildDelegateImplementationNoAdapter() {
+  void shouldBuildDelegateImplementationNoDefaultJobType() {
     String implementationType = random();
     String binding = random();
-    Message message = delegateImplementationNoAdapter(implementationType, binding);
+    Message message = delegateImplementationNoDefaultJobType(implementationType, binding);
     assertNotNull(message);
     assertNotNull(message.getMessage());
     assertNotNull(message.getSeverity());

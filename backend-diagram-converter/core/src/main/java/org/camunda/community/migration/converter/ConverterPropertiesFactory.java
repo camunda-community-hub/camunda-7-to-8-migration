@@ -41,7 +41,7 @@ public class ConverterPropertiesFactory extends AbstractFactory<ConverterPropert
   }
 
   private void readDefaultValues(DefaultConverterProperties properties) {
-    readZeebeJobType("adapter", properties::getAdapterJobType, properties::setAdapterJobType);
+    readZeebeJobType("default", properties::getDefaultJobType, properties::setDefaultJobType);
     readZeebeJobType("script", properties::getScriptJobType, properties::setScriptJobType);
     readZeebeHeader("script", properties::getScriptHeader, properties::setScriptHeader);
     readZeebeHeader(
@@ -53,7 +53,10 @@ public class ConverterPropertiesFactory extends AbstractFactory<ConverterPropert
         "script-format", properties::getScriptFormatHeader, properties::setScriptFormatHeader);
     readZeebePlatformInfo(
         "version", properties::getPlatformVersion, properties::setPlatformVersion);
-    readFlag("adapter-enabled", properties::getAdapterEnabled, properties::setAdapterEnabled);
+    readFlag(
+        "default-job-type-enabled",
+        properties::getDefaultJobTypeEnabled,
+        properties::setDefaultJobTypeEnabled);
     readFlag(
         "append-documentation",
         properties::getAppendDocumentation,

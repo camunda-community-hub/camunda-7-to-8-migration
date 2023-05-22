@@ -470,9 +470,10 @@ public class MessageFactory {
             .build());
   }
 
-  public static Message delegateImplementationNoAdapter(String implementationType, String binding) {
+  public static Message delegateImplementationNoDefaultJobType(
+      String implementationType, String binding) {
     return INSTANCE.composeMessage(
-        "delegate-implementation-no-adapter",
+        "delegate-implementation-no-default-job-type",
         ContextBuilder.builder()
             .entry("implementationType", implementationType)
             .entry("binding", binding)

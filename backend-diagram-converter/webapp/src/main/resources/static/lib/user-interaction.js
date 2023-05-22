@@ -4,7 +4,7 @@ const downloadCsv = document.getElementById("downloadCsv");
 
 const fileUpload = document.getElementById("formFile");
 const appendDocumentation = document.getElementById("appendDocumentation");
-const adapterEnabled = document.getElementById("adapterEnabled");
+const defaultJobTypeEnabled = document.getElementById("defaultJobTypeEnabled");
 
 const resultArea = document.getElementById("checkResults");
 const arrangedResultsArea = document.getElementById("arrangedResults");
@@ -74,7 +74,7 @@ const createFormData = async () => {
   }
   formData.append("file", fileUpload.files[0]);
   formData.append("appendDocumentation", appendDocumentation.checked);
-  formData.append("adapterEnabled",adapterEnabled.checked)
+  formData.append("defaultJobTypeEnabled", defaultJobTypeEnabled.checked)
   return formData;
 };
 const createFormattedResultWrapper = (file) => {

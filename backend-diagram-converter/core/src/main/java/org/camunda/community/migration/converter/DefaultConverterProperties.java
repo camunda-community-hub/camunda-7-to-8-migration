@@ -3,12 +3,12 @@ package org.camunda.community.migration.converter;
 public class DefaultConverterProperties implements ConverterProperties {
   private String scriptHeader;
   private String resultVariableHeader;
-  private String adapterJobType;
+  private String defaultJobType;
   private String scriptJobType;
   private String resourceHeader;
   private String scriptFormatHeader;
   private String platformVersion;
-  private Boolean adapterEnabled;
+  private Boolean defaultJobTypeEnabled;
   private Boolean appendDocumentation;
 
   @Override
@@ -21,12 +21,12 @@ public class DefaultConverterProperties implements ConverterProperties {
   }
 
   @Override
-  public Boolean getAdapterEnabled() {
-    return adapterEnabled;
+  public Boolean getDefaultJobTypeEnabled() {
+    return defaultJobTypeEnabled;
   }
 
-  public void setAdapterEnabled(Boolean adapterEnabled) {
-    this.adapterEnabled = adapterEnabled;
+  public void setDefaultJobTypeEnabled(Boolean defaultJobTypeEnabled) {
+    this.defaultJobTypeEnabled = defaultJobTypeEnabled;
   }
 
   @Override
@@ -57,12 +57,12 @@ public class DefaultConverterProperties implements ConverterProperties {
   }
 
   @Override
-  public String getAdapterJobType() {
-    return adapterJobType;
+  public String getDefaultJobType() {
+    return defaultJobType;
   }
 
-  public void setAdapterJobType(String adapterJobType) {
-    this.adapterJobType = adapterJobType;
+  public void setDefaultJobType(String defaultJobType) {
+    this.defaultJobType = defaultJobType;
   }
 
   @Override

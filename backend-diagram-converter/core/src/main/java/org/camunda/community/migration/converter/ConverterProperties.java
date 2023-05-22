@@ -6,7 +6,7 @@ public interface ConverterProperties {
 
   String getResultVariableHeader();
 
-  String getAdapterJobType();
+  String getDefaultJobType();
 
   String getScriptJobType();
 
@@ -16,7 +16,7 @@ public interface ConverterProperties {
 
   String getPlatformVersion();
 
-  Boolean getAdapterEnabled();
+  Boolean getDefaultJobTypeEnabled();
 
   Boolean getAppendDocumentation();
 }

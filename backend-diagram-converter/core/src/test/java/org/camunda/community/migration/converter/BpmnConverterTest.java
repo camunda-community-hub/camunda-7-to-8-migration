@@ -475,7 +475,7 @@ public class BpmnConverterTest {
   @Test
   void testAdapterDisabled() {
     DefaultConverterProperties modified = new DefaultConverterProperties();
-    modified.setAdapterEnabled(false);
+    modified.setDefaultJobTypeEnabled(false);
     ConverterProperties properties = ConverterPropertiesFactory.getInstance().merge(modified);
     BpmnConverter converter = BpmnConverterFactory.getInstance().get();
     BpmnModelInstance modelInstance =

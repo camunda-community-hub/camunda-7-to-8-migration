@@ -32,9 +32,9 @@ public abstract class AbstractConvertCommand implements Callable<Integer> {
   boolean documentation;
 
   @Option(
-      names = {"--adapter-job-type"},
+      names = {"--default-job-type"},
       description = "If set, the default value for the adapter job is overridden")
-  String adapterJobType;
+  String defaultJobType;
 
   @Option(
       names = {"--prefix"},
@@ -62,9 +62,9 @@ public abstract class AbstractConvertCommand implements Callable<Integer> {
   boolean check;
 
   @Option(
-      names = "--disable-adapter",
-      description = "If enabled, the adapter job type will not be applied")
-  boolean adapterDisabled;
+      names = "--disable-default-job-type",
+      description = "If enabled, the default job type will not be applied")
+  boolean defaultJobTypeDisabled;
 
   public AbstractConvertCommand() {
     BpmnConverterFactory factory = BpmnConverterFactory.getInstance();
@@ -138,9 +138,9 @@ public abstract class AbstractConvertCommand implements Callable<Integer> {
 
   protected DefaultConverterProperties converterProperties() {
     DefaultConverterProperties properties = new DefaultConverterProperties();
-    properties.setAdapterJobType(adapterJobType);
+    properties.setDefaultJobType(defaultJobType);
     properties.setPlatformVersion(platformVersion);
-    properties.setAdapterEnabled(!adapterDisabled);
+    properties.setDefaultJobTypeEnabled(!defaultJobTypeDisabled);
     properties.setAppendDocumentation(documentation);
     return properties;
   }

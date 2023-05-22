@@ -42,19 +42,19 @@ public class ConverterController {
       consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
   public ResponseEntity<?> check(
       @RequestParam("file") MultipartFile bpmnFile,
-      @RequestParam(value = "adapterJobType", required = false) String adapterJobType,
+      @RequestParam(value = "defaultJobType", required = false) String defaultJobType,
       @RequestParam(value = "platformVersion", required = false) String platformVersion,
-      @RequestParam(value = "adapterEnabled", required = false, defaultValue = "true")
-          Boolean adapterEnabled,
+      @RequestParam(value = "defaultJobTypeEnabled", required = false, defaultValue = "true")
+          Boolean defaultJobTypeEnabled,
       @RequestHeader(HttpHeaders.ACCEPT) String[] contentType) {
     try (InputStream in = bpmnFile.getInputStream()) {
       BpmnDiagramCheckResult diagramCheckResult =
           bpmnConverter.check(
               bpmnFile.getOriginalFilename(),
               Bpmn.readModelFromStream(in),
-              adapterJobType,
+              defaultJobType,
               platformVersion,
-              adapterEnabled);
+              defaultJobTypeEnabled);
       if (contentType == null
           || contentType.length == 0
           || Arrays.asList(contentType).contains(MediaType.APPLICATION_JSON_VALUE)) {
@@ -88,14 +88,18 @@ public class ConverterController {
       @RequestParam("file") MultipartFile bpmnFile,
       @RequestParam(value = "appendDocumentation", required = false, defaultValue = "false")
           Boolean appendDocumentation,
-      @RequestParam(value = "adapterJobType", required = false) String adapterJobType,
+      @RequestParam(value = "defaultJobType", required = false) String defaultJobType,
       @RequestParam(value = "platformVersion", required = false) String platformVersion,
-      @RequestParam(value = "adapterEnabled", required = false, defaultValue = "true")
-          Boolean adapterEnabled) {
+      @RequestParam(value = "defaultJobTypeEnabled", required = false, defaultValue = "true")
+          Boolean defaultJobTypeEnabled) {
     try (InputStream in = bpmnFile.getInputStream()) {
       BpmnModelInstance modelInstance = Bpmn.readModelFromStream(in);
       bpmnConverter.convert(
-          modelInstance, appendDocumentation, adapterJobType, platformVersion, adapterEnabled);
+          modelInstance,
+          appendDocumentation,
+          defaultJobType,
+          platformVersion,
+          defaultJobTypeEnabled);
       String bpmnXml = bpmnConverter.printXml(modelInstance.getDocument(), true);
       Resource file = new ByteArrayResource(bpmnXml.getBytes());
       return ResponseEntity.ok()
