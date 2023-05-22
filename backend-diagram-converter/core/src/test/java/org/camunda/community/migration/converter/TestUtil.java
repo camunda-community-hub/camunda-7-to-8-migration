@@ -19,7 +19,7 @@ public class TestUtil {
     BpmnModelInstance modelInstance = loadModelInstance(bpmnFile);
     BpmnConverter converter = BpmnConverterFactory.getInstance().get();
     ConverterProperties properties = ConverterPropertiesFactory.getInstance().get();
-    converter.convert(modelInstance, false, properties);
+    converter.convert(modelInstance, properties);
     return modelInstance;
   }
 
