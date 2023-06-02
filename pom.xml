@@ -21,7 +21,7 @@
     <maven.compiler.target>1.8</maven.compiler.target>
     <version.zeebe>8.2.5</version.zeebe>
     <version.spring-boot-starter-camunda>8.2.1</version.spring-boot-starter-camunda>
-    <version.zeebe-process-test-extension-testcontainer>8.2.2</version.zeebe-process-test-extension-testcontainer>
+    <version.zeebe-process-test-extension-testcontainer>8.2.5</version.zeebe-process-test-extension-testcontainer>
     <version.camunda.platform>7.19.0</version.camunda.platform>
     <version.jsoup>1.16.1</version.jsoup>
     <version.spring-boot>2.7.12</version.spring-boot>
@@ -59,6 +59,13 @@
         <type>pom</type>
       </dependency>
       <dependency>
+        <groupId>io.camunda</groupId>
+        <artifactId>zeebe-bom</artifactId>
+        <version>${version.zeebe}</version>
+        <scope>import</scope>
+        <type>pom</type>
+      </dependency>
+      <dependency>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-dependencies</artifactId>
         <version>${version.spring-boot}</version>
@@ -84,16 +91,6 @@
         <groupId>io.camunda.spring</groupId>
         <artifactId>spring-boot-starter-camunda</artifactId>
         <version>${version.spring-boot-starter-camunda}</version>
-      </dependency>
-      <dependency>
-        <groupId>io.camunda</groupId>
-        <artifactId>zeebe-bpmn-model</artifactId>
-        <version>${version.zeebe}</version>
-      </dependency>
-      <dependency>
-        <groupId>io.camunda</groupId>
-        <artifactId>zeebe-protocol</artifactId>
-        <version>${version.zeebe}</version>
       </dependency>
       <dependency>
         <groupId>io.camunda</groupId>
