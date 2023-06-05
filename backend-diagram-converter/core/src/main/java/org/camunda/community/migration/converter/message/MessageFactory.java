@@ -631,6 +631,26 @@ public class MessageFactory {
     return INSTANCE.staticMessage("escalation-code-no-expression");
   }
 
+  public static Message timerExpressionMapped(ExpressionTransformationResult transformationResult) {
+    return INSTANCE.composeMessage(
+        "timer-expression-mapped",
+        ContextBuilder.builder()
+            .context(expressionTransformationResult(transformationResult))
+            .build());
+  }
+
+  public static Message timerExpressionNotSupported(
+      String timerType, String timerExpression, String eventType, String semanticVersion) {
+    return INSTANCE.composeMessage(
+        "timer-expression-not-supported",
+        ContextBuilder.builder()
+            .entry("timerType", timerType)
+            .entry("timerExpression", timerExpression)
+            .entry("eventType", eventType)
+            .entry("semanticVersion", semanticVersion)
+            .build());
+  }
+
   private Message composeMessage(String templateName, Map<String, String> context) {
     ComposedMessage message = new ComposedMessage();
     MessageTemplate template = messageTemplateProvider.getMessageTemplate(templateName);
