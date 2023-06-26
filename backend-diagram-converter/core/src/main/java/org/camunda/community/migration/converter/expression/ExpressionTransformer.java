@@ -11,36 +11,33 @@ public class ExpressionTransformer {
 
   private ExpressionTransformer() {}
 
-  public static ExpressionTransformationResult transform(final String expression) {
-    if (expression == null) {
+  public static ExpressionTransformationResult transform(final String juelExpression) {
+    if (juelExpression == null) {
       return null;
     }
-    String transform = INSTANCE.doTransform(expression);
-    ExpressionTransformationResult result = new ExpressionTransformationResult();
-    result.setOldExpression(expression);
-    result.setNewExpression(transform);
-    return result;
+    String transform = INSTANCE.doTransform(juelExpression);
+    return new ExpressionTransformationResult(juelExpression, transform);
   }
 
-  private String doTransform(final String expression) {
-    if (expression == null) {
+  private String doTransform(final String juelExpression) {
+    if (juelExpression == null) {
       return null;
     }
-    if (expression.length() == 0) {
+    if (juelExpression.length() == 0) {
       return "=null";
     }
     // split into expressions and non-expressions
     List<String> nonExpressions =
-        Arrays.stream(expression.split("(#|\\$)\\{.*}"))
+        Arrays.stream(juelExpression.split("(#|\\$)\\{.*}"))
             .map(String::trim)
             .filter(s -> s.length() > 0)
             .collect(Collectors.toList());
     if (nonExpressions.size() == 1
-        && expression.trim().length() == nonExpressions.get(0).length()) {
-      return expression;
+        && juelExpression.trim().length() == nonExpressions.get(0).length()) {
+      return juelExpression;
     }
     List<String> expressions =
-        Arrays.stream(expression.split("(#|\\$)\\{|}"))
+        Arrays.stream(juelExpression.split("(#|\\$)\\{|}"))
             .map(String::trim)
             .filter(s -> s.length() > 0)
             .map(s -> nonExpressions.contains(s) ? "\"" + s + "\"" : handleExpression(s))

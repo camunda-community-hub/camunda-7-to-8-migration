@@ -23,7 +23,7 @@ public class CandidateGroupsVisitor extends AbstractSupportedAttributeVisitor {
         userTaskConversion ->
             userTaskConversion
                 .getZeebeAssignmentDefinition()
-                .setCandidateGroups(candidateGroups.getNewExpression()));
+                .setCandidateGroups(candidateGroups.getFeelExpression()));
     return MessageFactory.candidateGroups(candidateGroups);
   }
 }

@@ -23,7 +23,7 @@ public class DecisionRefVisitor extends AbstractSupportedAttributeVisitor {
         conversion ->
             conversion
                 .getZeebeCalledDecision()
-                .setDecisionId(transformationResult.getNewExpression()));
+                .setDecisionId(transformationResult.getFeelExpression()));
     return MessageFactory.decisionRef(
         attributeLocalName(), context.getElement().getLocalName(), transformationResult);
   }

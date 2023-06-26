@@ -16,10 +16,7 @@ public class MessageFactoryTest {
   }
 
   private static ExpressionTransformationResult result() {
-    ExpressionTransformationResult result = new ExpressionTransformationResult();
-    result.setNewExpression("=test");
-    result.setOldExpression("${test}");
-    return result;
+    return new ExpressionTransformationResult("${test}", "=test");
   }
 
   @Test

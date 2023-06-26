@@ -521,8 +521,8 @@ public class MessageFactory {
   private static Map<String, String> expressionTransformationResult(
       ExpressionTransformationResult transformationResult) {
     return ContextBuilder.builder()
-        .entry("oldExpression", transformationResult.getOldExpression())
-        .entry("newExpression", transformationResult.getNewExpression())
+        .entry("oldExpression", transformationResult.getJuelExpression())
+        .entry("newExpression", transformationResult.getFeelExpression())
         .build();
   }
 

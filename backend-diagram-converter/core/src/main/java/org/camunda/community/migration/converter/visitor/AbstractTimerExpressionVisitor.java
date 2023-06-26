@@ -16,9 +16,9 @@ public abstract class AbstractTimerExpressionVisitor extends AbstractBpmnElement
     ExpressionTransformationResult transformationResult = transformTimer(context);
     context.addConversion(
         AbstractCatchEventConvertible.class,
-        con -> setNewExpression(con, transformationResult.getNewExpression()));
+        con -> setNewExpression(con, transformationResult.getFeelExpression()));
     if (!Objects.equals(
-        transformationResult.getNewExpression(), transformationResult.getOldExpression())) {
+        transformationResult.getFeelExpression(), transformationResult.getJuelExpression())) {
       context.addMessage(MessageFactory.timerExpressionMapped(transformationResult));
     }
   }
@@ -61,7 +61,7 @@ public abstract class AbstractTimerExpressionVisitor extends AbstractBpmnElement
   protected Message cannotBeConvertedMessage(DomElementVisitorContext context) {
     return MessageFactory.timerExpressionNotSupported(
         elementNameForMessage(context.getElement()),
-        transformTimer(context).getNewExpression(),
+        transformTimer(context).getFeelExpression(),
         elementNameForMessage(context.getElement().getParentElement().getParentElement()),
         context.getProperties().getPlatformVersion());
   }

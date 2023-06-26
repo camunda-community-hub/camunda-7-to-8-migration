@@ -19,7 +19,7 @@ public class DueDateVisitor extends AbstractSupportedAttributeVisitor {
     ExpressionTransformationResult dueDate = ExpressionTransformer.transform(attribute);
     context.addConversion(
         UserTaskConvertible.class,
-        conv -> conv.getZeebeTaskSchedule().setDueDate(dueDate.getNewExpression()));
+        conv -> conv.getZeebeTaskSchedule().setDueDate(dueDate.getFeelExpression()));
     return MessageFactory.dueDate(dueDate);
   }
 }

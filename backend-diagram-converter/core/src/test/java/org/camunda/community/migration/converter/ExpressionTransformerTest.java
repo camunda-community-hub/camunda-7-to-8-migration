@@ -69,7 +69,7 @@ public class ExpressionTransformerTest {
         .map(
             data ->
                 DynamicContainer.dynamicContainer(
-                    "Expression: " + data.getResult().getOldExpression(), data.getTests()));
+                    "Expression: " + data.getResult().getJuelExpression(), data.getTests()));
   }
 
   private static class ExpressionTestBuilder {
@@ -92,7 +92,7 @@ public class ExpressionTransformerTest {
       tests.add(
           DynamicTest.dynamicTest(
               "Expect Result: '" + expectedResult + "'",
-              () -> assertThat(result.getNewExpression()).isEqualTo(expectedResult)));
+              () -> assertThat(result.getFeelExpression()).isEqualTo(expectedResult)));
       return this;
     }
 

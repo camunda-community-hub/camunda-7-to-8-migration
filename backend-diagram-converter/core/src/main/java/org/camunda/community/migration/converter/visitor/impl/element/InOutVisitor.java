@@ -74,7 +74,7 @@ public abstract class InOutVisitor extends AbstractCamundaElementVisitor {
           conversion ->
               conversion.addZeebeIoMapping(
                   getDirection(context.getElement()),
-                  transformationResult.getNewExpression(),
+                  transformationResult.getFeelExpression(),
                   target));
       return MessageFactory.inputOutputParameter(localName(), target, transformationResult);
     }
@@ -84,10 +84,7 @@ public abstract class InOutVisitor extends AbstractCamundaElementVisitor {
     String source = element.getAttribute("source");
     String sourceExpression = element.getAttribute("sourceExpression");
     if (source != null) {
-      ExpressionTransformationResult transformationResult = new ExpressionTransformationResult();
-      transformationResult.setOldExpression(source);
-      transformationResult.setNewExpression("=" + source);
-      return transformationResult;
+      return new ExpressionTransformationResult(source, "=" + source);
     } else if (sourceExpression != null) {
       return ExpressionTransformer.transform(sourceExpression);
     } else {
