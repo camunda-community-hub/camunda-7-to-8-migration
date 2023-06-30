@@ -19,34 +19,34 @@
     <version.java>1.8</version.java>
     <maven.compiler.source>1.8</maven.compiler.source>
     <maven.compiler.target>1.8</maven.compiler.target>
-    <version.zeebe>8.2.4</version.zeebe>
-    <version.spring-boot-starter-camunda>8.2.0</version.spring-boot-starter-camunda>
-    <version.zeebe-process-test-extension-testcontainer>8.2.2</version.zeebe-process-test-extension-testcontainer>
+    <version.zeebe>8.2.7</version.zeebe>
+    <version.spring-boot-starter-camunda>8.2.2</version.spring-boot-starter-camunda>
+    <version.zeebe-process-test-extension-testcontainer>8.2.7</version.zeebe-process-test-extension-testcontainer>
     <version.camunda.platform>7.19.0</version.camunda.platform>
     <version.jsoup>1.16.1</version.jsoup>
-    <version.spring-boot>2.7.11</version.spring-boot>
-    <version.picocli>4.7.3</version.picocli>
-    <version.commons-io>2.11.0</version.commons-io>
+    <version.spring-boot>2.7.13</version.spring-boot>
+    <version.picocli>4.7.4</version.picocli>
+    <version.commons-io>2.13.0</version.commons-io>
     <version.slack-api-client>1.29.2</version.slack-api-client>
     <version.opencsv>5.7.1</version.opencsv>
-    <version.operate-client>8.1.8</version.operate-client>
+    <version.operate-client>8.1.8.1</version.operate-client>
     <version.camunda-bpm-assert>15.0.0</version.camunda-bpm-assert>
 
     <plugin.version.function-maven-plugin>0.10.1</plugin.version.function-maven-plugin>
     <plugin.version.maven-enforcer-plugin>3.3.0</plugin.version.maven-enforcer-plugin>
     <plugin.version.maven-install-plugin>3.1.1</plugin.version.maven-install-plugin>
     <plugin.version.maven-resources-plugin>3.3.1</plugin.version.maven-resources-plugin>
-    <plugin.version.maven-shade-plugin>3.4.1</plugin.version.maven-shade-plugin>
-    <plugin.version.maven-surefire-plugin>3.1.0</plugin.version.maven-surefire-plugin>
-    <plugin.version.spotless-maven-plugin>2.36.0</plugin.version.spotless-maven-plugin>
+    <plugin.version.maven-shade-plugin>3.5.0</plugin.version.maven-shade-plugin>
+    <plugin.version.maven-surefire-plugin>3.1.2</plugin.version.maven-surefire-plugin>
+    <plugin.version.spotless-maven-plugin>2.37.0</plugin.version.spotless-maven-plugin>
     <plugin.version.maven-compiler-plugin>3.11.0</plugin.version.maven-compiler-plugin>
-    <plugin.version.native-maven-plugin>0.9.21</plugin.version.native-maven-plugin>
-    <plugin.version.maven-depdendency-plugin>3.5.0</plugin.version.maven-depdendency-plugin>
+    <plugin.version.native-maven-plugin>0.9.23</plugin.version.native-maven-plugin>
+    <plugin.version.maven-depdendency-plugin>3.6.0</plugin.version.maven-depdendency-plugin>
     <plugin.version.maven-site-plugin>3.12.1</plugin.version.maven-site-plugin>
     <plugin.version.maven-resources-plugin>2.6</plugin.version.maven-resources-plugin>
-    <plugin.version.maven-assembly-plugin>3.5.0</plugin.version.maven-assembly-plugin>
-    <plugin.version.maven-release-plugin>3.0.0</plugin.version.maven-release-plugin>
-    <plugin.version.frontend-maven-plugin>1.12.1</plugin.version.frontend-maven-plugin>
+    <plugin.version.maven-assembly-plugin>3.6.0</plugin.version.maven-assembly-plugin>
+    <plugin.version.maven-release-plugin>3.0.1</plugin.version.maven-release-plugin>
+    <plugin.version.frontend-maven-plugin>1.13.3</plugin.version.frontend-maven-plugin>
   </properties>
 
   <dependencyManagement>
@@ -55,6 +55,13 @@
         <groupId>org.camunda.bpm</groupId>
         <artifactId>camunda-bom</artifactId>
         <version>${version.camunda.platform}</version>
+        <scope>import</scope>
+        <type>pom</type>
+      </dependency>
+      <dependency>
+        <groupId>io.camunda</groupId>
+        <artifactId>zeebe-bom</artifactId>
+        <version>${version.zeebe}</version>
         <scope>import</scope>
         <type>pom</type>
       </dependency>
@@ -84,16 +91,6 @@
         <groupId>io.camunda.spring</groupId>
         <artifactId>spring-boot-starter-camunda</artifactId>
         <version>${version.spring-boot-starter-camunda}</version>
-      </dependency>
-      <dependency>
-        <groupId>io.camunda</groupId>
-        <artifactId>zeebe-bpmn-model</artifactId>
-        <version>${version.zeebe}</version>
-      </dependency>
-      <dependency>
-        <groupId>io.camunda</groupId>
-        <artifactId>zeebe-protocol</artifactId>
-        <version>${version.zeebe}</version>
       </dependency>
       <dependency>
         <groupId>io.camunda</groupId>
