@@ -63,7 +63,9 @@ public class ExpressionTransformerTest {
             expression("${!dauerbuchungVoat21Ids.isEmpty()}").hasMethodInvocation(true),
             expression("${!dauerbuchungVoat21Ids.contains(\"someText\")}")
                 .hasMethodInvocation(true),
-            expression("${input > 5.5}").hasMethodInvocation(false))
+            expression("${input > 5.5}").hasMethodInvocation(false),
+            expression("${input != ''}").isMappedTo("=input != \"\""),
+            expression("${input != 'what the F***'}").isMappedTo("=input != \"what the F***\""))
         .map(
             data ->
                 DynamicContainer.dynamicContainer(
