@@ -78,6 +78,8 @@ expression, e.g.:
 </bpmn:serviceTask>
 ```
 
+If you are using an expression, you might want to write the result to a process variable. This can be achieved by setting an additional `resultVariable` header:
+
 ```xml
 
 <bpmn:serviceTask id="task3" name="Expression">
@@ -85,6 +87,7 @@ expression, e.g.:
     <zeebe:taskDefinition type="camunda-7-adapter"/>
     <zeebe:taskHeaders>
       <zeebe:header key="expression" value="${someBean.awesomeMethod(execution, someVar)}"/>
+      <zeebe:header key="resultVariable" value="awesomeMethodResult"/>
     </zeebe:taskHeaders>
   </bpmn:extensionElements>
 </bpmn:serviceTask>
@@ -98,6 +101,22 @@ The external task workers can be mapped by using the `taskType` and insert the
 <bpmn:serviceTask id="task4" name="External Task Worker">
   <bpmn:extensionElements>
     <zeebe:taskDefinition type="my-awesome-topic"/>
+  </bpmn:extensionElements>
+</bpmn:serviceTask>
+```
+
+## Using Execution listener
+
+To use execution listeners, use the header `executionListener.start` or `executionListener.end`. The value should be of type `delegateExpression` which returns a bean of type `ExecutionListener`:
+
+```xml
+
+<bpmn:serviceTask id="task3" name="Expression">
+  <bpmn:extensionElements>
+    <zeebe:taskHeaders>
+      <zeebe:header key="executionListener.start" value="${startExecutionListenerBean}"/>
+      <zeebe:header key="executionListener.end" value="${endExecutionListenerBean}"/>
+    </zeebe:taskHeaders>
   </bpmn:extensionElements>
 </bpmn:serviceTask>
 ```
