@@ -42,13 +42,9 @@ public class CamundaPlatform7DelegationWorker {
     final DelegateExecution execution = new ZeebeJobDelegateExecution(job);
 
     try {
-      if (startListener == null
-          && endListener == null
-          && delegateClass == null
-          && delegateExpression == null
-          && expression == null) {
+      if (delegateClass == null && delegateExpression == null && expression == null) {
         throw new RuntimeException(
-            "Either 'executionListener.start' or 'class' or 'delegateExpression' or 'expression' or executionListener.end must be specified in task headers for job :"
+            "Either 'class' or 'delegateExpression' or 'expression' must be specified in task headers for job :"
                 + job);
       }
 
