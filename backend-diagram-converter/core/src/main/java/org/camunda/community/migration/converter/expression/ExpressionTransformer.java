@@ -67,7 +67,8 @@ public class ExpressionTransformer {
             // replace all !(x and y) with not(x and y)
             .replaceAll("!\\(([^\\(\\)]*)\\)", "not($1)")
             .replaceAll(" && ", " and ")
-            .replaceAll(" \\|\\| ", " or ");
+            .replaceAll(" \\|\\| ", " or ")
+            .replaceAll("'", "\"");
     // increment all indexes
     Pattern pattern = Pattern.compile("\\[(\\d*)\\]");
     Matcher m = pattern.matcher(replaced);

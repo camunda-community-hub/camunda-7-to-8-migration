@@ -47,19 +47,3 @@ body:
     placeholder: e.g. 7.17.0
   validations:
     required: true
-- type: dropdown
-  id: camunda-distro
-  attributes:
-    label: Camunda Distribution
-    description: Which distribution of Camunda do you use?
-    options: ["Tomcat","Wildfly","Run","Spring Boot Starter","other"]
-  validations:
-    required: true
-- type: input
-  id: camunda-distro-other
-  attributes:
-    label: Other Camunda distribution
-    description: If you selected other, please describe your distribution briefly
-    placeholder: e.g. Quarkus, Micronaut, embedded in custom framework
-  validations:
-    required: false

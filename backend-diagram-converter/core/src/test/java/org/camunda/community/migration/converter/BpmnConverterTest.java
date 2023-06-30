@@ -392,4 +392,16 @@ public class BpmnConverterTest {
         .isEqualTo(
             "Listener at 'start' with implementation 'null' cannot be transformed. Execution Listeners do not exist in Zeebe.");
   }
+
+  @Test
+  void testErrorCodeShouldPersist() {
+    BpmnModelInstance modelInstance = loadAndConvert("error-code.bpmn");
+    assertThat(
+            modelInstance.getDocument().getElementById("Error_16zktjx").getAttribute("errorCode"))
+        .isEqualTo("someCode");
+    BpmnConverter converter = BpmnConverterFactory.getInstance().get();
+    StringWriter writer = new StringWriter();
+    converter.printXml(modelInstance.getDocument(), true, writer);
+    System.out.println(writer.toString());
+  }
 }
