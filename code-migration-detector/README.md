@@ -176,4 +176,3 @@ TBD: (following part contains example of refined use cases)
 | -------------- | ----------------- | ---------------- | -------------- | ---------------- | ------------------------------------------------------------------------------------------------------ |
 | 1.1.1          | Create deployment | createDeployment | Supported      | Zeebe API (gRPC) | Use the [DeployResource](https://docs.camunda.io/docs/apis-tools/grpc/#deployresource-rpc) RPC method. |
 | ...            |                   |                  |                |                  |                                                                                                        |
-

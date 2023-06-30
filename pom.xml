@@ -305,6 +305,16 @@
   </build>
 
   <profiles>
+    <profile>
+      <id>example</id>
+      <activation>
+        <activeByDefault>false</activeByDefault>
+      </activation>
+      <modules>
+        <module>example</module>
+      </modules>
+    </profile>
+
     <!-- profile to auto format -->
     <profile>
       <id>autoFormat</id>
@@ -359,4 +369,5 @@
     <module>test-example-diagrams</module>
     <module>code-migration-detector</module>
   </modules>
+
 </project>
