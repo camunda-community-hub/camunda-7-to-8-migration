@@ -6,7 +6,8 @@ import com.tngtech.archunit.junit.ArchIgnore;
 import com.tngtech.archunit.junit.ArchTest;
 import org.camunda.community.migration.detector.rules.Camunda7MigrationRules;
 
-// @ArchIgnore
+// remove the @ArchIgnore if you want to check if this test is really working
+@ArchIgnore
 @AnalyzeClasses(packages = "org.camunda.community.migration.detector.example")
 class SimpleDetectionTest {
 

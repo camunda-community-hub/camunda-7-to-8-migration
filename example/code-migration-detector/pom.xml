@@ -6,15 +6,20 @@
 
   <parent>
     <groupId>org.camunda.community.migration</groupId>
-    <artifactId>code-migration-detector</artifactId>
-    <version>0.6.2-SNAPSHOT</version>
+    <artifactId>migration-examples-parent</artifactId>
+    <version>1.0.0-SNAPSHOT</version>
   </parent>
+
+  <properties>
+      <archunit.version>1.0.1</archunit.version>
+      <version.camunda-7-to-8-migration>0.6.2-SNAPSHOT</version.camunda-7-to-8-migration>
+  </properties>
 
   <dependencies>
     <dependency>
       <groupId>org.camunda.community.migration</groupId>
       <artifactId>code-migration-detector-test</artifactId>
-      <version>${project.version}</version>
+      <version>${version.camunda-7-to-8-migration}</version>
       <scope>test</scope>
     </dependency>
     <dependency>
@@ -46,15 +51,6 @@
       <groupId>org.camunda.bpm</groupId>
       <artifactId>camunda-external-task-client-spring</artifactId>
     </dependency>
-    <!-- copied code from https://github.com/camunda-consulting/on-demand-call-activity/tree/master/abstract-delegate-execution
-    into this project for simplicity
-    <dependency>
-        <groupId>org.camunda.bpm.extension.engine.delegate.abstract</groupId>
-        <artifactId>abstract-delegate-execution</artifactId>
-      <version>0.0.1-SNAPSHOT</version>
-    </dependency>
-    -->
-
   </dependencies>
 
 </project>
