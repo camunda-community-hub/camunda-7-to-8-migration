@@ -357,6 +357,5 @@
     <module>backend-diagram-converter</module>
     <module>process-instance-migration</module>
     <module>test-example-diagrams</module>
-      <module>test-example-worker</module>
   </modules>
 </project>

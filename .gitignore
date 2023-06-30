@@ -11,5 +11,3 @@ target
 *.factorypath
 .DS_Store
 dist
-
-test-example-worker/src/main/resources/application.yml

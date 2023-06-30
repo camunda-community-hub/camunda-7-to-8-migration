@@ -32,7 +32,7 @@ class CamundaPlatform7DelegationWorkerTest {
       new CamundaPlatform7DelegationWorker(juelExpressionResolver, classResolver);
 
   @Test
-  void execute_listeners_and_javaDelegate() throws Exception {
+  void shouldExecuteExecutionListenerOnStart() throws Exception {
     long jobKey = 0L;
     Map<String, String> headers = new HashMap<>();
     headers.put("delegateExpression", "${myDelegate}");

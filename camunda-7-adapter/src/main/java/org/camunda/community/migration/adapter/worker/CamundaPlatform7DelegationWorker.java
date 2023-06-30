@@ -56,7 +56,6 @@ public class CamundaPlatform7DelegationWorker {
         ExecutionListener executionListener =
             (ExecutionListener) expressionResolver.evaluate(startListener, execution);
 
-        // modifies variables of execution
         executionListener.notify(execution);
       }
 

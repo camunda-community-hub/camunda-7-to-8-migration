@@ -16,8 +16,7 @@ public class SimpleVariableScope extends AbstractVariableScope {
 
   private static final long serialVersionUID = 1L;
 
-  protected VariableInstanceFactory<CoreVariableInstance> variableInstanceFactory =
-      (name, value, isTransient) -> new SimpleVariableInstance(name, value);
+  protected VariableInstanceFactory<CoreVariableInstance> variableInstanceFactory = (name, value, isTransient) -> new SimpleVariableInstance(name, value);
   protected VariableStore<SimpleVariableInstance> variableStore =
       new VariableStore<SimpleVariableInstance>();
 
