@@ -46,7 +46,7 @@
     <plugin.version.maven-resources-plugin>2.6</plugin.version.maven-resources-plugin>
     <plugin.version.maven-assembly-plugin>3.6.0</plugin.version.maven-assembly-plugin>
     <plugin.version.maven-release-plugin>3.0.1</plugin.version.maven-release-plugin>
-    <plugin.version.frontend-maven-plugin>1.13.3</plugin.version.frontend-maven-plugin>
+    <plugin.version.frontend-maven-plugin>1.13.4</plugin.version.frontend-maven-plugin>
   </properties>
 
   <dependencyManagement>
