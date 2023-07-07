@@ -30,6 +30,9 @@ public class ErrorVisitor extends AbstractEventReferenceVisitor {
   @Override
   protected void postCreationVisitor(DomElementVisitorContext context) {
     String errorCode = context.getElement().getAttribute(BPMN, "errorCode");
+    if (errorCode == null) {
+      return;
+    }
     ExpressionTransformationResult expressionTransformationResult =
         ExpressionTransformer.transform(errorCode);
     if (expressionTransformationResult.getNewExpression().startsWith("=")) {
