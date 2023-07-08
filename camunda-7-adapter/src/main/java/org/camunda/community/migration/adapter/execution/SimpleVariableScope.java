@@ -16,9 +16,9 @@ public class SimpleVariableScope extends AbstractVariableScope {
 
   private static final long serialVersionUID = 1L;
 
-  protected VariableInstanceFactory<CoreVariableInstance> variableInstanceFactory = (name, value, isTransient) -> new SimpleVariableInstance(name, value);
-  protected VariableStore<SimpleVariableInstance> variableStore =
-      new VariableStore<SimpleVariableInstance>();
+  protected VariableInstanceFactory<CoreVariableInstance> variableInstanceFactory =
+      (name, value, isTransient) -> new SimpleVariableInstance(name, value);
+  protected VariableStore<CoreVariableInstance> variableStore = new VariableStore<>();
 
   public SimpleVariableScope() {
     this(Collections.emptyMap());
@@ -30,7 +30,7 @@ public class SimpleVariableScope extends AbstractVariableScope {
   }
 
   protected VariableStore<CoreVariableInstance> getVariableStore() {
-    return (VariableStore) variableStore;
+    return variableStore;
   }
 
   @Override
