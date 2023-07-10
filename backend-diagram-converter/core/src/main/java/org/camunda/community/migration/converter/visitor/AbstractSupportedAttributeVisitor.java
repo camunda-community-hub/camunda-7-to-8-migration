@@ -8,7 +8,9 @@ public abstract class AbstractSupportedAttributeVisitor extends AbstractCamundaA
   @Override
   protected void visitAttribute(DomElementVisitorContext context, String attribute) {
     Message message = visitSupportedAttribute(context, attribute);
-    context.addMessage(message);
+    if (message != null) {
+      context.addMessage(message);
+    }
   }
 
   protected abstract Message visitSupportedAttribute(

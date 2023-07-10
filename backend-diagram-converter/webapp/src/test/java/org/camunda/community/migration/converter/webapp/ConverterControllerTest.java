@@ -20,12 +20,15 @@ import org.camunda.bpm.model.xml.instance.DomElement;
 import org.camunda.community.migration.converter.BpmnDiagramCheckResult;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.test.web.server.LocalServerPort;
 
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
 public class ConverterControllerTest {
+  private static final Logger LOG = LoggerFactory.getLogger(ConverterControllerTest.class);
   @LocalServerPort int port;
 
   @BeforeEach
@@ -85,6 +88,7 @@ public class ConverterControllerTest {
             .getBody()
             .asByteArray();
     ByteArrayInputStream in = new ByteArrayInputStream(bpmn);
+    LOG.info("{}", new String(bpmn));
     BpmnModelInstance bpmnModelInstance = Bpmn.readModelFromStream(in);
     DomElement process = bpmnModelInstance.getDocument().getElementById("Process_11j5dku");
     assertThat(process).isNotNull();

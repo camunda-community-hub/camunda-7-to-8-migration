@@ -473,6 +473,23 @@ public class MessageFactoryTest {
   }
 
   @Test
+  void shouldBuildDelegateImplementationNoDefaultJobType() {
+    String implementationType = random();
+    String binding = random();
+    Message message = delegateImplementationNoDefaultJobType(implementationType, binding);
+    assertNotNull(message);
+    assertNotNull(message.getMessage());
+    assertNotNull(message.getSeverity());
+    assertThat(message.getMessage())
+        .isEqualTo(
+            "Delegate call of type '"
+                + implementationType
+                + "' bound to '"
+                + binding
+                + "' was reset.");
+  }
+
+  @Test
   void shouldBuildTimerExpressionMappedMessage() {
     Message message = timerExpressionMapped(result());
     assertNotNull(message);

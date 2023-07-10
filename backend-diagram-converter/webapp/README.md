@@ -30,6 +30,7 @@ The API offers 2 methods:
     - `adapterJobType` (`String`): type of the job all service tasks formerly
       implemented as delegates or expressions should have. _(optional)_
     - `platformVersion` (`String`): version of the target platform _(optional)_
+    - `adapterEnabled` (`Boolean`): whether the adapter job type should be set in the converted diagram _(default: `true`)_
   - Headers
     - `Accept`: Either `application/json` or `text/csv`
 - Response:
@@ -48,6 +49,7 @@ The API offers 2 methods:
     - `adapterJobType` (`String`): type of the job all service tasks formerly
       implemented as delegates or expressions should have. _(optional)_
     - `platformVersion` (`String`): version of the target platform _(optional)_
+    - `adapterEnabled` (`Boolean`): whether the adapter job type should be set in the converted diagram _(default: `true`)_
 - Response:
   - `200`: Everything fine. The body contains a BPMN diagram. The header
     contains a `Content-Disposition` field that declares this as attachment and

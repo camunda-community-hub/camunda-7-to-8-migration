@@ -14,11 +14,11 @@ public class ConverterPropertiesTest {
   @Test
   void shouldMergeProperties() {
     DefaultConverterProperties properties = new DefaultConverterProperties();
-    properties.setAdapterJobType("adapter");
+    properties.setDefaultJobType("adapter");
     assertNull(properties.getResourceHeader());
     ConverterProperties converterProperties =
         ConverterPropertiesFactory.getInstance().merge(properties);
-    assertEquals("adapter", converterProperties.getAdapterJobType());
+    assertEquals("adapter", converterProperties.getDefaultJobType());
     assertNotNull(properties.getResourceHeader());
   }
 }

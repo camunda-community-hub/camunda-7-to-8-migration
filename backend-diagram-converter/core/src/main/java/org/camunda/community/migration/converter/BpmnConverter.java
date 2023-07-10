@@ -47,18 +47,12 @@ public class BpmnConverter {
     this.notificationService = notificationService;
   }
 
-  public void convert(
-      BpmnModelInstance modelInstance,
-      boolean appendDocumentation,
-      ConverterProperties properties) {
-    check(null, modelInstance, appendDocumentation, properties);
+  public void convert(BpmnModelInstance modelInstance, ConverterProperties properties) {
+    check(null, modelInstance, properties);
   }
 
   public BpmnDiagramCheckResult check(
-      String filename,
-      BpmnModelInstance modelInstance,
-      boolean appendDocumentation,
-      ConverterProperties properties) {
+      String filename, BpmnModelInstance modelInstance, ConverterProperties properties) {
     LOG.info("Start check");
     BpmnDiagramCheckResult result = new BpmnDiagramCheckResult();
     result.setFilename(filename);
@@ -90,7 +84,7 @@ public class BpmnConverter {
               conversionElementAppender.appendMessages(element, messages);
               conversionElementAppender.appendReferences(element, references);
               conversionElementAppender.appendReferencedBy(element, referencedBys);
-              if (appendDocumentation) {
+              if (properties.getAppendDocumentation()) {
                 conversionElementAppender.appendDocumentation(
                     element, collectMessages(result, messages, references));
               }

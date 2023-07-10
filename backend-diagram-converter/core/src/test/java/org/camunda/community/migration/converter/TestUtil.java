@@ -19,7 +19,7 @@ public class TestUtil {
     BpmnModelInstance modelInstance = loadModelInstance(bpmnFile);
     BpmnConverter converter = BpmnConverterFactory.getInstance().get();
     ConverterProperties properties = ConverterPropertiesFactory.getInstance().get();
-    converter.convert(modelInstance, false, properties);
+    converter.convert(modelInstance, properties);
     return modelInstance;
   }
 
@@ -36,10 +36,7 @@ public class TestUtil {
     properties.setPlatformVersion(targetVersion);
     BpmnDiagramCheckResult result =
         converter.check(
-            bpmnFile,
-            modelInstance,
-            false,
-            ConverterPropertiesFactory.getInstance().merge(properties));
+            bpmnFile, modelInstance, ConverterPropertiesFactory.getInstance().merge(properties));
     return result;
   }
 

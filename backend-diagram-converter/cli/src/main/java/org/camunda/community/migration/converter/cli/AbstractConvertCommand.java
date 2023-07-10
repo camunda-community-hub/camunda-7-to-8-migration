@@ -32,9 +32,10 @@ public abstract class AbstractConvertCommand implements Callable<Integer> {
   boolean documentation;
 
   @Option(
-      names = {"--adapter-job-type"},
-      description = "If set, the default value for the adapter job is overridden")
-  String adapterJobType;
+      names = {"--default-job-type"},
+      description =
+          "If set, the default value from the 'converter-properties.properties' for the job type is overridden")
+  String defaultJobType;
 
   @Option(
       names = {"--prefix"},
@@ -60,6 +61,9 @@ public abstract class AbstractConvertCommand implements Callable<Integer> {
 
   @Option(names = "--check", description = "If enabled, no converted diagrams are exported")
   boolean check;
+
+  @Option(names = "--disable-default-job-type", description = "Disables the default job type")
+  boolean defaultJobTypeDisabled;
 
   public AbstractConvertCommand() {
     BpmnConverterFactory factory = BpmnConverterFactory.getInstance();
@@ -121,7 +125,6 @@ public abstract class AbstractConvertCommand implements Callable<Integer> {
       return converter.check(
           modelInstance.getKey().getAbsolutePath(),
           modelInstance.getValue(),
-          documentation,
           ConverterPropertiesFactory.getInstance().merge(converterProperties()));
     } catch (Exception e) {
       LOG_CLI.error("Problem while converting: {}", createMessage(e));
@@ -134,8 +137,10 @@ public abstract class AbstractConvertCommand implements Callable<Integer> {
 
   protected DefaultConverterProperties converterProperties() {
     DefaultConverterProperties properties = new DefaultConverterProperties();
-    properties.setAdapterJobType(adapterJobType);
+    properties.setDefaultJobType(defaultJobType);
     properties.setPlatformVersion(platformVersion);
+    properties.setDefaultJobTypeEnabled(!defaultJobTypeDisabled);
+    properties.setAppendDocumentation(documentation);
     return properties;
   }
 

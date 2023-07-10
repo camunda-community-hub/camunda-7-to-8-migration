@@ -28,7 +28,7 @@ public class BehaviourTest {
     BpmnConverter converter = BpmnConverterFactory.getInstance().get();
     ConverterProperties properties = ConverterPropertiesFactory.getInstance().get();
     BpmnModelInstance modelInstance = BpmnModelInstanceUtil.fromResource(CALL_ACTIVITY_BEHAVIOUR);
-    converter.convert(modelInstance, false, properties);
+    converter.convert(modelInstance, properties);
     client
         .newDeployResourceCommand()
         .addProcessModel(BpmnModelInstanceUtil.transform(modelInstance), "test.bpmn")
