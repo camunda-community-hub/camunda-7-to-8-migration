@@ -1,5 +1,6 @@
 package org.camunda.community.migration.adapter.execution;
 
+import java.util.Collections;
 import java.util.Map;
 import org.camunda.bpm.engine.ProcessEngine;
 import org.camunda.bpm.engine.ProcessEngineServices;
@@ -27,10 +28,10 @@ public abstract class AbstractDelegateExecution extends SimpleVariableScope
   protected RepositoryService repositoryService;
 
   public AbstractDelegateExecution() {
-    super();
+    this(Collections.emptyMap());
   }
 
-  public AbstractDelegateExecution(Map<String, ? extends Object> variables) {
+  public AbstractDelegateExecution(Map<String, Object> variables) {
     super(variables);
   }
 
@@ -41,7 +42,7 @@ public abstract class AbstractDelegateExecution extends SimpleVariableScope
 
   @Override
   public FlowElement getBpmnModelElementInstance() {
-    return getBpmnModelInstance().getModelElementById(getCurrentActivityId());
+    throw new UnsupportedOperationException();
   }
 
   @Override

@@ -5,14 +5,13 @@ import io.camunda.zeebe.client.api.response.ActivatedJob;
 import io.camunda.zeebe.client.api.worker.JobClient;
 import io.camunda.zeebe.spring.client.annotation.JobWorker;
 import io.camunda.zeebe.spring.client.exception.ZeebeBpmnError;
-import java.util.HashMap;
-import java.util.Map;
-import org.camunda.bpm.engine.ArtifactFactory;
+import org.camunda.bpm.engine.delegate.*;
 import org.camunda.bpm.engine.delegate.BpmnError;
 import org.camunda.bpm.engine.delegate.DelegateExecution;
+import org.camunda.bpm.engine.delegate.ExecutionListener;
 import org.camunda.bpm.engine.delegate.JavaDelegate;
-import org.camunda.bpm.engine.delegate.VariableScope;
 import org.camunda.community.migration.adapter.execution.ZeebeJobDelegateExecution;
+import org.camunda.community.migration.adapter.juel.ClassResolver;
 import org.camunda.community.migration.adapter.juel.JuelExpressionResolver;
 import org.springframework.stereotype.Component;
 
@@ -20,12 +19,12 @@ import org.springframework.stereotype.Component;
 public class CamundaPlatform7DelegationWorker {
 
   private final JuelExpressionResolver expressionResolver;
-  private final ArtifactFactory artifactFactory;
+  private final ClassResolver classResolver;
 
   public CamundaPlatform7DelegationWorker(
-      JuelExpressionResolver expressionResolver, ArtifactFactory artifactFactory) {
+      JuelExpressionResolver expressionResolver, ClassResolver classResolver) {
     this.expressionResolver = expressionResolver;
-    this.artifactFactory = artifactFactory;
+    this.classResolver = classResolver;
   }
 
   @JobWorker(type = "camunda-7-adapter", autoComplete = false)
@@ -36,58 +35,52 @@ public class CamundaPlatform7DelegationWorker {
     String delegateExpression = job.getCustomHeaders().get("delegateExpression");
     String expression = job.getCustomHeaders().get("expression");
     String resultVariable = job.getCustomHeaders().get("resultVariable");
-
+    String startListener = job.getCustomHeaders().get("executionListener.start");
+    String endListener = job.getCustomHeaders().get("executionListener.end");
     // and delegate depending on exact way of implementation
-    Map<String, Object> resultPayload = null;
-    DelegateExecution execution = wrapDelegateExecution(job);
-    // this is required as we add the execution to the variables scope for expression evaluation
-    VariableScope variableScope = wrapDelegateExecution(job);
+
+    final DelegateExecution execution = new ZeebeJobDelegateExecution(job);
+
     try {
-      if (delegateClass != null) {
-        JavaDelegate javaDelegate = loadJavaDelegate(delegateClass);
-        javaDelegate.execute(execution);
-        resultPayload = execution.getVariables();
-      } else if (delegateExpression != null) {
-        JavaDelegate javaDelegate =
-            (JavaDelegate)
-                expressionResolver.evaluate(delegateExpression, variableScope, execution);
-        javaDelegate.execute(execution);
-        resultPayload = execution.getVariables();
-      } else if (expression != null) {
-        Object result = expressionResolver.evaluate(expression, variableScope, execution);
-        if (resultVariable != null) {
-          resultPayload = new HashMap<>();
-          resultPayload.put(resultVariable, result);
-        }
-      } else {
+      if (delegateClass == null && delegateExpression == null && expression == null) {
         throw new RuntimeException(
             "Either 'class' or 'delegateExpression' or 'expression' must be specified in task headers for job :"
                 + job);
       }
 
-      CompleteJobCommandStep1 completeCommand = client.newCompleteCommand(job.getKey());
-      if (resultPayload != null) {
-        completeCommand.variables(resultPayload);
+      if (startListener != null) {
+        ExecutionListener executionListener =
+            (ExecutionListener) expressionResolver.evaluate(startListener, execution);
+
+        executionListener.notify(execution);
       }
+
+      if (delegateClass != null) {
+        JavaDelegate javaDelegate = classResolver.loadJavaDelegate(delegateClass);
+        javaDelegate.execute(execution);
+      } else if (delegateExpression != null) {
+        JavaDelegate javaDelegate =
+            (JavaDelegate) expressionResolver.evaluate(delegateExpression, execution);
+        javaDelegate.execute(execution);
+      } else if (expression != null) {
+        Object result = expressionResolver.evaluate(expression, execution);
+
+        if (resultVariable != null) {
+          execution.setVariable(resultVariable, result);
+        }
+      }
+
+      if (endListener != null) {
+        ExecutionListener executionListener =
+            (ExecutionListener) expressionResolver.evaluate(endListener, execution);
+        executionListener.notify(execution);
+      }
+
+      CompleteJobCommandStep1 completeCommand = client.newCompleteCommand(job.getKey());
+      completeCommand.variables(execution.getVariables());
       completeCommand.send().join();
     } catch (BpmnError e) {
       throw new ZeebeBpmnError(e.getErrorCode(), e.getMessage() == null ? "" : e.getMessage());
-    }
-  }
-
-  private DelegateExecution wrapDelegateExecution(ActivatedJob job) {
-    return new ZeebeJobDelegateExecution(job);
-  }
-
-  private JavaDelegate loadJavaDelegate(String delegateName) {
-    final ClassLoader contextClassLoader = Thread.currentThread().getContextClassLoader();
-    try {
-      Class<? extends JavaDelegate> clazz =
-          (Class<? extends JavaDelegate>) contextClassLoader.loadClass(delegateName);
-      return artifactFactory.getArtifact(clazz);
-    } catch (Exception e) {
-      throw new RuntimeException(
-          "Could not load delegation class '" + delegateName + "': " + e.getMessage(), e);
     }
   }
 }

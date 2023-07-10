@@ -25,6 +25,7 @@ public class CamundaPlatform7AdapterConfig {
   public ExternalTaskWorkerRegistration workerRegistration() {
     ClientConfiguration configuration = new ClientConfiguration();
     configuration.setBaseUrl("http://localhost");
+
     return new ExternalTaskWorkerRegistration(configuration);
   }
 

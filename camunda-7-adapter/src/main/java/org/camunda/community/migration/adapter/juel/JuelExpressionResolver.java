@@ -6,6 +6,7 @@ import org.camunda.bpm.engine.impl.el.JuelExpressionManager;
 import org.camunda.bpm.engine.impl.javax.el.ELContext;
 import org.camunda.bpm.engine.impl.javax.el.ExpressionFactory;
 import org.camunda.bpm.engine.impl.javax.el.ValueExpression;
+import org.camunda.community.migration.adapter.execution.SimpleVariableScope;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -24,11 +25,15 @@ public class JuelExpressionResolver {
     this.expressionFactory = expressionFactory;
   }
 
-  public Object evaluate(
-      String expressionString, VariableScope variableScope, DelegateExecution execution) {
+  public Object evaluate(String expressionString, DelegateExecution execution) {
     ValueExpression valueExpression =
         expressionFactory.createValueExpression(elContext, expressionString, Object.class);
+
+    // required because (in C7) we can use juel like `${execution.xxx()}`
+    VariableScope variableScope = new SimpleVariableScope(execution.getVariables());
+    variableScope.setVariable("execution", execution);
+
     return new EnginelessJuelExpression(valueExpression, expressionManager, expressionString)
-        .getValue(variableScope, execution);
+        .getValue(variableScope);
   }
 }
