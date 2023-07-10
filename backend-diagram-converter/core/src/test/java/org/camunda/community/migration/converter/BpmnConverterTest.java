@@ -1,6 +1,7 @@
 package org.camunda.community.migration.converter;
 
 import static org.assertj.core.api.Assertions.*;
+import static org.camunda.community.migration.converter.NamespaceUri.*;
 import static org.camunda.community.migration.converter.TestUtil.*;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -8,6 +9,7 @@ import java.io.ByteArrayInputStream;
 import java.io.StringWriter;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 import org.camunda.bpm.model.bpmn.Bpmn;
 import org.camunda.bpm.model.bpmn.BpmnModelInstance;
 import org.camunda.community.migration.converter.BpmnDiagramCheckResult.BpmnElementCheckMessage;
@@ -33,27 +35,28 @@ public class BpmnConverterTest {
         "collaboration.bpmn",
         "internal-script.bpmn",
         "collaboration.bpmn",
-        "empty-input-parameter.bpmn"
+        "empty-input-parameter.bpmn",
+        "flexible-timer-event.bpmn"
       })
   public void shouldConvert(String bpmnFile) {
     BpmnConverter converter = BpmnConverterFactory.getInstance().get();
     ConverterProperties properties = ConverterPropertiesFactory.getInstance().get();
     BpmnModelInstance modelInstance =
         Bpmn.readModelFromStream(this.getClass().getClassLoader().getResourceAsStream(bpmnFile));
-    printModel(converter, modelInstance);
+    printModel(modelInstance);
     BpmnDiagramCheckResult result = converter.check(bpmnFile, modelInstance, false, properties);
-    printModel(converter, modelInstance);
+    printModel(modelInstance);
     StringWriter writer = new StringWriter();
     converter.printXml(modelInstance.getDocument(), true, writer);
     ByteArrayInputStream stream = new ByteArrayInputStream(writer.toString().getBytes());
     io.camunda.zeebe.model.bpmn.Bpmn.readModelFromStream(stream);
   }
 
-  private void printModel(BpmnConverter converter, BpmnModelInstance modelInstance) {
+  private void printModel(BpmnModelInstance modelInstance) {
     StringWriter writer = new StringWriter();
-    converter.printXml(modelInstance.getDocument(), true, writer);
+    BpmnConverterFactory.getInstance().get().printXml(modelInstance.getDocument(), true, writer);
     String[] processModel = writer.toString().split("\n");
-    for (int i = 0; i < processModel.length; i++) {
+    for (int i = 1; i < processModel.length; i++) {
       LOG.debug("" + i + "     " + processModel[i]);
     }
   }
@@ -407,5 +410,64 @@ public class BpmnConverterTest {
     assertThat(
             modelInstance.getDocument().getElementById("Error_16zktjx").getAttribute("errorCode"))
         .isNull();
+  }
+
+  @ParameterizedTest
+  @CsvSource(
+      value = {
+        "FlexibleDurationEvent,=duration",
+        "FlexibleDateEvent,=date",
+        "FlexibleCycleEvent,=cycle",
+        "FixedDurationEvent,PT1S",
+        "FixedDateEvent,2019-10-01T12:00:00Z",
+        "FixedCycleEvent,R3/PT1S"
+      })
+  void testTimerEvents(String elementId, String expectedExpression) {
+    BpmnModelInstance modelInstance = loadAndConvert("flexible-timer-event.bpmn");
+    String timerExpression =
+        modelInstance
+            .getDocument()
+            .getElementById(elementId)
+            .getChildElementsByNameNs(BPMN, "timerEventDefinition")
+            .get(0)
+            .getChildElements()
+            .get(0)
+            .getTextContent();
+    assertThat(timerExpression).isEqualTo(expectedExpression);
+  }
+
+  @ParameterizedTest
+  @CsvSource(
+      value = {
+        // start events
+        "CycleStartEvent,true",
+        "DurationStartEvent1,false",
+        "DateStartEvent,true",
+        // intermediate events
+        "FlexibleDurationEvent,true",
+        "FlexibleDateEvent,false",
+        "FlexibleCycleEvent,false",
+        // boundary events
+        "DurationBoundaryEvent,true",
+        "DateBoundaryEvent,false",
+        "CycleBoundaryEvent,false",
+        // event sub process
+        "DateStartEvent1,true",
+        "DurationStartEvent,false",
+        "CycleStartEvent1,false"
+      })
+  void testTimerEventMessages(String elementId, boolean allowed) {
+    BpmnDiagramCheckResult result = loadAndCheck("flexible-timer-event.bpmn");
+    BpmnElementCheckResult elementResult = result.getResult(elementId);
+    assertThat(elementResult).isNotNull();
+    List<BpmnElementCheckMessage> warningMessages =
+        elementResult.getMessages().stream()
+            .filter(m -> m.getSeverity().equals(Severity.WARNING))
+            .collect(Collectors.toList());
+    if (allowed) {
+      assertThat(warningMessages).isEmpty();
+    } else {
+      assertThat(warningMessages).hasSize(1);
+    }
   }
 }

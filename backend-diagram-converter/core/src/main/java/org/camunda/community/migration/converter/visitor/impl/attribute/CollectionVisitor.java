@@ -27,7 +27,7 @@ public class CollectionVisitor extends AbstractSupportedAttributeVisitor {
             conversion
                 .getBpmnMultiInstanceLoopCharacteristics()
                 .getZeebeLoopCharacteristics()
-                .setInputCollection(transformationResult.getNewExpression()));
+                .setInputCollection(transformationResult.getFeelExpression()));
     context.addMessage(MessageFactory.collectionHint());
     Message message;
     if (transformationResult.hasExecution()) {

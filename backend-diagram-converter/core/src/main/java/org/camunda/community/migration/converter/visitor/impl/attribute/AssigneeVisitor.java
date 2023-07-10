@@ -24,7 +24,7 @@ public class AssigneeVisitor extends AbstractSupportedAttributeVisitor {
         userTaskConversion ->
             userTaskConversion
                 .getZeebeAssignmentDefinition()
-                .setAssignee(transformationResult.getNewExpression()));
+                .setAssignee(transformationResult.getFeelExpression()));
     return MessageFactory.assignee(
         attributeLocalName(), context.getElement().getLocalName(), transformationResult);
   }

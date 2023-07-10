@@ -19,9 +19,4 @@ public class StandardLoopCharacteristicsVisitor extends AbstractBpmnElementVisit
   public String localName() {
     return "standardLoopCharacteristics";
   }
-
-  @Override
-  protected String elementNameForMessage(DomElementVisitorContext context) {
-    return "Standard Loop Characteristics";
-  }
 }

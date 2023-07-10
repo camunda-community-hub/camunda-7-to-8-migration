@@ -16,10 +16,7 @@ public class MessageFactoryTest {
   }
 
   private static ExpressionTransformationResult result() {
-    ExpressionTransformationResult result = new ExpressionTransformationResult();
-    result.setNewExpression("=test");
-    result.setOldExpression("${test}");
-    return result;
+    return new ExpressionTransformationResult("${test}", "=test");
   }
 
   @Test
@@ -473,5 +470,40 @@ public class MessageFactoryTest {
     assertNotNull(message.getMessage());
     assertNotNull(message.getSeverity());
     assertThat(message.getMessage()).isEqualTo("Escalation code cannot be an expression.");
+  }
+
+  @Test
+  void shouldBuildTimerExpressionMappedMessage() {
+    Message message = timerExpressionMapped(result());
+    assertNotNull(message);
+    assertNotNull(message.getMessage());
+    assertNotNull(message.getSeverity());
+    assertThat(message.getMessage())
+        .isEqualTo(
+            "Timer expression was transformed: Please review transformed expression: '${test}' -> '=test'.");
+  }
+
+  @Test
+  void shouldBuildTimerExpressionNotSupported() {
+    String timerType = random();
+    String timerValue = random();
+    String eventType = random();
+    String semanticVersion = random();
+    Message message =
+        timerExpressionNotSupported(timerType, timerValue, eventType, semanticVersion);
+    assertNotNull(message);
+    assertNotNull(message.getMessage());
+    assertNotNull(message.getSeverity());
+    assertThat(message.getMessage())
+        .isEqualTo(
+            "Timer of type '"
+                + timerType
+                + "' with value '"
+                + timerValue
+                + "' is not supported for event type '"
+                + eventType
+                + "' in Zeebe version '"
+                + semanticVersion
+                + "'.");
   }
 }

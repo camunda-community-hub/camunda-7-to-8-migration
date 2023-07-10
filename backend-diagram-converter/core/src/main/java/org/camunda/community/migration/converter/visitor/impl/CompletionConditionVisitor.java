@@ -26,7 +26,7 @@ public class CompletionConditionVisitor extends AbstractBpmnElementVisitor {
         conversion ->
             conversion
                 .getBpmnMultiInstanceLoopCharacteristics()
-                .setCompletionCondition(transformationResult.getNewExpression()));
+                .setCompletionCondition(transformationResult.getFeelExpression()));
     Message message;
     if (transformationResult.hasExecution()) {
       message = MessageFactory.completionConditionExecution(transformationResult);

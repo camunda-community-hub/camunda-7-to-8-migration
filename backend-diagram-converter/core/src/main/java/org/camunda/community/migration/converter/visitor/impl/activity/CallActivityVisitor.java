@@ -35,7 +35,7 @@ public class CallActivityVisitor extends AbstractActivityVisitor {
           conversion ->
               conversion
                   .getZeebeCalledElement()
-                  .setProcessId(transformationResult.getNewExpression()));
+                  .setProcessId(transformationResult.getFeelExpression()));
       context.addMessage(
           MessageFactory.calledElement(CALLED_ELEMENT, localName(), transformationResult));
     }

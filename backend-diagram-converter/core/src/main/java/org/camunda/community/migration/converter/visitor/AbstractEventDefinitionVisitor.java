@@ -4,6 +4,7 @@ import static org.camunda.community.migration.converter.NamespaceUri.*;
 
 import java.util.Optional;
 import org.apache.commons.lang3.StringUtils;
+import org.camunda.bpm.model.xml.instance.DomElement;
 import org.camunda.community.migration.converter.DomElementVisitorContext;
 
 public abstract class AbstractEventDefinitionVisitor extends AbstractBpmnElementVisitor {
@@ -14,48 +15,42 @@ public abstract class AbstractEventDefinitionVisitor extends AbstractBpmnElement
   }
 
   @Override
-  protected String elementNameForMessage(DomElementVisitorContext context) {
+  protected String elementNameForMessage(DomElement element) {
     String fullEventName = "";
-    if (!isInterrupting(context)) {
+    if (!isInterrupting(element)) {
       fullEventName += "Non-interrupting ";
     }
-    if (!isNotEventSubProcessStartEvent(context)) {
+    if (!isNotEventSubProcessStartEvent(element)) {
       fullEventName += "Event Sub Process ";
     }
-    fullEventName += simpleEventName(context);
+    fullEventName += simpleEventName(element);
     fullEventName += " ";
     fullEventName +=
         StringUtils.capitalize(
-            context.getElement().getParentElement().getLocalName().replaceAll("([A-Z])", " $1"));
+            element.getParentElement().getLocalName().replaceAll("([A-Z])", " $1"));
     return fullEventName;
   }
 
-  protected String simpleEventName(DomElementVisitorContext context) {
-    return StringUtils.capitalize(context.getElement().getLocalName().split("([A-Z])")[0]);
+  protected String simpleEventName(DomElement element) {
+    return StringUtils.capitalize(element.getLocalName().split("([A-Z])")[0]);
   }
 
-  protected boolean isNotEventSubProcessStartEvent(DomElementVisitorContext context) {
-    if (context.getElement().getParentElement().getLocalName().equals("startEvent")) {
+  protected boolean isNotEventSubProcessStartEvent(DomElement element) {
+    if (element.getParentElement().getLocalName().equals("startEvent")) {
       boolean triggeredByEvent =
           parseWithDefault(
-              context
-                  .getElement()
-                  .getParentElement()
-                  .getParentElement()
-                  .getAttribute(BPMN, "triggeredByEvent"),
+              element.getParentElement().getParentElement().getAttribute(BPMN, "triggeredByEvent"),
               false);
       return !triggeredByEvent;
     }
     return true;
   }
 
-  protected boolean isInterrupting(DomElementVisitorContext context) {
+  protected boolean isInterrupting(DomElement element) {
     boolean isInterrupting =
-        parseWithDefault(
-            context.getElement().getParentElement().getAttribute(BPMN, "isInterrupting"), true);
+        parseWithDefault(element.getParentElement().getAttribute(BPMN, "isInterrupting"), true);
     boolean cancelActivity =
-        parseWithDefault(
-            context.getElement().getParentElement().getAttribute(BPMN, "cancelActivity"), true);
+        parseWithDefault(element.getParentElement().getAttribute(BPMN, "cancelActivity"), true);
 
     return isInterrupting && cancelActivity;
   }

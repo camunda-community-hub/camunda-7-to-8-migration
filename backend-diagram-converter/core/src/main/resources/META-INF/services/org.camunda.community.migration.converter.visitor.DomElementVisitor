@@ -139,3 +139,6 @@ org.camunda.community.migration.converter.visitor.impl.MessageRefVisitor
 org.camunda.community.migration.converter.visitor.impl.StandardLoopCharacteristicsVisitor
 org.camunda.community.migration.converter.visitor.impl.IsForCompensationVisitor
 org.camunda.community.migration.converter.visitor.impl.attribute.FollowUpDateVisitor
+org.camunda.community.migration.converter.visitor.impl.TimeCycleVisitor
+org.camunda.community.migration.converter.visitor.impl.TimeDateVisitor
+org.camunda.community.migration.converter.visitor.impl.TimeDurationVisitor

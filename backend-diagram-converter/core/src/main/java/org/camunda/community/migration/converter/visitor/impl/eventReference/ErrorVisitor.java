@@ -35,12 +35,12 @@ public class ErrorVisitor extends AbstractEventReferenceVisitor {
     }
     ExpressionTransformationResult expressionTransformationResult =
         ExpressionTransformer.transform(errorCode);
-    if (expressionTransformationResult.getNewExpression().startsWith("=")) {
+    if (expressionTransformationResult.getFeelExpression().startsWith("=")) {
       context.addMessage(MessageFactory.errorCodeNoExpression());
     }
     context.addConversion(
         ErrorConvertible.class,
-        c -> c.setErrorCode(expressionTransformationResult.getNewExpression()));
+        c -> c.setErrorCode(expressionTransformationResult.getFeelExpression()));
     // this can be enabled as soon as error codes can be expressions
     /*
     if (SemanticVersion.parse(context.getProperties().getPlatformVersion()).ordinal()
