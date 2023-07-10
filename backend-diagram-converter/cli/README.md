@@ -25,7 +25,7 @@ java -Dfile.encoding=UTF-8 -jar backend-diagram-converter-cli-version.jar
 
 ```
 Usage: backend-diagram-converter-cli local [-dhoV] [--check] [--csv]
-       [--disable-adapter] [-nr] [--adapter-job-type=<adapterJobType>]
+       [--disable-default-job-type] [-nr] [--default-job-type=<defaultJobType>]
        [--platform-version=<platformVersion>] [--prefix=<prefix>] <file>
 Converts the diagram from the given directory or file
 
@@ -36,16 +36,17 @@ java -Dfile.encoding=UTF-8 -jar backend-diagram-converter-cli.jar local
 Parameter:
       <file>                 The file to convert or directory to search in
 Options:
-      --adapter-job-type=<adapterJobType>
-                             If set, the default value for the adapter job is
-                               overridden
       --check                If enabled, no converted diagrams are exported
       --csv                  If enabled, a CSV file will be created containing
                                the results for all conversions
   -d, --documentation        If enabled, messages are also appended to
                                documentation
-      --disable-adapter      If enabled, the adapter job type will not be
-                               applied
+      --default-job-type=<defaultJobType>
+                             If set, the default value from the
+                               'converter-properties.properties' for the job
+                               type is overridden
+      --disable-default-job-type
+                             Disables the default job type
   -h, --help                 Show this help message and exit.
       -nr, --not-recursive   If enabled, recursive search in subfolders will be
                                omitted
@@ -68,7 +69,7 @@ java -Dfile.encoding=UTF-8 -jar backend-diagram-converter-cli-v.v.v.jar local c:
 
 ```
 Usage: backend-diagram-converter-cli engine [-dhoV] [--check] [--csv]
-       [--disable-adapter] [--adapter-job-type=<adapterJobType>]
+       [--disable-default-job-type] [--default-job-type=<defaultJobType>]
        [-p=<password>] [--platform-version=<platformVersion>]
        [--prefix=<prefix>] [-t=<targetDirectory>] [-u=<username>] <url>
 Description: Converts the diagrams from the given process engine
@@ -82,15 +83,17 @@ Parameter:
                             REST API
                             Default: http://localhost:8080/engine-rest
 Options:
-      --adapter-job-type=<adapterJobType>
-                          If set, the default value for the adapter job is
-                            overridden
       --check             If enabled, no converted diagrams are exported
       --csv               If enabled, a CSV file will be created containing the
                             results for all conversions
   -d, --documentation     If enabled, messages are also appended to
                             documentation
-      --disable-adapter   If enabled, the adapter job type will not be applied
+      --default-job-type=<defaultJobType>
+                          If set, the default value from the
+                            'converter-properties.properties' for the job type
+                            is overridden
+      --disable-default-job-type
+                          Disables the default job type
   -h, --help              Show this help message and exit.
   -o, --override          If enabled, existing files are overridden
   -p, --password=<password>
