@@ -33,7 +33,8 @@ public abstract class AbstractConvertCommand implements Callable<Integer> {
 
   @Option(
       names = {"--default-job-type"},
-      description = "If set, the default value for the adapter job is overridden")
+      description =
+          "If set, the default value from the 'converter-properties.properties' for the job type is overridden")
   String defaultJobType;
 
   @Option(
@@ -61,9 +62,7 @@ public abstract class AbstractConvertCommand implements Callable<Integer> {
   @Option(names = "--check", description = "If enabled, no converted diagrams are exported")
   boolean check;
 
-  @Option(
-      names = "--disable-default-job-type",
-      description = "If enabled, the default job type will not be applied")
+  @Option(names = "--disable-default-job-type", description = "Disables the default job type")
   boolean defaultJobTypeDisabled;
 
   public AbstractConvertCommand() {
