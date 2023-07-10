@@ -12,6 +12,8 @@ public class ErrorConversion extends AbstractTypedConversion<ErrorConvertible> {
 
   @Override
   protected void convertTyped(DomElement element, ErrorConvertible convertible) {
-    element.setAttribute(NamespaceUri.BPMN, "errorCode", convertible.getErrorCode());
+    if (convertible.getErrorCode() != null) {
+      element.setAttribute(NamespaceUri.BPMN, "errorCode", convertible.getErrorCode());
+    }
   }
 }
