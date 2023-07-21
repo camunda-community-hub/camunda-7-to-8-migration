@@ -1,6 +1,6 @@
 # Cawemo to Web Modeler Migration
 
-This bash script migrates all projects from Cawemo to Web Modeler.
+This bash script migrates (copies) all projects from Cawemo to Web Modeler.
 
 ## Prerequisites
 
@@ -28,6 +28,7 @@ Make sure not to push the credentials back to GitHub.
 
 > **Note**
 > Ideally, make sure to test the migration in a development environment. However, such an environment is not always available to you. Make sure to check the API calls in the script when you check it out from the community hub. In the initial version that the author prepared, the script does not alter any of the files in Cawemo, and only creates projects in Web Modeler that do not impact your users unless you manually add them as collaborators.
+> **There is no warranty or liability of Camunda for using this script.**
 
 ## Usage
 
@@ -78,3 +79,4 @@ To use the migrated projects, you have to ask your organization owner to use the
 * Cawemo API documentation: https://docs.camunda.org/cawemo/1.9/reference/rest-api/
 * Web Modeler API documentation: https://docs.camunda.io/docs/next/apis-tools/web-modeler-api/
 * Web Modeler API Swagger docs: https://modeler.cloud.camunda.io/swagger-ui/index.html
+* Cawemo to Web Modeler migration guide: https://docs.camunda.io/docs/next/guides/migrating-from-cawemo/

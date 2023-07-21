@@ -21,6 +21,7 @@ This projects contains:
     conversion
 - [A Process Instance Migration Tool](./process-instance-migration) to migrate
   instances of a converted process definition to Camunda Platform 8
+- [A migration script](./cawemo-to-web-modeler-migration) to migrate Cawemo projects to Web Modeler
 - [A curated list of community migration approaches](./migration-approaches/README.md)
 
 ## Use Snapshot Versions
