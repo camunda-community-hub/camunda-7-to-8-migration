@@ -26,7 +26,7 @@ echo "------------------------------------------------------------------------"
 
 echo ""
 
-echo "[$(date +%s)] Migration started" >> migration.log
+echo "[$(date +'%Y-%m-%d %H:%M:%S')] Migration started" >> migration.log
 
 HTTP_STATUS=$(curl -s -o .curl_tmp -w "%{http_code}" -u $CAWEMO_USER_ID:$CAWEMO_API_KEY "https://cawemo.com/api/v1/projects")
 
@@ -35,7 +35,7 @@ PROJECTS=$(cat .curl_tmp)
 if [ "$HTTP_STATUS" != "200" ]
 then
     echo "⚠ GET https://cawemo.com/api/v1/projects failed with status code $HTTP_STATUS"
-    echo "[$(date +%s)] ⚠ GET https://cawemo.com/api/v1/projects failed with status code $HTTP_STATUS" >> migration.log
+    echo "[$(date +'%Y-%m-%d %H:%M:%S')] ⚠ GET https://cawemo.com/api/v1/projects failed with status code $HTTP_STATUS" >> migration.log
     
     echo "Aborted"
     exit 1
@@ -63,13 +63,13 @@ for row in $(echo $PROJECTS | jq -r '.[] | @base64'); do
     if [ "$HTTP_STATUS" != "200" ]
     then
         echo "⚠ POST https://modeler.cloud.camunda.io/api/beta/projects failed with status code $HTTP_STATUS"
-        echo "[$(date +%s)] ⚠ POST https://modeler.cloud.camunda.io/api/beta/projects failed with status code $HTTP_STATUS" >> migration.log
+        echo "[$(date +'%Y-%m-%d %H:%M:%S')] ⚠ POST https://modeler.cloud.camunda.io/api/beta/projects failed with status code $HTTP_STATUS" >> migration.log
 
         echo "Aborted"
         exit 1
     fi
 
-    echo "[$(date +%s)] Migrated project $PROJECT_NAME (ID: $OLD_PROJECT_ID)" >> migration.log
+    echo "[$(date +'%Y-%m-%d %H:%M:%S')] Migrated project $PROJECT_NAME (ID: $OLD_PROJECT_ID)" >> migration.log
 
     NEW_PROJECT_ID=$(jq -r .id <<< "$NEW_PROJECT")
 
@@ -136,7 +136,7 @@ for row in $(echo $PROJECTS | jq -r '.[] | @base64'); do
                 if [ "$HTTP_STATUS" != "200" ]
                 then
                     echo "⚠ POST https://modeler.cloud.camunda.io/api/beta/folders failed with status code $HTTP_STATUS"
-                    echo "[$(date +%s)] ⚠ POST https://modeler.cloud.camunda.io/api/beta/folders failed with status code $HTTP_STATUS" >> migration.log
+                    echo "[$(date +'%Y-%m-%d %H:%M:%S')] ⚠ POST https://modeler.cloud.camunda.io/api/beta/folders failed with status code $HTTP_STATUS" >> migration.log
                 else
                     NEW_FOLDER_ID=$(jq -r .id <<< "$NEW_FOLDER")
 
@@ -144,7 +144,7 @@ for row in $(echo $PROJECTS | jq -r '.[] | @base64'); do
 
                     PARENT_ID="\"$NEW_FOLDER_ID\""
 
-                    echo "[$(date +%s)] Migrated folder $FOLDER_NAME (ID: $OLD_FOLDER_ID)" >> migration.log
+                    echo "[$(date +'%Y-%m-%d %H:%M:%S')] Migrated folder $FOLDER_NAME (ID: $OLD_FOLDER_ID)" >> migration.log
                     echo "\e[1A\e[K├── ✔ Migrated folder ${GREEN}$FOLDER_NAME${NC} (ID: $OLD_FOLDER_ID)."
                 fi
             else
@@ -158,7 +158,7 @@ for row in $(echo $PROJECTS | jq -r '.[] | @base64'); do
         if [ "$FILE_TYPE" = "TEMPLATE_GENERIC" ] || [ "$FILE_TYPE" = "TEMPLATE_SERVICE_TASK" ]
         then
             echo "$FILE_TREE_SPACES$TREE_SYMBOL ⚠ File ${GREEN}$FILE_NAME${NC} can't be migrated: A C7 $FILE_TYPE is not supported in C8. (ID: $OLD_FILE_ID)"
-            echo "[$(date +%s)] File $FILE_NAME can't be migrated: A C7 $FILE_TYPE is not supported in C8. (ID: $OLD_FILE_ID)" >> migration.log
+            echo "[$(date +'%Y-%m-%d %H:%M:%S')] File $FILE_NAME can't be migrated: A C7 $FILE_TYPE is not supported in C8. (ID: $OLD_FILE_ID)" >> migration.log
         else
             echo "$FILE_TREE_SPACES$TREE_SYMBOL Migrating file ${GREEN}$FILE_NAME${NC} (Type: $FILE_TYPE, ID: $OLD_FILE_ID)..."
 
@@ -188,11 +188,11 @@ for row in $(echo $PROJECTS | jq -r '.[] | @base64'); do
             if [ "$HTTP_STATUS" != "200" ]
             then
                 echo "⚠ POST https://modeler.cloud.camunda.io/api/beta/files failed with status code $HTTP_STATUS"
-                echo "[$(date +%s)] ⚠ POST https://modeler.cloud.camunda.io/api/beta/files failed with status code $HTTP_STATUS" >> migration.log
+                echo "[$(date +'%Y-%m-%d %H:%M:%S')] ⚠ POST https://modeler.cloud.camunda.io/api/beta/files failed with status code $HTTP_STATUS" >> migration.log
             else
                 echo "\e[1A\e[K$FILE_TREE_SPACES$TREE_SYMBOL ✔ Migrated file ${GREEN}$FILE_NAME${NC} (Type: $FILE_TYPE, ID: $OLD_FILE_ID)."
 
-                echo "[$(date +%s)] Migrated file $FILE_NAME (Type: $FILE_TYPE, ID: $OLD_FILE_ID)" >> migration.log
+                echo "[$(date +'%Y-%m-%d %H:%M:%S')] Migrated file $FILE_NAME (Type: $FILE_TYPE, ID: $OLD_FILE_ID)" >> migration.log
             fi    
         fi
 
@@ -200,7 +200,7 @@ for row in $(echo $PROJECTS | jq -r '.[] | @base64'); do
     done
 done
 
-echo "[$(date +%s)] Migration done" >> migration.log
+echo "[$(date +'%Y-%m-%d %H:%M:%S')] Migration done" >> migration.log
 
 echo $''
 
