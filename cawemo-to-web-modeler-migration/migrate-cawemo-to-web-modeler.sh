@@ -206,5 +206,5 @@ echo $''
 
 echo "------------------------------------------------------------------------"
 echo "${BGREEN}MIGRATION SUCCESS${NNC}"
-echo "Done! Login to Web Modeler now and enable the super-user mode (https://docs.camunda.io/docs/next/components/modeler/web-modeler/collaboration/#super-user-mode) to see the projects, and assign collaborators."
+echo "Done! Log in to Web Modeler now and enable the super-user mode (https://docs.camunda.io/docs/next/components/modeler/web-modeler/collaboration/#super-user-mode) to see the projects and assign collaborators."
 echo "------------------------------------------------------------------------"
