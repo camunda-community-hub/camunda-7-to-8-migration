@@ -28,7 +28,7 @@
     <version.picocli>4.7.4</version.picocli>
     <version.commons-io>2.13.0</version.commons-io>
     <version.slack-api-client>1.30.0</version.slack-api-client>
-    <version.opencsv>5.7.1</version.opencsv>
+    <version.opencsv>5.8</version.opencsv>
     <version.operate-client>8.2.0</version.operate-client>
     <version.camunda-bpm-assert>15.0.0</version.camunda-bpm-assert>
 
