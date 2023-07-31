@@ -1,5 +1,7 @@
 #!/bin/sh 
 
+set -eu -o pipefail
+
 # ℹ️ Requires Bash 4 or newer, or zsh
 # Recommended to run it on a test environment first
 
