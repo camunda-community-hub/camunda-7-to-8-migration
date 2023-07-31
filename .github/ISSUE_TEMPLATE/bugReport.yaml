@@ -40,10 +40,18 @@ body:
   validations:
     required: true
 - type: input
-  id: camunda-version
+  id: camunda-7-version
   attributes:
-    label: Camunda version
-    description: Which version of Camunda do you use?
-    placeholder: e.g. 7.17.0
+    label: Camunda Platform 7 version
+    description: Which version of Camunda Platform 7 do you use?
+    placeholder: e.g. 7.19.0
+  validations:
+    required: true
+- type: input
+  id: camunda-8-version
+  attributes:
+    label: Camunda Platform 8 version
+    description: Which version of Camunda Platform 8 do you use?
+    placeholder: e.g. 8.2.0
   validations:
     required: true
