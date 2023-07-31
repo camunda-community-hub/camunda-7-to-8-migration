@@ -44,7 +44,7 @@ sh ./migrate-file-cawemo-to-web-modeler.sh
 zsh ./migrate-file-cawemo-to-web-modeler.sh
 ```
 
-The script migrates each individual project and it's content step-by-step. It will print the status of the migration live.
+The script migrates each individual project and its content step-by-step. It will print the status of the migration live.
 
 ![Migration example](./migration-example.png)
 
