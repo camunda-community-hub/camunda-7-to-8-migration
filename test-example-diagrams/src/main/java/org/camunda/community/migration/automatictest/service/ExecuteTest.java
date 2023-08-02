@@ -61,7 +61,9 @@ public class ExecuteTest {
     if (!testFolder.isPresent() || testFolder.isEmpty() || testFolder.get().trim().isEmpty())
       logger.error("Test Folder is not specified, and no application.yaml is detected");
     detectAndExecute(new File(testFolder.get()));
-    if (exitAfterExecution.isPresent() && exitAfterExecution.get()) { System.exit(0); }
+    if (exitAfterExecution.isPresent() && exitAfterExecution.get()) {
+      System.exit(0);
+    }
   }
 
   public void detectAndExecute(File folder) {
@@ -116,7 +118,7 @@ public class ExecuteTest {
         runResult.add(runAutomatorCamundaEngine(testPkg, automatorAPI, bpmnEngine8));
         // Wait 30 s to get Camunda 8 push everything to Optimize
         try {
-          Thread.sleep(20*1000);
+          Thread.sleep(20 * 1000);
         } catch (InterruptedException e) {
           // Do nothing
         }
