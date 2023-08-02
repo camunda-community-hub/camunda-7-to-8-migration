@@ -8,7 +8,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 @EnableZeebeClient
 public class AutomaticTestApp {
 
-  // service/ExecuteTest.init()
+  // Spring starts service/ExecuteTest.init(), where the main part of the test starts
   public static void main(String[] args) {
     SpringApplication.run(AutomaticTestApp.class, args);
   }
