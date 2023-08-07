@@ -321,10 +321,6 @@ public class MessageFactory {
             .build());
   }
 
-  public static Message correlationKeyHint() {
-    return INSTANCE.staticMessage("correlation-key-hint");
-  }
-
   public static Message connectorId(String elementLocalName) {
     return INSTANCE.composeMessage(
         "connector-id",

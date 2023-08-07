@@ -9,7 +9,7 @@ public abstract class AbstractFilteringVisitor implements DomElementVisitor {
   protected final Logger LOG = LoggerFactory.getLogger(this.getClass());
 
   @Override
-  public void visit(DomElementVisitorContext context) {
+  public final void visit(DomElementVisitorContext context) {
     try {
       if (canVisit(context)) {
         logVisit(context);

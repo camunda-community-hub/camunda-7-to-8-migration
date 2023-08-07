@@ -203,13 +203,6 @@ public class MessageFactoryTest {
   }
 
   @Test
-  void shouldBuildCorrelationKeyHint() {
-    Message message = MessageFactory.correlationKeyHint();
-    assertNotNull(message);
-    assertNotNull(message.getMessage());
-  }
-
-  @Test
   void shouldBuildConnectorId() {
     Message message = MessageFactory.connectorId(random());
     assertNotNull(message);
