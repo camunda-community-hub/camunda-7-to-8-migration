@@ -523,4 +523,29 @@ public class MessageFactoryTest {
                 + semanticVersion
                 + "'.");
   }
+
+  @Test
+  void shouldBuildResourceOnConditionalFlow() {
+    String resource = random();
+    Message message = resourceOnConditionalFlow(resource);
+    assertNotNull(message);
+    assertNotNull(message.getMessage());
+    assertNotNull(message.getSeverity());
+    assertThat(message.getMessage())
+        .isEqualTo("Please translate the content from '%s' to a valid FEEL expression.", resource);
+  }
+
+  @Test
+  void shouldBuildScriptOnConditionalFlow() {
+    String script = random();
+    String language = random();
+    Message message = scriptOnConditionalFlow(language, script);
+    assertNotNull(message);
+    assertNotNull(message.getMessage());
+    assertNotNull(message.getSeverity());
+    assertThat(message.getMessage())
+        .isEqualTo(
+            "Please translate the %s script from '%s' to a valid FEEL expression.",
+            language, script);
+  }
 }

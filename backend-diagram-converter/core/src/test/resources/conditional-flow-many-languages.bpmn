@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_1d61i45" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.13.0" modeler:executionPlatform="Camunda Platform" modeler:executionPlatformVersion="7.19.0">
+  <bpmn:process id="Process_128vk7d" isExecutable="true">
+    <bpmn:startEvent id="StartEvent_1">
+      <bpmn:outgoing>Flow_1j2c8xw</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:exclusiveGateway id="XGateway" name="x?">
+      <bpmn:incoming>Flow_1j2c8xw</bpmn:incoming>
+      <bpmn:outgoing>JuelSequenceFlow</bpmn:outgoing>
+      <bpmn:outgoing>ExternalScriptSequenceFlow</bpmn:outgoing>
+      <bpmn:outgoing>InternalScriptSequenceFlow</bpmn:outgoing>
+      <bpmn:outgoing>FeelScriptSequenceFlow</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:sequenceFlow id="Flow_1j2c8xw" sourceRef="StartEvent_1" targetRef="XGateway" />
+    <bpmn:sequenceFlow id="JuelSequenceFlow" name="juel" sourceRef="XGateway" targetRef="Event_1mgxry6">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${x == 1}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="ExternalScriptSequenceFlow" name="external script" sourceRef="XGateway" targetRef="Event_0my32x1">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression" language="javascript" camunda:resource="some-resource.js" />
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="InternalScriptSequenceFlow" name="internal script" sourceRef="XGateway" targetRef="Event_0k8b59x">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression" language="javascript">return x === 3;</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:endEvent id="Event_1mgxry6">
+      <bpmn:incoming>JuelSequenceFlow</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:endEvent id="Event_0my32x1">
+      <bpmn:incoming>ExternalScriptSequenceFlow</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:endEvent id="Event_0k8b59x">
+      <bpmn:incoming>InternalScriptSequenceFlow</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="FeelScriptSequenceFlow" name="feel script" sourceRef="XGateway" targetRef="Event_13vwla9">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression" language="feel">x=4</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:endEvent id="Event_13vwla9">
+      <bpmn:incoming>FeelScriptSequenceFlow</bpmn:incoming>
+    </bpmn:endEvent>
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Process_128vk7d">
+      <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="StartEvent_1">
+        <dc:Bounds x="179" y="109" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_1l73f0m_di" bpmnElement="XGateway" isMarkerVisible="true">
+        <dc:Bounds x="265" y="102" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="284" y="78" width="12" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1mgxry6_di" bpmnElement="Event_1mgxry6">
+        <dc:Bounds x="532" y="109" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0my32x1_di" bpmnElement="Event_0my32x1">
+        <dc:Bounds x="532" y="222" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0k8b59x_di" bpmnElement="Event_0k8b59x">
+        <dc:Bounds x="532" y="332" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_13vwla9_di" bpmnElement="Event_13vwla9">
+        <dc:Bounds x="532" y="442" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_1j2c8xw_di" bpmnElement="Flow_1j2c8xw">
+        <di:waypoint x="215" y="127" />
+        <di:waypoint x="265" y="127" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1p7kneh_di" bpmnElement="JuelSequenceFlow">
+        <di:waypoint x="315" y="127" />
+        <di:waypoint x="532" y="127" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="350" y="109" width="17" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_03ubz4o_di" bpmnElement="ExternalScriptSequenceFlow">
+        <di:waypoint x="290" y="152" />
+        <di:waypoint x="290" y="240" />
+        <di:waypoint x="532" y="240" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="345" y="223" width="69" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0kqic4q_di" bpmnElement="InternalScriptSequenceFlow">
+        <di:waypoint x="290" y="152" />
+        <di:waypoint x="290" y="350" />
+        <di:waypoint x="532" y="350" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="347" y="333" width="66" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0nbpstm_di" bpmnElement="FeelScriptSequenceFlow">
+        <di:waypoint x="290" y="152" />
+        <di:waypoint x="290" y="460" />
+        <di:waypoint x="532" y="460" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="356" y="443" width="48" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

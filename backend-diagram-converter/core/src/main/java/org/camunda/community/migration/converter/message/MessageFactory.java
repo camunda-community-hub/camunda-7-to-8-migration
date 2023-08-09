@@ -176,6 +176,14 @@ public class MessageFactory {
             .build());
   }
 
+  public static Message conditionExpression(String juelExpression, String feelExpression) {
+    return INSTANCE.composeMessage(
+        "condition-expression",
+        ContextBuilder.builder()
+            .context(expressionTransformationResult(juelExpression, feelExpression))
+            .build());
+  }
+
   public static Message conditionExpressionExecution(
       ExpressionTransformationResult transformationResult) {
     return INSTANCE.composeMessage(
@@ -536,6 +544,14 @@ public class MessageFactory {
         .build();
   }
 
+  private static Map<String, String> expressionTransformationResult(
+      String juelExpression, String feelExpression) {
+    return ContextBuilder.builder()
+        .entry("oldExpression", juelExpression)
+        .entry("newExpression", feelExpression)
+        .build();
+  }
+
   private static Map<String, String> supportedAttributePrefix(
       String attributeLocalName, String elementLocalName) {
     return ContextBuilder.builder()
@@ -659,6 +675,18 @@ public class MessageFactory {
             .entry("eventType", eventType)
             .entry("semanticVersion", semanticVersion)
             .build());
+  }
+
+  public static Message resourceOnConditionalFlow(String resource) {
+    return INSTANCE.composeMessage(
+        "resource-on-conditional-flow",
+        ContextBuilder.builder().entry("resource", resource).build());
+  }
+
+  public static Message scriptOnConditionalFlow(String language, String script) {
+    return INSTANCE.composeMessage(
+        "script-on-conditional-flow",
+        ContextBuilder.builder().entry("language", language).entry("script", script).build());
   }
 
   private Message composeMessage(String templateName, Map<String, String> context) {
