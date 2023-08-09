@@ -24,3 +24,27 @@ updates:
   - "dependencies"
   commit-message:
     prefix: "deps:"
+- package-ecosystem: maven
+  directory: "/example/process-solution-camunda-7"
+  schedule:
+    interval: daily
+  labels:
+  - "dependencies"
+  commit-message:
+    prefix: "deps:"
+- package-ecosystem: maven
+  directory: "/example/process-solution-migrated"
+  schedule:
+    interval: daily
+  labels:
+  - "dependencies"
+  commit-message:
+    prefix: "deps:"
+- package-ecosystem: npm
+  directory: "/process-instance-migration/src/main/frontend"
+  schedule:
+    interval: daily
+  labels:
+  - "dependencies"
+  commit-message:
+    prefix: "deps:"
