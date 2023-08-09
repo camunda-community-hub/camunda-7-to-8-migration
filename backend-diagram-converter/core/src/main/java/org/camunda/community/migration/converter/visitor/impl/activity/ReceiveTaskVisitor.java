@@ -5,6 +5,7 @@ import static org.camunda.community.migration.converter.NamespaceUri.*;
 import org.camunda.community.migration.converter.DomElementVisitorContext;
 import org.camunda.community.migration.converter.convertible.Convertible;
 import org.camunda.community.migration.converter.convertible.ReceiveTaskConvertible;
+import org.camunda.community.migration.converter.message.MessageFactory;
 import org.camunda.community.migration.converter.version.SemanticVersion;
 import org.camunda.community.migration.converter.visitor.AbstractActivityVisitor;
 
@@ -17,6 +18,11 @@ public class ReceiveTaskVisitor extends AbstractActivityVisitor {
   @Override
   protected Convertible createConvertible(DomElementVisitorContext context) {
     return new ReceiveTaskConvertible();
+  }
+
+  @Override
+  protected void postCreationVisitor(DomElementVisitorContext context) {
+    context.addMessage(MessageFactory.correlationKeyHint());
   }
 
   @Override

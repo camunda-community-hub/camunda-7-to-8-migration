@@ -413,6 +413,21 @@ public class BpmnConverterTest {
         .isNull();
   }
 
+  @Test
+  void testMessageStartEventShouldNotShowCorrelationKeyTask() {
+    BpmnDiagramCheckResult result = loadAndCheck("message-example.bpmn");
+    assertThat(result.getResult("ExampleWantedStartEvent"))
+        .isNotNull()
+        .extracting(BpmnElementCheckResult::getMessages)
+        .asList()
+        .isEmpty();
+    assertThat(result.getResult("Receive1Task"))
+        .isNotNull()
+        .extracting(BpmnElementCheckResult::getMessages)
+        .asList()
+        .hasSize(1);
+  }
+
   @ParameterizedTest
   @CsvSource(
       value = {

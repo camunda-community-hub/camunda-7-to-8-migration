@@ -11,7 +11,11 @@ public abstract class AbstractEventDefinitionVisitor extends AbstractBpmnElement
 
   @Override
   protected final void visitBpmnElement(DomElementVisitorContext context) {
-    // do nothing
+    visitEventDefinition(context);
+  }
+
+  protected void visitEventDefinition(DomElementVisitorContext context) {
+    // can be overridden if required
   }
 
   @Override
@@ -35,8 +39,12 @@ public abstract class AbstractEventDefinitionVisitor extends AbstractBpmnElement
     return StringUtils.capitalize(element.getLocalName().split("([A-Z])")[0]);
   }
 
+  protected boolean isStartEvent(DomElement element) {
+    return element.getParentElement().getLocalName().equals("startEvent");
+  }
+
   protected boolean isNotEventSubProcessStartEvent(DomElement element) {
-    if (element.getParentElement().getLocalName().equals("startEvent")) {
+    if (isStartEvent(element)) {
       boolean triggeredByEvent =
           parseWithDefault(
               element.getParentElement().getParentElement().getAttribute(BPMN, "triggeredByEvent"),

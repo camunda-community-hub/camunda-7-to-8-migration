@@ -14,13 +14,10 @@ public class SignalEventDefinitionVisitor extends AbstractEventDefinitionVisitor
 
   @Override
   protected SemanticVersion availableFrom(DomElementVisitorContext context) {
-    if (isStartEvent(context) && isNotEventSubProcessStartEvent(context.getElement())) {
+    if (isStartEvent(context.getElement())
+        && isNotEventSubProcessStartEvent(context.getElement())) {
       return SemanticVersion._8_2_0;
     }
     return null;
-  }
-
-  private boolean isStartEvent(DomElementVisitorContext context) {
-    return context.getElement().getParentElement().getLocalName().equals("startEvent");
   }
 }

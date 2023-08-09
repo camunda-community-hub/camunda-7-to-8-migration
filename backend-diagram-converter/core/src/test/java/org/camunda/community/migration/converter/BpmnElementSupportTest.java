@@ -5,11 +5,14 @@ import static org.assertj.core.api.Assertions.*;
 import static org.camunda.community.migration.converter.TestUtil.*;
 import static org.junit.jupiter.api.DynamicTest.*;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.camunda.community.migration.converter.BpmnDiagramCheckResult.BpmnElementCheckMessage;
 import org.camunda.community.migration.converter.BpmnDiagramCheckResult.BpmnElementCheckResult;
+import org.camunda.community.migration.converter.BpmnDiagramCheckResult.Severity;
 import org.junit.jupiter.api.DynamicTest;
 import org.junit.jupiter.api.TestFactory;
 import org.junit.jupiter.api.function.Executable;
@@ -58,6 +61,7 @@ public class BpmnElementSupportTest {
       assertThat(result.getResult(elementId))
           .isNotNull()
           .extracting(BpmnElementCheckResult::getMessages)
+          .extracting(this::findWarnings)
           .asList()
           .isEmpty();
     };
@@ -71,6 +75,7 @@ public class BpmnElementSupportTest {
       assertThat(result.getResult(elementId))
           .isNotNull()
           .extracting(BpmnElementCheckResult::getMessages)
+          .extracting(this::findWarnings)
           .matches(l -> l.size() == 1, "Has one entry")
           .extracting(l -> l.get(0))
           .extracting(BpmnElementCheckMessage::getMessage)
@@ -81,6 +86,12 @@ public class BpmnElementSupportTest {
                   + ConverterPropertiesFactory.getInstance().get().getPlatformVersion()
                   + "'. Please review.");
     };
+  }
+
+  private List<BpmnElementCheckMessage> findWarnings(List<BpmnElementCheckMessage> messages) {
+    return messages.stream()
+        .filter(m -> m.getSeverity().equals(Severity.WARNING))
+        .collect(Collectors.toList());
   }
 
   @TestFactory
