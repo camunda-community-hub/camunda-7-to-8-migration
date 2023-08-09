@@ -21,7 +21,7 @@
     <version.adapter>0.5.0</version.adapter>
     <version.zeebe>8.1.17</version.zeebe>
 
-    <plugin.version.maven-surefire-plugin>3.0.0</plugin.version.maven-surefire-plugin>
+    <plugin.version.maven-surefire-plugin>3.1.2</plugin.version.maven-surefire-plugin>
   </properties>
 
   <dependencyManagement>
