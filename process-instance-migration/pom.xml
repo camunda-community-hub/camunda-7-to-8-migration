@@ -140,7 +140,7 @@
             </goals>
             <!-- Optional configuration which provides for running any npm command -->
             <configuration>
-              <arguments>install</arguments>
+              <arguments>ci</arguments>
             </configuration>
           </execution>
           <execution>
