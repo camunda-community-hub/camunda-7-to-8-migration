@@ -15,7 +15,9 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-@SpringBootTest(classes = CamundaPlatform7AdapterConfig.class)
+@SpringBootTest(
+    classes = CamundaPlatform7AdapterConfig.class,
+    properties = "logging.level.root=DEBUG")
 @ZeebeSpringTest
 public class CamundaPlatform7AdapterTest {
 
