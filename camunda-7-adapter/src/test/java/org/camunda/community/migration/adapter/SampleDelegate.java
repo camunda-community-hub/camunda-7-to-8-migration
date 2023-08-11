@@ -10,7 +10,7 @@ public class SampleDelegate implements JavaDelegate {
   private static final Logger LOG = LoggerFactory.getLogger(SampleDelegate.class);
 
   public static boolean executed = false;
-  public static String capturedVariable = null;
+  public static VariableDto capturedVariable = null;
   public static String capturedBusinessKey = null;
   public static boolean canReachExecutionVariable = false;
 
@@ -18,7 +18,7 @@ public class SampleDelegate implements JavaDelegate {
   public void execute(DelegateExecution execution) {
     LOG.info("Called from process instance {}", execution.getProcessInstanceId());
 
-    capturedVariable = (String) execution.getVariable("someVariable");
+    capturedVariable = (VariableDto) execution.getVariable("someVariable");
     canReachExecutionVariable = execution.getVariable("execution") != null;
     execution.setProcessBusinessKey("42");
     capturedBusinessKey = execution.getProcessBusinessKey();

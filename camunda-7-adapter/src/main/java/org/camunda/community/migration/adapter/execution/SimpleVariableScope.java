@@ -20,10 +20,6 @@ public class SimpleVariableScope extends AbstractVariableScope {
       (name, value, isTransient) -> new SimpleVariableInstance(name, value);
   protected VariableStore<CoreVariableInstance> variableStore = new VariableStore<>();
 
-  public SimpleVariableScope() {
-    this(Collections.emptyMap());
-  }
-
   public SimpleVariableScope(Map<String, ?> variables) {
     super();
     setVariables(variables);
