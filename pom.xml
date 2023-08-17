@@ -19,7 +19,7 @@
     <version.java>1.8</version.java>
     <maven.compiler.source>1.8</maven.compiler.source>
     <maven.compiler.target>1.8</maven.compiler.target>
-    <version.zeebe>8.2.11</version.zeebe>
+    <version.zeebe>8.2.12</version.zeebe>
     <version.spring-boot-starter-camunda>8.2.4</version.spring-boot-starter-camunda>
     <version.zeebe-process-test-extension-testcontainer>8.2.11</version.zeebe-process-test-extension-testcontainer>
     <version.camunda.platform>7.19.0</version.camunda.platform>
