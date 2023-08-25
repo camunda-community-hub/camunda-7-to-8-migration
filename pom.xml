@@ -33,7 +33,7 @@
     <version.camunda-bpm-assert>15.0.0</version.camunda-bpm-assert>
 
     <plugin.version.function-maven-plugin>0.11.0</plugin.version.function-maven-plugin>
-    <plugin.version.maven-enforcer-plugin>3.3.0</plugin.version.maven-enforcer-plugin>
+    <plugin.version.maven-enforcer-plugin>3.4.0</plugin.version.maven-enforcer-plugin>
     <plugin.version.maven-install-plugin>3.1.1</plugin.version.maven-install-plugin>
     <plugin.version.maven-resources-plugin>3.3.1</plugin.version.maven-resources-plugin>
     <plugin.version.maven-shade-plugin>3.5.0</plugin.version.maven-shade-plugin>
