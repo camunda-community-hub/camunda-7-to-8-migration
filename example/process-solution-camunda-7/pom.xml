@@ -12,7 +12,7 @@
     <maven.compiler.source>${version.java}</maven.compiler.source>
     <maven.compiler.target>${version.java}</maven.compiler.target>
 
-    <version.spring-boot>2.7.10</version.spring-boot>
+    <version.spring-boot>2.7.15</version.spring-boot>
     <version.camunda>7.19.0</version.camunda>
 
     <plugin.version.maven-surefire-plugin>3.1.2</plugin.version.maven-surefire-plugin>
