@@ -16,7 +16,7 @@
     <maven.compiler.source>${version.java}</maven.compiler.source>
     <maven.compiler.target>${version.java}</maven.compiler.target>
 
-    <version.spring-boot>3.1.2</version.spring-boot>
+    <version.spring-boot>3.1.3</version.spring-boot>
     <version.camunda>7.19.0</version.camunda>
     <version.adapter>0.6.2</version.adapter>
     <version.spring-zeebe>8.2.4</version.spring-zeebe>
