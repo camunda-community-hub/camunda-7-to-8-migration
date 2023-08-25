@@ -46,6 +46,7 @@
     <plugin.version.maven-assembly-plugin>3.6.0</plugin.version.maven-assembly-plugin>
     <plugin.version.maven-release-plugin>3.0.1</plugin.version.maven-release-plugin>
     <plugin.version.frontend-maven-plugin>1.13.4</plugin.version.frontend-maven-plugin>
+    <plugin.version.maven-source-plugin>3.3.0</plugin.version.maven-source-plugin>
   </properties>
 
   <dependencyManagement>
@@ -149,6 +150,11 @@
   <build>
     <pluginManagement>
       <plugins>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-source-plugin</artifactId>
+          <version>${plugin.version.maven-source-plugin}</version>
+        </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-assembly-plugin</artifactId>
