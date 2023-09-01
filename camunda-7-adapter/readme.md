@@ -36,9 +36,8 @@ Import the adapter into your Spring Boot application as shown in the
 ```java
 
 @SpringBootApplication
-@EnableZeebeClient
 @EnableCamunda7Adapter
-@ZeebeDeployment(resources = "classpath:*.bpmn")
+@Deployment(resources = "classpath:*.bpmn")
 public class Application {
   // start off here
 }
