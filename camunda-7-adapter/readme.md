@@ -24,7 +24,7 @@ Add the dependency to the adapter library (double-check for the latest version):
 <dependency>
   <groupId>org.camunda.community.migration</groupId>
   <artifactId>camunda-7-adapter</artifactId>
-  <version>0.4.4</version>
+  <version>0.6.2</version>
 </dependency>
 ```
 
