@@ -11,12 +11,14 @@ import io.camunda.zeebe.client.api.response.CompleteJobResponse;
 import io.camunda.zeebe.client.api.worker.JobClient;
 import java.io.InputStream;
 import java.time.Duration;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import org.camunda.bpm.engine.delegate.DelegateExecution;
 import org.camunda.bpm.engine.delegate.ExecutionListener;
 import org.camunda.bpm.engine.delegate.JavaDelegate;
 import org.camunda.bpm.engine.variable.Variables;
+import org.camunda.community.migration.adapter.execution.variable.VariableTyper;
 import org.camunda.community.migration.adapter.juel.ClassResolver;
 import org.camunda.community.migration.adapter.juel.JuelExpressionResolver;
 import org.junit.jupiter.api.Test;
@@ -29,7 +31,8 @@ class CamundaPlatform7DelegationWorkerTest {
   private final ClassResolver classResolver = mock(ClassResolver.class);
 
   private final CamundaPlatform7DelegationWorker worker =
-      new CamundaPlatform7DelegationWorker(juelExpressionResolver, classResolver);
+      new CamundaPlatform7DelegationWorker(
+          juelExpressionResolver, classResolver, new VariableTyper(Collections.emptySet()));
 
   @Test
   void shouldExecuteExecutionListenerOnStart() throws Exception {

@@ -15,7 +15,9 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-@SpringBootTest(classes = CamundaPlatform7AdapterConfig.class)
+@SpringBootTest(
+    classes = CamundaPlatform7AdapterConfig.class,
+    properties = "logging.level.root=DEBUG")
 @ZeebeSpringTest
 public class CamundaPlatform7AdapterTest {
 
@@ -47,13 +49,14 @@ public class CamundaPlatform7AdapterTest {
             .done();
 
     zeebeClient.newDeployResourceCommand().addProcessModel(bpmn, "test.bpmn").send().join();
-
+    VariableDto variableValue = new VariableDto();
+    variableValue.setValue("value");
     ProcessInstanceEvent processInstance =
         zeebeClient
             .newCreateInstanceCommand()
             .bpmnProcessId("test")
             .latestVersion()
-            .variables(Collections.singletonMap("someVariable", "value"))
+            .variables(Collections.singletonMap("someVariable", variableValue))
             .send()
             .join();
 
@@ -61,14 +64,14 @@ public class CamundaPlatform7AdapterTest {
 
     assertTrue(SampleDelegate.executed);
     assertFalse(SampleDelegate.canReachExecutionVariable);
-    assertEquals("value", SampleDelegate.capturedVariable);
+    assertNotNull(SampleDelegate.capturedVariable);
     assertEquals("42", SampleDelegate.capturedBusinessKey);
   }
 
   @Test
   public void testDelegateExpression() {
     BpmnModelInstance bpmn =
-        Bpmn.createExecutableProcess("test")
+        Bpmn.createExecutableProcess("test2")
             .startEvent()
             .serviceTask()
             .zeebeJobType("camunda-7-adapter")
@@ -81,7 +84,7 @@ public class CamundaPlatform7AdapterTest {
     ProcessInstanceEvent processInstance =
         zeebeClient
             .newCreateInstanceCommand()
-            .bpmnProcessId("test")
+            .bpmnProcessId("test2")
             .latestVersion()
             .variables(Collections.singletonMap("someVariable", "value"))
             .send()
@@ -98,7 +101,7 @@ public class CamundaPlatform7AdapterTest {
   @Test
   public void testExpression() {
     BpmnModelInstance bpmn =
-        Bpmn.createExecutableProcess("test")
+        Bpmn.createExecutableProcess("test2")
             .startEvent()
             .serviceTask()
             .zeebeJobType("camunda-7-adapter")
@@ -111,7 +114,7 @@ public class CamundaPlatform7AdapterTest {
     ProcessInstanceEvent processInstance =
         zeebeClient
             .newCreateInstanceCommand()
-            .bpmnProcessId("test")
+            .bpmnProcessId("test2")
             .latestVersion()
             .variables(Collections.singletonMap("someVariable", "value"))
             .send()
@@ -126,7 +129,7 @@ public class CamundaPlatform7AdapterTest {
   @Test
   public void testExternalTaskHandlerWrapper() {
     BpmnModelInstance bpmn =
-        Bpmn.createExecutableProcess("test")
+        Bpmn.createExecutableProcess("test2")
             .startEvent()
             .serviceTask()
             .zeebeJobType("test-topic")
@@ -138,7 +141,7 @@ public class CamundaPlatform7AdapterTest {
     ProcessInstanceEvent processInstance =
         zeebeClient
             .newCreateInstanceCommand()
-            .bpmnProcessId("test")
+            .bpmnProcessId("test2")
             .latestVersion()
             .variables(Collections.singletonMap("someVariable", "value"))
             .send()

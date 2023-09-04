@@ -120,6 +120,18 @@ To use execution listeners, use the header `executionListener.start` or `executi
 </bpmn:serviceTask>
 ```
 
+## Handling Object Variables
+
+As Zeebe does not support explicit typing anymore (everything is JSON), it is not possible to retrieve typed variables from the process instance directly.
+
+To overcome this, the adapter can be enriched with [Variable Typing Rules](./src/main/java/org/camunda/community/migration/adapter/execution/variable/VariableTypingRule.java).
+
+They are using the `bpmnProcessId` and the `variableName` to determine how a variable value needs to be typed.
+
+There is a [default implementation](./src/main/java/org/camunda/community/migration/adapter/execution/variable/SingleVariableTypingRule.java) in place that uses an object mapper for generic mapping.
+
+All rules can be registered as `@Components` and will be picked up and applied automatically.
+
 ## Example
 
 Check out

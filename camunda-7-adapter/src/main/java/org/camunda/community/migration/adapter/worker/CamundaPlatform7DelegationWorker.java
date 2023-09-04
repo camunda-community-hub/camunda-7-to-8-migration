@@ -5,12 +5,12 @@ import io.camunda.zeebe.client.api.response.ActivatedJob;
 import io.camunda.zeebe.client.api.worker.JobClient;
 import io.camunda.zeebe.spring.client.annotation.JobWorker;
 import io.camunda.zeebe.spring.client.exception.ZeebeBpmnError;
-import org.camunda.bpm.engine.delegate.*;
 import org.camunda.bpm.engine.delegate.BpmnError;
 import org.camunda.bpm.engine.delegate.DelegateExecution;
 import org.camunda.bpm.engine.delegate.ExecutionListener;
 import org.camunda.bpm.engine.delegate.JavaDelegate;
 import org.camunda.community.migration.adapter.execution.ZeebeJobDelegateExecution;
+import org.camunda.community.migration.adapter.execution.variable.VariableTyper;
 import org.camunda.community.migration.adapter.juel.ClassResolver;
 import org.camunda.community.migration.adapter.juel.JuelExpressionResolver;
 import org.springframework.stereotype.Component;
@@ -20,11 +20,15 @@ public class CamundaPlatform7DelegationWorker {
 
   private final JuelExpressionResolver expressionResolver;
   private final ClassResolver classResolver;
+  private final VariableTyper variableTyper;
 
   public CamundaPlatform7DelegationWorker(
-      JuelExpressionResolver expressionResolver, ClassResolver classResolver) {
+      JuelExpressionResolver expressionResolver,
+      ClassResolver classResolver,
+      VariableTyper variableTyper) {
     this.expressionResolver = expressionResolver;
     this.classResolver = classResolver;
+    this.variableTyper = variableTyper;
   }
 
   @JobWorker(type = "camunda-7-adapter", autoComplete = false)
@@ -39,7 +43,7 @@ public class CamundaPlatform7DelegationWorker {
     String endListener = job.getCustomHeaders().get("executionListener.end");
     // and delegate depending on exact way of implementation
 
-    final DelegateExecution execution = new ZeebeJobDelegateExecution(job);
+    final DelegateExecution execution = new ZeebeJobDelegateExecution(job, variableTyper);
 
     try {
       if (delegateClass == null && delegateExpression == null && expression == null) {
