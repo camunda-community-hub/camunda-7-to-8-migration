@@ -28,11 +28,11 @@ public abstract class SingleVariableTypingRule implements VariableTypingRule {
     }
   }
 
-  private boolean variableNameMatches(VariableTypingContext context) {
+  private boolean bpmnProcessIdMatches(VariableTypingContext context) {
     return getBpmnProcessId() == null || getBpmnProcessId().equals(context.getBpmnProcessId());
   }
 
-  private boolean bpmnProcessIdMatches(VariableTypingContext context) {
+  private boolean variableNameMatches(VariableTypingContext context) {
     return getVariableName() == null || getVariableName().equals(context.getVariableName());
   }
 
