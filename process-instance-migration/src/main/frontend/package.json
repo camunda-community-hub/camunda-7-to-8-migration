@@ -19,7 +19,7 @@
     "webfontloader": "^1.0.0"
   },
   "devDependencies": {
-    "@babel/types": "^7.22.11",
+    "@babel/types": "^7.22.15",
     "@types/node": "^20.5.9",
     "@types/webfontloader": "^1.6.35",
     "@vitejs/plugin-vue": "^4.3.4",
