@@ -1,5 +1,7 @@
 package org.camunda.community.migration.converter.visitor.impl;
 
+import static org.camunda.community.migration.converter.NamespaceUri.*;
+
 import java.util.function.Consumer;
 import org.camunda.bpm.model.xml.instance.DomElement;
 import org.camunda.community.migration.converter.DomElementVisitorContext;
@@ -13,6 +15,7 @@ import org.w3c.dom.NodeList;
 public class DefinitionsVisitor extends AbstractBpmnElementVisitor {
   private static final String VERSION_HEADER = "executionPlatformVersion";
   private static final String PLATFORM_HEADER = "executionPlatform";
+  private static final String CONVERTER_VERSION_HEADER = "converterVersion";
   private static final String PLATFORM_VALUE = "Camunda Cloud";
   private static final String ZEEBE_NAMESPACE_NAME = "zeebe";
   private static final String CONVERSION_NAMESPACE_NAME = "conversion";
