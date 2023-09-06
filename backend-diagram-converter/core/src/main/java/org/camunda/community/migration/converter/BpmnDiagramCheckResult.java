@@ -6,6 +6,15 @@ import java.util.List;
 public class BpmnDiagramCheckResult {
   private final List<BpmnElementCheckResult> results = new ArrayList<>();
   private String filename;
+  private String converterVersion;
+
+  public String getConverterVersion() {
+    return converterVersion;
+  }
+
+  public void setConverterVersion(String converterVersion) {
+    this.converterVersion = converterVersion;
+  }
 
   public List<BpmnElementCheckResult> getResults() {
     return results;

@@ -56,6 +56,7 @@ public class BpmnConverter {
     LOG.info("Start check");
     BpmnDiagramCheckResult result = new BpmnDiagramCheckResult();
     result.setFilename(filename);
+    result.setConverterVersion(getClass().getPackage().getImplementationVersion());
     BpmnDiagramCheckContext context = new BpmnDiagramCheckContext();
     traverse(modelInstance.getDocument().getRootElement(), result, context, properties);
     LOG.info("Done check");

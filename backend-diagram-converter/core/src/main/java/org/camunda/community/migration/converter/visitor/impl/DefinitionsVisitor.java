@@ -36,9 +36,11 @@ public class DefinitionsVisitor extends AbstractBpmnElementVisitor {
     //    }
     element.registerNamespace(MODELER_NAMESPACE_NAME, NamespaceUri.MODELER);
     element.registerNamespace(ZEEBE_NAMESPACE_NAME, NamespaceUri.ZEEBE);
-    element.registerNamespace(CONVERSION_NAMESPACE_NAME, NamespaceUri.CONVERSION);
+    element.registerNamespace(CONVERSION_NAMESPACE_NAME, CONVERSION);
     element.setAttribute(NamespaceUri.MODELER, PLATFORM_HEADER, PLATFORM_VALUE);
     element.setAttribute(NamespaceUri.MODELER, VERSION_HEADER, desiredVersion.toString());
+    element.setAttribute(
+        CONVERSION, CONVERTER_VERSION_HEADER, getClass().getPackage().getImplementationVersion());
   }
 
   private void setNamespace(Node root, String oldPrefix) {
