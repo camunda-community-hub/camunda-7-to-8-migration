@@ -1,5 +1,7 @@
 package org.camunda.community.migration.converter.visitor.impl;
 
+import static org.camunda.community.migration.converter.NamespaceUri.*;
+
 import java.util.function.Consumer;
 import org.camunda.bpm.model.xml.instance.DomElement;
 import org.camunda.community.migration.converter.DomElementVisitorContext;
@@ -13,6 +15,7 @@ import org.w3c.dom.NodeList;
 public class DefinitionsVisitor extends AbstractBpmnElementVisitor {
   private static final String VERSION_HEADER = "executionPlatformVersion";
   private static final String PLATFORM_HEADER = "executionPlatform";
+  private static final String CONVERTER_VERSION_HEADER = "converterVersion";
   private static final String PLATFORM_VALUE = "Camunda Cloud";
   private static final String ZEEBE_NAMESPACE_NAME = "zeebe";
   private static final String CONVERSION_NAMESPACE_NAME = "conversion";
@@ -36,9 +39,11 @@ public class DefinitionsVisitor extends AbstractBpmnElementVisitor {
     //    }
     element.registerNamespace(MODELER_NAMESPACE_NAME, NamespaceUri.MODELER);
     element.registerNamespace(ZEEBE_NAMESPACE_NAME, NamespaceUri.ZEEBE);
-    element.registerNamespace(CONVERSION_NAMESPACE_NAME, NamespaceUri.CONVERSION);
+    element.registerNamespace(CONVERSION_NAMESPACE_NAME, CONVERSION);
     element.setAttribute(NamespaceUri.MODELER, PLATFORM_HEADER, PLATFORM_VALUE);
     element.setAttribute(NamespaceUri.MODELER, VERSION_HEADER, desiredVersion.toString());
+    element.setAttribute(
+        CONVERSION, CONVERTER_VERSION_HEADER, getClass().getPackage().getImplementationVersion());
   }
 
   private void setNamespace(Node root, String oldPrefix) {
