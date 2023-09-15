@@ -20,6 +20,6 @@ public class DueDateVisitor extends AbstractSupportedAttributeVisitor {
     context.addConversion(
         UserTaskConvertible.class,
         conv -> conv.getZeebeTaskSchedule().setDueDate(dueDate.getFeelExpression()));
-    return MessageFactory.dueDate(dueDate);
+    return MessageFactory.dueDate(dueDate.getJuelExpression(), dueDate.getFeelExpression());
   }
 }

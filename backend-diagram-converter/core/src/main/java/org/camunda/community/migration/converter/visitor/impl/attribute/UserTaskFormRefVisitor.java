@@ -25,7 +25,10 @@ public class UserTaskFormRefVisitor extends AbstractSupportedAttributeVisitor {
                 .getZeebeFormDefinition()
                 .setFormKey(transformationResult.getFeelExpression()));
     return MessageFactory.formRef(
-        attributeLocalName(), context.getElement().getLocalName(), transformationResult);
+        attributeLocalName(),
+        context.getElement().getLocalName(),
+        transformationResult.getJuelExpression(),
+        transformationResult.getFeelExpression());
   }
 
   @Override

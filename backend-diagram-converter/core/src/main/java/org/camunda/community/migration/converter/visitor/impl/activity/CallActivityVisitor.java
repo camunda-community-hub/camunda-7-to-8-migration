@@ -37,7 +37,11 @@ public class CallActivityVisitor extends AbstractActivityVisitor {
                   .getZeebeCalledElement()
                   .setProcessId(transformationResult.getFeelExpression()));
       context.addMessage(
-          MessageFactory.calledElement(CALLED_ELEMENT, localName(), transformationResult));
+          MessageFactory.calledElement(
+              CALLED_ELEMENT,
+              localName(),
+              transformationResult.getJuelExpression(),
+              transformationResult.getFeelExpression()));
     }
   }
 

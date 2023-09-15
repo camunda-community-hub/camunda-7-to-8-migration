@@ -520,6 +520,7 @@ public class BpmnConverterTest {
         .extracting(BpmnElementCheckResult::getMessages)
         .matches(l -> !l.isEmpty())
         .extracting(l -> l.get(0).getMessage())
-        .isEqualTo("Condition expression: Please review transformed expression: 'x=4' -> '=x=4'.");
+        .isEqualTo(
+            "FEEL Condition expression: Please review transformed expression: 'x=4' -> '=x=4'. Check for custom FEEL functions as they are not supported by Zeebe.");
   }
 }

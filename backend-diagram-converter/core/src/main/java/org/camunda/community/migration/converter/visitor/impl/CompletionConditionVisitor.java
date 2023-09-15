@@ -29,11 +29,17 @@ public class CompletionConditionVisitor extends AbstractBpmnElementVisitor {
                 .setCompletionCondition(transformationResult.getFeelExpression()));
     Message message;
     if (transformationResult.hasExecution()) {
-      message = MessageFactory.completionConditionExecution(transformationResult);
+      message =
+          MessageFactory.completionConditionExecution(
+              transformationResult.getJuelExpression(), transformationResult.getFeelExpression());
     } else if (transformationResult.hasMethodInvocation()) {
-      message = MessageFactory.completionConditionMethod(transformationResult);
+      message =
+          MessageFactory.completionConditionMethod(
+              transformationResult.getJuelExpression(), transformationResult.getFeelExpression());
     } else {
-      message = MessageFactory.completionCondition(transformationResult);
+      message =
+          MessageFactory.completionCondition(
+              transformationResult.getJuelExpression(), transformationResult.getFeelExpression());
     }
     context.addMessage(message);
   }

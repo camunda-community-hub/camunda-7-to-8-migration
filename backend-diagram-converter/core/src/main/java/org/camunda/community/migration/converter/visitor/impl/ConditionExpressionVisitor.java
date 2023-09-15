@@ -67,11 +67,7 @@ public class ConditionExpressionVisitor extends AbstractBpmnElementVisitor {
       return;
     }
     if ("feel".equalsIgnoreCase(language)) {
-      String oldExpression = context.getElement().getTextContent();
-      String newExpression = "=" + oldExpression;
-      context.addConversion(
-          SequenceFlowConvertible.class, c -> c.setConditionExpression(newExpression));
-      context.addMessage(MessageFactory.conditionExpression(oldExpression, newExpression));
+      handleFeelExpression(context);
       return;
     }
     context.addMessage(
@@ -83,6 +79,14 @@ public class ConditionExpressionVisitor extends AbstractBpmnElementVisitor {
     return MessageFactory.conditionalFlow();
   }
 
+  private void handleFeelExpression(DomElementVisitorContext context) {
+    String oldExpression = context.getElement().getTextContent();
+    String newExpression = "=" + oldExpression;
+    context.addConversion(
+        SequenceFlowConvertible.class, c -> c.setConditionExpression(newExpression));
+    context.addMessage(MessageFactory.conditionExpressionFeel(oldExpression, newExpression));
+  }
+
   private void handleJuelExpression(DomElementVisitorContext context) {
     String expression = context.getElement().getTextContent();
     ExpressionTransformationResult transformationResult =
@@ -91,11 +95,17 @@ public class ConditionExpressionVisitor extends AbstractBpmnElementVisitor {
         SequenceFlowConvertible.class,
         conversion -> conversion.setConditionExpression(transformationResult.getFeelExpression()));
     if (transformationResult.hasExecution()) {
-      context.addMessage(MessageFactory.conditionExpressionExecution(transformationResult));
+      context.addMessage(
+          MessageFactory.conditionExpressionExecution(
+              transformationResult.getJuelExpression(), transformationResult.getFeelExpression()));
     } else if (transformationResult.hasMethodInvocation()) {
-      context.addMessage(MessageFactory.conditionExpressionMethod(transformationResult));
+      context.addMessage(
+          MessageFactory.conditionExpressionMethod(
+              transformationResult.getJuelExpression(), transformationResult.getFeelExpression()));
     } else {
-      context.addMessage(MessageFactory.conditionExpression(transformationResult));
+      context.addMessage(
+          MessageFactory.conditionExpression(
+              transformationResult.getJuelExpression(), transformationResult.getFeelExpression()));
     }
   }
 }

@@ -19,7 +19,9 @@ public abstract class AbstractTimerExpressionVisitor extends AbstractBpmnElement
         con -> setNewExpression(con, transformationResult.getFeelExpression()));
     if (!Objects.equals(
         transformationResult.getFeelExpression(), transformationResult.getJuelExpression())) {
-      context.addMessage(MessageFactory.timerExpressionMapped(transformationResult));
+      context.addMessage(
+          MessageFactory.timerExpressionMapped(
+              transformationResult.getJuelExpression(), transformationResult.getFeelExpression()));
     }
   }
 

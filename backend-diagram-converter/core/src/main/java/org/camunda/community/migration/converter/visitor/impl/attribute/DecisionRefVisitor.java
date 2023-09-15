@@ -25,6 +25,9 @@ public class DecisionRefVisitor extends AbstractSupportedAttributeVisitor {
                 .getZeebeCalledDecision()
                 .setDecisionId(transformationResult.getFeelExpression()));
     return MessageFactory.decisionRef(
-        attributeLocalName(), context.getElement().getLocalName(), transformationResult);
+        attributeLocalName(),
+        context.getElement().getLocalName(),
+        transformationResult.getJuelExpression(),
+        transformationResult.getFeelExpression());
   }
 }

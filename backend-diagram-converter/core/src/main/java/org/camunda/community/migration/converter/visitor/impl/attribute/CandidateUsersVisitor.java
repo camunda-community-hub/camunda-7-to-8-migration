@@ -20,6 +20,7 @@ public class CandidateUsersVisitor extends AbstractSupportedAttributeVisitor {
     context.addConversion(
         UserTaskConvertible.class,
         convertible -> convertible.getZeebeAssignmentDefinition().setCandidateUsers(attribute));
-    return MessageFactory.candidateUsers(candidateUsers);
+    return MessageFactory.candidateUsers(
+        candidateUsers.getJuelExpression(), candidateUsers.getFeelExpression());
   }
 }

@@ -26,6 +26,9 @@ public class AssigneeVisitor extends AbstractSupportedAttributeVisitor {
                 .getZeebeAssignmentDefinition()
                 .setAssignee(transformationResult.getFeelExpression()));
     return MessageFactory.assignee(
-        attributeLocalName(), context.getElement().getLocalName(), transformationResult);
+        attributeLocalName(),
+        context.getElement().getLocalName(),
+        transformationResult.getJuelExpression(),
+        transformationResult.getFeelExpression());
   }
 }
