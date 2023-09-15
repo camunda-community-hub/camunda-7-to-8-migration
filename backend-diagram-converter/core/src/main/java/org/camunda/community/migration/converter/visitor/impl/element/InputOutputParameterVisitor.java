@@ -38,12 +38,25 @@ public abstract class InputOutputParameterVisitor extends AbstractCamundaElement
     Message resultMessage;
     if (transformationResult.hasExecution()) {
       resultMessage =
-          MessageFactory.inputOutputParameterExecution(localName(), name, transformationResult);
+          MessageFactory.inputOutputParameterExecution(
+              localName(),
+              name,
+              transformationResult.getJuelExpression(),
+              transformationResult.getFeelExpression());
     } else if (transformationResult.hasMethodInvocation()) {
       resultMessage =
-          MessageFactory.inputOutputParameterMethod(localName(), name, transformationResult);
+          MessageFactory.inputOutputParameterMethod(
+              localName(),
+              name,
+              transformationResult.getJuelExpression(),
+              transformationResult.getFeelExpression());
     } else {
-      resultMessage = MessageFactory.inputOutputParameter(localName(), name, transformationResult);
+      resultMessage =
+          MessageFactory.inputOutputParameter(
+              localName(),
+              name,
+              transformationResult.getJuelExpression(),
+              transformationResult.getFeelExpression());
     }
     return resultMessage;
   }

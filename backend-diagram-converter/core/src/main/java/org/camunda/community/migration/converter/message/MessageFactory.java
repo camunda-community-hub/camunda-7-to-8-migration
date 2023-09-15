@@ -2,7 +2,6 @@ package org.camunda.community.migration.converter.message;
 
 import java.util.Collections;
 import java.util.Map;
-import org.camunda.community.migration.converter.expression.ExpressionTransformationResult;
 
 public class MessageFactory {
   private static final MessageFactory INSTANCE = new MessageFactory();
@@ -42,155 +41,168 @@ public class MessageFactory {
             .build());
   }
 
-  public static Message completionCondition(ExpressionTransformationResult transformationResult) {
+  public static Message completionCondition(String juelExpression, String feelExpression) {
     return INSTANCE.composeMessage(
         "completion-condition",
         ContextBuilder.builder()
-            .context(expressionTransformationResult(transformationResult))
+            .context(expressionTransformationResult(juelExpression, feelExpression))
             .build());
   }
 
-  public static Message completionConditionExecution(
-      ExpressionTransformationResult transformationResult) {
+  public static Message completionConditionExecution(String juelExpression, String feelExpression) {
     return INSTANCE.composeMessage(
         "completion-condition-execution",
         ContextBuilder.builder()
-            .context(expressionTransformationResult(transformationResult))
+            .context(expressionTransformationResult(juelExpression, feelExpression))
             .build());
   }
 
-  public static Message completionConditionMethod(
-      ExpressionTransformationResult transformationResult) {
+  public static Message completionConditionMethod(String juelExpression, String feelExpression) {
     return INSTANCE.composeMessage(
         "completion-condition-method",
         ContextBuilder.builder()
-            .context(expressionTransformationResult(transformationResult))
+            .context(expressionTransformationResult(juelExpression, feelExpression))
             .build());
   }
 
-  public static Message candidateGroups(ExpressionTransformationResult transformationResult) {
+  public static Message candidateGroups(String juelExpression, String feelExpression) {
     return INSTANCE.composeMessage(
         "candidate-groups",
         ContextBuilder.builder()
             .context(
-                supportedAttributeExpression("candidateGroups", "userTask", transformationResult))
+                supportedAttributeExpression(
+                    "candidateGroups", "userTask", juelExpression, feelExpression))
             .build());
   }
 
   public static Message calledElement(
       String attributeLocalName,
       String elementLocalName,
-      ExpressionTransformationResult transformationResult) {
+      String juelExpression,
+      String feelExpression) {
     return INSTANCE.composeMessage(
         "called-element",
         ContextBuilder.builder()
             .context(
                 supportedAttributeExpression(
-                    attributeLocalName, elementLocalName, transformationResult))
+                    attributeLocalName, elementLocalName, juelExpression, feelExpression))
             .build());
   }
 
   public static Message decisionRef(
       String attributeLocalName,
       String elementLocalName,
-      ExpressionTransformationResult transformationResult) {
+      String juelExpression,
+      String feelExpression) {
     return INSTANCE.composeMessage(
         "decision-ref",
         ContextBuilder.builder()
             .context(
                 supportedAttributeExpression(
-                    attributeLocalName, elementLocalName, transformationResult))
+                    attributeLocalName, elementLocalName, juelExpression, feelExpression))
             .build());
   }
 
   public static Message formRef(
       String attributeLocalName,
       String elementLocalName,
-      ExpressionTransformationResult transformationResult) {
+      String juelExpression,
+      String feelExpression) {
     return INSTANCE.composeMessage(
         "form-ref",
         ContextBuilder.builder()
             .context(
                 supportedAttributeExpression(
-                    attributeLocalName, elementLocalName, transformationResult))
+                    attributeLocalName, elementLocalName, juelExpression, feelExpression))
             .build());
   }
 
   public static Message collection(
       String attributeLocalName,
       String elementLocalName,
-      ExpressionTransformationResult transformationResult) {
+      String juelExpression,
+      String feelExpression) {
     return INSTANCE.composeMessage(
         "collection",
         ContextBuilder.builder()
             .context(
                 supportedAttributeExpression(
-                    attributeLocalName, elementLocalName, transformationResult))
+                    attributeLocalName, elementLocalName, juelExpression, feelExpression))
             .build());
   }
 
   public static Message collectionExecution(
       String attributeLocalName,
       String elementLocalName,
-      ExpressionTransformationResult transformationResult) {
+      String juelExpression,
+      String feelExpression) {
     return INSTANCE.composeMessage(
         "collection-execution",
         ContextBuilder.builder()
             .context(
                 supportedAttributeExpression(
-                    attributeLocalName, elementLocalName, transformationResult))
+                    attributeLocalName, elementLocalName, juelExpression, feelExpression))
             .build());
   }
 
   public static Message collectionMethod(
       String attributeLocalName,
       String elementLocalName,
-      ExpressionTransformationResult transformationResult) {
+      String juelExpression,
+      String feelExpression) {
     return INSTANCE.composeMessage(
         "collection-method",
         ContextBuilder.builder()
             .context(
                 supportedAttributeExpression(
-                    attributeLocalName, elementLocalName, transformationResult))
+                    attributeLocalName, elementLocalName, juelExpression, feelExpression))
             .build());
   }
 
   public static Message assignee(
       String attributeLocalName,
       String elementLocalName,
-      ExpressionTransformationResult transformationResult) {
+      String juelExpression,
+      String feelExpression) {
     return INSTANCE.composeMessage(
         "assignee",
         ContextBuilder.builder()
             .context(
                 supportedAttributeExpression(
-                    attributeLocalName, elementLocalName, transformationResult))
+                    attributeLocalName, elementLocalName, juelExpression, feelExpression))
             .build());
   }
 
-  public static Message conditionExpression(ExpressionTransformationResult transformationResult) {
+  public static Message conditionExpression(String juelExpression, String feelExpression) {
     return INSTANCE.composeMessage(
         "condition-expression",
         ContextBuilder.builder()
-            .context(expressionTransformationResult(transformationResult))
+            .context(expressionTransformationResult(juelExpression, feelExpression))
             .build());
   }
 
-  public static Message conditionExpressionExecution(
-      ExpressionTransformationResult transformationResult) {
+  public static Message conditionExpressionFeel(
+      String oldFeelExpression, String newFeelExpression) {
+    return INSTANCE.composeMessage(
+        "condition-expression-feel",
+        ContextBuilder.builder()
+            .context(expressionTransformationResult(oldFeelExpression, newFeelExpression))
+            .build());
+  }
+
+  public static Message conditionExpressionExecution(String juelExpression, String feelExpression) {
     return INSTANCE.composeMessage(
         "condition-expression-execution",
         ContextBuilder.builder()
-            .context(expressionTransformationResult(transformationResult))
+            .context(expressionTransformationResult(juelExpression, feelExpression))
             .build());
   }
 
-  public static Message conditionExpressionMethod(
-      ExpressionTransformationResult transformationResult) {
+  public static Message conditionExpressionMethod(String juelExpression, String feelExpression) {
     return INSTANCE.composeMessage(
         "condition-expression-method",
         ContextBuilder.builder()
-            .context(expressionTransformationResult(transformationResult))
+            .context(expressionTransformationResult(juelExpression, feelExpression))
             .build());
   }
 
@@ -205,41 +217,35 @@ public class MessageFactory {
   }
 
   public static Message inputOutputParameter(
-      String elementLocalName,
-      String parameterName,
-      ExpressionTransformationResult transformationResult) {
+      String elementLocalName, String parameterName, String juelExpression, String feelExpression) {
     return INSTANCE.composeMessage(
         "input-output-parameter",
         ContextBuilder.builder()
             .entry("parameterName", parameterName)
             .context(elementTransformedPrefix(elementLocalName))
-            .context(expressionTransformationResult(transformationResult))
+            .context(expressionTransformationResult(juelExpression, feelExpression))
             .build());
   }
 
   public static Message inputOutputParameterExecution(
-      String elementLocalName,
-      String parameterName,
-      ExpressionTransformationResult transformationResult) {
+      String elementLocalName, String parameterName, String juelExpression, String feelExpression) {
     return INSTANCE.composeMessage(
         "input-output-parameter-execution",
         ContextBuilder.builder()
             .entry("parameterName", parameterName)
             .context(elementTransformedPrefix(elementLocalName))
-            .context(expressionTransformationResult(transformationResult))
+            .context(expressionTransformationResult(juelExpression, feelExpression))
             .build());
   }
 
   public static Message inputOutputParameterMethod(
-      String elementLocalName,
-      String parameterName,
-      ExpressionTransformationResult transformationResult) {
+      String elementLocalName, String parameterName, String juelExpression, String feelExpression) {
     return INSTANCE.composeMessage(
         "input-output-parameter-method",
         ContextBuilder.builder()
             .entry("parameterName", parameterName)
             .context(elementTransformedPrefix(elementLocalName))
-            .context(expressionTransformationResult(transformationResult))
+            .context(expressionTransformationResult(juelExpression, feelExpression))
             .build());
   }
 
@@ -521,18 +527,19 @@ public class MessageFactory {
   private static Map<String, String> supportedAttributeExpression(
       String attributeLocalName,
       String elementLocalName,
-      ExpressionTransformationResult transformationResult) {
+      String juelExpression,
+      String feelExpression) {
     return ContextBuilder.builder()
         .context(supportedAttributePrefix(attributeLocalName, elementLocalName))
-        .context(expressionTransformationResult(transformationResult))
+        .context(expressionTransformationResult(juelExpression, feelExpression))
         .build();
   }
 
   private static Map<String, String> expressionTransformationResult(
-      ExpressionTransformationResult transformationResult) {
+      String juelExpression, String feelExpression) {
     return ContextBuilder.builder()
-        .entry("oldExpression", transformationResult.getJuelExpression())
-        .entry("newExpression", transformationResult.getFeelExpression())
+        .entry("oldExpression", juelExpression)
+        .entry("newExpression", feelExpression)
         .build();
   }
 
@@ -608,28 +615,32 @@ public class MessageFactory {
     return INSTANCE.staticMessage("result-variable-internal-script");
   }
 
-  public static Message candidateUsers(ExpressionTransformationResult transformationResult) {
+  public static Message candidateUsers(String juelExpression, String feelExpression) {
     return INSTANCE.composeMessage(
         "candidate-users",
         ContextBuilder.builder()
             .context(
-                supportedAttributeExpression("candidateUsers", "userTask", transformationResult))
+                supportedAttributeExpression(
+                    "candidateUsers", "userTask", juelExpression, feelExpression))
             .build());
   }
 
-  public static Message followUpDate(ExpressionTransformationResult transformationResult) {
+  public static Message followUpDate(String juelExpression, String feelExpression) {
     return INSTANCE.composeMessage(
         "follow-up-date",
         ContextBuilder.builder()
-            .context(supportedAttributeExpression("followUpDate", "userTask", transformationResult))
+            .context(
+                supportedAttributeExpression(
+                    "followUpDate", "userTask", juelExpression, feelExpression))
             .build());
   }
 
-  public static Message dueDate(ExpressionTransformationResult transformationResult) {
+  public static Message dueDate(String juelExpression, String feelExpression) {
     return INSTANCE.composeMessage(
         "due-date",
         ContextBuilder.builder()
-            .context(supportedAttributeExpression("dueDate", "userTask", transformationResult))
+            .context(
+                supportedAttributeExpression("dueDate", "userTask", juelExpression, feelExpression))
             .build());
   }
 
@@ -641,11 +652,11 @@ public class MessageFactory {
     return INSTANCE.staticMessage("escalation-code-no-expression");
   }
 
-  public static Message timerExpressionMapped(ExpressionTransformationResult transformationResult) {
+  public static Message timerExpressionMapped(String juelExpression, String feelExpression) {
     return INSTANCE.composeMessage(
         "timer-expression-mapped",
         ContextBuilder.builder()
-            .context(expressionTransformationResult(transformationResult))
+            .context(expressionTransformationResult(juelExpression, feelExpression))
             .build());
   }
 
@@ -659,6 +670,18 @@ public class MessageFactory {
             .entry("eventType", eventType)
             .entry("semanticVersion", semanticVersion)
             .build());
+  }
+
+  public static Message resourceOnConditionalFlow(String resource) {
+    return INSTANCE.composeMessage(
+        "resource-on-conditional-flow",
+        ContextBuilder.builder().entry("resource", resource).build());
+  }
+
+  public static Message scriptOnConditionalFlow(String language, String script) {
+    return INSTANCE.composeMessage(
+        "script-on-conditional-flow",
+        ContextBuilder.builder().entry("language", language).entry("script", script).build());
   }
 
   private Message composeMessage(String templateName, Map<String, String> context) {

@@ -490,4 +490,37 @@ public class BpmnConverterTest {
             .getChildElementsByNameNs(ZEEBE, "taskDefinition");
     assertThat(taskDefinition).isEmpty();
   }
+
+  @Test
+  void testConditionalSequenceFlowWithLanguages() {
+    BpmnDiagramCheckResult result = loadAndCheck("conditional-flow-many-languages.bpmn");
+    assertThat(result.getResult("JuelSequenceFlow"))
+        .isNotNull()
+        .extracting(BpmnElementCheckResult::getMessages)
+        .matches(l -> !l.isEmpty())
+        .extracting(l -> l.get(0).getMessage())
+        .isEqualTo(
+            "Condition expression: Please review transformed expression: '${x == 1}' -> '=x = 1'.");
+    assertThat(result.getResult("ExternalScriptSequenceFlow"))
+        .isNotNull()
+        .extracting(BpmnElementCheckResult::getMessages)
+        .matches(l -> !l.isEmpty())
+        .extracting(l -> l.get(0).getMessage())
+        .isEqualTo(
+            "Please translate the content from 'some-resource.js' to a valid FEEL expression.");
+    assertThat(result.getResult("InternalScriptSequenceFlow"))
+        .isNotNull()
+        .extracting(BpmnElementCheckResult::getMessages)
+        .matches(l -> !l.isEmpty())
+        .extracting(l -> l.get(0).getMessage())
+        .isEqualTo(
+            "Please translate the javascript script from 'return x === 3;' to a valid FEEL expression.");
+    assertThat(result.getResult("FeelScriptSequenceFlow"))
+        .isNotNull()
+        .extracting(BpmnElementCheckResult::getMessages)
+        .matches(l -> !l.isEmpty())
+        .extracting(l -> l.get(0).getMessage())
+        .isEqualTo(
+            "FEEL Condition expression: Please review transformed expression: 'x=4' -> '=x=4'. Check for custom FEEL functions as they are not supported by Zeebe.");
+  }
 }

@@ -76,7 +76,11 @@ public abstract class InOutVisitor extends AbstractCamundaElementVisitor {
                   getDirection(context.getElement()),
                   transformationResult.getFeelExpression(),
                   target));
-      return MessageFactory.inputOutputParameter(localName(), target, transformationResult);
+      return MessageFactory.inputOutputParameter(
+          localName(),
+          target,
+          transformationResult.getJuelExpression(),
+          transformationResult.getFeelExpression());
     }
   }
 

@@ -20,6 +20,7 @@ public class FollowUpDateVisitor extends AbstractSupportedAttributeVisitor {
     context.addConversion(
         UserTaskConvertible.class,
         conv -> conv.getZeebeTaskSchedule().setFollowUpDate(followUpDate.getFeelExpression()));
-    return MessageFactory.followUpDate(followUpDate);
+    return MessageFactory.followUpDate(
+        followUpDate.getJuelExpression(), followUpDate.getFeelExpression());
   }
 }

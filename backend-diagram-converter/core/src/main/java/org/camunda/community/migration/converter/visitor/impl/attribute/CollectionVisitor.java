@@ -33,15 +33,24 @@ public class CollectionVisitor extends AbstractSupportedAttributeVisitor {
     if (transformationResult.hasExecution()) {
       message =
           MessageFactory.collectionExecution(
-              attributeLocalName(), context.getElement().getLocalName(), transformationResult);
+              attributeLocalName(),
+              context.getElement().getLocalName(),
+              transformationResult.getJuelExpression(),
+              transformationResult.getFeelExpression());
     } else if (transformationResult.hasMethodInvocation()) {
       message =
           MessageFactory.collectionMethod(
-              attributeLocalName(), context.getElement().getLocalName(), transformationResult);
+              attributeLocalName(),
+              context.getElement().getLocalName(),
+              transformationResult.getJuelExpression(),
+              transformationResult.getFeelExpression());
     } else {
       message =
           MessageFactory.collection(
-              attributeLocalName(), context.getElement().getLocalName(), transformationResult);
+              attributeLocalName(),
+              context.getElement().getLocalName(),
+              transformationResult.getJuelExpression(),
+              transformationResult.getFeelExpression());
     }
     return message;
   }

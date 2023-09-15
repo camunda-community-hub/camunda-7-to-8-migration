@@ -4,7 +4,6 @@ import static org.assertj.core.api.Assertions.*;
 import static org.camunda.community.migration.converter.message.MessageFactory.*;
 import static org.junit.jupiter.api.Assertions.*;
 
-import org.camunda.community.migration.converter.expression.ExpressionTransformationResult;
 import org.junit.jupiter.api.Test;
 import org.testcontainers.shaded.org.apache.commons.lang3.RandomStringUtils;
 
@@ -13,10 +12,6 @@ public class MessageFactoryTest {
 
   private static String random() {
     return RandomStringUtils.randomAlphabetic(10);
-  }
-
-  private static ExpressionTransformationResult result() {
-    return new ExpressionTransformationResult("${test}", "=test");
   }
 
   @Test
@@ -49,7 +44,7 @@ public class MessageFactoryTest {
 
   @Test
   void shouldBuildCollection() {
-    Message message = MessageFactory.collection(random(), random(), result());
+    Message message = MessageFactory.collection(random(), random(), random(), random());
     assertNotNull(message);
     assertNotNull(message.getMessage());
   }
@@ -98,7 +93,7 @@ public class MessageFactoryTest {
 
   @Test
   void shouldBuildAssignee() {
-    Message message = MessageFactory.assignee(random(), random(), result());
+    Message message = MessageFactory.assignee(random(), random(), random(), random());
     assertNotNull(message);
     assertNotNull(message.getMessage());
   }
@@ -112,7 +107,7 @@ public class MessageFactoryTest {
 
   @Test
   void shouldBuildFormRef() {
-    Message message = MessageFactory.formRef(random(), random(), result());
+    Message message = MessageFactory.formRef(random(), random(), random(), random());
     assertNotNull(message);
     assertNotNull(message.getMessage());
   }
@@ -140,14 +135,14 @@ public class MessageFactoryTest {
 
   @Test
   void shouldBuildConditionExpression() {
-    Message message = MessageFactory.conditionExpression(result());
+    Message message = MessageFactory.conditionExpression(random(), random());
     assertNotNull(message);
     assertNotNull(message.getMessage());
   }
 
   @Test
   void shouldBuildInputOutputParameter() {
-    Message message = MessageFactory.inputOutputParameter(random(), random(), result());
+    Message message = MessageFactory.inputOutputParameter(random(), random(), random(), random());
     assertNotNull(message);
     assertNotNull(message.getMessage());
   }
@@ -321,7 +316,7 @@ public class MessageFactoryTest {
 
   @Test
   void shouldBuildCandidateGroups() {
-    Message message = MessageFactory.candidateGroups(result());
+    Message message = MessageFactory.candidateGroups(random(), random());
     assertNotNull(message);
     assertNotNull(message.getMessage());
   }
@@ -335,14 +330,14 @@ public class MessageFactoryTest {
 
   @Test
   void shouldBuildCalledElement() {
-    Message message = MessageFactory.calledElement(random(), random(), result());
+    Message message = MessageFactory.calledElement(random(), random(), random(), random());
     assertNotNull(message);
     assertNotNull(message.getMessage());
   }
 
   @Test
   void shouldBuildDecisionRef() {
-    Message message = MessageFactory.decisionRef(random(), random(), result());
+    Message message = MessageFactory.decisionRef(random(), random(), random(), random());
     assertNotNull(message);
     assertNotNull(message.getMessage());
   }
@@ -366,7 +361,7 @@ public class MessageFactoryTest {
 
   @Test
   void shouldBuildCompletionCondition() {
-    Message message = MessageFactory.completionCondition(result());
+    Message message = MessageFactory.completionCondition(random(), random());
     assertNotNull(message);
     assertNotNull(message.getMessage());
   }
@@ -423,35 +418,47 @@ public class MessageFactoryTest {
 
   @Test
   void shouldBuildCandidateUsers() {
-    Message message = MessageFactory.candidateUsers(result());
+    String juelExpression = random();
+    String feelExpression = random();
+    Message message = MessageFactory.candidateUsers(juelExpression, feelExpression);
     assertNotNull(message);
     assertNotNull(message.getMessage());
     assertNotNull(message.getSeverity());
     assertThat(message.getMessage())
         .isEqualTo(
-            "Attribute 'candidateUsers' on 'userTask' was mapped. Please review transformed expression: '${test}' -> '=test'.");
+            String.format(
+                "Attribute 'candidateUsers' on 'userTask' was mapped. Please review transformed expression: '%s' -> '%s'.",
+                juelExpression, feelExpression));
   }
 
   @Test
   void shouldBuildDueDate() {
-    Message message = MessageFactory.dueDate(result());
+    String juelExpression = random();
+    String feelExpression = random();
+    Message message = MessageFactory.dueDate(juelExpression, feelExpression);
     assertNotNull(message);
     assertNotNull(message.getMessage());
     assertNotNull(message.getSeverity());
     assertThat(message.getMessage())
         .isEqualTo(
-            "Attribute 'dueDate' on 'userTask' was mapped. Please review transformed expression: '${test}' -> '=test'.");
+            String.format(
+                "Attribute 'dueDate' on 'userTask' was mapped. Please review transformed expression: '%s' -> '%s'.",
+                juelExpression, feelExpression));
   }
 
   @Test
   void shouldBuildFollowUpDate() {
-    Message message = MessageFactory.followUpDate(result());
+    String juelExpression = random();
+    String feelExpression = random();
+    Message message = MessageFactory.followUpDate(juelExpression, feelExpression);
     assertNotNull(message);
     assertNotNull(message.getMessage());
     assertNotNull(message.getSeverity());
     assertThat(message.getMessage())
         .isEqualTo(
-            "Attribute 'followUpDate' on 'userTask' was mapped. Please review transformed expression: '${test}' -> '=test'.");
+            String.format(
+                "Attribute 'followUpDate' on 'userTask' was mapped. Please review transformed expression: '%s' -> '%s'.",
+                juelExpression, feelExpression));
   }
 
   @Test
@@ -491,13 +498,17 @@ public class MessageFactoryTest {
 
   @Test
   void shouldBuildTimerExpressionMappedMessage() {
-    Message message = timerExpressionMapped(result());
+    String juelExpression = random();
+    String feelExpression = random();
+    Message message = timerExpressionMapped(juelExpression, feelExpression);
     assertNotNull(message);
     assertNotNull(message.getMessage());
     assertNotNull(message.getSeverity());
     assertThat(message.getMessage())
         .isEqualTo(
-            "Timer expression was transformed: Please review transformed expression: '${test}' -> '=test'.");
+            String.format(
+                "Timer expression was transformed: Please review transformed expression: '%s' -> '%s'.",
+                juelExpression, feelExpression));
   }
 
   @Test
@@ -522,5 +533,44 @@ public class MessageFactoryTest {
                 + "' in Zeebe version '"
                 + semanticVersion
                 + "'.");
+  }
+
+  @Test
+  void shouldBuildResourceOnConditionalFlow() {
+    String resource = random();
+    Message message = resourceOnConditionalFlow(resource);
+    assertNotNull(message);
+    assertNotNull(message.getMessage());
+    assertNotNull(message.getSeverity());
+    assertThat(message.getMessage())
+        .isEqualTo("Please translate the content from '%s' to a valid FEEL expression.", resource);
+  }
+
+  @Test
+  void shouldBuildScriptOnConditionalFlow() {
+    String script = random();
+    String language = random();
+    Message message = scriptOnConditionalFlow(language, script);
+    assertNotNull(message);
+    assertNotNull(message.getMessage());
+    assertNotNull(message.getSeverity());
+    assertThat(message.getMessage())
+        .isEqualTo(
+            "Please translate the %s script from '%s' to a valid FEEL expression.",
+            language, script);
+  }
+
+  @Test
+  void shouldBuildConditionExpressionFeel() {
+    String oldExpression = random();
+    String newExpression = random();
+    Message message = conditionExpressionFeel(oldExpression, newExpression);
+    assertNotNull(message);
+    assertNotNull(message.getMessage());
+    assertNotNull(message.getSeverity());
+    assertThat(message.getMessage())
+        .isEqualTo(
+            "FEEL Condition expression: Please review transformed expression: '%s' -> '%s'. Check for custom FEEL functions as they are not supported by Zeebe.",
+            oldExpression, newExpression);
   }
 }

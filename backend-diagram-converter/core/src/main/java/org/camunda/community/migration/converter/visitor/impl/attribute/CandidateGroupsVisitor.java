@@ -17,13 +17,15 @@ public class CandidateGroupsVisitor extends AbstractSupportedAttributeVisitor {
 
   @Override
   protected Message visitSupportedAttribute(DomElementVisitorContext context, String attribute) {
-    ExpressionTransformationResult candidateGroups = ExpressionTransformer.transform(attribute);
+    ExpressionTransformationResult transformationResult =
+        ExpressionTransformer.transform(attribute);
     context.addConversion(
         UserTaskConvertible.class,
         userTaskConversion ->
             userTaskConversion
                 .getZeebeAssignmentDefinition()
-                .setCandidateGroups(candidateGroups.getFeelExpression()));
-    return MessageFactory.candidateGroups(candidateGroups);
+                .setCandidateGroups(transformationResult.getFeelExpression()));
+    return MessageFactory.candidateGroups(
+        transformationResult.getJuelExpression(), transformationResult.getFeelExpression());
   }
 }
