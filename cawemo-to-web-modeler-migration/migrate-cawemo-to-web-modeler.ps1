@@ -106,11 +106,15 @@ foreach ($PROJECT in $PROJECTS) {
     } else {
       Write-Progress -Activity "$($FILE_TREE_SPACES)$($TREE_SYMBOL) Migrating file $($FILE_NAME) (Type: $($FILE.type), ID: $($FILE.id))..."
       $FILE_WITH_CONTENT=(Invoke-RestMethod -Uri "https://cawemo.com/api/v1/files/$($FILE.id)" -Headers @{Authorization=("Basic {0}" -f $CREDENTIAL)})
+      $content=$FILE_WITH_CONTENT.content
+      if ($FILE.type -eq "DMN") {
+        $content=($FILE_WITH_CONTENT.content -replace 'camunda:diagramRelationId=".*"','')
+      }
       $FILE_REQUEST=@{
         name=$FILE.name;
         projectId=$NEW_PROJECT.id;
         parentId=$PARENT_ID;
-        content=$FILE_WITH_CONTENT.content;
+        content=$content;
         fileType=$FILE.type
       }
       try {
