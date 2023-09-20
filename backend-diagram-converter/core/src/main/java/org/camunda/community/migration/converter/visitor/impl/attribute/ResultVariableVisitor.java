@@ -7,9 +7,15 @@ import org.camunda.community.migration.converter.convertible.ScriptTaskConvertib
 import org.camunda.community.migration.converter.message.Message;
 import org.camunda.community.migration.converter.message.MessageFactory;
 import org.camunda.community.migration.converter.visitor.AbstractSupportedAttributeVisitor;
+import org.camunda.community.migration.converter.visitor.impl.activity.BusinessRuleTaskVisitor;
 import org.camunda.community.migration.converter.visitor.impl.activity.ScriptTaskVisitor;
 
 public abstract class ResultVariableVisitor extends AbstractSupportedAttributeVisitor {
+
+  public static boolean isBusinessRuleTask(DomElementVisitorContext context) {
+    return context.getElement().getLocalName().equals("businessRuleTask")
+        && BusinessRuleTaskVisitor.isDmnImplementation(context);
+  }
 
   @Override
   public String attributeLocalName() {
@@ -35,7 +41,7 @@ public abstract class ResultVariableVisitor extends AbstractSupportedAttributeVi
 
     @Override
     protected boolean canVisitResultVariable(DomElementVisitorContext context) {
-      return context.getElement().getLocalName().equals("businessRuleTask");
+      return ResultVariableVisitor.isBusinessRuleTask(context);
     }
   }
 
@@ -56,7 +62,7 @@ public abstract class ResultVariableVisitor extends AbstractSupportedAttributeVi
 
     @Override
     protected boolean canVisitResultVariable(DomElementVisitorContext context) {
-      return (!context.getElement().getLocalName().equals("businessRuleTask"))
+      return !ResultVariableVisitor.isBusinessRuleTask(context)
           && !ScriptTaskVisitor.canBeInternalScript(context);
     }
   }

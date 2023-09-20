@@ -1,6 +1,5 @@
 package org.camunda.community.migration.converter.visitor.impl.activity;
 
-import org.camunda.bpm.model.xml.instance.DomElement;
 import org.camunda.community.migration.converter.DomElementVisitorContext;
 import org.camunda.community.migration.converter.NamespaceUri;
 import org.camunda.community.migration.converter.convertible.BusinessRuleTaskConvertible;
@@ -17,7 +16,7 @@ public class BusinessRuleTaskVisitor extends AbstractActivityVisitor {
 
   @Override
   protected Convertible createConvertible(DomElementVisitorContext context) {
-    if (isDmnImplementation(context.getElement(), context)) {
+    if (isDmnImplementation(context)) {
       return new BusinessRuleTaskConvertible();
     } else {
       return new ServiceTaskConvertible();
@@ -29,7 +28,7 @@ public class BusinessRuleTaskVisitor extends AbstractActivityVisitor {
     return SemanticVersion._8_0_0;
   }
 
-  private boolean isDmnImplementation(DomElement element, DomElementVisitorContext context) {
-    return element.getAttribute(NamespaceUri.CAMUNDA, "decisionRef") != null;
+  public static boolean isDmnImplementation(DomElementVisitorContext context) {
+    return context.getElement().getAttribute(NamespaceUri.CAMUNDA, "decisionRef") != null;
   }
 }
