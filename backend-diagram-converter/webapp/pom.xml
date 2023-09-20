@@ -58,7 +58,7 @@
           <execution>
             <id>build-version</id>
             <goals>
-              <goal>build-image</goal>
+              <goal>build-image-no-fork</goal>
             </goals>
             <phase>deploy</phase>
             <configuration>
@@ -70,7 +70,7 @@
           <execution>
             <id>build-latest</id>
             <goals>
-              <goal>build-image</goal>
+              <goal>build-image-no-fork</goal>
             </goals>
             <phase>deploy</phase>
             <configuration>
