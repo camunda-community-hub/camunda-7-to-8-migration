@@ -37,7 +37,8 @@ public class BpmnConverterTest {
         "internal-script.bpmn",
         "collaboration.bpmn",
         "empty-input-parameter.bpmn",
-        "flexible-timer-event.bpmn"
+        "flexible-timer-event.bpmn",
+        "business-rule-task-as-expression.bpmn"
       })
   public void shouldConvert(String bpmnFile) {
     BpmnConverter converter = BpmnConverterFactory.getInstance().get();
