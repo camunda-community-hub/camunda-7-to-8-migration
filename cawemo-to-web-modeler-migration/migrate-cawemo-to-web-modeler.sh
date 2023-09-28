@@ -55,7 +55,7 @@ for row in $(echo $PROJECTS | jq -r '.[] | @base64'); do
 
     echo "Migrating project ${GREEN}$PROJECT_NAME${NC} (ID: $OLD_PROJECT_ID)..."
 
-    HTTP_STATUS=$(curl -s -o .curl_tmp -w "%{http_code}" -X POST "https://modeler.cloud.camunda.io/api/beta/projects" \
+    HTTP_STATUS=$(curl -s -o .curl_tmp -w "%{http_code}" -X POST "https://modeler.cloud.camunda.io/api/v1/projects" \
         -H "Content-Type: application/json" \
         -H "Authorization: Bearer $TOKEN" \
         -d "$(_jq '.')")
@@ -64,8 +64,8 @@ for row in $(echo $PROJECTS | jq -r '.[] | @base64'); do
 
     if [ "$HTTP_STATUS" != "200" ]
     then
-        echo "⚠ POST https://modeler.cloud.camunda.io/api/beta/projects failed with status code $HTTP_STATUS"
-        echo "[$(date +'%Y-%m-%d %H:%M:%S')] ⚠ POST https://modeler.cloud.camunda.io/api/beta/projects failed with status code $HTTP_STATUS" >> migration.log
+        echo "⚠ POST https://modeler.cloud.camunda.io/api/v1/projects failed with status code $HTTP_STATUS"
+        echo "[$(date +'%Y-%m-%d %H:%M:%S')] ⚠ POST https://modeler.cloud.camunda.io/api/v1/projects failed with status code $HTTP_STATUS" >> migration.log
 
         echo "Aborted"
         exit 1
@@ -128,7 +128,7 @@ for row in $(echo $PROJECTS | jq -r '.[] | @base64'); do
                     \"parentId\": $PARENT_ID
                 }"
 
-                HTTP_STATUS=$(curl -s -o .curl_tmp -w "%{http_code}" -X POST "https://modeler.cloud.camunda.io/api/beta/folders" \
+                HTTP_STATUS=$(curl -s -o .curl_tmp -w "%{http_code}" -X POST "https://modeler.cloud.camunda.io/api/v1/folders" \
                     -H "Content-Type: application/json" \
                     -H "Authorization: Bearer $TOKEN" \
                     -d "$FOLDER_REQUEST")
@@ -137,8 +137,8 @@ for row in $(echo $PROJECTS | jq -r '.[] | @base64'); do
 
                 if [ "$HTTP_STATUS" != "200" ]
                 then
-                    echo "⚠ POST https://modeler.cloud.camunda.io/api/beta/folders failed with status code $HTTP_STATUS"
-                    echo "[$(date +'%Y-%m-%d %H:%M:%S')] ⚠ POST https://modeler.cloud.camunda.io/api/beta/folders failed with status code $HTTP_STATUS" >> migration.log
+                    echo "⚠ POST https://modeler.cloud.camunda.io/api/v1/folders failed with status code $HTTP_STATUS"
+                    echo "[$(date +'%Y-%m-%d %H:%M:%S')] ⚠ POST https://modeler.cloud.camunda.io/api/v1/folders failed with status code $HTTP_STATUS" >> migration.log
                 else
                     NEW_FOLDER_ID=$(jq -r .id <<< "$NEW_FOLDER")
 
@@ -180,7 +180,7 @@ for row in $(echo $PROJECTS | jq -r '.[] | @base64'); do
                 \"fileType\": \"$FILE_TYPE\"
             }"
 
-            HTTP_STATUS=$(curl -s -o .curl_tmp -w "%{http_code}" -X POST "https://modeler.cloud.camunda.io/api/beta/files" \
+            HTTP_STATUS=$(curl -s -o .curl_tmp -w "%{http_code}" -X POST "https://modeler.cloud.camunda.io/api/v1/files" \
                 -H "Content-Type: application/json" \
                 -H "Authorization: Bearer $TOKEN" \
                 -d "$FILE_REQUEST")
@@ -189,8 +189,8 @@ for row in $(echo $PROJECTS | jq -r '.[] | @base64'); do
 
             if [ "$HTTP_STATUS" != "200" ]
             then
-                echo "⚠ POST https://modeler.cloud.camunda.io/api/beta/files failed with status code $HTTP_STATUS"
-                echo "[$(date +'%Y-%m-%d %H:%M:%S')] ⚠ POST https://modeler.cloud.camunda.io/api/beta/files failed with status code $HTTP_STATUS" >> migration.log
+                echo "⚠ POST https://modeler.cloud.camunda.io/api/v1/files failed with status code $HTTP_STATUS"
+                echo "[$(date +'%Y-%m-%d %H:%M:%S')] ⚠ POST https://modeler.cloud.camunda.io/api/v1/files failed with status code $HTTP_STATUS" >> migration.log
             else
                 echo "\e[1A\e[K$FILE_TREE_SPACES$TREE_SYMBOL ✔ Migrated file ${GREEN}$FILE_NAME${NC} (Type: $FILE_TYPE, ID: $OLD_FILE_ID)."
 
