@@ -26,7 +26,7 @@
     "@vue/eslint-config-typescript": "^12.0.0",
     "eslint": "^8.49.0",
     "eslint-plugin-vue": "^9.17.0",
-    "sass": "^1.67.0",
+    "sass": "^1.69.0",
     "typescript": "^5.2.2",
     "vite": "^4.4.9",
     "vite-plugin-vuetify": "^1.0.0-alpha.12",
