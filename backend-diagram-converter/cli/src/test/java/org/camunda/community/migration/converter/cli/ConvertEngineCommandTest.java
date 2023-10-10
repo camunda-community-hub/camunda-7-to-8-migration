@@ -52,9 +52,19 @@ public class ConvertEngineCommandTest {
   @Test
   void shouldConvertManyFilesWithSameName(@TempDir File tempDir) throws Exception {
     BpmnModelInstance test1 =
-        Bpmn.createProcess("test1").executable().startEvent("x").endEvent("y").done();
+        Bpmn.createProcess("test1")
+            .executable()
+            .camundaHistoryTimeToLive(180)
+            .startEvent("x")
+            .endEvent("y")
+            .done();
     BpmnModelInstance test2 =
-        Bpmn.createProcess("test2").executable().startEvent("a").endEvent("b").done();
+        Bpmn.createProcess("test2")
+            .executable()
+            .camundaHistoryTimeToLive(180)
+            .startEvent("a")
+            .endEvent("b")
+            .done();
     processEngine
         .getRepositoryService()
         .createDeployment()
