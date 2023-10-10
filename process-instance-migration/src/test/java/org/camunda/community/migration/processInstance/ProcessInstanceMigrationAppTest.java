@@ -84,6 +84,7 @@ public class ProcessInstanceMigrationAppTest {
             "The process instance contains variables that are not in process scope");
     org.camunda.bpm.model.bpmn.BpmnModelInstance modelInstance =
         org.camunda.bpm.model.bpmn.Bpmn.createExecutableProcess("test")
+            .camundaHistoryTimeToLive(180)
             .startEvent()
             .userTask()
             .multiInstance()

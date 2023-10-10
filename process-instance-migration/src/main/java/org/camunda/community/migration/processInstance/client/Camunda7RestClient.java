@@ -1,5 +1,6 @@
 package org.camunda.community.migration.processInstance.client;
 
+import jakarta.annotation.PostConstruct;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -7,7 +8,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
-import javax.annotation.PostConstruct;
 import org.camunda.community.migration.processInstance.dto.client.ActivityInstanceDto;
 import org.camunda.community.migration.processInstance.dto.client.JobDefinitionDto;
 import org.camunda.community.migration.processInstance.dto.client.JobDefinitionDto.JobDefinitionQueryResultDto;

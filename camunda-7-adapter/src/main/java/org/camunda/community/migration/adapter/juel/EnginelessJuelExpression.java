@@ -4,11 +4,11 @@ import org.camunda.bpm.engine.ProcessEngineException;
 import org.camunda.bpm.engine.delegate.VariableScope;
 import org.camunda.bpm.engine.impl.el.JuelExpression;
 import org.camunda.bpm.engine.impl.el.JuelExpressionManager;
-import org.camunda.bpm.engine.impl.javax.el.ELContext;
-import org.camunda.bpm.engine.impl.javax.el.ELException;
-import org.camunda.bpm.engine.impl.javax.el.MethodNotFoundException;
-import org.camunda.bpm.engine.impl.javax.el.PropertyNotFoundException;
-import org.camunda.bpm.engine.impl.javax.el.ValueExpression;
+import org.camunda.bpm.impl.juel.jakarta.el.ELContext;
+import org.camunda.bpm.impl.juel.jakarta.el.ELException;
+import org.camunda.bpm.impl.juel.jakarta.el.MethodNotFoundException;
+import org.camunda.bpm.impl.juel.jakarta.el.PropertyNotFoundException;
+import org.camunda.bpm.impl.juel.jakarta.el.ValueExpression;
 
 public class EnginelessJuelExpression extends JuelExpression {
 

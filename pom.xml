@@ -16,21 +16,22 @@
     <encoding>UTF-8</encoding>
     <project.build.sourceEncoding>${encoding}</project.build.sourceEncoding>
     <project.build.resourceEncoding>${encoding}</project.build.resourceEncoding>
-    <version.java>1.8</version.java>
-    <maven.compiler.source>1.8</maven.compiler.source>
-    <maven.compiler.target>1.8</maven.compiler.target>
+    <version.java>11</version.java>
+    <maven.compiler.source>11</maven.compiler.source>
+    <maven.compiler.target>11</maven.compiler.target>
     <version.zeebe>8.2.13</version.zeebe>
     <version.spring-boot-starter-camunda>8.2.4</version.spring-boot-starter-camunda>
     <version.zeebe-process-test-extension-testcontainer>8.2.13</version.zeebe-process-test-extension-testcontainer>
-    <version.camunda.platform>7.19.0</version.camunda.platform>
+    <version.camunda.platform>7.20.0</version.camunda.platform>
     <version.jsoup>1.16.1</version.jsoup>
-    <version.spring-boot>2.7.16</version.spring-boot>
+    <version.spring-boot>3.1.4</version.spring-boot>
     <version.picocli>4.7.5</version.picocli>
     <version.commons-io>2.13.0</version.commons-io>
     <version.slack-api-client>1.34.0</version.slack-api-client>
     <version.opencsv>5.8</version.opencsv>
     <version.operate-client>8.2.0</version.operate-client>
     <version.camunda-bpm-assert>15.0.0</version.camunda-bpm-assert>
+    <version.jaxb-api>2.3.1</version.jaxb-api>
 
     <plugin.version.function-maven-plugin>0.11.0</plugin.version.function-maven-plugin>
     <plugin.version.maven-enforcer-plugin>3.4.1</plugin.version.maven-enforcer-plugin>
@@ -136,6 +137,11 @@
         <version>${version.camunda-bpm-assert}</version>
       </dependency>
       <dependency>
+        <groupId>javax.xml.bind</groupId>
+        <artifactId>jaxb-api</artifactId>
+        <version>${version.jaxb-api}</version>
+      </dependency>
+      <dependency>
         <groupId>org.camunda.community.migration</groupId>
         <artifactId>backend-diagram-converter-core</artifactId>
         <version>${project.version}</version>
@@ -201,7 +207,7 @@
         <plugin>
           <groupId>org.springframework.boot</groupId>
           <artifactId>spring-boot-maven-plugin</artifactId>
-          <version>3.1.0</version>
+          <version>${version.spring-boot}</version>
           <configuration>
             <image>
               <env>

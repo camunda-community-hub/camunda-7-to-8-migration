@@ -3,9 +3,9 @@ package org.camunda.community.migration.adapter.juel;
 import org.camunda.bpm.engine.delegate.DelegateExecution;
 import org.camunda.bpm.engine.delegate.VariableScope;
 import org.camunda.bpm.engine.impl.el.JuelExpressionManager;
-import org.camunda.bpm.engine.impl.javax.el.ELContext;
-import org.camunda.bpm.engine.impl.javax.el.ExpressionFactory;
-import org.camunda.bpm.engine.impl.javax.el.ValueExpression;
+import org.camunda.bpm.impl.juel.jakarta.el.ELContext;
+import org.camunda.bpm.impl.juel.jakarta.el.ExpressionFactory;
+import org.camunda.bpm.impl.juel.jakarta.el.ValueExpression;
 import org.camunda.community.migration.adapter.execution.SimpleVariableScope;
 import org.springframework.stereotype.Component;
 
