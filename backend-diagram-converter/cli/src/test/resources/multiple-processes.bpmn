@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_1pajm6h" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.7.0" modeler:executionPlatform="Camunda Platform" modeler:executionPlatformVersion="7.18.0">
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_1pajm6h" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.15.2" modeler:executionPlatform="Camunda Platform" modeler:executionPlatformVersion="7.20.0">
   <bpmn:collaboration id="Collaboration_09msll9">
     <bpmn:participant id="Participant_081lbhi" name="Exe1" processRef="Process_1eahf7m" />
     <bpmn:participant id="Participant_043n8ci" name="Exe2" processRef="exe2" />
   </bpmn:collaboration>
-  <bpmn:process id="Process_1eahf7m" name="Exe1" isExecutable="true">
+  <bpmn:process id="Process_1eahf7m" name="Exe1" isExecutable="true" camunda:historyTimeToLive="180">
     <bpmn:startEvent id="StartStartEvent" name="Start">
       <bpmn:outgoing>Flow_1dnhubw</bpmn:outgoing>
     </bpmn:startEvent>
@@ -18,7 +18,7 @@
     <bpmn:sequenceFlow id="Flow_1dnhubw" sourceRef="StartStartEvent" targetRef="TaskTask" />
     <bpmn:sequenceFlow id="Flow_0rj4wr3" sourceRef="TaskTask" targetRef="EndEndEvent" />
   </bpmn:process>
-  <bpmn:process id="exe2" name="Exe2" isExecutable="true">
+  <bpmn:process id="exe2" name="Exe2" isExecutable="true" camunda:historyTimeToLive="180">
     <bpmn:startEvent id="StartStartEvent1" name="Start">
       <bpmn:outgoing>Flow_0k5lju4</bpmn:outgoing>
     </bpmn:startEvent>
