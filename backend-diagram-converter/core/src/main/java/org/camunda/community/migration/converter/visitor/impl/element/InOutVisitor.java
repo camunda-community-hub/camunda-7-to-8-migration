@@ -57,14 +57,15 @@ public abstract class InOutVisitor extends AbstractCamundaElementVisitor {
     if (isAll(context.getElement())) {
       if (isIn(context.getElement())) {
         if (SemanticVersion.parse(context.getProperties().getPlatformVersion()).ordinal()
-            <= SemanticVersion._8_3.ordinal()){
+            < SemanticVersion._8_3.ordinal()) {
           return MessageFactory.oldInAllHint();
-        }else{
+        } else {
           context.addConversion(
               CallActivityConvertible.class,
               conversion ->
                   conversion.getZeebeCalledElement().setPropagateAllParentVariables(true));
-        return MessageFactory.inAllHint();}
+          return MessageFactory.inAllHint();
+        }
       } else if (isOut(context.getElement())) {
         context.addConversion(
             CallActivityConvertible.class,

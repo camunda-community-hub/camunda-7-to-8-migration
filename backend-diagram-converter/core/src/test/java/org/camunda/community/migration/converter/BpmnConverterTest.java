@@ -145,7 +145,7 @@ public class BpmnConverterTest {
 
   @Test
   void testCallActivityBefore_8_3() {
-    BpmnDiagramCheckResult result = loadAndCheckAgainstVersion("call-activity-latest.bpmn","8.2");
+    BpmnDiagramCheckResult result = loadAndCheckAgainstVersion("call-activity-latest.bpmn", "8.2");
     BpmnElementCheckResult callActivityResult = result.getResult("callLatest");
     assertThat(callActivityResult.getMessages()).hasSize(3);
     assertThat(callActivityResult.getMessages().get(0).getMessage())
