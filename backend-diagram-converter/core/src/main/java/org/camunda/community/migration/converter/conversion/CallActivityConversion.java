@@ -18,6 +18,9 @@ public class CallActivityConversion extends AbstractTypedConversion<CallActivity
     calledElement.setAttribute(
         "propagateAllChildVariables",
         Boolean.toString(convertible.getZeebeCalledElement().isPropagateAllChildVariables()));
+    calledElement.setAttribute(
+        "propagateAllParentVariables",
+        Boolean.toString(convertible.getZeebeCalledElement().isPropagateAllParentVariables()));
     return calledElement;
   }
 

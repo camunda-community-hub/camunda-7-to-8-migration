@@ -40,7 +40,7 @@ public abstract class AbstractBpmnElementVisitor extends AbstractElementVisitor 
     return MessageFactory.elementAvailableInFutureVersion(
         elementNameForMessage(context.getElement()),
         context.getProperties().getPlatformVersion(),
-        availableFrom.toString());
+        availableFrom.getPatchZeroVersion());
   }
 
   protected Message cannotBeConvertedMessage(DomElementVisitorContext context) {

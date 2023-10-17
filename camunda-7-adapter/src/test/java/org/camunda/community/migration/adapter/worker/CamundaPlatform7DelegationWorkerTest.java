@@ -144,7 +144,17 @@ class CamundaPlatform7DelegationWorkerTest {
       }
 
       @Override
+      public Object getVariable(String name) {
+        return variables.get(name);
+      }
+
+      @Override
       public String toJson() {
+        return null;
+      }
+
+      @Override
+      public String getTenantId() {
         return null;
       }
     };
@@ -171,6 +181,11 @@ class CamundaPlatform7DelegationWorkerTest {
 
     @Override
     public CompleteJobCommandStep1 variables(Object variables) {
+      throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public CompleteJobCommandStep1 variable(String key, Object value) {
       throw new UnsupportedOperationException();
     }
 

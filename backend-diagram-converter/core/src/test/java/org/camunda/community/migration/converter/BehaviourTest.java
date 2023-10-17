@@ -34,7 +34,7 @@ public class BehaviourTest {
         .addProcessModel(BpmnModelInstanceUtil.transform(modelInstance), "test.bpmn")
         .send()
         .join();
-    Map<String, Object> variables = TestUtil.mockVariables(5);
+    Map<String, Object> variables = TestUtil.mockVariables("A", "B", "C");
     ProcessInstanceEvent callingProcess =
         client
             .newCreateInstanceCommand()
@@ -62,8 +62,8 @@ public class BehaviourTest {
             .join()
             .getJobs()
             .get(0);
-    BpmnAssert.assertThat(activatedJob).extractingVariables().containsAllEntriesOf(variables);
-    Map<String, Object> doSomethingResult = TestUtil.mockVariables(3);
+    BpmnAssert.assertThat(activatedJob).extractingVariables().containsOnlyKeys("A");
+    Map<String, Object> doSomethingResult = TestUtil.mockVariables("D", "E", "F");
     client.newCompleteCommand(activatedJob).variables(doSomethingResult).send().join();
     engine.waitForIdleState(Duration.ofSeconds(60));
 
@@ -81,7 +81,7 @@ public class BehaviourTest {
     BpmnAssert.assertThat(anotherJob)
         .extractingVariables()
         .containsAllEntriesOf(variables)
-        .containsAllEntriesOf(doSomethingResult);
+        .containsOnlyKeys("A", "B", "C", "D");
     client.newCompleteCommand(anotherJob).send().join();
     engine.waitForIdleState(Duration.ofSeconds(60));
 

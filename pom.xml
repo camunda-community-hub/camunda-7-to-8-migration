@@ -19,9 +19,9 @@
     <version.java>11</version.java>
     <maven.compiler.source>11</maven.compiler.source>
     <maven.compiler.target>11</maven.compiler.target>
-    <version.zeebe>8.2.13</version.zeebe>
-    <version.spring-boot-starter-camunda>8.2.4</version.spring-boot-starter-camunda>
-    <version.zeebe-process-test-extension-testcontainer>8.2.13</version.zeebe-process-test-extension-testcontainer>
+    <version.zeebe>8.3.0</version.zeebe>
+    <version.spring-boot-starter-camunda>8.3.0</version.spring-boot-starter-camunda>
+    <version.zeebe-process-test-extension-testcontainer>8.3.0</version.zeebe-process-test-extension-testcontainer>
     <version.camunda.platform>7.20.0</version.camunda.platform>
     <version.jsoup>1.16.1</version.jsoup>
     <version.spring-boot>3.1.4</version.spring-boot>
@@ -102,12 +102,6 @@
         <groupId>io.camunda.spring</groupId>
         <artifactId>spring-boot-starter-camunda-test-testcontainer</artifactId>
         <version>${version.spring-boot-starter-camunda}</version>
-        <scope>test</scope>
-      </dependency>
-      <dependency>
-        <groupId>io.camunda</groupId>
-        <artifactId>spring-zeebe-test</artifactId>
-        <version>${version.spring-zeebe-starter}</version>
         <scope>test</scope>
       </dependency>
       <dependency>

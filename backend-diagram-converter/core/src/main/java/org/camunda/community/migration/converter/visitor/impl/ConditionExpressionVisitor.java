@@ -21,7 +21,7 @@ public class ConditionExpressionVisitor extends AbstractBpmnElementVisitor {
 
   @Override
   protected SemanticVersion availableFrom(DomElementVisitorContext context) {
-    return isConditionalFlow(context) ? null : SemanticVersion._8_0_0;
+    return isConditionalFlow(context) ? null : SemanticVersion._8_0;
   }
 
   private boolean isConditionalFlow(DomElementVisitorContext context) {

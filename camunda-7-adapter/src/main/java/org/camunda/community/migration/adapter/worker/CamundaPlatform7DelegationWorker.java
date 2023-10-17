@@ -5,6 +5,7 @@ import io.camunda.zeebe.client.api.response.ActivatedJob;
 import io.camunda.zeebe.client.api.worker.JobClient;
 import io.camunda.zeebe.spring.client.annotation.JobWorker;
 import io.camunda.zeebe.spring.client.exception.ZeebeBpmnError;
+import java.util.HashMap;
 import org.camunda.bpm.engine.delegate.BpmnError;
 import org.camunda.bpm.engine.delegate.DelegateExecution;
 import org.camunda.bpm.engine.delegate.ExecutionListener;
@@ -84,7 +85,8 @@ public class CamundaPlatform7DelegationWorker {
       completeCommand.variables(execution.getVariables());
       completeCommand.send().join();
     } catch (BpmnError e) {
-      throw new ZeebeBpmnError(e.getErrorCode(), e.getMessage() == null ? "" : e.getMessage());
+      throw new ZeebeBpmnError(
+          e.getErrorCode(), e.getMessage() == null ? "" : e.getMessage(), new HashMap<>());
     }
   }
 }

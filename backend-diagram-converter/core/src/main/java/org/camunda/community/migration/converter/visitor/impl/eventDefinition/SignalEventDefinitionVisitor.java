@@ -1,7 +1,5 @@
 package org.camunda.community.migration.converter.visitor.impl.eventDefinition;
 
-import static org.camunda.community.migration.converter.NamespaceUri.*;
-
 import org.camunda.community.migration.converter.DomElementVisitorContext;
 import org.camunda.community.migration.converter.version.SemanticVersion;
 import org.camunda.community.migration.converter.visitor.AbstractEventDefinitionVisitor;
@@ -15,9 +13,9 @@ public class SignalEventDefinitionVisitor extends AbstractEventDefinitionVisitor
   @Override
   protected SemanticVersion availableFrom(DomElementVisitorContext context) {
     if (isStartEvent(context) && isNotEventSubProcessStartEvent(context.getElement())) {
-      return SemanticVersion._8_2_0;
+      return SemanticVersion._8_2;
     }
-    return null;
+    return SemanticVersion._8_3;
   }
 
   private boolean isStartEvent(DomElementVisitorContext context) {

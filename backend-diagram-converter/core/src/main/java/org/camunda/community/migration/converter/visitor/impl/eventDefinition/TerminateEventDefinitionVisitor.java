@@ -12,6 +12,6 @@ public class TerminateEventDefinitionVisitor extends AbstractEventDefinitionVisi
 
   @Override
   protected SemanticVersion availableFrom(DomElementVisitorContext context) {
-    return SemanticVersion._8_1_0;
+    return SemanticVersion._8_1;
   }
 }

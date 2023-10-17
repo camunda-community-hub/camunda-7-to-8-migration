@@ -144,6 +144,25 @@ public class BpmnConverterTest {
   }
 
   @Test
+  void testCallActivityBefore_8_3() {
+    BpmnDiagramCheckResult result = loadAndCheckAgainstVersion("call-activity-latest.bpmn", "8.2");
+    BpmnElementCheckResult callActivityResult = result.getResult("callLatest");
+    assertThat(callActivityResult.getMessages()).hasSize(3);
+    assertThat(callActivityResult.getMessages().get(0).getMessage())
+        .isEqualTo(
+            "Attribute 'calledElement' on 'callActivity' was mapped. Please review transformed expression: 'myLatestProcess' -> 'myLatestProcess'.");
+    assertThat(callActivityResult.getMessages().get(0).getSeverity()).isEqualTo(Severity.REVIEW);
+    assertThat(callActivityResult.getMessages().get(1).getMessage())
+        .isEqualTo(
+            "Element 'camunda:in' with attribute 'variables=\"all\"' is removed. It is default in Zeebe before 8.3.");
+    assertThat(callActivityResult.getMessages().get(1).getSeverity()).isEqualTo(Severity.INFO);
+    assertThat(callActivityResult.getMessages().get(2).getMessage())
+        .isEqualTo(
+            "Element 'camunda:out' with attribute 'variables=\"all\"' is mapped to 'propagateAllChildVariables=\"true\"'.");
+    assertThat(callActivityResult.getMessages().get(2).getSeverity()).isEqualTo(Severity.INFO);
+  }
+
+  @Test
   void testCallActivityLatest() {
     BpmnDiagramCheckResult result = loadAndCheck("call-activity-latest.bpmn");
     BpmnElementCheckResult callActivityResult = result.getResult("callLatest");
@@ -154,7 +173,7 @@ public class BpmnConverterTest {
     assertThat(callActivityResult.getMessages().get(0).getSeverity()).isEqualTo(Severity.REVIEW);
     assertThat(callActivityResult.getMessages().get(1).getMessage())
         .isEqualTo(
-            "Element 'camunda:in' with attribute 'variables=\"all\"' is removed. It is default in Zeebe.");
+            "Element 'camunda:in' with attribute 'variables=\"all\"' is mapped to 'propagateAllParentVariables=\"true\"'.");
     assertThat(callActivityResult.getMessages().get(1).getSeverity()).isEqualTo(Severity.INFO);
     assertThat(callActivityResult.getMessages().get(2).getMessage())
         .isEqualTo(
@@ -177,7 +196,7 @@ public class BpmnConverterTest {
     assertThat(callActivityResult.getMessages().get(1).getSeverity()).isEqualTo(Severity.REVIEW);
     assertThat(callActivityResult.getMessages().get(2).getMessage())
         .isEqualTo(
-            "Element 'camunda:in' with attribute 'variables=\"all\"' is removed. It is default in Zeebe.");
+            "Element 'camunda:in' with attribute 'variables=\"all\"' is mapped to 'propagateAllParentVariables=\"true\"'.");
     assertThat(callActivityResult.getMessages().get(2).getSeverity()).isEqualTo(Severity.INFO);
     assertThat(callActivityResult.getMessages().get(3).getMessage())
         .isEqualTo(

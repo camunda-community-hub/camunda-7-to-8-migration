@@ -10,6 +10,15 @@ public class CallActivityConvertible extends AbstractActivityConvertible {
   public static class ZeebeCalledElement {
     private String processId;
     private boolean propagateAllChildVariables = false;
+    private boolean propagateAllParentVariables = false;
+
+    public boolean isPropagateAllParentVariables() {
+      return propagateAllParentVariables;
+    }
+
+    public void setPropagateAllParentVariables(boolean propagateAllParentVariables) {
+      this.propagateAllParentVariables = propagateAllParentVariables;
+    }
 
     public String getProcessId() {
       return processId;

@@ -25,6 +25,6 @@ public class ReceiveTaskVisitor extends AbstractActivityVisitor {
     if (Boolean.parseBoolean(instantiate)) {
       return null;
     }
-    return SemanticVersion._8_0_0;
+    return SemanticVersion._8_0;
   }
 }

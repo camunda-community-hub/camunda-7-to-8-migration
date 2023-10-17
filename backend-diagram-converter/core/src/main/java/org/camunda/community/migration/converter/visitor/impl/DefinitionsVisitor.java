@@ -41,7 +41,8 @@ public class DefinitionsVisitor extends AbstractBpmnElementVisitor {
     element.registerNamespace(ZEEBE_NAMESPACE_NAME, NamespaceUri.ZEEBE);
     element.registerNamespace(CONVERSION_NAMESPACE_NAME, CONVERSION);
     element.setAttribute(NamespaceUri.MODELER, PLATFORM_HEADER, PLATFORM_VALUE);
-    element.setAttribute(NamespaceUri.MODELER, VERSION_HEADER, desiredVersion.toString());
+    element.setAttribute(
+        NamespaceUri.MODELER, VERSION_HEADER, desiredVersion.getPatchZeroVersion());
     element.setAttribute(
         CONVERSION, CONVERTER_VERSION_HEADER, getClass().getPackage().getImplementationVersion());
   }
@@ -79,7 +80,7 @@ public class DefinitionsVisitor extends AbstractBpmnElementVisitor {
 
   @Override
   protected SemanticVersion availableFrom(DomElementVisitorContext context) {
-    return SemanticVersion._8_0_0;
+    return SemanticVersion._8_0;
   }
 
   @Override

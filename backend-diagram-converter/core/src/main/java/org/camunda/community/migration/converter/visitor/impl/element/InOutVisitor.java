@@ -10,6 +10,7 @@ import org.camunda.community.migration.converter.expression.ExpressionTransforma
 import org.camunda.community.migration.converter.expression.ExpressionTransformer;
 import org.camunda.community.migration.converter.message.Message;
 import org.camunda.community.migration.converter.message.MessageFactory;
+import org.camunda.community.migration.converter.version.SemanticVersion;
 import org.camunda.community.migration.converter.visitor.AbstractCamundaElementVisitor;
 
 public abstract class InOutVisitor extends AbstractCamundaElementVisitor {
@@ -55,7 +56,16 @@ public abstract class InOutVisitor extends AbstractCamundaElementVisitor {
     }
     if (isAll(context.getElement())) {
       if (isIn(context.getElement())) {
-        return MessageFactory.inAllHint();
+        if (SemanticVersion.parse(context.getProperties().getPlatformVersion()).ordinal()
+            < SemanticVersion._8_3.ordinal()) {
+          return MessageFactory.oldInAllHint();
+        } else {
+          context.addConversion(
+              CallActivityConvertible.class,
+              conversion ->
+                  conversion.getZeebeCalledElement().setPropagateAllParentVariables(true));
+          return MessageFactory.inAllHint();
+        }
       } else if (isOut(context.getElement())) {
         context.addConversion(
             CallActivityConvertible.class,
