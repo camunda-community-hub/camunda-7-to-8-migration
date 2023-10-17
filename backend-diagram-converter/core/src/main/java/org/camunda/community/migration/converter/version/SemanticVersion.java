@@ -1,10 +1,11 @@
 package org.camunda.community.migration.converter.version;
 
 public enum SemanticVersion {
-  _8_0_0("8.0.0"),
-  _8_1_0("8.1.0"),
-  _8_2_0("8.2.0"),
-  _8_3_0("8.3.0");
+  _8_0("8.0"),
+  _8_1("8.1"),
+  _8_2("8.2"),
+  _8_3("8.3"),
+  _8_4("8.4");
 
   private final String name;
 
@@ -13,8 +14,9 @@ public enum SemanticVersion {
   }
 
   public static SemanticVersion parse(String platformVersion) {
+    platformVersion += ".";
     for (SemanticVersion v : values()) {
-      if (v.toString().equals(platformVersion)) {
+      if (platformVersion.startsWith(v.toString() + ".")) {
         return v;
       }
     }
@@ -24,5 +26,9 @@ public enum SemanticVersion {
   @Override
   public String toString() {
     return name;
+  }
+
+  public String getPatchZeroVersion() {
+    return name + ".0";
   }
 }

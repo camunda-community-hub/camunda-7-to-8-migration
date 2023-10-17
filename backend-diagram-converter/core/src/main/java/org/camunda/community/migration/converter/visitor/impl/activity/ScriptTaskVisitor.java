@@ -20,9 +20,9 @@ public class ScriptTaskVisitor extends AbstractActivityVisitor {
     }
     String scriptFormat = element.getAttribute(NamespaceUri.BPMN, "scriptFormat");
     return scriptFormat != null
-        && scriptFormat.trim().length() > 0
+        && !scriptFormat.trim().isEmpty()
         && scriptFormat.equalsIgnoreCase("feel")
-        && SemanticVersion._8_2_0.ordinal()
+        && SemanticVersion._8_2.ordinal()
             <= SemanticVersion.parse(context.getProperties().getPlatformVersion()).ordinal();
   }
 
@@ -42,7 +42,7 @@ public class ScriptTaskVisitor extends AbstractActivityVisitor {
   @Override
   protected void postCreationVisitor(DomElementVisitorContext context) {
     String scriptFormat = context.getElement().getAttribute(NamespaceUri.BPMN, "scriptFormat");
-    if (scriptFormat != null && scriptFormat.trim().length() > 0) {
+    if (scriptFormat != null && !scriptFormat.trim().isEmpty()) {
       if (!canBeInternalScript(context)) {
         context.addConversion(
             ServiceTaskConvertible.class,
@@ -67,6 +67,6 @@ public class ScriptTaskVisitor extends AbstractActivityVisitor {
 
   @Override
   protected SemanticVersion availableFrom(DomElementVisitorContext context) {
-    return SemanticVersion._8_0_0;
+    return SemanticVersion._8_0;
   }
 }

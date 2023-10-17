@@ -19,6 +19,6 @@ public class SequenceFlowVisitor extends AbstractProcessElementVisitor {
 
   @Override
   protected SemanticVersion availableFrom(DomElementVisitorContext context) {
-    return SemanticVersion._8_0_0;
+    return SemanticVersion._8_0;
   }
 }

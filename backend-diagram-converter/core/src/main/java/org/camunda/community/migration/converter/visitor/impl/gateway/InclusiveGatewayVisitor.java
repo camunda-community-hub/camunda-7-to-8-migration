@@ -11,7 +11,7 @@ import org.camunda.community.migration.converter.version.SemanticVersion;
 import org.camunda.community.migration.converter.visitor.AbstractGatewayVisitor;
 
 public class InclusiveGatewayVisitor extends AbstractGatewayVisitor {
-  private static final SemanticVersion FORK_AVAILABLE_VERSION = SemanticVersion._8_1_0;
+  private static final SemanticVersion FORK_AVAILABLE_VERSION = SemanticVersion._8_1;
   public static final String ELEMENT_LOCAL_NAME = "inclusiveGateway";
 
   @Override

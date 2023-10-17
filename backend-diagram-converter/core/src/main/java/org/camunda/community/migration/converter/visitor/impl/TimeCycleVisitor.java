@@ -9,7 +9,7 @@ public class TimeCycleVisitor extends AbstractTimerExpressionVisitor {
   @Override
   protected SemanticVersion availableFrom(DomElementVisitorContext context) {
     if (isStartEvent(context.getElement())) {
-      return SemanticVersion._8_0_0;
+      return SemanticVersion._8_0;
     }
     return null;
   }

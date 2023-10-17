@@ -24,7 +24,7 @@ public class EscalationVisitor extends AbstractEventReferenceVisitor {
 
   @Override
   protected SemanticVersion availableFrom(DomElementVisitorContext context) {
-    return SemanticVersion._8_2_0;
+    return SemanticVersion._8_2;
   }
 
   @Override

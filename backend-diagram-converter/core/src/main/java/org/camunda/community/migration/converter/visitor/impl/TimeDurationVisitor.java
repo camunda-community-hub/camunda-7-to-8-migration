@@ -10,7 +10,7 @@ public class TimeDurationVisitor extends AbstractTimerExpressionVisitor {
   @Override
   protected SemanticVersion availableFrom(DomElementVisitorContext context) {
     if (isBoundaryEvent(context.getElement()) || isIntermediateEvent(context.getElement())) {
-      return SemanticVersion._8_0_0;
+      return SemanticVersion._8_0;
     }
     return null;
   }
