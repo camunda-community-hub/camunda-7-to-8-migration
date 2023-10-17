@@ -119,20 +119,13 @@ public class BpmnElementSupportTest {
     return eventTypeTest(
         "Signal",
         isSupported(result, "SignalStartStartEvent"),
-        isNotSupported(result, "SignalThrowEvent", "Signal Intermediate Throw Event"),
-        isNotSupported(result, "SignalCatchEvent", "Signal Intermediate Catch Event"),
-        isNotSupported(result, "SignalEndEndEvent", "Signal End Event"),
-        isNotSupported(result, "SignalAttachedBoundaryEvent", "Signal Boundary Event"),
-        isNotSupported(
-            result,
-            "SignalAttachedNoninterruptingBoundaryEvent",
-            "Non-interrupting Signal Boundary Event"),
-        isNotSupported(
-            result, "SignalEventSubprocesStartStartEvent", "Event Sub Process Signal Start Event"),
-        isNotSupported(
-            result,
-            "SignalEventSubprocessStartNoninterruptingStartEvent",
-            "Non-interrupting Event Sub Process Signal Start Event"));
+        isSupported(result, "SignalThrowEvent"),
+        isSupported(result, "SignalCatchEvent"),
+        isSupported(result, "SignalEndEndEvent"),
+        isSupported(result, "SignalAttachedBoundaryEvent"),
+        isSupported(result, "SignalAttachedNoninterruptingBoundaryEvent"),
+        isSupported(result, "SignalEventSubprocesStartStartEvent"),
+        isSupported(result, "SignalEventSubprocessStartNoninterruptingStartEvent"));
   }
 
   @TestFactory
