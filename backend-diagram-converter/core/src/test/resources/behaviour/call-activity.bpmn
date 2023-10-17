@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_148xe6q" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.4.2" modeler:executionPlatform="Camunda Platform" modeler:executionPlatformVersion="7.18.0">
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_148xe6q" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.16.0" modeler:executionPlatform="Camunda Platform" modeler:executionPlatformVersion="7.18.0">
   <bpmn:collaboration id="Collaboration_1vf4mb0">
     <bpmn:participant id="CallingProcessParticipant" name="Calling process" processRef="CallingProcess" />
     <bpmn:participant id="AnotherProcessParticipant" name="Another process" processRef="AnotherProcess" />
@@ -12,8 +12,8 @@
     <bpmn:sequenceFlow id="Flow_1xpypmp" sourceRef="CallAnotherProcessCallActivity" targetRef="DoSomethingElseTask" />
     <bpmn:callActivity id="CallAnotherProcessCallActivity" name="Call another process" calledElement="AnotherProcess">
       <bpmn:extensionElements>
-        <camunda:in variables="all" />
-        <camunda:out variables="all" />
+        <camunda:in source="A" target="A" />
+        <camunda:out source="D" target="D" />
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_1xqdlk1</bpmn:incoming>
       <bpmn:outgoing>Flow_1xpypmp</bpmn:outgoing>

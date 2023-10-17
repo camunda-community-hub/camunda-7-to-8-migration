@@ -684,6 +684,10 @@ public class MessageFactory {
         ContextBuilder.builder().entry("language", language).entry("script", script).build());
   }
 
+  public static Message oldInAllHint() {
+    return INSTANCE.staticMessage("old-in-all-hint");
+  }
+
   private Message composeMessage(String templateName, Map<String, String> context) {
     ComposedMessage message = new ComposedMessage();
     MessageTemplate template = messageTemplateProvider.getMessageTemplate(templateName);

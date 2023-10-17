@@ -7,12 +7,21 @@ import org.camunda.bpm.model.bpmn.BpmnModelInstance;
 import org.testcontainers.shaded.org.apache.commons.lang3.RandomStringUtils;
 
 public class TestUtil {
-  public static Map<String, Object> mockVariables(int count) {
+
+  public static Map<String, Object> mockVariables(String... names) {
     Map<String, Object> variables = new HashMap<>();
-    for (int i = 0; i < count; i++) {
-      variables.put(RandomStringUtils.random(5), RandomStringUtils.random(20));
+    for (String name : names) {
+      variables.put(name, RandomStringUtils.random(20));
     }
     return variables;
+  }
+
+  public static Map<String, Object> mockVariables(int count) {
+    String[] names = new String[count];
+    for (int i = 0; i < count; i++) {
+      names[i] = RandomStringUtils.random(5);
+    }
+    return mockVariables(names);
   }
 
   public static BpmnModelInstance loadAndConvert(String bpmnFile) {
