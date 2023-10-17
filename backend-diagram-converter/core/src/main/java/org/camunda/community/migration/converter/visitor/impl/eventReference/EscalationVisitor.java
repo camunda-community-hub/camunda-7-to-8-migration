@@ -32,7 +32,8 @@ public class EscalationVisitor extends AbstractEventReferenceVisitor {
     String escalationCode = context.getElement().getAttribute(BPMN, "escalationCode");
     ExpressionTransformationResult expressionTransformationResult =
         ExpressionTransformer.transform(escalationCode);
-    if (expressionTransformationResult.getFeelExpression().startsWith("=")) {
+    if (expressionTransformationResult != null
+        && expressionTransformationResult.getFeelExpression().startsWith("=")) {
       context.addMessage(MessageFactory.escalationCodeNoExpression());
     }
     // this can be enabled as soon as escalation codes can be expressions
