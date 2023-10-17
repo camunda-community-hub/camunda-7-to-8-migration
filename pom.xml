@@ -206,7 +206,9 @@
             <image>
               <env>
                 <BP_JVM_VERSION>17</BP_JVM_VERSION>
+                <BPE_LANG>en_US.utf8</BPE_LANG>
               </env>
+              <createdDate>${maven.build.timestamp}</createdDate>
             </image>
           </configuration>
         </plugin>
