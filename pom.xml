@@ -41,7 +41,7 @@
     <plugin.version.maven-surefire-plugin>3.1.2</plugin.version.maven-surefire-plugin>
     <plugin.version.spotless-maven-plugin>2.40.0</plugin.version.spotless-maven-plugin>
     <plugin.version.maven-compiler-plugin>3.11.0</plugin.version.maven-compiler-plugin>
-    <plugin.version.native-maven-plugin>0.9.27</plugin.version.native-maven-plugin>
+    <plugin.version.native-maven-plugin>0.9.28</plugin.version.native-maven-plugin>
     <plugin.version.maven-depdendency-plugin>3.6.0</plugin.version.maven-depdendency-plugin>
     <plugin.version.maven-site-plugin>3.12.1</plugin.version.maven-site-plugin>
     <plugin.version.maven-assembly-plugin>3.6.0</plugin.version.maven-assembly-plugin>
