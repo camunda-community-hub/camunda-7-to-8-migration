@@ -21,7 +21,7 @@
     <maven.compiler.target>11</maven.compiler.target>
     <version.zeebe>8.3.1</version.zeebe>
     <version.spring-boot-starter-camunda>8.3.0</version.spring-boot-starter-camunda>
-    <version.zeebe-process-test-extension-testcontainer>8.3.0</version.zeebe-process-test-extension-testcontainer>
+    <version.zeebe-process-test-extension-testcontainer>8.3.1</version.zeebe-process-test-extension-testcontainer>
     <version.camunda.platform>7.20.0</version.camunda.platform>
     <version.jsoup>1.16.1</version.jsoup>
     <version.spring-boot>3.1.4</version.spring-boot>
