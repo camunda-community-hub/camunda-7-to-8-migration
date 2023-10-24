@@ -20,7 +20,7 @@
   },
   "devDependencies": {
     "@babel/types": "^7.23.0",
-    "@types/node": "^20.8.7",
+    "@types/node": "^20.8.8",
     "@types/webfontloader": "^1.6.36",
     "@vitejs/plugin-vue": "^4.4.0",
     "@vue/eslint-config-typescript": "^12.0.0",
