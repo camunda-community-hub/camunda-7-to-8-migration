@@ -13,7 +13,7 @@
     "core-js": "^3.33.1",
     "pinia": "^2.1.7",
     "roboto-fontface": "*",
-    "vue": "^3.2.13",
+    "vue": "^3.3.6",
     "vue-router": "^4.2.5",
     "vuetify": "^3.3.22",
     "webfontloader": "^1.0.0"
