@@ -3,7 +3,7 @@
   <parent>
     <artifactId>backend-diagram-converter-parent</artifactId>
     <groupId>org.camunda.community.migration</groupId>
-    <version>0.6.3-SNAPSHOT</version>
+    <version>0.7.0</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
 
