@@ -277,7 +277,7 @@ public class BpmnConverterTest {
         .asList()
         .hasSize(4);
     assertThat(result.getResult("FeelScriptTask").getMessages().get(0).getMessage())
-        .isEqualTo("Script format 'feel' was set to header 'scriptFormat'. Please review.");
+        .isEqualTo("Script format 'feel' was set to header 'language'. Please review.");
     assertThat(result.getResult("FeelScriptTask").getMessages().get(1).getMessage())
         .isEqualTo(
             "Element 'scriptTask' was transformed. Currently, script tasks are implemented like service tasks with job type 'script'. Please review your implementation.");
