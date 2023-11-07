@@ -21,7 +21,7 @@
     <version.adapter>0.7.0</version.adapter>
     <version.spring-zeebe>8.3.1</version.spring-zeebe>
 
-    <plugin.version.maven-surefire-plugin>3.2.1</plugin.version.maven-surefire-plugin>
+    <plugin.version.maven-surefire-plugin>3.2.2</plugin.version.maven-surefire-plugin>
   </properties>
 
   <dependencyManagement>
