@@ -14,7 +14,7 @@
     "lru-cache": "^10.0.1",
     "pinia": "^2.1.7",
     "roboto-fontface": "*",
-    "vue": "^3.3.7",
+    "vue": "^3.3.8",
     "vue-router": "^4.2.5",
     "vuetify": "^3.3.23",
     "webfontloader": "^1.0.0"
