@@ -11,7 +11,7 @@
   "dependencies": {
     "@mdi/font": "7.3.67",
     "core-js": "^3.33.2",
-    "lru-cache": "^10.0.1",
+    "lru-cache": "^10.0.2",
     "pinia": "^2.1.7",
     "roboto-fontface": "*",
     "vue": "^3.3.8",
