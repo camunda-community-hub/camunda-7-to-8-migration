@@ -38,7 +38,7 @@ Run it in your shell:
 
 **Bash**
 ```bash
-./migrate-file-cawemo-to-web-modeler.sh
+bash ./migrate-file-cawemo-to-web-modeler.sh
 ```
 
 **zsh (MacOS)**
