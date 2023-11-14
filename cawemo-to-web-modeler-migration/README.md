@@ -38,12 +38,12 @@ Run it in your shell:
 
 **Bash**
 ```bash
-sh ./migrate-file-cawemo-to-web-modeler.sh
+./migrate-file-cawemo-to-web-modeler.sh
 ```
 
 **zsh (MacOS)**
 ```bash
-zsh ./migrate-file-cawemo-to-web-modeler.sh
+./migrate-file-cawemo-to-web-modeler.sh
 ```
 
 **Powershell (Windows)**
