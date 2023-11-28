@@ -29,7 +29,7 @@
     "jest": "^27.0.6",
     "jquery": "^3.5.1",
     "lodash": "^4.0.0",
-    "min-dom": "^0.2.0",
+    "min-dom": "^0.3.0",
     "modeler-moddle": "^0.1.0",
     "npm-run-all": "^4.1.5",
     "watchify": "^3.9.0",
