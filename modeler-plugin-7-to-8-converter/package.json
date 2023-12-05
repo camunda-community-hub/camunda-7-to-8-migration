@@ -23,7 +23,7 @@
   "devDependencies": {
     "bpmn-js": "^8.7.1",
     "browserify": "^17.0.0",
-    "camunda-bpmn-moddle": "^5.0.0",
+    "camunda-bpmn-moddle": "^7.0.0",
     "camunda-modeler-plugin-helpers": "^3.4.0-alpha.0",
     "inherits": "^2.0.3",
     "jest": "^27.0.6",
