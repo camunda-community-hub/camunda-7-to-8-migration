@@ -9,7 +9,8 @@
   },
   "packageRules": [
     {
-      "automerge": true
+      "automerge": true,
+      "matchUpdateTypes": ["major", "minor", "patch", "pin", "pinDigest","digest", "lockFileMaintenance", "rollback", "bump", "replacement"]
     }
   ]
 }
