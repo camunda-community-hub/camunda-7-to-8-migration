@@ -3,7 +3,7 @@
   <groupId>org.camunda.community.migration_example</groupId>
   <artifactId>sample-external-task-process-app-migrated</artifactId>
   <version>1.0.0-SNAPSHOT</version>
-  <name>Automating Payment Process</name>
+  <name>Automating Payment Process migrated</name>
   
   <properties>
     <version.camunda>7.20.0</version.camunda>
