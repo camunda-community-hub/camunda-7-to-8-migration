@@ -1,6 +1,7 @@
 package org.camunda.community.migration.converter.message;
 
 import static org.assertj.core.api.Assertions.*;
+import static org.camunda.community.migration.converter.message.MessageFactory.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.Collections;
@@ -51,5 +52,19 @@ public class MessageTemplateProcessorTest {
     Map<String, String> context = ContextBuilder.builder().entry("world", "Tim").build();
     String message = MESSAGE_TEMPLATE_PROCESSOR.decorate(messageTemplate, context);
     assertEquals("Hello Tim, this is Tim", message);
+  }
+
+  @Test
+  void shouldEscapeStuff() {
+    MessageTemplate messageTemplate =
+        new MessageTemplate(
+            Severity.INFO,
+            null,
+            "Hello {{ world }}, this is {{ template }}",
+            List.of("world", "template"));
+    Map<String, String> context =
+        ContextBuilder.builder().entry("world", "Tim").entry("template", "\\$$").build();
+    String message = MESSAGE_TEMPLATE_PROCESSOR.decorate(messageTemplate, context);
+    assertEquals("Hello Tim, this is \\$$", message);
   }
 }
