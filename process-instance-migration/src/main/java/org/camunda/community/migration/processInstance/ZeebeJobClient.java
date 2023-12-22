@@ -3,7 +3,7 @@ package org.camunda.community.migration.processInstance;
 import static io.camunda.zeebe.protocol.Protocol.*;
 import static org.camunda.community.migration.processInstance.ProcessConstants.ErrorCode.*;
 
-import io.camunda.operate.dto.ProcessDefinition;
+import io.camunda.operate.model.ProcessDefinition;
 import io.camunda.operate.search.ProcessDefinitionFilter;
 import io.camunda.operate.search.SearchQuery;
 import io.camunda.zeebe.client.api.response.ActivatedJob;

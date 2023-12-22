@@ -4,8 +4,8 @@ import static org.camunda.community.migration.processInstance.ProcessConstants.B
 import static org.camunda.community.migration.processInstance.ProcessConstants.Message.*;
 
 import io.camunda.operate.CamundaOperateClient;
-import io.camunda.operate.dto.ProcessDefinition;
 import io.camunda.operate.exception.OperateException;
+import io.camunda.operate.model.ProcessDefinition;
 import io.camunda.operate.search.ProcessDefinitionFilter;
 import io.camunda.operate.search.SearchQuery;
 import io.camunda.zeebe.client.ZeebeClient;
