@@ -1,6 +1,6 @@
 package org.camunda.community.migration.processInstance.service;
 
-import io.camunda.operate.dto.ProcessDefinition;
+import io.camunda.operate.model.ProcessDefinition;
 import io.camunda.zeebe.model.bpmn.BpmnModelInstance;
 import java.util.Optional;
 import java.util.function.Predicate;

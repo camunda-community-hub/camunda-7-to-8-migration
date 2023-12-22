@@ -9,10 +9,8 @@ zeebe:
 operate:
   client:
     base-url: http://localhost:8081
-    authentication:
-      simple:
-        username: demo
-        password: demo
+    username: demo
+    password: demo
 
 camunda7:
   client:

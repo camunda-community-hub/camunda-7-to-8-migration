@@ -34,10 +34,6 @@
       <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>io.camunda</groupId>
-      <artifactId>camunda-operate-client-java</artifactId>
-    </dependency>
-    <dependency>
       <groupId>io.camunda.spring</groupId>
       <artifactId>spring-boot-starter-camunda-test-testcontainer</artifactId>
       <scope>test</scope>

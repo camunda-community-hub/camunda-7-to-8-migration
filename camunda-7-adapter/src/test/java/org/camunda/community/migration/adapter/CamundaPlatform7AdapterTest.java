@@ -17,7 +17,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest(
     classes = CamundaPlatform7AdapterConfig.class,
-    properties = "logging.level.root=DEBUG")
+    properties = "logging.level.root=INFO")
 @ZeebeSpringTest
 public class CamundaPlatform7AdapterTest {
 

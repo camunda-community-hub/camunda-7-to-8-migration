@@ -5,9 +5,10 @@ import static org.camunda.bpm.engine.test.assertions.bpmn.BpmnAwareTests.*;
 import static org.camunda.community.migration.processInstance.TestUtil.*;
 import static org.mockito.Mockito.*;
 
+import io.camunda.common.auth.Authentication;
 import io.camunda.operate.CamundaOperateClient;
-import io.camunda.operate.dto.ProcessDefinition;
 import io.camunda.operate.exception.OperateException;
+import io.camunda.operate.model.ProcessDefinition;
 import io.camunda.zeebe.client.ZeebeClient;
 import io.camunda.zeebe.client.api.JsonMapper;
 import io.camunda.zeebe.model.bpmn.Bpmn;
@@ -41,6 +42,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 public class ProcessInstanceMigrationAppTest {
   @Autowired Camunda8Service camunda8Service;
   @MockBean CamundaOperateClient operateClient;
+  @MockBean Authentication authentication;
   @Autowired Camunda7Service camunda7Service;
   @Autowired JsonMapper jsonMapper;
   @Autowired ProcessDefinitionMigrationHintService processDefinitionMigrationHintService;

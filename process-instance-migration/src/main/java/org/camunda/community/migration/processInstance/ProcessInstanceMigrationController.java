@@ -8,12 +8,12 @@ import org.camunda.community.migration.processInstance.dto.rest.ProcessInstanceM
 import org.camunda.community.migration.processInstance.dto.rest.UserTaskDto;
 import org.camunda.community.migration.processInstance.dto.task.UserTask;
 import org.camunda.community.migration.processInstance.properties.Camunda7ClientProperties;
-import org.camunda.community.migration.processInstance.properties.OperateClientProperties;
 import org.camunda.community.migration.processInstance.service.Camunda8Service;
 import org.camunda.community.migration.processInstance.service.MigrationTaskService;
 import org.camunda.community.migration.processInstance.service.TaskMappingService;
 import org.camunda.community.migration.processInstance.variables.ProcessInstanceMigrationVariables;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -27,23 +27,23 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/api/migration")
 public class ProcessInstanceMigrationController {
+  private final String operateBaseUrl;
   private final MigrationTaskService selectionService;
   private final Camunda8Service camunda8Service;
   private final TaskMappingService taskMappingService;
-  private final OperateClientProperties operateClientProperties;
   private final Camunda7ClientProperties camunda7ClientProperties;
 
   @Autowired
   public ProcessInstanceMigrationController(
+      @Value("${camunda.operate.base-url:null}") String operateBaseUrl,
       MigrationTaskService selectionService,
       Camunda8Service camunda8Service,
       TaskMappingService taskMappingService,
-      OperateClientProperties operateClientProperties,
       Camunda7ClientProperties camunda7ClientProperties) {
+    this.operateBaseUrl = operateBaseUrl;
     this.selectionService = selectionService;
     this.camunda8Service = camunda8Service;
     this.taskMappingService = taskMappingService;
-    this.operateClientProperties = operateClientProperties;
     this.camunda7ClientProperties = camunda7ClientProperties;
   }
 
@@ -89,7 +89,7 @@ public class ProcessInstanceMigrationController {
   @GetMapping("/links")
   public Map<String, Object> links() {
     Map<String, Object> links = new HashMap<>();
-    links.put("C8", operateClientProperties.getBaseUrl());
+    links.put("C8", operateBaseUrl);
     links.put("C7", camunda7ClientProperties.getBaseUrl());
     return links;
   }

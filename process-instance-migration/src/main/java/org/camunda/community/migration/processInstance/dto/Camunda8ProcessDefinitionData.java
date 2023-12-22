@@ -1,6 +1,6 @@
 package org.camunda.community.migration.processInstance.dto;
 
-import io.camunda.operate.dto.ProcessDefinition;
+import io.camunda.operate.model.ProcessDefinition;
 import io.camunda.zeebe.model.bpmn.BpmnModelInstance;
 import org.camunda.community.migration.processInstance.service.ProcessDefinitionMigrationHintRule.ProcessDefinitionMigrationHintRuleContext;
 
