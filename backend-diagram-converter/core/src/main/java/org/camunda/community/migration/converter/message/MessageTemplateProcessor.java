@@ -26,9 +26,10 @@ public class MessageTemplateProcessor {
       if (value == null) {
         missingVariables.add(variableName);
       } else {
-        value = value.replaceAll("\\$", "\\\\\\$");
         LOG.debug("Replacing {} with {}", variableName, value);
-        templateString = templateString.replaceAll(PREFIX + variableName + SUFFIX, value);
+        templateString =
+            templateString.replaceAll(
+                PREFIX + variableName + SUFFIX, Matcher.quoteReplacement(value));
         LOG.debug("Template after replacement: {}", templateString);
       }
     }
