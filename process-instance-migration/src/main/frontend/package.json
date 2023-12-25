@@ -23,7 +23,7 @@
     "@babel/types": "^7.23.3",
     "@types/node": "^20.10.0",
     "@types/webfontloader": "^1.6.37",
-    "@vitejs/plugin-vue": "^4.5.0",
+    "@vitejs/plugin-vue": "^5.0.0",
     "@vue/eslint-config-typescript": "^12.0.0",
     "eslint": "^8.54.0",
     "eslint-plugin-vue": "^9.18.1",
