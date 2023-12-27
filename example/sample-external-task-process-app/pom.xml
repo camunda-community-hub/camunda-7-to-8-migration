@@ -8,7 +8,7 @@
   <properties>
     <version.camunda>7.20.0</version.camunda>
     <version.spring-boot>3.1.5</version.spring-boot>
-    <version.maven-surefire>3.2.2</version.maven-surefire>
+    <version.maven-surefire>3.2.3</version.maven-surefire>
 
     <version.java>11</version.java>
     <maven.compiler.source>${version.java}</maven.compiler.source>
