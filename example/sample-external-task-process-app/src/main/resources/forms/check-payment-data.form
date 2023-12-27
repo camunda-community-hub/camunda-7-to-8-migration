@@ -1,0 +1,72 @@
+{
+  "schemaVersion": 2,
+  "exporter": {
+    "name": "Camunda Modeler",
+    "version": "5.0.0-alpha.1"
+  },
+  "components": [
+    {
+      "text": "### Check the failed payment",
+      "type": "text",
+      "id": "Field_0yj7bit"
+    },
+    {
+      "label": "Customer Id",
+      "type": "textfield",
+      "id": "Field_1n2ghzx",
+      "key": "customerId"
+    },
+    {
+      "label": "Credit card number",
+      "type": "textfield",
+      "id": "Field_049o33h",
+      "key": "cardNumber"
+    },
+    {
+      "label": "Expiry date",
+      "type": "textfield",
+      "id": "Field_130r0px",
+      "key": "expiryDate"
+    },
+    {
+      "label": "CVC",
+      "type": "textfield",
+      "id": "Field_0gyw20e",
+      "key": "CVC"
+    },
+    {
+      "label": "Open amount",
+      "type": "number",
+      "id": "Field_00dx5eg",
+      "key": "openAmount"
+    },
+    {
+      "label": "Order total",
+      "type": "number",
+      "id": "Field_1f6e1xg",
+      "key": "orderTotal"
+    },
+    {
+      "label": "Error code",
+      "type": "textfield",
+      "id": "Field_102dzsr",
+      "key": "errorCode"
+    },
+    {
+      "label": "Error message",
+      "type": "textfield",
+      "id": "Field_0zumzn4",
+      "key": "errorMessage"
+    },
+    {
+      "label": "Could you resolve the error?",
+      "type": "checkbox",
+      "id": "Field_0pvvp19",
+      "key": "errorResolved"
+    }
+  ],
+  "type": "default",
+  "id": "checkPaymentDataForm",
+  "executionPlatform": "Camunda Platform",
+  "executionPlatformVersion": "7.16.0"
+}

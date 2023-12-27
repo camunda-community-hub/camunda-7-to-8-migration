@@ -8,5 +8,7 @@
   <modules>
     <module>process-solution-camunda-7</module>
     <module>process-solution-migrated</module>
+    <module>sample-external-task-process-app</module>
+    <module>sample-external-task-process-app-migrated</module>
   </modules>
 </project>
