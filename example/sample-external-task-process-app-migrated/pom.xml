@@ -8,7 +8,7 @@
   <properties>
     <version.camunda>7.20.0</version.camunda>
     <version.spring-boot>3.1.5</version.spring-boot>
-    <version.maven-surefire>3.2.2</version.maven-surefire>
+    <version.maven-surefire>3.2.3</version.maven-surefire>
     <version.adapter>0.7.0</version.adapter>
     <version.spring-zeebe>8.3.1</version.spring-zeebe>
 
