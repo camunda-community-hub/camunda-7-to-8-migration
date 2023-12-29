@@ -3,7 +3,7 @@
 
   <groupId>org.camunda.community.migration</groupId>
   <artifactId>camunda-7-to-8-migration</artifactId>
-  <version>0.8.0</version>
+  <version>0.8.1-SNAPSHOT</version>
   <packaging>pom</packaging>
 
   <parent>
@@ -276,9 +276,9 @@
           <version>${plugin.version.maven-enforcer-plugin}</version>
           <configuration>
             <rules>
-              <reactorModuleConvergence/>
-              <dependencyConvergence/>
-              <requirePluginVersions/>
+              <reactorModuleConvergence />
+              <dependencyConvergence />
+              <requirePluginVersions />
             </rules>
           </configuration>
           <executions>
