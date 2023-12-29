@@ -12,13 +12,13 @@
     <encoding>UTF-8</encoding>
     <project.build.sourceEncoding>${encoding}</project.build.sourceEncoding>
     <project.build.resourceEncoding>${encoding}</project.build.resourceEncoding>
-    <version.java>11</version.java>
+    <version.java>17</version.java>
     <maven.compiler.source>${version.java}</maven.compiler.source>
     <maven.compiler.target>${version.java}</maven.compiler.target>
 
-    <version.spring-boot>3.1.5</version.spring-boot>
+    <version.spring-boot>3.2.1</version.spring-boot>
     <version.camunda>7.20.0</version.camunda>
-    <version.adapter>0.7.0</version.adapter>
+    <version.adapter>0.8.0</version.adapter>
     <version.spring-zeebe>8.3.4.3</version.spring-zeebe>
 
     <plugin.version.maven-surefire-plugin>3.2.3</plugin.version.maven-surefire-plugin>
