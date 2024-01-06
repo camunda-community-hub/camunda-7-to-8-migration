@@ -110,9 +110,14 @@
       <scope>test</scope>
     </dependency>
     <dependency>
+      <groupId>org.camunda.bpm</groupId>
+      <artifactId>camunda-bpm-junit5</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
       <groupId>org.camunda.community.process_test_coverage</groupId>
       <artifactId>camunda-process-test-coverage-junit5-platform-7</artifactId>
-      <version>2.2.0</version>
+      <version>2.3.2</version>
       <scope>test</scope>
     </dependency>        
     
