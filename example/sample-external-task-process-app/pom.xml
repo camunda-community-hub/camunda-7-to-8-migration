@@ -6,7 +6,7 @@
   <name>Automating Payment Process</name>
   
   <properties>
-    <version.camunda>7.20.0</version.camunda>
+    <version.camunda>7.20.2</version.camunda>
     <version.spring-boot>3.2.1</version.spring-boot>
     <version.maven-surefire>3.2.3</version.maven-surefire>
 
