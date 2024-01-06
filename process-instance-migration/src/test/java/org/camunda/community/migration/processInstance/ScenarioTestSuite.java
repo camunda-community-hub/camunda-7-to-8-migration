@@ -42,6 +42,7 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.ToLongFunction;
 import java.util.stream.Collectors;
+import org.awaitility.Awaitility;
 import org.camunda.bpm.engine.history.HistoricProcessInstance;
 import org.camunda.bpm.engine.history.HistoricVariableInstance;
 import org.camunda.bpm.engine.runtime.ProcessInstance;
@@ -319,10 +320,19 @@ public class ScenarioTestSuite {
 
   private void completeJob(String jobType, JobHandler jobHandler) throws Exception {
     zeebeTestEngine.waitForIdleState(TIMEOUT);
-    ActivateJobsResponse jobsResponse =
-        zeebeClient.newActivateJobsCommand().jobType(jobType).maxJobsToActivate(1).send().join();
-    assertThat(jobsResponse.getJobs()).hasSize(1);
-    jobHandler.handle(zeebeClient, jobsResponse.getJobs().get(0));
+    ActivateJobsResponse response =
+        Awaitility.await()
+            .timeout(TIMEOUT)
+            .until(
+                () ->
+                    zeebeClient
+                        .newActivateJobsCommand()
+                        .jobType(jobType)
+                        .maxJobsToActivate(1)
+                        .send()
+                        .join(),
+                r -> r.getJobs().size() == 1);
+    jobHandler.handle(zeebeClient, response.getJobs().get(0));
     zeebeTestEngine.waitForIdleState(TIMEOUT);
   }
 
@@ -369,9 +379,10 @@ public class ScenarioTestSuite {
     List<String> elementIds = runtimeService().getActiveActivityIds(c7instance.getId());
     LOG.info("Advanced to activities {}", elementIds);
     zeebeTestEngine.waitForIdleState(TIMEOUT);
-    zeebeTestEngine.increaseTime(Duration.parse("PT9M50S"));
-    zeebeTestEngine.waitForIdleState(TIMEOUT);
+    zeebeTestEngine.increaseTime(Duration.parse("PT11M"));
+    // zeebeTestEngine.waitForIdleState(TIMEOUT);
     zeebeTestEngine.waitForBusyState(TIMEOUT);
+    zeebeTestEngine.waitForIdleState(TIMEOUT);
     completeJob(JobType.CAMUNDA7_QUERY_ROUTABLE_INSTANCES, queryRoutableInstances());
     migrateProcessInstance();
     taskService.complete(cancelTask.getKey(), new ProcessInstanceMigrationVariables());
