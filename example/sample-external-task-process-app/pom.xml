@@ -7,6 +7,7 @@
   
   <properties>
     <version.camunda>7.20.0</version.camunda>
+    <version.camunda-engine-rest-client-openapi-java>7.20.2</version.camunda-engine-rest-client-openapi-java>
     <version.spring-boot>3.2.1</version.spring-boot>
     <version.maven-surefire>3.2.3</version.maven-surefire>
 
@@ -74,7 +75,7 @@
     <dependency>
       <groupId>org.camunda.community</groupId>
       <artifactId>camunda-engine-rest-client-openapi-java</artifactId>
-      <version>${version.camunda}</version>
+      <version>${version.camunda-engine-rest-client-openapi-java}</version>
     </dependency>
     <dependency>
       <groupId>com.squareup.okhttp3</groupId>
