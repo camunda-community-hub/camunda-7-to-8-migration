@@ -15,7 +15,7 @@
     <version.spring-boot>3.2.1</version.spring-boot>
     <version.camunda>7.20.0</version.camunda>
 
-    <plugin.version.maven-surefire-plugin>3.2.3</plugin.version.maven-surefire-plugin>
+    <plugin.version.maven-surefire-plugin>3.2.5</plugin.version.maven-surefire-plugin>
   </properties>
 
   <dependencyManagement>
