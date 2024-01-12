@@ -15,6 +15,11 @@ jobs:
       contents: write
     steps:
       - uses: actions/checkout@v4
+        name: Checkout
+      - name: Set up Go environment
+        uses: actions/setup-go@v4
+        with:
+          go-version: 1.21.5
       - name: Set up Java environment
         uses: actions/setup-java@v4
         with:
@@ -34,6 +39,9 @@ jobs:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Build Go Artefact
+        run: go build
+        working-directory: cawemo-to-web-modeler-migration
       - name: Deploy SNAPSHOT / Release
         uses: camunda-community-hub/community-action-maven-release@v1
         with:
@@ -53,7 +61,7 @@ jobs:
       - name: Push all process instance migrator images
         run: docker push -a -q ghcr.io/camunda-community-hub/camunda-7-to-8-migration/process-instance-migration
       - if: github.event.release
-        name: Attach artifacts to GitHub Release (Release only)
+        name: Attach Java artifacts to GitHub Release (Release only)
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -62,6 +70,15 @@ jobs:
           asset_path: ${{ steps.release.outputs.artifacts_archive_path }}
           asset_name: camunda-7-to-8-migration.zip
           asset_content_type: application/zip
+      - if: github.event.release
+        name: Attach Go artifacts to GitHub Release (Release only)
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ github.event.release.upload_url }}
+          asset_path: cawemo-to-web-modeler-migration/cawemo-to-web-modeler-migration
+          asset_name: cawemo-to-web-modeler-migration
       - name: Publish Unit Test Results
         id: publish
         uses: EnricoMi/publish-unit-test-result-action@v2
