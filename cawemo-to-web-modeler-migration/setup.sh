@@ -1,0 +1,6 @@
+#!/bin/sh
+
+export CAMUNDA_CONSOLE_CLIENT_SECRET=''
+export CAMUNDA_CONSOLE_CLIENT_ID=''
+export CAWEMO_USER_ID=''
+export CAWEMO_API_KEY=''
