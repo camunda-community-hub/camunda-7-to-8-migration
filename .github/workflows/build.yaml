@@ -60,4 +60,10 @@ jobs:
     - name: Build Artefact
       run: go build
       working-directory: cawemo-to-web-modeler-migration
+    - name: Upload native build
+      uses: actions/upload-artifact@v3
+      with:
+        name: cawemo-to-web-modeler-migration
+        path: cawemo-to-web-modeler-migration/cawemo-to-web-modeler-migration
+        compression-level: 0
 
