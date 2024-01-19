@@ -6,7 +6,7 @@ This folder includes a bash script, a powershell script, and a Go script to migr
 
 * A Cawemo enterprise license to use the Cawemo API
 * API credentials for Cawemo created by an Organization Admin ([read here](https://docs.camunda.org/cawemo/1.9/reference/rest-api/overview/authentication/) how to obtain them)
-* An API client for Web Modeler ([read here](https://docs.camunda.io/docs/next/apis-tools/web-modeler-api/#authentication) how to create one).
+* An API client for Web Modeler ([read here](https://docs.camunda.io/docs/apis-tools/web-modeler-api/authentication/?authentication=saas) how to create one).
   * Bash 4 or newer, or zsh (on MacOS), or any other compatible bash shell
   * [jq](https://github.com/jqlang/jq/wiki/Installation) for JSON manipulation
 * The powershell script requires Powershell 5 or higher
