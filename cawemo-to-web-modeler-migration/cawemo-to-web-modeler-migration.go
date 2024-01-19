@@ -9,9 +9,12 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"regexp"
 	"slices"
 	"strings"
 )
+
+var dmnFix = regexp.MustCompile(`camunda:diagramRelationId=".*"`)
 
 var webModelerFileTypes = []string{"bpmn", "dmn", "form", "connector_template"}
 
@@ -98,7 +101,7 @@ func handleFile(file map[string]any, cawemoProjectId string, webModelerProjectId
 	}
 	webModelerFileId := checkState(fileId, "file")
 	fileDetails := getCawemoFile(fileId)
-	content := fileDetails["content"].(string)
+	content := determineContent(fileDetails["content"].(string), filetype)
 	revision := 0
 	if webModelerFileId == "" {
 		canonicalPath := file["canonicalPath"].([]any)
@@ -120,9 +123,16 @@ func handleFile(file map[string]any, cawemoProjectId string, webModelerProjectId
 
 func determineFileType(filetype string) string {
 	if slices.Contains(webModelerFileTypes, strings.ToLower(filetype)) {
-		return filetype
+		return strings.ToLower(filetype)
 	}
 	return ""
+}
+
+func determineContent(content string, filetype string) string {
+	if filetype == "dmn" {
+		return dmnFix.ReplaceAllString(content, "")
+	}
+	return content
 }
 
 func handleMilestones(cawemoFileId string, webModelerFileId string, revision int) int {
