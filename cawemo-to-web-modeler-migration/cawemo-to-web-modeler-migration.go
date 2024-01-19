@@ -5,6 +5,7 @@ import (
 	"encoding/base64"
 	"encoding/csv"
 	"encoding/json"
+	"errors"
 	"io"
 	"log"
 	"net/http"
@@ -35,12 +36,21 @@ func main() {
 	cawemoApiKey = os.Getenv("CAWEMO_API_KEY")
 	modelerClientId = os.Getenv("CAMUNDA_CONSOLE_CLIENT_ID")
 	modelerClientSecret = os.Getenv("CAMUNDA_CONSOLE_CLIENT_SECRET")
-	validateCredentials()
-	fetchWebModelerToken()
-	handleProjects()
+	validateCredentialsErr := validateCredentials()
+	if validateCredentialsErr != nil {
+		log.Fatalln(validateCredentialsErr.Error())
+	}
+	fetchWebModelerTokenErr := fetchWebModelerToken()
+	if fetchWebModelerTokenErr != nil {
+		log.Fatalln(fetchWebModelerTokenErr.Error())
+	}
+	handleProjectsErr := handleProjects()
+	if handleProjectsErr != nil {
+		log.Fatalln(handleProjectsErr.Error())
+	}
 }
 
-func validateCredentials() {
+func validateCredentials() error {
 	errorMessages := []string{}
 	if cawemoUserId == "" {
 		errorMessages = append(errorMessages, "No cawemo user id found, please set CAWEMO_USER_ID")
@@ -55,77 +65,125 @@ func validateCredentials() {
 		errorMessages = append(errorMessages, "No modeler client secret found, please set CAMUNDA_CONSOLE_CLIENT_SECRET")
 	}
 	if len(errorMessages) > 0 {
-		log.Fatalln(strings.Join(errorMessages, "\n"))
+		return errors.New(strings.Join(errorMessages, "\n"))
 	}
+	return nil
 }
 
-func handleProjects() {
-	var projects []any = getCawemoProjects()
+func handleProjects() error {
+	projects, err := getCawemoProjects()
+	if err != nil {
+		return err
+	}
 	for _, projectAny := range projects {
-		handleProject(projectAny.(map[string]any))
+		err := handleProject(projectAny.(map[string]any))
+		if err != nil {
+			if err != nil {
+				log.Println("Error while handling project, skipping: " + err.Error())
+			}
+		}
 	}
+	return nil
 }
 
-func handleProject(project map[string]any) {
+func handleProject(project map[string]any) error {
 	projectId := project["id"].(string)
 	projectType := project["type"].(string)
 	if projectType == "CATALOG" {
-		log.Println("Skipping catalog project " + projectId)
-		return
+		return errors.New("Skipping catalog project " + projectId)
 	}
-	webModelerProjectId := checkState(projectId, "project")
+	webModelerProjectId, stateErr := checkState(projectId, "project")
+	if stateErr != nil {
+		return stateErr
+	}
 	if webModelerProjectId == "" {
 		projectName := project["name"].(string)
-		webModelerProject := createWebModelerProject(projectName)
+		webModelerProject, err := createWebModelerProject(projectName)
+		if err != nil {
+			return err
+		}
 		webModelerProjectId = webModelerProject["id"].(string)
-		setState(projectId, webModelerProjectId, "project")
+		stateErr := setState(projectId, webModelerProjectId, "project")
+		if stateErr != nil {
+			return stateErr
+		}
 	}
-	handleFiles(projectId, webModelerProjectId)
-
+	return handleFiles(projectId, webModelerProjectId)
 }
 
-func handleFiles(cawemoProjectId string, webModelerProjectId string) {
-	var files []any = getCawemoFiles(cawemoProjectId)
+func handleFiles(cawemoProjectId string, webModelerProjectId string) error {
+	files, err := getCawemoFiles(cawemoProjectId)
+	if err != nil {
+		return err
+	}
 	for _, fileAny := range files {
-		handleFile(fileAny.(map[string]any), cawemoProjectId, webModelerProjectId)
+		err := handleFile(fileAny.(map[string]any), cawemoProjectId, webModelerProjectId)
+		if err != nil {
+			log.Println("Error while handling file, skipping: " + err.Error())
+		}
 	}
+	return nil
 }
 
-func handleFile(file map[string]any, cawemoProjectId string, webModelerProjectId string) {
+func handleFile(file map[string]any, cawemoProjectId string, webModelerProjectId string) error {
 	fileId := file["id"].(string)
 	rawFileType := file["type"].(string)
-	filetype := determineFileType(rawFileType)
-	if filetype == "" {
-		log.Println("Cannot handle file type " + rawFileType)
-		return
+	filetype, filetypeError := determineFileType(rawFileType)
+	if filetypeError != nil {
+		return filetypeError
 	}
-	webModelerFileId := checkState(fileId, "file")
-	fileDetails := getCawemoFile(fileId)
+	webModelerFileId, stateErr := checkState(fileId, "file")
+	if stateErr != nil {
+		return stateErr
+	}
+	fileDetails, cawemoFileErr := getCawemoFile(fileId)
+	if cawemoFileErr != nil {
+		return cawemoFileErr
+	}
 	content := determineContent(fileDetails["content"].(string), filetype)
 	revision := 0
 	if webModelerFileId == "" {
 		canonicalPath := file["canonicalPath"].([]any)
-		parentId := handleFolders(canonicalPath, cawemoProjectId, webModelerProjectId)
+		parentId, folderErr := handleFolders(canonicalPath, cawemoProjectId, webModelerProjectId)
+		if folderErr != nil {
+			return folderErr
+		}
 		// create file with milestones
 		filename := file["name"].(string)
-		webModelerFile := createWebModelerFile(filename, parentId, webModelerProjectId, content, filetype)
+		webModelerFile, createFileErr := createWebModelerFile(filename, parentId, webModelerProjectId, content, filetype)
+		if createFileErr != nil {
+			return createFileErr
+		}
 		revision = int(webModelerFile["revision"].(float64))
 		webModelerFileId = webModelerFile["id"].(string)
-		setState(fileId, webModelerFileId, "file")
+		stateErr := setState(fileId, webModelerFileId, "file")
+		if stateErr != nil {
+			return stateErr
+		}
 	} else {
-		webModelerFile := getWebModelerFile(webModelerFileId)
+		webModelerFile, err := getWebModelerFile(webModelerFileId)
+		if err != nil {
+			return err
+		}
 		metadata := webModelerFile["metadata"].(map[string]any)
 		revision = int(metadata["revision"].(float64))
 	}
-	revision = handleMilestones(fileId, webModelerFileId, revision)
-	updateWebModelerFile(webModelerFileId, content, revision)
+	newRevision, handleMilestoneErr := handleMilestones(fileId, webModelerFileId, revision)
+	if handleMilestoneErr != nil {
+		return handleMilestoneErr
+	}
+	revision = newRevision
+	_, updateWebModelerFileErr := updateWebModelerFile(webModelerFileId, content, revision)
+	if updateWebModelerFileErr != nil {
+		return updateWebModelerFileErr
+	}
 }
 
-func determineFileType(filetype string) string {
+func determineFileType(filetype string) (string, error) {
 	if slices.Contains(webModelerFileTypes, strings.ToLower(filetype)) {
-		return strings.ToLower(filetype)
+		return strings.ToLower(filetype), nil
 	}
-	return ""
+	return "", errors.New("Cannot handle file type " + filetype)
 }
 
 func determineContent(content string, filetype string) string {
@@ -135,55 +193,91 @@ func determineContent(content string, filetype string) string {
 	return content
 }
 
-func handleMilestones(cawemoFileId string, webModelerFileId string, revision int) int {
-	milestones := getCawemoMilestones(cawemoFileId)
+func handleMilestones(cawemoFileId string, webModelerFileId string, revision int) (int, error) {
+	milestones, err := getCawemoMilestones(cawemoFileId)
+	if err != nil {
+		return -1, err
+	}
 	newRevision := revision
 	for _, milestone := range milestones {
-		newRevision = handleMilestone(cawemoFileId, webModelerFileId, milestone.(map[string]any), newRevision)
+		innerRevision, err := handleMilestone(cawemoFileId, webModelerFileId, milestone.(map[string]any), newRevision)
+		if err != nil {
+			return -1, err
+		}
+		newRevision = innerRevision
 	}
-	return newRevision
+	return newRevision, nil
 }
 
-func handleMilestone(cawemoFileId string, webModelerFileId string, milestone map[string]any, revision int) int {
+func handleMilestone(cawemoFileId string, webModelerFileId string, milestone map[string]any, revision int) (int, error) {
 	milestoneId := milestone["id"].(string)
-	webModelerMilestoneId := checkState(milestoneId, "milestone")
+	webModelerMilestoneId, err := checkState(milestoneId, "milestone")
+	if err != nil {
+		return -1, err
+	}
 	newRevision := revision
 	if webModelerMilestoneId == "" {
 		milestoneName := milestone["name"].(string)
-		milestoneDetails := getCawemoMilestone(milestoneId)
+		milestoneDetails, milestoneError := getCawemoMilestone(milestoneId)
+		if milestoneError != nil {
+			return -1, milestoneError
+		}
 		content := milestoneDetails["content"].(string)
-		updatedFile := updateWebModelerFile(webModelerFileId, content, revision)
+		updatedFile, updateFileError := updateWebModelerFile(webModelerFileId, content, revision)
+		if updateFileError != nil {
+			return -1, updateFileError
+		}
 		newRevision = int(updatedFile["revision"].(float64))
-		webModelerMilestone := createWebModelerMilestone(milestoneName, webModelerFileId)
+		webModelerMilestone, createMilestoneError := createWebModelerMilestone(milestoneName, webModelerFileId)
+		if createMilestoneError != nil {
+			return -1, createMilestoneError
+		}
 		webModelerMilestoneId := webModelerMilestone["id"].(string)
-		setState(milestoneId, webModelerMilestoneId, "milestone")
+		stateError := setState(milestoneId, webModelerMilestoneId, "milestone")
+		if stateError != nil {
+			return -1, stateError
+		}
 	}
-	return newRevision
+	return newRevision, nil
 }
 
-func handleFolders(folders []any, cawemoProjectId string, webModelerProjectId string) string {
+func handleFolders(folders []any, cawemoProjectId string, webModelerProjectId string) (string, error) {
 	parentId := ""
+
 	for _, folderAny := range folders {
-		parentId = handleFolder(folderAny.(map[string]any), parentId, cawemoProjectId, webModelerProjectId)
+		innerParentId, err := handleFolder(folderAny.(map[string]any), parentId, cawemoProjectId, webModelerProjectId)
+		if err != nil {
+			return "", err
+		}
+		parentId = innerParentId
 	}
-	return parentId
+	return parentId, nil
 }
 
-func handleFolder(folder map[string]any, parentId string, cawemoProjectId string, webModelerProjectId string) string {
+func handleFolder(folder map[string]any, parentId string, cawemoProjectId string, webModelerProjectId string) (string, error) {
 	cawemoFolderId := folder["id"].(string)
-	webModelerFolderId := checkState(cawemoFolderId, "folder")
+	webModelerFolderId, err := checkState(cawemoFolderId, "folder")
+	if err != nil {
+		return "", err
+	}
 	if webModelerFolderId == "" {
 		name := folder["name"].(string)
-		webModelerFolder := createWebModelerFolder(name, webModelerProjectId, parentId)
+		webModelerFolder, err := createWebModelerFolder(name, webModelerProjectId, parentId)
+		if err != nil {
+			return "", err
+		}
 		webModelerFolderId = webModelerFolder["id"].(string)
-		setState(cawemoFolderId, webModelerFolderId, "folder")
+		stateErr := setState(cawemoFolderId, webModelerFolderId, "folder")
+		if stateErr != nil {
+			return "", err
+		}
 	}
-	return webModelerFolderId
+	return webModelerFolderId, nil
 }
 
 // functions to interact with state
 
-func setState(cawemoId string, webModelerId string, entityType string) {
+func setState(cawemoId string, webModelerId string, entityType string) error {
 	line := []string{cawemoId, webModelerId, entityType}
 	if !checkFilePresent() {
 		initFile()
@@ -191,15 +285,18 @@ func setState(cawemoId string, webModelerId string, entityType string) {
 	f, err := os.OpenFile("id-mappings.csv", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
 	if err != nil {
 		log.Println(err)
+		return err
 	}
 	defer f.Close()
 	csvWriter := csv.NewWriter(f)
 
 	if err := csvWriter.Write(line); err != nil {
 		log.Println(err)
+		return err
 	}
 	csvWriter.Flush()
 	log.Println(entityType + " created: " + cawemoId + " -> " + webModelerId)
+	return nil
 }
 
 func checkFilePresent() bool {
@@ -207,11 +304,12 @@ func checkFilePresent() bool {
 	return err == nil
 }
 
-func initFile() {
+func initFile() error {
 	line := []string{"CawemoId", "WebModelerId", "EntityType"}
 	f, err := os.OpenFile("id-mappings.csv", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
 	if err != nil {
 		log.Println(err)
+		return err
 	}
 	defer f.Close()
 	csvWriter := csv.NewWriter(f)
@@ -220,13 +318,17 @@ func initFile() {
 		log.Println(err)
 	}
 	csvWriter.Flush()
+	return nil
 }
 
-func checkState(cawemoId string, entityType string) string {
+func checkState(cawemoId string, entityType string) (string, error) {
 	// Open the file in read-only mode
+	if !checkFilePresent() {
+		initFile()
+	}
 	file, err := os.Open("id-mappings.csv")
 	if err != nil {
-		return ""
+		return "", err
 	}
 	defer file.Close()
 	csvReader := csv.NewReader(file)
@@ -236,49 +338,56 @@ func checkState(cawemoId string, entityType string) string {
 			break
 		}
 		if err != nil {
-			log.Fatalln(err)
+			log.Println(err)
+			return "", err
 		}
 		if line[0] == cawemoId && line[2] == entityType {
 			webModelerId := line[1]
 			log.Println(entityType + " already exists: " + cawemoId + " -> " + webModelerId)
-			return webModelerId
+			return webModelerId, nil
 		}
 	}
-	return ""
+	return "", nil
 }
 
 // functions to fetch from Cawemo
 
-func getCawemoProjects() []any {
-	return fetchFromCawemo("GET", "projects", nil).([]any)
+func getCawemoProjects() ([]any, error) {
+	response, err := fetchFromCawemo("GET", "projects", nil)
+	return response.([]any), err
 }
 
-func getCawemoFiles(projectId string) []any {
-	return fetchFromCawemo("GET", "projects/"+projectId+"/files", nil).([]any)
+func getCawemoFiles(projectId string) ([]any, error) {
+	response, err := fetchFromCawemo("GET", "projects/"+projectId+"/files", nil)
+	return response.([]any), err
 }
 
-func getCawemoFile(fileId string) map[string]any {
-	return fetchFromCawemo("GET", "files/"+fileId, nil).(map[string]any)
+func getCawemoFile(fileId string) (map[string]any, error) {
+	response, err := fetchFromCawemo("GET", "files/"+fileId, nil)
+	return response.(map[string]any), err
 }
 
-func getCawemoMilestones(fileId string) []any {
-	return fetchFromCawemo("GET", "files/"+fileId+"/milestones", nil).([]any)
+func getCawemoMilestones(fileId string) ([]any, error) {
+	response, err := fetchFromCawemo("GET", "files/"+fileId+"/milestones", nil)
+	return response.([]any), err
 }
 
-func getCawemoMilestone(milestoneId string) map[string]any {
-	return fetchFromCawemo("GET", "milestones/"+milestoneId, nil).(map[string]any)
+func getCawemoMilestone(milestoneId string) (map[string]any, error) {
+	response, err := fetchFromCawemo("GET", "milestones/"+milestoneId, nil)
+	return response.(map[string]any), err
 }
 
 // functions to fetch from Web Modeler
 
-func createWebModelerProject(name string) map[string]any {
+func createWebModelerProject(name string) (map[string]any, error) {
 	body := map[string]string{
 		"name": name,
 	}
-	return fetchFromWebModeler("POST", "projects", createBody(body)).(map[string]any)
+	response, err := fetchFromWebModeler("POST", "projects", createBody(body))
+	return response.(map[string]any), err
 }
 
-func createWebModelerFolder(name string, projectId string, parentId string) map[string]any {
+func createWebModelerFolder(name string, projectId string, parentId string) (map[string]any, error) {
 	body := map[string]string{
 		"name": name,
 	}
@@ -288,10 +397,10 @@ func createWebModelerFolder(name string, projectId string, parentId string) map[
 	if parentId != "" {
 		body["parentId"] = parentId
 	}
-	return fetchFromWebModeler("POST", "folders", createBody(body)).(map[string]any)
+	response, err := fetchFromWebModeler("POST", "folders", createBody(body))
+	return response.(map[string]any), err
 }
-
-func createWebModelerFile(name string, folderId string, projectId string, content string, fileType string) map[string]any {
+func createWebModelerFile(name string, folderId string, projectId string, content string, fileType string) (map[string]any, error) {
 	body := map[string]string{
 		"name":     name,
 		"content":  content,
@@ -302,44 +411,48 @@ func createWebModelerFile(name string, folderId string, projectId string, conten
 	} else if projectId != "" {
 		body["projectId"] = projectId
 	}
-	return fetchFromWebModeler("POST", "files", createBody(body)).(map[string]any)
+	response, err := fetchFromWebModeler("POST", "files", createBody(body))
+	return response.(map[string]any), err
 }
 
-func updateWebModelerFile(fileId string, content string, revision int) map[string]any {
+func updateWebModelerFile(fileId string, content string, revision int) (map[string]any, error) {
 	body := map[string]any{
 		"content":  content,
 		"revision": revision,
 	}
-	return fetchFromWebModeler("PATCH", "files/"+fileId, createBody(body)).(map[string]any)
+	response, err := fetchFromWebModeler("PATCH", "files/"+fileId, createBody(body))
+	return response.(map[string]any), err
 }
 
-func createWebModelerMilestone(name string, fileId string) map[string]any {
+func createWebModelerMilestone(name string, fileId string) (map[string]any, error) {
 	body := map[string]string{
 		"name":   name,
 		"fileId": fileId,
 	}
-	return fetchFromWebModeler("POST", "milestones", createBody(body)).(map[string]any)
+	response, err := fetchFromWebModeler("POST", "milestones", createBody(body))
+	return response.(map[string]any), err
 }
 
-func getWebModelerFile(fileId string) map[string]any {
-	return fetchFromWebModeler("GET", "files/"+fileId, nil).(map[string]any)
+func getWebModelerFile(fileId string) (map[string]any, error) {
+	response, err := fetchFromWebModeler("GET", "files/"+fileId, nil)
+	return response.(map[string]any), err
 }
 
 // generic cawemo and web modeler functions
 
-func fetchFromCawemo(method string, context string, body io.Reader) any {
+func fetchFromCawemo(method string, context string, body io.Reader) (any, error) {
 	req, _ := http.NewRequest(method, "https://cawemo.com/api/v1/"+context, body)
 	req.Header.Add("Authorization", "Basic "+basicAuth(cawemoUserId, cawemoApiKey))
 	return fetch(req)
 }
 
-func fetchFromWebModeler(method string, context string, body io.Reader) any {
+func fetchFromWebModeler(method string, context string, body io.Reader) (any, error) {
 	req, _ := http.NewRequest(method, "https://modeler.cloud.camunda.io/api/v1/"+context, body)
 	req.Header.Add("Authorization", "Bearer "+token)
 	return fetch(req)
 }
 
-func fetchWebModelerToken() {
+func fetchWebModelerToken() error {
 	body := map[string]string{
 		"grant_type":    "client_credentials",
 		"audience":      "api.cloud.camunda.io",
@@ -347,8 +460,12 @@ func fetchWebModelerToken() {
 		"client_secret": modelerClientSecret,
 	}
 	req, _ := http.NewRequest("POST", "https://login.cloud.camunda.io/oauth/token", createBody(body))
-	response := fetch(req).(map[string]any)
-	token = response["access_token"].(string)
+	response, err := fetch(req)
+	if err != nil {
+		return err
+	}
+	token = response.(map[string]any)["access_token"].(string)
+	return nil
 }
 
 // helper functions
@@ -363,23 +480,26 @@ func basicAuth(username, password string) string {
 	return base64.StdEncoding.EncodeToString([]byte(auth))
 }
 
-func fetch(req *http.Request) any {
+func fetch(req *http.Request) (any, error) {
 	req.Header.Set("Content-Type", "application/json")
 	client := &http.Client{}
 	response, err := client.Do(req)
 	if err != nil {
-		log.Fatalln(err)
+		log.Println(err)
+		return nil, err
 	}
 	if response.StatusCode > 299 {
-		log.Fatalln(formatResponse(*response))
+		log.Println(formatResponse(*response))
+		return nil, errors.New("Response code is not 2xx")
 	}
 	return formatResponse(*response)
 }
 
-func formatResponse(response http.Response) any {
+func formatResponse(response http.Response) (any, error) {
 	responseData, err := io.ReadAll(response.Body)
 	if err != nil {
-		log.Fatal(err)
+		log.Println(err)
+		return nil, err
 	}
 	var result any
 	json.Unmarshal(responseData, &result)
@@ -387,5 +507,5 @@ func formatResponse(response http.Response) any {
 		formatted, _ := json.MarshalIndent(result, "", "  ")
 		log.Println(string(formatted))
 	}
-	return result
+	return result, nil
 }
