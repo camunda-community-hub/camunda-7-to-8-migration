@@ -22,7 +22,7 @@
 
     <version.zeebe>8.4.0</version.zeebe>
     <version.spring-boot-starter-camunda>8.4.0</version.spring-boot-starter-camunda>
-    <version.zeebe-process-test-extension-testcontainer>8.4.0</version.zeebe-process-test-extension-testcontainer>
+    <version.zeebe-process-test-extension-testcontainer>8.4.1</version.zeebe-process-test-extension-testcontainer>
     <version.camunda.platform>7.20.0</version.camunda.platform>
     <version.jsoup>1.17.2</version.jsoup>
     <version.spring-boot>3.2.2</version.spring-boot>
