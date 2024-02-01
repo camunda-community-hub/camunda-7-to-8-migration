@@ -92,7 +92,7 @@
     <dependency>
       <groupId>org.camunda.community.process_test_coverage</groupId>
       <artifactId>camunda-process-test-coverage-spring-test-platform-8</artifactId> 
-      <version>2.3.2</version>
+      <version>2.4.0</version>
       <scope>test</scope>
     </dependency>
   </dependencies>
