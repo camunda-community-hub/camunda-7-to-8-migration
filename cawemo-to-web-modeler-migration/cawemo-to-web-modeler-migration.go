@@ -177,6 +177,7 @@ func handleFile(file map[string]any, cawemoProjectId string, webModelerProjectId
 	if updateWebModelerFileErr != nil {
 		return updateWebModelerFileErr
 	}
+	return nil
 }
 
 func determineFileType(filetype string) (string, error) {
@@ -485,11 +486,9 @@ func fetch(req *http.Request) (any, error) {
 	client := &http.Client{}
 	response, err := client.Do(req)
 	if err != nil {
-		log.Println(err)
 		return nil, err
 	}
 	if response.StatusCode > 299 {
-		log.Println(formatResponse(*response))
 		return nil, errors.New("Response code is not 2xx")
 	}
 	return formatResponse(*response)
@@ -498,7 +497,6 @@ func fetch(req *http.Request) (any, error) {
 func formatResponse(response http.Response) (any, error) {
 	responseData, err := io.ReadAll(response.Body)
 	if err != nil {
-		log.Println(err)
 		return nil, err
 	}
 	var result any
