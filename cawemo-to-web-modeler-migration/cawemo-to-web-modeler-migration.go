@@ -20,10 +20,15 @@ var dmnFix = regexp.MustCompile(`camunda:diagramRelationId=".*"`)
 var webModelerFileTypes = []string{"bpmn", "dmn", "form", "connector_template"}
 
 // cawemo auth data
+var cawemoBaseUrl = "https://cawemo.com"
 var cawemoUserId = ""
 var cawemoApiKey = ""
 
 // web modeler auth data
+var modelerBaseUrl = "https://modeler.cloud.camunda.io"
+var modelerAuthUrl = "https://login.cloud.camunda.io/oauth/token"
+var modelerTokenAudience = "api.cloud.camunda.io"
+var modelerCredentialsType = "json"
 var modelerClientId = ""
 var modelerClientSecret = ""
 
@@ -88,6 +93,8 @@ func handleProjects() error {
 
 func handleProject(project map[string]any) error {
 	projectId := project["id"].(string)
+	projectName := project["name"].(string)
+	log.Println("Project " + projectName)
 	projectType := project["type"].(string)
 	if projectType == "CATALOG" {
 		return errors.New("Skipping catalog project " + projectId)
@@ -119,13 +126,15 @@ func handleFiles(cawemoProjectId string, webModelerProjectId string) error {
 	for _, fileAny := range files {
 		err := handleFile(fileAny.(map[string]any), cawemoProjectId, webModelerProjectId)
 		if err != nil {
-			log.Println("Error while handling file, skipping: " + err.Error())
+			log.Println(" -> Error " + err.Error())
 		}
 	}
 	return nil
 }
 
 func handleFile(file map[string]any, cawemoProjectId string, webModelerProjectId string) error {
+	simplePath := file["simplePath"].(string)
+	log.Print("File " + simplePath)
 	fileId := file["id"].(string)
 	rawFileType := file["type"].(string)
 	filetype, filetypeError := determineFileType(rawFileType)
@@ -143,8 +152,9 @@ func handleFile(file map[string]any, cawemoProjectId string, webModelerProjectId
 	content := determineContent(fileDetails["content"].(string), filetype)
 	revision := 0
 	if webModelerFileId == "" {
+
 		canonicalPath := file["canonicalPath"].([]any)
-		parentId, folderErr := handleFolders(canonicalPath, cawemoProjectId, webModelerProjectId)
+		parentId, folderErr := handleFolders(canonicalPath, webModelerProjectId)
 		if folderErr != nil {
 			return folderErr
 		}
@@ -177,6 +187,7 @@ func handleFile(file map[string]any, cawemoProjectId string, webModelerProjectId
 	if updateWebModelerFileErr != nil {
 		return updateWebModelerFileErr
 	}
+	log.Println(" -> done")
 	return nil
 }
 
@@ -201,7 +212,7 @@ func handleMilestones(cawemoFileId string, webModelerFileId string, revision int
 	}
 	newRevision := revision
 	for _, milestone := range milestones {
-		innerRevision, err := handleMilestone(cawemoFileId, webModelerFileId, milestone.(map[string]any), newRevision)
+		innerRevision, err := handleMilestone(webModelerFileId, milestone.(map[string]any), newRevision)
 		if err != nil {
 			return -1, err
 		}
@@ -210,7 +221,7 @@ func handleMilestones(cawemoFileId string, webModelerFileId string, revision int
 	return newRevision, nil
 }
 
-func handleMilestone(cawemoFileId string, webModelerFileId string, milestone map[string]any, revision int) (int, error) {
+func handleMilestone(webModelerFileId string, milestone map[string]any, revision int) (int, error) {
 	milestoneId := milestone["id"].(string)
 	webModelerMilestoneId, err := checkState(milestoneId, "milestone")
 	if err != nil {
@@ -242,11 +253,11 @@ func handleMilestone(cawemoFileId string, webModelerFileId string, milestone map
 	return newRevision, nil
 }
 
-func handleFolders(folders []any, cawemoProjectId string, webModelerProjectId string) (string, error) {
+func handleFolders(folders []any, webModelerProjectId string) (string, error) {
 	parentId := ""
 
 	for _, folderAny := range folders {
-		innerParentId, err := handleFolder(folderAny.(map[string]any), parentId, cawemoProjectId, webModelerProjectId)
+		innerParentId, err := handleFolder(folderAny.(map[string]any), parentId, webModelerProjectId)
 		if err != nil {
 			return "", err
 		}
@@ -255,7 +266,7 @@ func handleFolders(folders []any, cawemoProjectId string, webModelerProjectId st
 	return parentId, nil
 }
 
-func handleFolder(folder map[string]any, parentId string, cawemoProjectId string, webModelerProjectId string) (string, error) {
+func handleFolder(folder map[string]any, parentId string, webModelerProjectId string) (string, error) {
 	cawemoFolderId := folder["id"].(string)
 	webModelerFolderId, err := checkState(cawemoFolderId, "folder")
 	if err != nil {
@@ -442,25 +453,32 @@ func getWebModelerFile(fileId string) (map[string]any, error) {
 // generic cawemo and web modeler functions
 
 func fetchFromCawemo(method string, context string, body io.Reader) (any, error) {
-	req, _ := http.NewRequest(method, "https://cawemo.com/api/v1/"+context, body)
+	req, _ := http.NewRequest(method, cawemoBaseUrl+"/api/v1/"+context, body)
 	req.Header.Add("Authorization", "Basic "+basicAuth(cawemoUserId, cawemoApiKey))
+	req.Header.Set("Content-Type", "application/json")
 	return fetch(req)
 }
 
 func fetchFromWebModeler(method string, context string, body io.Reader) (any, error) {
-	req, _ := http.NewRequest(method, "https://modeler.cloud.camunda.io/api/v1/"+context, body)
+	req, _ := http.NewRequest(method, modelerBaseUrl+"/api/v1/"+context, body)
 	req.Header.Add("Authorization", "Bearer "+token)
+	req.Header.Set("Content-Type", "application/json")
 	return fetch(req)
 }
 
 func fetchWebModelerToken() error {
 	body := map[string]string{
 		"grant_type":    "client_credentials",
-		"audience":      "api.cloud.camunda.io",
+		"audience":      modelerTokenAudience,
 		"client_id":     modelerClientId,
 		"client_secret": modelerClientSecret,
 	}
-	req, _ := http.NewRequest("POST", "https://login.cloud.camunda.io/oauth/token", createBody(body))
+	req, _ := http.NewRequest("POST", modelerAuthUrl, createBody(body))
+	contentType, err := determineContentType()
+	if err != nil {
+		return err
+	}
+	req.Header.Set("Content-Type", contentType)
 	response, err := fetch(req)
 	if err != nil {
 		return err
@@ -476,20 +494,26 @@ func createBody(body any) io.Reader {
 	return bytes.NewReader(marshalled)
 }
 
+func determineContentType() (string, error) {
+	if modelerCredentialsType == "json" {
+		return "application/json", nil
+	}
+	return "", errors.New("could not determine content type, unknown credentials type " + modelerCredentialsType)
+}
+
 func basicAuth(username, password string) string {
 	auth := username + ":" + password
 	return base64.StdEncoding.EncodeToString([]byte(auth))
 }
 
 func fetch(req *http.Request) (any, error) {
-	req.Header.Set("Content-Type", "application/json")
 	client := &http.Client{}
 	response, err := client.Do(req)
 	if err != nil {
 		return nil, err
 	}
 	if response.StatusCode > 299 {
-		return nil, errors.New("Response code is not 2xx")
+		return nil, errors.New("response code is not 2xx")
 	}
 	return formatResponse(*response)
 }

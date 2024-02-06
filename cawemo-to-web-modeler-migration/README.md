@@ -34,6 +34,11 @@ $env:CAWEMO_API_KEY="YOUR_API_KEY"
 $env:CAMUNDA_CONSOLE_CLIENT_ID="YOUR_WEBMODELER_CLIENT_ID"
 $env:CAMUNDA_CONSOLE_CLIENT_SECRET="YOUR_WEBMODELER_CLIENT_SECRET"
 ```
+4. Run the built executable
+
+The executable will create a migration log in csv format and document all migrated entities there. This means that the script can continue from where it left off.
+
+On top, the script will log each project and file that has been migrated
 
 ### Bash & Powershell
 

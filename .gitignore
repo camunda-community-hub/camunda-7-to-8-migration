@@ -11,3 +11,4 @@ target
 *.factorypath
 .DS_Store
 dist
+/cawemo-to-web-modeler-migration/cawemo-to-web-modeler-migration
