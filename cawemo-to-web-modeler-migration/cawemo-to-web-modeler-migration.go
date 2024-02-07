@@ -424,7 +424,10 @@ func createWebModelerFile(name string, folderId string, projectId string, conten
 		body["projectId"] = projectId
 	}
 	response, err := fetchFromWebModeler("POST", "files", createBody(body))
-	return response.(map[string]any), err
+	if err != nil {
+		return nil, err
+	}
+	return response.(map[string]any), nil
 }
 
 func updateWebModelerFile(fileId string, content string, revision int) (map[string]any, error) {
