@@ -21,7 +21,7 @@
     <maven.compiler.target>${version.java}</maven.compiler.target>
 
     <version.zeebe>8.4.1</version.zeebe>
-    <version.spring-boot-starter-camunda>8.4.0</version.spring-boot-starter-camunda>
+    <version.spring-boot-starter-camunda>8.4.1</version.spring-boot-starter-camunda>
     <version.zeebe-process-test-extension-testcontainer>8.4.1</version.zeebe-process-test-extension-testcontainer>
     <version.camunda.platform>7.20.0</version.camunda.platform>
     <version.jsoup>1.17.2</version.jsoup>
@@ -37,6 +37,8 @@
     <version.protobuf>3.25.2</version.protobuf>
     <version.guava>33.0.0-jre</version.guava>
     <version.error_prone_annotations>2.24.1</version.error_prone_annotations>
+    <version.java-jwt>4.4.0</version.java-jwt>
+    <version.okio>3.6.0</version.okio>
 
     <plugin.version.function-maven-plugin>0.11.0</plugin.version.function-maven-plugin>
     <plugin.version.maven-enforcer-plugin>3.4.1</plugin.version.maven-enforcer-plugin>
@@ -169,6 +171,16 @@
         <groupId>javax.xml.bind</groupId>
         <artifactId>jaxb-api</artifactId>
         <version>${version.jaxb-api}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.auth0</groupId>
+        <artifactId>java-jwt</artifactId>
+        <version>${version.java-jwt}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.squareup.okio</groupId>
+        <artifactId>okio</artifactId>
+        <version>${version.okio}</version>
       </dependency>
       <dependency>
         <groupId>org.camunda.community.migration</groupId>
