@@ -462,20 +462,28 @@ public class BpmnConverterTest {
       value = {
         // start events
         "CycleStartEvent,true",
-        "DurationStartEvent1,false",
+        "DurationStartEvent,false",
         "DateStartEvent,true",
         // intermediate events
         "FlexibleDurationEvent,true",
-        "FlexibleDateEvent,false",
+        "FlexibleDateEvent,true",
         "FlexibleCycleEvent,false",
         // boundary events
         "DurationBoundaryEvent,true",
-        "DateBoundaryEvent,false",
+        "DateBoundaryEvent,true",
         "CycleBoundaryEvent,false",
+        // boundary events non-interrupting
+        "DurationNonInterruptingBoundaryEvent,true",
+        "DateNonInterruptingBoundaryEvent,true",
+        "CycleNonInterruptingBoundaryEvent,true",
         // event sub process
-        "DateStartEvent1,true",
-        "DurationStartEvent,false",
-        "CycleStartEvent1,false"
+        "DateEventSubprocessStartEvent,true",
+        "DurationEventSubprocessStartEvent,true",
+        "CycleEventSubprocessStartEvent,false",
+        // event sub process non-interrupting
+        "DateEventSubprocessNonInterruptingStartEvent,true",
+        "DurationEventSubprocessNonInterruptingStartEvent,true",
+        "CycleEventSubprocessNonInterruptingStartEvent,true"
       })
   void testTimerEventMessages(String elementId, boolean allowed) {
     BpmnDiagramCheckResult result = loadAndCheck("flexible-timer-event.bpmn");

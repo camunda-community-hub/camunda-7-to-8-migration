@@ -1,5 +1,7 @@
 package org.camunda.community.migration.converter.visitor;
 
+import static org.camunda.community.migration.converter.NamespaceUri.*;
+
 import java.util.Objects;
 import org.camunda.bpm.model.xml.instance.DomElement;
 import org.camunda.community.migration.converter.DomElementVisitorContext;
@@ -35,6 +37,18 @@ public abstract class AbstractTimerExpressionVisitor extends AbstractBpmnElement
   protected boolean isStartEvent(DomElement element) {
     return element.getParentElement().getParentElement().getLocalName().equals("startEvent")
         && !isEventSubprocess(element);
+  }
+
+  protected boolean isNonInterruptingIntermediate(DomElement element) {
+    String cancelActivity =
+        element.getParentElement().getParentElement().getAttribute(BPMN, "cancelActivity");
+    return Boolean.FALSE.toString().equals(cancelActivity);
+  }
+
+  protected boolean isNonInterruptingStart(DomElement element) {
+    String isInterrupting =
+        element.getParentElement().getParentElement().getAttribute(BPMN, "isInterrupting");
+    return Boolean.FALSE.toString().equals(isInterrupting);
   }
 
   protected boolean isIntermediateEvent(DomElement element) {

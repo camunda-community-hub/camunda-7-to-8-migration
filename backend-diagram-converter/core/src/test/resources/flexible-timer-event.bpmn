@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_0llfcb6" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.11.0" modeler:executionPlatform="Camunda Platform" modeler:executionPlatformVersion="7.19.0">
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_0llfcb6" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.20.0" modeler:executionPlatform="Camunda Platform" modeler:executionPlatformVersion="7.19.0">
   <bpmn:process id="Process_1ju2net" isExecutable="true">
     <bpmn:sequenceFlow id="Flow_194hewa" sourceRef="DateStartEvent" targetRef="Gateway_0073h56" />
     <bpmn:intermediateCatchEvent id="FlexibleDurationEvent" name="Flexible duration">
@@ -14,6 +14,9 @@
       <bpmn:incoming>Flow_0xfzu6j</bpmn:incoming>
       <bpmn:incoming>Flow_13tpsg8</bpmn:incoming>
       <bpmn:incoming>Flow_18ozylp</bpmn:incoming>
+      <bpmn:incoming>Flow_12cl7jz</bpmn:incoming>
+      <bpmn:incoming>Flow_10k0b0x</bpmn:incoming>
+      <bpmn:incoming>Flow_0kngvsj</bpmn:incoming>
     </bpmn:endEvent>
     <bpmn:sequenceFlow id="Flow_01jbdi6" sourceRef="FlexibleDurationEvent" targetRef="FlexibleDateEvent" />
     <bpmn:intermediateCatchEvent id="FlexibleDateEvent" name="Flexible date">
@@ -96,7 +99,7 @@
     <bpmn:sequenceFlow id="Flow_13tpsg8" sourceRef="DateBoundaryEvent" targetRef="TimerConversionTestedEndEvent" />
     <bpmn:sequenceFlow id="Flow_18ozylp" sourceRef="CycleBoundaryEvent" targetRef="TimerConversionTestedEndEvent" />
     <bpmn:subProcess id="Activity_15x0sx1" triggeredByEvent="true">
-      <bpmn:startEvent id="DateStartEvent1" name="Date">
+      <bpmn:startEvent id="DateEventSubprocessStartEvent" name="Date event subprocess">
         <bpmn:outgoing>Flow_03b4jcm</bpmn:outgoing>
         <bpmn:timerEventDefinition id="TimerEventDefinition_09dqfxv">
           <bpmn:timeDate xsi:type="bpmn:tFormalExpression">${date}</bpmn:timeDate>
@@ -105,10 +108,10 @@
       <bpmn:endEvent id="Event_0hkh417">
         <bpmn:incoming>Flow_03b4jcm</bpmn:incoming>
       </bpmn:endEvent>
-      <bpmn:sequenceFlow id="Flow_03b4jcm" sourceRef="DateStartEvent1" targetRef="Event_0hkh417" />
+      <bpmn:sequenceFlow id="Flow_03b4jcm" sourceRef="DateEventSubprocessStartEvent" targetRef="Event_0hkh417" />
     </bpmn:subProcess>
     <bpmn:subProcess id="Activity_04pt267" triggeredByEvent="true">
-      <bpmn:startEvent id="DurationStartEvent" name="Duration">
+      <bpmn:startEvent id="DurationEventSubprocessStartEvent" name="Duration event subprocess">
         <bpmn:outgoing>Flow_0qjy2aj</bpmn:outgoing>
         <bpmn:timerEventDefinition id="TimerEventDefinition_0522ff1">
           <bpmn:timeDuration xsi:type="bpmn:tFormalExpression">${duration}</bpmn:timeDuration>
@@ -117,10 +120,10 @@
       <bpmn:endEvent id="Event_1nr4acs">
         <bpmn:incoming>Flow_0qjy2aj</bpmn:incoming>
       </bpmn:endEvent>
-      <bpmn:sequenceFlow id="Flow_0qjy2aj" sourceRef="DurationStartEvent" targetRef="Event_1nr4acs" />
+      <bpmn:sequenceFlow id="Flow_0qjy2aj" sourceRef="DurationEventSubprocessStartEvent" targetRef="Event_1nr4acs" />
     </bpmn:subProcess>
     <bpmn:subProcess id="Activity_1e3dl9z" triggeredByEvent="true">
-      <bpmn:startEvent id="CycleStartEvent1" name="Cycle">
+      <bpmn:startEvent id="CycleEventSubprocessStartEvent" name="Cycle event subprocess">
         <bpmn:outgoing>Flow_0069vhm</bpmn:outgoing>
         <bpmn:timerEventDefinition id="TimerEventDefinition_0tu1vdg">
           <bpmn:timeCycle xsi:type="bpmn:tFormalExpression">${cycle}</bpmn:timeCycle>
@@ -129,7 +132,7 @@
       <bpmn:endEvent id="Event_16cr9th">
         <bpmn:incoming>Flow_0069vhm</bpmn:incoming>
       </bpmn:endEvent>
-      <bpmn:sequenceFlow id="Flow_0069vhm" sourceRef="CycleStartEvent1" targetRef="Event_16cr9th" />
+      <bpmn:sequenceFlow id="Flow_0069vhm" sourceRef="CycleEventSubprocessStartEvent" targetRef="Event_16cr9th" />
     </bpmn:subProcess>
     <bpmn:startEvent id="DateStartEvent" name="Date">
       <bpmn:outgoing>Flow_194hewa</bpmn:outgoing>
@@ -143,7 +146,7 @@
         <bpmn:timeCycle xsi:type="bpmn:tFormalExpression">${cycle}</bpmn:timeCycle>
       </bpmn:timerEventDefinition>
     </bpmn:startEvent>
-    <bpmn:sequenceFlow id="Flow_0ugq2cb" sourceRef="DurationStartEvent1" targetRef="Gateway_0073h56" />
+    <bpmn:sequenceFlow id="Flow_0ugq2cb" sourceRef="DurationStartEvent" targetRef="Gateway_0073h56" />
     <bpmn:sequenceFlow id="Flow_08irxor" sourceRef="CycleStartEvent" targetRef="Gateway_0073h56" />
     <bpmn:exclusiveGateway id="Gateway_0073h56">
       <bpmn:incoming>Flow_194hewa</bpmn:incoming>
@@ -152,12 +155,69 @@
       <bpmn:outgoing>Flow_08i9ku5</bpmn:outgoing>
     </bpmn:exclusiveGateway>
     <bpmn:sequenceFlow id="Flow_08i9ku5" sourceRef="Gateway_0073h56" targetRef="Gateway_1lmljo8" />
-    <bpmn:startEvent id="DurationStartEvent1" name="Duration">
+    <bpmn:startEvent id="DurationStartEvent" name="Duration">
       <bpmn:outgoing>Flow_0ugq2cb</bpmn:outgoing>
       <bpmn:timerEventDefinition id="TimerEventDefinition_1iyq0va">
         <bpmn:timeDuration xsi:type="bpmn:tFormalExpression">${duration}</bpmn:timeDuration>
       </bpmn:timerEventDefinition>
     </bpmn:startEvent>
+    <bpmn:subProcess id="Activity_08t8z5s" triggeredByEvent="true">
+      <bpmn:endEvent id="Event_0pg14fl">
+        <bpmn:incoming>Flow_12btdbv</bpmn:incoming>
+      </bpmn:endEvent>
+      <bpmn:sequenceFlow id="Flow_12btdbv" sourceRef="DateEventSubprocessNonInterruptingStartEvent" targetRef="Event_0pg14fl" />
+      <bpmn:startEvent id="DateEventSubprocessNonInterruptingStartEvent" name="Date event subprocess non interrupting" isInterrupting="false">
+        <bpmn:outgoing>Flow_12btdbv</bpmn:outgoing>
+        <bpmn:timerEventDefinition id="TimerEventDefinition_06s9fri">
+          <bpmn:timeDate xsi:type="bpmn:tFormalExpression">${date}</bpmn:timeDate>
+        </bpmn:timerEventDefinition>
+      </bpmn:startEvent>
+    </bpmn:subProcess>
+    <bpmn:subProcess id="Activity_1hry122" triggeredByEvent="true">
+      <bpmn:endEvent id="Event_01me4wz">
+        <bpmn:incoming>Flow_008eofr</bpmn:incoming>
+      </bpmn:endEvent>
+      <bpmn:sequenceFlow id="Flow_008eofr" sourceRef="DurationEventSubprocessNonInterruptingStartEvent" targetRef="Event_01me4wz" />
+      <bpmn:startEvent id="DurationEventSubprocessNonInterruptingStartEvent" name="Duration event subprocess non interrupting" isInterrupting="false">
+        <bpmn:outgoing>Flow_008eofr</bpmn:outgoing>
+        <bpmn:timerEventDefinition id="TimerEventDefinition_0g1ou22">
+          <bpmn:timeDuration xsi:type="bpmn:tFormalExpression">${duration}</bpmn:timeDuration>
+        </bpmn:timerEventDefinition>
+      </bpmn:startEvent>
+    </bpmn:subProcess>
+    <bpmn:subProcess id="Activity_1pwunhl" triggeredByEvent="true">
+      <bpmn:endEvent id="Event_06g4jpw">
+        <bpmn:incoming>Flow_0hm6mok</bpmn:incoming>
+      </bpmn:endEvent>
+      <bpmn:sequenceFlow id="Flow_0hm6mok" sourceRef="CycleEventSubprocessNonInterruptingStartEvent" targetRef="Event_06g4jpw" />
+      <bpmn:startEvent id="CycleEventSubprocessNonInterruptingStartEvent" name="Cycle event subprocess non interrupting" isInterrupting="false">
+        <bpmn:outgoing>Flow_0hm6mok</bpmn:outgoing>
+        <bpmn:timerEventDefinition id="TimerEventDefinition_06ubb28">
+          <bpmn:timeCycle xsi:type="bpmn:tFormalExpression">${cycle}</bpmn:timeCycle>
+        </bpmn:timerEventDefinition>
+      </bpmn:startEvent>
+    </bpmn:subProcess>
+    <bpmn:boundaryEvent id="DurationNonInterruptingBoundaryEvent" name="Duration non interrupting" cancelActivity="false" attachedToRef="TaskTask">
+      <bpmn:outgoing>Flow_0kngvsj</bpmn:outgoing>
+      <bpmn:timerEventDefinition id="TimerEventDefinition_1iqft25">
+        <bpmn:timeDuration xsi:type="bpmn:tFormalExpression">${boundaryDuration}</bpmn:timeDuration>
+      </bpmn:timerEventDefinition>
+    </bpmn:boundaryEvent>
+    <bpmn:boundaryEvent id="DateNonInterruptingBoundaryEvent" name="Date non interrupting" cancelActivity="false" attachedToRef="TaskTask">
+      <bpmn:outgoing>Flow_10k0b0x</bpmn:outgoing>
+      <bpmn:timerEventDefinition id="TimerEventDefinition_08bhd2s">
+        <bpmn:timeDate xsi:type="bpmn:tFormalExpression">${boundaryDate}</bpmn:timeDate>
+      </bpmn:timerEventDefinition>
+    </bpmn:boundaryEvent>
+    <bpmn:boundaryEvent id="CycleNonInterruptingBoundaryEvent" name="Cycle non interrupting" cancelActivity="false" attachedToRef="TaskTask">
+      <bpmn:outgoing>Flow_12cl7jz</bpmn:outgoing>
+      <bpmn:timerEventDefinition id="TimerEventDefinition_1udvrq4">
+        <bpmn:timeCycle xsi:type="bpmn:tFormalExpression">${boundaryCycle}</bpmn:timeCycle>
+      </bpmn:timerEventDefinition>
+    </bpmn:boundaryEvent>
+    <bpmn:sequenceFlow id="Flow_12cl7jz" sourceRef="CycleNonInterruptingBoundaryEvent" targetRef="TimerConversionTestedEndEvent" />
+    <bpmn:sequenceFlow id="Flow_10k0b0x" sourceRef="DateNonInterruptingBoundaryEvent" targetRef="TimerConversionTestedEndEvent" />
+    <bpmn:sequenceFlow id="Flow_0kngvsj" sourceRef="DurationNonInterruptingBoundaryEvent" targetRef="TimerConversionTestedEndEvent" />
   </bpmn:process>
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Process_1ju2net">
@@ -213,19 +273,13 @@
           <dc:Bounds x="612" y="465" width="56" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Event_1vg4cle_di" bpmnElement="DurationStartEvent1">
-        <dc:Bounds x="182" y="212" width="36" height="36" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="179" y="255" width="42" height="14" />
-        </bpmndi:BPMNLabel>
-      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_0ne70lx_di" bpmnElement="Activity_15x0sx1" isExpanded="true">
         <dc:Bounds x="710" y="520" width="188" height="120" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Event_1fym34z_di" bpmnElement="DateStartEvent1">
+      <bpmndi:BPMNShape id="Event_1fym34z_di" bpmnElement="DateEventSubprocessStartEvent">
         <dc:Bounds x="750" y="542" width="36" height="36" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="756" y="585" width="24" height="14" />
+          <dc:Bounds x="740" y="585" width="57" height="27" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_0hkh417_di" bpmnElement="Event_0hkh417">
@@ -238,10 +292,10 @@
       <bpmndi:BPMNShape id="BPMNShape_0jgdmke" bpmnElement="Activity_04pt267" isExpanded="true">
         <dc:Bounds x="710" y="660" width="188" height="120" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="BPMNShape_0vu6j1l" bpmnElement="DurationStartEvent">
+      <bpmndi:BPMNShape id="BPMNShape_0vu6j1l" bpmnElement="DurationEventSubprocessStartEvent">
         <dc:Bounds x="750" y="682" width="36" height="36" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="747" y="725" width="42" height="14" />
+          <dc:Bounds x="732" y="725" width="72" height="27" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="BPMNShape_1q2qm1k" bpmnElement="Event_1nr4acs">
@@ -254,10 +308,10 @@
       <bpmndi:BPMNShape id="BPMNShape_1wlvtvv" bpmnElement="Activity_1e3dl9z" isExpanded="true">
         <dc:Bounds x="920" y="520" width="188" height="120" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="BPMNShape_14lb58u" bpmnElement="CycleStartEvent1">
+      <bpmndi:BPMNShape id="BPMNShape_14lb58u" bpmnElement="CycleEventSubprocessStartEvent">
         <dc:Bounds x="960" y="542" width="36" height="36" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="964" y="585" width="28" height="14" />
+          <dc:Bounds x="949" y="585" width="58" height="27" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="BPMNShape_12j4h5m" bpmnElement="Event_16cr9th">
@@ -282,6 +336,60 @@
       <bpmndi:BPMNShape id="Gateway_0073h56_di" bpmnElement="Gateway_0073h56" isMarkerVisible="true">
         <dc:Bounds x="265" y="292" width="50" height="50" />
       </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1vg4cle_di" bpmnElement="DurationStartEvent">
+        <dc:Bounds x="182" y="212" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="179" y="255" width="42" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_1hjm5yg" bpmnElement="Activity_08t8z5s" isExpanded="true">
+        <dc:Bounds x="710" y="800" width="188" height="120" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_0yzwqux" bpmnElement="Event_0pg14fl">
+        <dc:Bounds x="842" y="822" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_03fxwst_di" bpmnElement="DateEventSubprocessNonInterruptingStartEvent">
+        <dc:Bounds x="750" y="822" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="733" y="865" width="78" height="40" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="BPMNEdge_1rs9b7a" bpmnElement="Flow_12btdbv">
+        <di:waypoint x="786" y="840" />
+        <di:waypoint x="842" y="840" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="BPMNShape_1k5koyn" bpmnElement="Activity_1hry122" isExpanded="true">
+        <dc:Bounds x="710" y="940" width="188" height="120" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_1lq0l8m" bpmnElement="Event_01me4wz">
+        <dc:Bounds x="842" y="962" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1qh0dhg_di" bpmnElement="DurationEventSubprocessNonInterruptingStartEvent">
+        <dc:Bounds x="750" y="962" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="732" y="1005" width="78" height="40" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="BPMNEdge_0esmyp0" bpmnElement="Flow_008eofr">
+        <di:waypoint x="786" y="980" />
+        <di:waypoint x="842" y="980" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="BPMNShape_08tsu4v" bpmnElement="Activity_1pwunhl" isExpanded="true">
+        <dc:Bounds x="920" y="800" width="188" height="120" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_1pqjubk" bpmnElement="Event_06g4jpw">
+        <dc:Bounds x="1052" y="822" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_160egpi_di" bpmnElement="CycleEventSubprocessNonInterruptingStartEvent">
+        <dc:Bounds x="960" y="822" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="944" y="865" width="78" height="40" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="BPMNEdge_1p3ct8c" bpmnElement="Flow_0hm6mok">
+        <di:waypoint x="996" y="840" />
+        <di:waypoint x="1052" y="840" />
+      </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="Event_0kd6lbb_di" bpmnElement="DateBoundaryEvent">
         <dc:Bounds x="822" y="339" width="36" height="36" />
         <bpmndi:BPMNLabel>
@@ -298,6 +406,24 @@
         <dc:Bounds x="872" y="339" width="36" height="36" />
         <bpmndi:BPMNLabel>
           <dc:Bounds x="906" y="382" width="28" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1hlyoi4_di" bpmnElement="DurationNonInterruptingBoundaryEvent">
+        <dc:Bounds x="772" y="259" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="710" y="270" width="63" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0tlnlt9_di" bpmnElement="DateNonInterruptingBoundaryEvent">
+        <dc:Bounds x="822" y="259" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="815" y="302" width="56" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1nsamq6_di" bpmnElement="CycleNonInterruptingBoundaryEvent">
+        <dc:Bounds x="872" y="259" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="894" y="302" width="56" height="27" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="Flow_194hewa_di" bpmnElement="Flow_194hewa">
@@ -377,6 +503,24 @@
       <bpmndi:BPMNEdge id="Flow_08i9ku5_di" bpmnElement="Flow_08i9ku5">
         <di:waypoint x="315" y="317" />
         <di:waypoint x="345" y="317" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_12cl7jz_di" bpmnElement="Flow_12cl7jz">
+        <di:waypoint x="890" y="259" />
+        <di:waypoint x="890" y="160" />
+        <di:waypoint x="970" y="160" />
+        <di:waypoint x="970" y="299" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_10k0b0x_di" bpmnElement="Flow_10k0b0x">
+        <di:waypoint x="840" y="259" />
+        <di:waypoint x="840" y="160" />
+        <di:waypoint x="970" y="160" />
+        <di:waypoint x="970" y="299" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0kngvsj_di" bpmnElement="Flow_0kngvsj">
+        <di:waypoint x="790" y="259" />
+        <di:waypoint x="790" y="160" />
+        <di:waypoint x="970" y="160" />
+        <di:waypoint x="970" y="299" />
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>
