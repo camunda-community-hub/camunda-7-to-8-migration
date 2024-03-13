@@ -8,10 +8,7 @@ import org.camunda.community.migration.converter.visitor.AbstractTimerExpression
 public class TimeDateVisitor extends AbstractTimerExpressionVisitor {
   @Override
   protected SemanticVersion availableFrom(DomElementVisitorContext context) {
-    if (isStartEvent(context.getElement()) || isEventSubprocess(context.getElement())) {
-      return SemanticVersion._8_0;
-    }
-    return null;
+    return SemanticVersion._8_0;
   }
 
   @Override
