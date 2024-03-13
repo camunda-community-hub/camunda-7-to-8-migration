@@ -8,7 +8,9 @@ import org.camunda.community.migration.converter.visitor.AbstractTimerExpression
 public class TimeCycleVisitor extends AbstractTimerExpressionVisitor {
   @Override
   protected SemanticVersion availableFrom(DomElementVisitorContext context) {
-    if (isStartEvent(context.getElement())) {
+    if (isStartEvent(context.getElement())
+        || isNonInterruptingIntermediate(context.getElement())
+        || isNonInterruptingStart(context.getElement())) {
       return SemanticVersion._8_0;
     }
     return null;
