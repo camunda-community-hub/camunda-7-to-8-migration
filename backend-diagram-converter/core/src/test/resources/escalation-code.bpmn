@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_1gbx4qr" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.20.0" modeler:executionPlatform="Camunda Platform" modeler:executionPlatformVersion="7.19.0">
+  <bpmn:process id="TransactionTestProcess" name="Transaction Test" isExecutable="true">
+    <bpmn:startEvent id="Event_1i3htun" name="Error code conversion should be tested">
+      <bpmn:outgoing>Flow_0we8gbc</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:sequenceFlow id="Flow_0we8gbc" sourceRef="Event_1i3htun" targetRef="Activity_1h3hatw" />
+    <bpmn:serviceTask id="Activity_1h3hatw" name="Throw error">
+      <bpmn:incoming>Flow_0we8gbc</bpmn:incoming>
+      <bpmn:outgoing>Flow_0y3k84c</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:endEvent id="Event_09a497u" name="Error code conversion done">
+      <bpmn:incoming>Flow_0y3k84c</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_0y3k84c" sourceRef="Activity_1h3hatw" targetRef="Event_09a497u" />
+    <bpmn:endEvent id="Event_1ey9c8f" name="Error handled">
+      <bpmn:incoming>Flow_03nn2dd</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_03nn2dd" sourceRef="Event_0apc6gw" targetRef="Event_1ey9c8f" />
+    <bpmn:boundaryEvent id="Event_0apc6gw" name="Escalation thrown" attachedToRef="Activity_1h3hatw">
+      <bpmn:outgoing>Flow_03nn2dd</bpmn:outgoing>
+      <bpmn:escalationEventDefinition id="EscalationEventDefinition_075vn24" escalationRef="Escalation_2ja61hj" />
+    </bpmn:boundaryEvent>
+  </bpmn:process>
+  <bpmn:error id="Error_16zktjx" name="SomeName" errorCode="someCode" />
+  <bpmn:escalation id="Escalation_2ja61hj" name="EscalationName" escalationCode="EscalationCode" />
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="TransactionTestProcess">
+      <bpmndi:BPMNShape id="Event_1i3htun_di" bpmnElement="Event_1i3htun">
+        <dc:Bounds x="142" y="102" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="116" y="145" width="89" height="40" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_10af0py_di" bpmnElement="Activity_1h3hatw">
+        <dc:Bounds x="230" y="80" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_09a497u_di" bpmnElement="Event_09a497u">
+        <dc:Bounds x="382" y="102" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="360" y="145" width="81" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1ey9c8f_di" bpmnElement="Event_1ey9c8f">
+        <dc:Bounds x="362" y="222" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="347" y="265" width="67" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1w7mpnk_di" bpmnElement="Event_0apc6gw">
+        <dc:Bounds x="272" y="142" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="248" y="185" width="87" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_0we8gbc_di" bpmnElement="Flow_0we8gbc">
+        <di:waypoint x="178" y="120" />
+        <di:waypoint x="230" y="120" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0y3k84c_di" bpmnElement="Flow_0y3k84c">
+        <di:waypoint x="330" y="120" />
+        <di:waypoint x="382" y="120" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_03nn2dd_di" bpmnElement="Flow_03nn2dd">
+        <di:waypoint x="290" y="178" />
+        <di:waypoint x="290" y="240" />
+        <di:waypoint x="362" y="240" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

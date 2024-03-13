@@ -551,4 +551,12 @@ public class BpmnConverterTest {
         .isEqualTo(
             "FEEL Condition expression: Please review transformed expression: 'x=4' -> '=x=4'. Check for custom FEEL functions as they are not supported by Zeebe.");
   }
+
+  @Test
+  void testEscalationCode() {
+    BpmnModelInstance modelInstance = loadAndConvert("escalation-code.bpmn");
+    DomElement escalation = modelInstance.getDocument().getElementById("Escalation_2ja61hj");
+    assertThat(escalation.getAttribute(BPMN, "name")).isEqualTo("EscalationName");
+    assertThat(escalation.getAttribute(BPMN, "escalationCode")).isEqualTo("EscalationCode");
+  }
 }
