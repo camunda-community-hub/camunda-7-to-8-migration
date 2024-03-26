@@ -1,5 +1,5 @@
 {
-  "name": "MultiInstances User Task",
+  "name": "MultiInstances User Task Loop Cardinality",
   "processId": "MultiInstanceUserTaskLoopCard",
   "executions": [
     {
@@ -7,7 +7,7 @@
       "steps": [
         {
           "type": "STARTEVENT",
-          "activityId": "Start_MultiInstanceUserTaskLoopCard",
+          "taskId": "Start_MultiInstanceUserTaskLoopCard",
           "variables": {
             "listOfColors": ["blue", "red","green", "Pink", "Orange" ]
           }
@@ -16,7 +16,7 @@
           "type": "USERTASK",
           "delay": "PT0.1S",
           "waitingTime": "PT10S",
-          "activityId": "Activity_Card_Para_Reviews",
+          "taskId": "Activity_Card_Para_Reviews",
           "variables": {},
           "numberOfExecutions": 2
         },
@@ -24,7 +24,7 @@
           "type": "USERTASK",
           "delay": "PT0.1S",
           "waitingTime": "PT10S",
-          "activityId": "Activity_Card_Seq_Reviews",
+          "taskId": "Activity_Card_Seq_Reviews",
           "variables": {},
           "numberOfExecutions": 4
         }
