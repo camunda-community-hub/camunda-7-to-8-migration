@@ -12,6 +12,9 @@ public class CompensateEventDefinitionVisitor extends AbstractEventDefinitionVis
 
   @Override
   protected SemanticVersion availableFrom(DomElementVisitorContext context) {
+    if (isNotEventSubProcessStartEvent(context.getElement())) {
+      return SemanticVersion._8_5;
+    }
     return null;
   }
 }
