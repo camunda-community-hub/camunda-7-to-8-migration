@@ -27,7 +27,7 @@
     <version.jsoup>1.17.2</version.jsoup>
     <version.spring-boot>3.2.4</version.spring-boot>
     <version.picocli>4.7.5</version.picocli>
-    <version.commons-io>2.15.1</version.commons-io>
+    <version.commons-io>2.16.0</version.commons-io>
     <version.slack-api-client>1.38.3</version.slack-api-client>
     <version.opencsv>5.9</version.opencsv>
     <version.operate-client>8.3.0.1</version.operate-client>
