@@ -7,23 +7,11 @@
     <parent>
         <groupId>org.camunda.community.migration</groupId>
         <artifactId>camunda-7-to-8-migration</artifactId>
-        <version>0.6.2-SNAPSHOT</version>
+        <version>0.8.2-SNAPSHOT</version>
     </parent>
 
     <properties>
-        <archunit.version>1.0.1</archunit.version>
     </properties>
-
-    <dependencyManagement>
-        <dependencies>
-            <dependency>
-                <groupId>org.camunda.community.migration</groupId>
-                <artifactId>code-migration-detector-test</artifactId>
-                <version>${project.version}</version>
-                <scope>test</scope>
-            </dependency>
-        </dependencies>
-    </dependencyManagement>
 
     <modules>
         <module>core</module>

@@ -11,7 +11,7 @@
   </parent>
 
   <properties>
-      <archunit.version>1.0.1</archunit.version>
+      <archunit.version>1.2.1</archunit.version>
       <version.camunda-7-to-8-migration>0.6.2-SNAPSHOT</version.camunda-7-to-8-migration>
   </properties>
 
