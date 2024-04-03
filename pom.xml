@@ -39,6 +39,7 @@
     <version.error_prone_annotations>2.26.1</version.error_prone_annotations>
     <version.java-jwt>4.4.0</version.java-jwt>
     <version.okio>3.9.0</version.okio>
+    <version.archunit>1.2.1</version.archunit>
 
     <plugin.version.function-maven-plugin>0.11.0</plugin.version.function-maven-plugin>
     <plugin.version.maven-enforcer-plugin>3.4.1</plugin.version.maven-enforcer-plugin>
@@ -181,6 +182,11 @@
         <groupId>com.squareup.okio</groupId>
         <artifactId>okio</artifactId>
         <version>${version.okio}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.tngtech.archunit</groupId>
+        <artifactId>archunit-junit5</artifactId>
+        <version>${version.archunit}</version>
       </dependency>
       <dependency>
         <groupId>org.camunda.community.migration</groupId>
@@ -388,6 +394,16 @@
   </build>
 
   <profiles>
+    <profile>
+      <id>example</id>
+      <activation>
+        <activeByDefault>false</activeByDefault>
+      </activation>
+      <modules>
+        <module>example</module>
+      </modules>
+    </profile>
+
     <!-- profile to auto format -->
     <profile>
       <id>autoFormat</id>
@@ -440,5 +456,7 @@
     <module>backend-diagram-converter</module>
     <module>process-instance-migration</module>
     <module>test-example-diagrams</module>
+    <module>code-migration-detector</module>
   </modules>
+
 </project>
