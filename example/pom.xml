@@ -10,6 +10,5 @@
     <module>process-solution-migrated</module>
     <module>sample-external-task-process-app</module>
     <module>sample-external-task-process-app-migrated</module>
-    <module>code-migration-detector</module>
   </modules>
 </project>
