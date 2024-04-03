@@ -12,7 +12,7 @@
 
   <properties>
       <archunit.version>1.2.1</archunit.version>
-      <version.camunda-7-to-8-migration>0.6.2-SNAPSHOT</version.camunda-7-to-8-migration>
+      <version.camunda-7-to-8-migration>0.8.2</version.camunda-7-to-8-migration>
   </properties>
 
   <dependencies>
@@ -33,23 +33,28 @@
     <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter</artifactId>
+      <version>3.2.2</version>
     </dependency>
     <dependency>
       <groupId>io.camunda.spring</groupId>
       <artifactId>spring-boot-starter-camunda</artifactId>
+      <version>8.4.2</version>
     </dependency>
     <dependency>
       <groupId>io.camunda.spring</groupId>
       <artifactId>spring-boot-starter-camunda-test-testcontainer</artifactId>
+      <version>8.4.2</version>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.camunda.bpm</groupId>
       <artifactId>camunda-engine-spring</artifactId>
+      <version>7.20.0</version>
     </dependency>
     <dependency>
       <groupId>org.camunda.bpm</groupId>
       <artifactId>camunda-external-task-client-spring</artifactId>
+      <version>7.20.0</version>
     </dependency>
   </dependencies>
 
