@@ -608,7 +608,7 @@ public class BpmnConverterTest {
 
   @Test
   void testZeebeUserTask_pre_8_5() {
-    BpmnModelInstance modelInstance = loadAndConvert("example-c7_2.bpmn","8.4");
+    BpmnModelInstance modelInstance = loadAndConvert("example-c7_2.bpmn", "8.4");
     DomElement userTask = modelInstance.getDocument().getElementById("Activity_1b9oq8z");
     assertThat(userTask).isNotNull();
     assertThat(userTask.getChildElementsByNameNs(BPMN, "extensionElements")).isEmpty();

@@ -11,7 +11,7 @@ public class UserTaskConversion extends AbstractTypedConversion<UserTaskConverti
   @Override
   protected void convertTyped(DomElement element, UserTaskConvertible convertible) {
     DomElement extensionElements = getExtensionElements(element);
-    if(convertible.isZeebeUserTask()){
+    if (convertible.isZeebeUserTask()) {
       extensionElements.appendChild(createZeebeUserTask(element.getDocument()));
     }
     if (canAddFormDefinition(convertible)) {
@@ -25,8 +25,8 @@ public class UserTaskConversion extends AbstractTypedConversion<UserTaskConverti
     }
   }
 
-  private DomElement createZeebeUserTask(DomDocument document){
-    return document.createElement(ZEEBE,"userTask");
+  private DomElement createZeebeUserTask(DomDocument document) {
+    return document.createElement(ZEEBE, "userTask");
   }
 
   private DomElement createTaskSchedule(DomDocument document, UserTaskConvertible convertible) {
