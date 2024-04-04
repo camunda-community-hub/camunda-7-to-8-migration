@@ -79,6 +79,7 @@ jobs:
           upload_url: ${{ github.event.release.upload_url }}
           asset_path: cawemo-to-web-modeler-migration/cawemo-to-web-modeler-migration
           asset_name: cawemo-to-web-modeler-migration
+          asset_content_type: application/octet-stream
       - name: Publish Unit Test Results
         id: publish
         uses: EnricoMi/publish-unit-test-result-action@v2
