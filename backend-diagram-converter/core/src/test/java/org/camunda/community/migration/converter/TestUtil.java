@@ -32,6 +32,15 @@ public class TestUtil {
     return modelInstance;
   }
 
+  public static BpmnModelInstance loadAndConvert(String bpmnFile, String targetVersion) {
+    BpmnModelInstance modelInstance = loadModelInstance(bpmnFile);
+    BpmnConverter converter = BpmnConverterFactory.getInstance().get();
+    DefaultConverterProperties properties = new DefaultConverterProperties();
+    properties.setPlatformVersion(targetVersion);
+    converter.convert(modelInstance, ConverterPropertiesFactory.getInstance().merge(properties));
+    return modelInstance;
+  }
+
   public static BpmnDiagramCheckResult loadAndCheck(String bpmnFile) {
     ConverterProperties properties = ConverterPropertiesFactory.getInstance().get();
     return loadAndCheckAgainstVersion(bpmnFile, properties.getPlatformVersion());

@@ -1,6 +1,7 @@
 package org.camunda.community.migration.converter.convertible;
 
 public class UserTaskConvertible extends AbstractActivityConvertible {
+  private boolean zeebeUserTask;
   private final ZeebeFormDefinition zeebeFormDefinition = new ZeebeFormDefinition();
   private final ZeebeAssignmentDefinition zeebeAssignmentDefinition =
       new ZeebeAssignmentDefinition();
@@ -16,6 +17,14 @@ public class UserTaskConvertible extends AbstractActivityConvertible {
 
   public ZeebeAssignmentDefinition getZeebeAssignmentDefinition() {
     return zeebeAssignmentDefinition;
+  }
+
+  public boolean isZeebeUserTask() {
+    return zeebeUserTask;
+  }
+
+  public void setZeebeUserTask(boolean zeebeUserTask) {
+    this.zeebeUserTask = zeebeUserTask;
   }
 
   public static class ZeebeFormDefinition {
