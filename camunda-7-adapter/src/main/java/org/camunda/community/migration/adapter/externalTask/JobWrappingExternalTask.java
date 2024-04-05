@@ -55,6 +55,11 @@ public class JobWrappingExternalTask implements ExternalTask {
   }
 
   @Override
+  public Date getCreateTime() {
+    throw new UnsupportedOperationException();
+  }
+
+  @Override
   public String getProcessDefinitionId() {
     return String.valueOf(job.getProcessDefinitionKey());
   }
@@ -91,7 +96,7 @@ public class JobWrappingExternalTask implements ExternalTask {
 
   @Override
   public String getTenantId() {
-    throw new UnsupportedOperationException();
+    return job.getTenantId();
   }
 
   @Override
