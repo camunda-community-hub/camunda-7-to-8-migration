@@ -4,5 +4,11 @@
     "config:recommended",
     ":automergeMinor",
     ":automergePatch"
-  ]
+  ],
+  "packageRules": [
+    {
+      "description" : "Do not update npm",
+      "matchManagers": ["npm"],
+      "enabled": false
+    }
 }
