@@ -3,7 +3,8 @@
   "extends": [
     "config:recommended",
     ":automergeMinor",
-    ":automergePatch"
+    ":automergePatch",
+    "schedule:automergeNonOfficeHours"
   ],
   "packageRules": [
     {
