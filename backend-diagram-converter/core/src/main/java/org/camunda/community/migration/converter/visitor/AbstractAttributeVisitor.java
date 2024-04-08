@@ -8,7 +8,7 @@ public abstract class AbstractAttributeVisitor extends AbstractFilteringVisitor 
   protected void visitFilteredElement(DomElementVisitorContext context) {
     String attribute = context.getElement().getAttribute(namespaceUri(), attributeLocalName());
     visitAttribute(context, attribute);
-    if (removeAttribute()) {
+    if (removeAttribute(context)) {
       context.addAttributeToRemove(attributeLocalName(), namespaceUri());
     }
   }
@@ -29,7 +29,7 @@ public abstract class AbstractAttributeVisitor extends AbstractFilteringVisitor 
 
   protected abstract void visitAttribute(DomElementVisitorContext context, String attribute);
 
-  protected abstract boolean removeAttribute();
+  protected abstract boolean removeAttribute(DomElementVisitorContext context);
 
   @Override
   protected void logVisit(DomElementVisitorContext context) {

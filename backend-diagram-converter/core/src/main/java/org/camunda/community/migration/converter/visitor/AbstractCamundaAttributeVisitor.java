@@ -9,7 +9,7 @@ public abstract class AbstractCamundaAttributeVisitor extends AbstractAttributeV
     return NamespaceUri.CAMUNDA;
   }
 
-  protected boolean removeAttribute() {
+  protected boolean removeAttribute(DomElementVisitorContext context) {
     return true;
   }
 
