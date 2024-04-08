@@ -10,7 +10,7 @@ public abstract class AbstractEventRefVisitor extends AbstractBpmnAttributeVisit
     context.references(attribute);
   }
 
-  protected boolean isEndEvent(DomElement element){
+  protected boolean isEndEvent(DomElement element) {
     return element.getParentElement().getLocalName().equals("endEvent");
   }
 

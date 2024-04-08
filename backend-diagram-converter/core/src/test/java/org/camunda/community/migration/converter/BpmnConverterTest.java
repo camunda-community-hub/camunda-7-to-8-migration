@@ -585,9 +585,13 @@ public class BpmnConverterTest {
                 .get(0)
                 .getChildElementsByNameNs(CONVERSION, "referencedBy"))
         .hasSize(1);
-    assertThat(message
-        .getChildElementsByNameNs(BPMN, "extensionElements")
-        .get(0)
-        .getChildElementsByNameNs(CONVERSION, "referencedBy").get(0).getTextContent()).isEqualTo("CatchEvent");
+    assertThat(
+            message
+                .getChildElementsByNameNs(BPMN, "extensionElements")
+                .get(0)
+                .getChildElementsByNameNs(CONVERSION, "referencedBy")
+                .get(0)
+                .getTextContent())
+        .isEqualTo("CatchEvent");
   }
 }
