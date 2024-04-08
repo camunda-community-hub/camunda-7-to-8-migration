@@ -38,7 +38,8 @@ public class BpmnConverterTest {
         "collaboration.bpmn",
         "empty-input-parameter.bpmn",
         "flexible-timer-event.bpmn",
-        "business-rule-task-as-expression.bpmn"
+        "business-rule-task-as-expression.bpmn",
+        "message-event-definition-handling.bpmn"
       })
   public void shouldConvert(String bpmnFile) {
     BpmnConverter converter = BpmnConverterFactory.getInstance().get();
@@ -558,5 +559,39 @@ public class BpmnConverterTest {
     DomElement escalation = modelInstance.getDocument().getElementById("Escalation_2ja61hj");
     assertThat(escalation.getAttribute(BPMN, "name")).isEqualTo("EscalationName");
     assertThat(escalation.getAttribute(BPMN, "escalationCode")).isEqualTo("EscalationCode");
+  }
+
+  @Test
+  void testMessageEventDefinitionOnThrowEvents() {
+    BpmnModelInstance modelInstance = loadAndConvert("message-event-definition-handling.bpmn");
+    DomElement catchEvent = modelInstance.getDocument().getElementById("CatchEvent");
+    DomElement throwEvent = modelInstance.getDocument().getElementById("ThrowEvent");
+    DomElement endEvent = modelInstance.getDocument().getElementById("EndEndEvent");
+    DomElement message = modelInstance.getDocument().getElementById("Message_1o49fvh");
+    assertThat(catchEvent).isNotNull();
+    assertThat(throwEvent).isNotNull();
+    assertThat(endEvent).isNotNull();
+    assertThat(message).isNotNull();
+    assertThat(throwEvent.getChildElementsByNameNs(BPMN, "extensionElements")).isEmpty();
+    assertThat(endEvent.getChildElementsByNameNs(BPMN, "extensionElements")).isEmpty();
+    assertThat(catchEvent.getChildElementsByNameNs(BPMN, "extensionElements")).hasSize(1);
+    assertThat(message.getChildElementsByNameNs(BPMN, "extensionElements")).hasSize(1);
+    assertThat(throwEvent.getChildElementsByNameNs(BPMN, "messageEventDefinition")).hasSize(1);
+    assertThat(endEvent.getChildElementsByNameNs(BPMN, "messageEventDefinition")).hasSize(1);
+    assertThat(catchEvent.getChildElementsByNameNs(BPMN, "messageEventDefinition")).hasSize(1);
+    assertThat(
+            message
+                .getChildElementsByNameNs(BPMN, "extensionElements")
+                .get(0)
+                .getChildElementsByNameNs(CONVERSION, "referencedBy"))
+        .hasSize(1);
+    assertThat(
+            message
+                .getChildElementsByNameNs(BPMN, "extensionElements")
+                .get(0)
+                .getChildElementsByNameNs(CONVERSION, "referencedBy")
+                .get(0)
+                .getTextContent())
+        .isEqualTo("CatchEvent");
   }
 }

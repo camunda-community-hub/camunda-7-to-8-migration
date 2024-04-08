@@ -1,5 +1,6 @@
 package org.camunda.community.migration.converter.visitor;
 
+import org.camunda.community.migration.converter.DomElementVisitorContext;
 import org.camunda.community.migration.converter.NamespaceUri;
 
 public abstract class AbstractBpmnAttributeVisitor extends AbstractAttributeVisitor {
@@ -9,7 +10,7 @@ public abstract class AbstractBpmnAttributeVisitor extends AbstractAttributeVisi
   }
 
   @Override
-  protected boolean removeAttribute() {
+  protected boolean removeAttribute(DomElementVisitorContext context) {
     return false;
   }
 }
