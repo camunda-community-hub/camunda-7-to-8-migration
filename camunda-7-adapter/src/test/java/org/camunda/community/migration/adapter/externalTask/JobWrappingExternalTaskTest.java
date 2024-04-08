@@ -173,7 +173,10 @@ public class JobWrappingExternalTaskTest {
 
   @Test
   public void testTenantId() {
-    assertThrows(UnsupportedOperationException.class, () -> externalTask.getTenantId());
+    when(job.getTenantId()).thenReturn(TEST_ID);
+    String tenantId = externalTask.getTenantId();
+    assertThat(tenantId).isEqualTo(TEST_ID);
+    verify(job, times(1)).getTenantId();
   }
 
   @Test
