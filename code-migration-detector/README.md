@@ -56,17 +56,23 @@ build.
 You can copy this test class into your project to check for all crucial points:
 
 ```java
-@AnalyzeClasses(packages = "your_package")
+import org.camunda.community.migration.detector.rules.Camunda7MigrationRules;
+import com.tngtech.archunit.core.domain.JavaClasses;
+import com.tngtech.archunit.core.importer.ImportOption;
+import com.tngtech.archunit.junit.AnalyzeClasses;
+import com.tngtech.archunit.junit.ArchTest;
+
+@AnalyzeClasses(packages = "your_package", importOptions = ImportOption.DoNotIncludeTests.class)
 public class MigrationPreparationTest {
 
   @ArchTest
   public void testNoExecutionListeners(JavaClasses classes) {
-    Camunda7MigrationRules.ensureNoTaskListener().check(classes);
+    Camunda7MigrationRules.ensureNoExecutionListener().check(classes);
   }
 
   @ArchTest
   public void testNoTaskListeners(JavaClasses classes) {
-    Camunda7MigrationRules.ensureNoExecutionListener().check(classes);
+    Camunda7MigrationRules.ensureNoTaskListener().check(classes);
   }
   @ArchTest
   public void testNoSpringEventTaskListeners(JavaClasses classes) {
@@ -79,13 +85,18 @@ public class MigrationPreparationTest {
   }
 
   @ArchTest
-  public void testNoSpringEventHistoryListeners(JavaClasses classes) {
+  public void testNoSpringEventHistoryEventListeners(JavaClasses classes) {
     Camunda7MigrationRules.ensureNoSpringEventHistoryEventListeners().check(classes);
   }
 
   @ArchTest
   public void testNoInvocationOfRuntimeService(JavaClasses classes) {
     Camunda7MigrationRules.ensureNoInvocationOfRuntimeService().check(classes);
+  }
+
+  @ArchTest
+  public void testNoInvocationOfHistoryService(JavaClasses classes) {
+    Camunda7MigrationRules.ensureNoInvocationOfHistoryService().check(classes);
   }
 
   @ArchTest
