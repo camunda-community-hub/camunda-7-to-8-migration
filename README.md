@@ -23,6 +23,7 @@ This projects contains:
   instances of a converted process definition to Camunda Platform 8
 - [A migration script](./cawemo-to-web-modeler-migration) to migrate Cawemo projects to Web Modeler
 - [A curated list of community migration approaches](./migration-approaches/README.md)
+- [A tool](./code-migration-detector) to check your implementation for Camunda 7 API usage
 
 ## Use Snapshot Versions
 
