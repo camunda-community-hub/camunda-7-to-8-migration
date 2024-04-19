@@ -3,16 +3,15 @@ package org.camunda.community.migration.detector.rules;
 import static com.tngtech.archunit.core.domain.JavaAccess.Predicates.*;
 import static com.tngtech.archunit.core.domain.JavaClass.Predicates.*;
 import static com.tngtech.archunit.core.domain.properties.HasOwner.Predicates.With.*;
+import static org.camunda.community.migration.detector.rules.Camunda7MigrationConditions.*;
+import static org.camunda.community.migration.detector.rules.Camunda7MigrationPredicates.*;
 
 import com.tngtech.archunit.lang.ArchRule;
 import com.tngtech.archunit.lang.syntax.ArchRuleDefinition;
 import org.camunda.bpm.engine.*;
-import org.camunda.bpm.engine.delegate.DelegateExecution;
-import org.camunda.bpm.engine.delegate.DelegateTask;
 import org.camunda.bpm.engine.delegate.ExecutionListener;
-import org.camunda.bpm.engine.delegate.JavaDelegate;
 import org.camunda.bpm.engine.delegate.TaskListener;
-import org.camunda.bpm.engine.impl.history.event.HistoryEvent;
+import org.camunda.bpm.engine.impl.cfg.ProcessEnginePlugin;
 
 /** Specific rules for checks of Camunda 7. */
 public class Camunda7MigrationRules {
@@ -25,23 +24,20 @@ public class Camunda7MigrationRules {
     return ArchRuleDefinition.noClasses().should().implement(ExecutionListener.class);
   }
 
-  public static ArchRule ensureNoJavaDelegate() {
-    return ArchRuleDefinition.noClasses().should().implement(JavaDelegate.class);
+  public static ArchRule ensureNoProcessEnginePlugin() {
+    return ArchRuleDefinition.noClasses().should().implement(ProcessEnginePlugin.class);
   }
 
-  public static ArchRule ensureNoSpringEventTaskListeners() {
+  public static ArchRule ensureNoInvocationOfProcessEngine() {
     return ArchRuleDefinition.noClasses()
-        .should(new HasMethod(new IsSpringListener<>(DelegateTask.class)));
+        .should()
+        .callMethodWhere(target(owner(assignableTo(ProcessEngineServices.class))));
   }
 
-  public static ArchRule ensureNoSpringEventExecutionListeners() {
-    return ArchRuleDefinition.noClasses()
-        .should(new HasMethod(new IsSpringListener<>(DelegateExecution.class)));
-  }
-
-  public static ArchRule ensureNoSpringEventHistoryEventListeners() {
-    return ArchRuleDefinition.noClasses()
-        .should(new HasMethod(new IsSpringListener<>(HistoryEvent.class)));
+  public static ArchRule ensureNoSpringBootEvents() {
+    return ArchRuleDefinition.noMethods()
+        .that(isSpringEventListener())
+        .should(haveCamundaBpmParameterTypes());
   }
 
   public static ArchRule ensureNoInvocationOfRepositoryService() {
