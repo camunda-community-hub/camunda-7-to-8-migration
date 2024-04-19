@@ -594,4 +594,23 @@ public class BpmnConverterTest {
                 .getTextContent())
         .isEqualTo("CatchEvent");
   }
+
+  @Test
+  void testZeebeUserTask() {
+    BpmnModelInstance modelInstance = loadAndConvert("example-c7_2.bpmn");
+    DomElement userTask = modelInstance.getDocument().getElementById("Activity_1b9oq8z");
+    assertThat(userTask).isNotNull();
+    DomElement extensionElements =
+        userTask.getChildElementsByNameNs(BPMN, "extensionElements").get(0);
+    DomElement zeebeUserTask = extensionElements.getChildElementsByNameNs(ZEEBE, "userTask").get(0);
+    assertThat(zeebeUserTask).isNotNull();
+  }
+
+  @Test
+  void testZeebeUserTask_pre_8_5() {
+    BpmnModelInstance modelInstance = loadAndConvert("example-c7_2.bpmn", "8.4");
+    DomElement userTask = modelInstance.getDocument().getElementById("Activity_1b9oq8z");
+    assertThat(userTask).isNotNull();
+    assertThat(userTask.getChildElementsByNameNs(BPMN, "extensionElements")).isEmpty();
+  }
 }

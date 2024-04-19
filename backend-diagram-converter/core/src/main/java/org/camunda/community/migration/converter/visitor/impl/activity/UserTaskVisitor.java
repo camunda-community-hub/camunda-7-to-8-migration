@@ -21,4 +21,14 @@ public class UserTaskVisitor extends AbstractActivityVisitor {
   protected SemanticVersion availableFrom(DomElementVisitorContext context) {
     return SemanticVersion._8_0;
   }
+
+  @Override
+  protected void postCreationVisitor(DomElementVisitorContext context) {
+    if (SemanticVersion.parse(context.getProperties().getPlatformVersion()).ordinal()
+        >= SemanticVersion._8_5.ordinal()) {
+      context.addConversion(UserTaskConvertible.class, c -> c.setZeebeUserTask(true));
+    } else {
+      context.addConversion(UserTaskConvertible.class, c -> c.setZeebeUserTask(false));
+    }
+  }
 }

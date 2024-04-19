@@ -188,10 +188,10 @@ public class BpmnElementSupportTest {
     return eventTypeTest(
         "Compensation",
         null,
-        isNotSupported(result, "CompensationThrowEvent", "Compensate Intermediate Throw Event"),
+        isSupported(result, "CompensationThrowEvent"),
         null,
-        isNotSupported(result, "CompensationEndEndEvent", "Compensate End Event"),
-        isNotSupported(result, "CompensationAttachedBoundaryEvent", "Compensate Boundary Event"),
+        isSupported(result, "CompensationEndEndEvent"),
+        isSupported(result, "CompensationAttachedBoundaryEvent"),
         null,
         isNotSupported(
             result,
@@ -253,8 +253,7 @@ public class BpmnElementSupportTest {
         dynamicTest("Sequential Task", isSupported(result, "SequentialTask")),
         dynamicTest(
             "Loop Task", isNotSupported(result, "LoopTask", "Standard Loop Characteristics")),
-        dynamicTest(
-            "Compensation Task", isNotSupported(result, "CompensationTask", "Compensation Task")));
+        dynamicTest("Compensation Task", isSupported(result, "CompensationTask")));
   }
 
   @TestFactory
