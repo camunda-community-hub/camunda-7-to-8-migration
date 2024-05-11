@@ -26,7 +26,7 @@
     <version.camunda.platform>7.21.0</version.camunda.platform>
     <version.jsoup>1.17.2</version.jsoup>
     <version.spring-boot>3.2.5</version.spring-boot>
-    <version.picocli>4.7.5</version.picocli>
+    <version.picocli>4.7.6</version.picocli>
     <version.commons-io>2.16.1</version.commons-io>
     <version.slack-api-client>1.39.1</version.slack-api-client>
     <version.opencsv>5.9</version.opencsv>
