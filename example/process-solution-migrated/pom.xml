@@ -19,7 +19,7 @@
     <version.spring-boot>3.3.0</version.spring-boot>
     <version.camunda>7.21.0</version.camunda>
     <version.adapter>0.9.0</version.adapter>
-    <version.spring-zeebe>8.5.3</version.spring-zeebe>
+    <version.spring-zeebe>8.5.4</version.spring-zeebe>
 
     <plugin.version.maven-surefire-plugin>3.2.5</plugin.version.maven-surefire-plugin>
   </properties>
