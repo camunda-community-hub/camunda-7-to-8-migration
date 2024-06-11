@@ -2,12 +2,13 @@ package org.camunda.community.migration.detector.rules;
 
 import static org.assertj.core.api.Assertions.*;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tngtech.archunit.core.domain.JavaClasses;
 import com.tngtech.archunit.core.importer.ClassFileImporter;
-import com.tngtech.archunit.lang.EvaluationResult;
-import java.util.HashMap;
+import com.tngtech.archunit.lang.ArchRule;
+import java.io.IOException;
+import java.util.stream.Stream;
+import org.camunda.bpm.engine.ProcessEngine;
 import org.camunda.bpm.engine.RepositoryService;
 import org.camunda.bpm.engine.delegate.DelegateExecution;
 import org.camunda.bpm.engine.delegate.DelegateTask;
@@ -15,8 +16,10 @@ import org.camunda.bpm.engine.delegate.ExecutionListener;
 import org.camunda.bpm.engine.delegate.JavaDelegate;
 import org.camunda.bpm.engine.delegate.TaskListener;
 import org.camunda.bpm.engine.impl.cfg.AbstractProcessEnginePlugin;
+import org.camunda.bpm.engine.impl.cfg.ProcessEnginePlugin;
 import org.camunda.bpm.spring.boot.starter.event.TaskEvent;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.DynamicTest;
+import org.junit.jupiter.api.TestFactory;
 import org.springframework.context.event.EventListener;
 
 public class RulesTest {
@@ -25,94 +28,107 @@ public class RulesTest {
     return new ClassFileImporter().importClasses(classes);
   }
 
-  private static CodeMigrationReport reportFrom(EvaluationResult result) {
-    CodeMigrationReport report = new CodeMigrationReport(new HashMap<>());
-    result.handleViolations(new ReportPrinter(report));
-    return report;
+  @TestFactory
+  Stream<DynamicTest> rules() {
+    return Stream.of(
+            new DynamicTestInput(
+                "should detect execution listener implementation",
+                Camunda7MigrationRules.ensureNoExecutionListener(),
+                classes(MyExecutionListener.class),
+                RulesTest.class,
+                "no classes should implement " + ExecutionListener.class.getName(),
+                MyExecutionListener.class.getName(),
+                ExecutionListener.class.getName()),
+            new DynamicTestInput(
+                "should detect task listener implementation",
+                Camunda7MigrationRules.ensureNoTaskListener(),
+                classes(MyTaskListener.class),
+                RulesTest.class,
+                "no classes should implement " + TaskListener.class.getName(),
+                MyTaskListener.class.getName(),
+                TaskListener.class.getName()),
+            new DynamicTestInput(
+                "should detect process engine plugin implementation",
+                Camunda7MigrationRules.ensureNoProcessEnginePlugin(),
+                classes(MyProcessEnginePlugin.class),
+                RulesTest.class,
+                "no classes should implement " + ProcessEnginePlugin.class.getName(),
+                MyProcessEnginePlugin.class.getName(),
+                ProcessEnginePlugin.class.getName()),
+            new DynamicTestInput(
+                "should detect process engine method invocation",
+                Camunda7MigrationRules.ensureNoInvocationOfProcessEngine(),
+                classes(MyDelegate.class),
+                RulesTest.class,
+                "no classes should call method where target owner assignable to "
+                    + ProcessEngine.class.getName(),
+                MyDelegate.class.getName(),
+                ProcessEngine.class.getName()),
+            new DynamicTestInput(
+                "should detect spring boot event handlers",
+                Camunda7MigrationRules.ensureNoSpringBootEvents(),
+                classes(MySpringEventSubscriber.class),
+                RulesTest.class,
+                "no methods that is spring event listener should have camunda bpm parameter types",
+                TaskEvent.class.getName()),
+            new DynamicTestInput(
+                "should detect repository service invocation",
+                Camunda7MigrationRules.ensureNoInvocationOfRepositoryService(),
+                classes(MyProcessEngineServicesBean.class),
+                RulesTest.class,
+                "no classes should call method where target owner assignable to org.camunda.bpm.engine.RepositoryService",
+                "org.camunda.community.migration.detector.rules.RulesTest$MyProcessEngineServicesBean.doSomethingWithTheServices()",
+                "org.camunda.bpm.engine.RepositoryService.createDeployment()"))
+        .map(
+            dti ->
+                DynamicTest.dynamicTest(
+                    dti.displayName,
+                    () ->
+                        testCodeMigrationReport(
+                            dti.archRule(),
+                            dti.classes(),
+                            dti.expectedClass(),
+                            dti.expectedRule(),
+                            dti.expectedViolationContains())));
   }
 
-  @Test
-  void shouldDetectExecutionListeners() {
-    EvaluationResult result =
-        Camunda7MigrationRules.ensureNoExecutionListener()
-            .evaluate(new ClassFileImporter().importClasses(MyExecutionListener.class));
-    assertThat(result.hasViolation()).isTrue();
-    assertThat(result.getFailureReport().getDetails()).hasSize(1);
-    assertThat(result.getFailureReport().getDetails().get(0))
-        .contains(
-            "org.camunda.community.migration.detector.rules.RulesTest$MyExecutionListener",
-            "org.camunda.bpm.engine.delegate.ExecutionListener");
+  private void testCodeMigrationReport(
+      ArchRule archRule,
+      JavaClasses classes,
+      Class<?> expectedClass,
+      String expectedRule,
+      String... expectedViolationContains) {
+    CodeMigrationReport report = new CodeMigrationReportBuilder(archRule, classes).build();
+    try {
+      String string =
+          new ObjectMapper().writerWithDefaultPrettyPrinter().writeValueAsString(report);
+      System.out.println(string);
+    } catch (IOException e) {
+      throw new RuntimeException(e);
+    }
+    assertThat(report.classes().isEmpty()).isFalse();
+    assertThat(report.classes()).containsKey(expectedClass.getName());
+    assertThat(report.classes().get(RulesTest.class.getName()).rules()).containsKey(expectedRule);
+    assertThat(report.classes().get(expectedClass.getName()).rules().get(expectedRule)).hasSize(1);
+    assertThat(
+            report
+                .classes()
+                .get(expectedClass.getName())
+                .rules()
+                .get(expectedRule)
+                .iterator()
+                .next()
+                .violation())
+        .contains(expectedViolationContains);
   }
 
-  @Test
-  void shouldDetectTaskListeners() {
-    EvaluationResult result =
-        Camunda7MigrationRules.ensureNoTaskListener()
-            .evaluate(new ClassFileImporter().importClasses(MyTaskListener.class));
-    assertThat(result.hasViolation()).isTrue();
-    assertThat(result.getFailureReport().getDetails()).hasSize(1);
-    assertThat(result.getFailureReport().getDetails().get(0))
-        .contains(
-            "org.camunda.community.migration.detector.rules.RulesTest$MyTaskListener",
-            "org.camunda.bpm.engine.delegate.TaskListener");
-  }
-
-  @Test
-  void shouldDetectProcessEnginePlugins() {
-    EvaluationResult result =
-        Camunda7MigrationRules.ensureNoProcessEnginePlugin()
-            .evaluate(new ClassFileImporter().importClasses(MyProcessEnginePlugin.class));
-    assertThat(result.hasViolation()).isTrue();
-    assertThat(result.getFailureReport().getDetails()).hasSize(1);
-    assertThat(result.getFailureReport().getDetails().get(0))
-        .contains(
-            "org.camunda.community.migration.detector.rules.RulesTest$MyProcessEnginePlugin",
-            "org.camunda.bpm.engine.impl.cfg.ProcessEnginePlugin");
-  }
-
-  @Test
-  void shouldDetectProcessEngine() {
-    EvaluationResult result =
-        Camunda7MigrationRules.ensureNoInvocationOfProcessEngine()
-            .evaluate(new ClassFileImporter().importClasses(MyDelegate.class));
-    assertThat(result.hasViolation()).isTrue();
-    assertThat(result.getFailureReport().getDetails()).hasSize(1);
-    assertThat(result.getFailureReport().getDetails().get(0))
-        .contains(
-            "org.camunda.community.migration.detector.rules.RulesTest$MyDelegate",
-            "org.camunda.bpm.engine.ProcessEngine");
-  }
-
-  @Test
-  void shouldDetectSpringBootEvents() {
-    EvaluationResult result =
-        Camunda7MigrationRules.ensureNoSpringBootEvents()
-            .evaluate(new ClassFileImporter().importClasses(MySpringEventSubscriber.class));
-    assertThat(result.hasViolation()).isTrue();
-    assertThat(result.getFailureReport().getDetails()).hasSize(1);
-    assertThat(result.getFailureReport().getDetails().get(0))
-        .contains(
-            "org.camunda.community.migration.detector.rules.RulesTest$MyProcessEnginePlugin",
-            "org.camunda.bpm.engine.impl.cfg.ProcessEnginePlugin");
-  }
-
-  @Test
-  void shouldDetectRepositoryServiceInvocation() throws JsonProcessingException {
-    EvaluationResult result =
-        Camunda7MigrationRules.ensureNoInvocationOfRepositoryService()
-            .evaluate(classes(MyProcessEngineServicesBean.class));
-    CodeMigrationReport report = new CodeMigrationReport(new HashMap<>());
-    result.handleViolations(new ReportPrinter(report));
-    String reportString =
-        new ObjectMapper().writerWithDefaultPrettyPrinter().writeValueAsString(report);
-    System.out.println(reportString);
-    assertThat(result.hasViolation()).isTrue();
-    assertThat(result.getFailureReport().getDetails()).hasSize(1);
-    assertThat(result.getFailureReport().getDetails().get(0))
-        .contains(
-            "org.camunda.community.migration.detector.rules.RulesTest$MyProcessEnginePlugin",
-            "org.camunda.bpm.engine.impl.cfg.ProcessEnginePlugin");
-  }
+  private record DynamicTestInput(
+      String displayName,
+      ArchRule archRule,
+      JavaClasses classes,
+      Class<?> expectedClass,
+      String expectedRule,
+      String... expectedViolationContains) {}
 
   static class MyExecutionListener implements ExecutionListener {
     @Override

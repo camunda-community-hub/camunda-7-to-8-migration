@@ -8,7 +8,7 @@ import com.tngtech.archunit.lang.SimpleConditionEvent;
 
 public class Camunda7MigrationConditions {
   public static ArchCondition<JavaMethod> haveCamundaBpmParameterTypes() {
-    return new ArchCondition<>("not have camunda bpm parameter types") {
+    return new ArchCondition<>("have camunda bpm parameter types") {
       @Override
       public void check(JavaMethod item, ConditionEvents events) {
         for (JavaClass parameterType : item.getRawParameterTypes()) {

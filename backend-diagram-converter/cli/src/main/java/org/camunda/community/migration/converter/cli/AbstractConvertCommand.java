@@ -59,6 +59,12 @@ public abstract class AbstractConvertCommand implements Callable<Integer> {
           "If enabled, a CSV file will be created containing the results for all conversions")
   boolean csv;
 
+  @Option(
+      names = {"--md", "--markdown"},
+      description =
+          "If enabled, a markdown file will be created containing the results for all conversions")
+  boolean markdown;
+
   @Option(names = "--check", description = "If enabled, no converted diagrams are exported")
   boolean check;
 
@@ -109,6 +115,16 @@ public abstract class AbstractConvertCommand implements Callable<Integer> {
         returnCode = 1;
       }
     }
+    if (markdown) {
+      File markdownFile = determineFileName(new File(targetDirectory(), "conversion-results.md"));
+      try (FileWriter fw = new FileWriter(markdownFile)) {
+        converter.writeMarkdownFile(results, fw);
+        LOG_CLI.info("Created {}", markdownFile);
+      } catch (IOException e) {
+        LOG_CLI.error("Error while creating markdown results: {}", createMessage(e));
+        returnCode = 1;
+      }
+    }
   }
 
   protected abstract File targetDirectory();
@@ -123,7 +139,7 @@ public abstract class AbstractConvertCommand implements Callable<Integer> {
   private BpmnDiagramCheckResult checkModel(Entry<File, BpmnModelInstance> modelInstance) {
     try {
       return converter.check(
-          modelInstance.getKey().getAbsolutePath(),
+          modelInstance.getKey().getPath(),
           modelInstance.getValue(),
           ConverterPropertiesFactory.getInstance().merge(converterProperties()));
     } catch (Exception e) {

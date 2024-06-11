@@ -9,6 +9,7 @@ import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Map.Entry;
 import java.util.stream.Collectors;
 import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Transformer;
@@ -24,6 +25,7 @@ import org.camunda.bpm.model.xml.instance.DomDocument;
 import org.camunda.bpm.model.xml.instance.DomElement;
 import org.camunda.community.migration.converter.BpmnDiagramCheckResult.BpmnElementCheckMessage;
 import org.camunda.community.migration.converter.BpmnDiagramCheckResult.BpmnElementCheckResult;
+import org.camunda.community.migration.converter.BpmnDiagramCheckResult.Severity;
 import org.camunda.community.migration.converter.DomElementVisitorContext.DefaultDomElementVisitorContext;
 import org.camunda.community.migration.converter.conversion.Conversion;
 import org.camunda.community.migration.converter.visitor.AbstractProcessElementVisitor;
@@ -191,8 +193,66 @@ public class BpmnConverter {
       csvWriter.writeNext(createHeaders());
       csvWriter.writeAll(createLines(results));
     } catch (IOException e) {
-      throw new RuntimeException(e);
+      throw new RuntimeException("Error while writing csv file", e);
     }
+  }
+
+  public void writeMarkdownFile(List<BpmnDiagramCheckResult> results, Writer writer) {
+    try {
+      writeHeader(writer);
+      for (BpmnDiagramCheckResult result : results) {
+        writeMarkdownFile(result, writer);
+      }
+    } catch (IOException e) {
+      throw new RuntimeException("Error while writing markdown file", e);
+    }
+  }
+
+  private void writeHeader(Writer writer) throws IOException {
+    writer.write("# Conversion Report\n\n");
+  }
+
+  private void writeMarkdownFile(BpmnDiagramCheckResult result, Writer writer) throws IOException {
+    writer.write("## " + result.getFilename() + "\n\n");
+    for (BpmnElementCheckResult elementCheckResult : result.getResults()) {
+      writeMarkdownFile(elementCheckResult, writer);
+    }
+  }
+
+  private void writeMarkdownFile(BpmnElementCheckResult result, Writer writer) throws IOException {
+    if (!result.getMessages().isEmpty()) {
+      if (result.getElementName() != null) {
+        writer.write("### " + result.getElementName() + " (`" + result.getElementId() + "`)\n\n");
+      } else {
+        writer.write("### `" + result.getElementId() + "`\n\n");
+      }
+      writer.write("Type: `" + result.getElementType() + "`\n\n");
+      writer.write("Messages by severity:\n\n");
+      for (Entry<Severity, List<BpmnElementCheckMessage>> message :
+          result.getMessages().stream()
+              .collect(Collectors.groupingBy(BpmnElementCheckMessage::getSeverity))
+              .entrySet()) {
+        writeMarkdownFile(message.getKey(), message.getValue(), writer);
+      }
+    }
+  }
+
+  private void writeMarkdownFile(
+      Severity severity, List<BpmnElementCheckMessage> messages, Writer writer) throws IOException {
+    writer.write("* " + severity + " (" + messages.size() + ")\n");
+    for (BpmnElementCheckMessage message : messages) {
+      writeMarkdownFile(message, writer);
+    }
+    writer.write("\n");
+  }
+
+  private void writeMarkdownFile(BpmnElementCheckMessage message, Writer writer)
+      throws IOException {
+    writer.write("  * " + message.getMessage());
+    if (message.getLink() != null) {
+      writer.write(" ([more information](" + message.getLink() + "))");
+    }
+    writer.write("\n");
   }
 
   private String[] createHeaders() {

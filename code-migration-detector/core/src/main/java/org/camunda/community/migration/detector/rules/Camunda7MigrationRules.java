@@ -31,7 +31,7 @@ public class Camunda7MigrationRules {
   public static ArchRule ensureNoInvocationOfProcessEngine() {
     return ArchRuleDefinition.noClasses()
         .should()
-        .callMethodWhere(target(owner(assignableTo(ProcessEngineServices.class))));
+        .callMethodWhere(target(owner(assignableTo(ProcessEngine.class))));
   }
 
   public static ArchRule ensureNoSpringBootEvents() {
