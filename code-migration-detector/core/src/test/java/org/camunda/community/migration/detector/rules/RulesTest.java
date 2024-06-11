@@ -8,7 +8,6 @@ import com.tngtech.archunit.core.importer.ClassFileImporter;
 import com.tngtech.archunit.lang.ArchRule;
 import java.io.IOException;
 import java.util.stream.Stream;
-import org.camunda.bpm.engine.ProcessEngine;
 import org.camunda.bpm.engine.RepositoryService;
 import org.camunda.bpm.engine.delegate.DelegateExecution;
 import org.camunda.bpm.engine.delegate.DelegateTask;
@@ -33,37 +32,35 @@ public class RulesTest {
     return Stream.of(
             new DynamicTestInput(
                 "should detect execution listener implementation",
-                Camunda7MigrationRules.ensureNoExecutionListener(),
+                Camunda7MigrationRules.ensureNoImplementationOfCamunda7Interfaces(),
                 classes(MyExecutionListener.class),
                 RulesTest.class,
-                "no classes should implement " + ExecutionListener.class.getName(),
+                "no classes should implement camunda bpm interface",
                 MyExecutionListener.class.getName(),
                 ExecutionListener.class.getName()),
             new DynamicTestInput(
                 "should detect task listener implementation",
-                Camunda7MigrationRules.ensureNoTaskListener(),
+                Camunda7MigrationRules.ensureNoImplementationOfCamunda7Interfaces(),
                 classes(MyTaskListener.class),
                 RulesTest.class,
-                "no classes should implement " + TaskListener.class.getName(),
+                "no classes should implement camunda bpm interface",
                 MyTaskListener.class.getName(),
                 TaskListener.class.getName()),
             new DynamicTestInput(
                 "should detect process engine plugin implementation",
-                Camunda7MigrationRules.ensureNoProcessEnginePlugin(),
+                Camunda7MigrationRules.ensureNoImplementationOfCamunda7Interfaces(),
                 classes(MyProcessEnginePlugin.class),
                 RulesTest.class,
-                "no classes should implement " + ProcessEnginePlugin.class.getName(),
+                "no classes should implement camunda bpm interface",
                 MyProcessEnginePlugin.class.getName(),
                 ProcessEnginePlugin.class.getName()),
             new DynamicTestInput(
                 "should detect process engine method invocation",
-                Camunda7MigrationRules.ensureNoInvocationOfProcessEngine(),
+                Camunda7MigrationRules.ensureNoInvocationOfCamunda7Api(),
                 classes(MyDelegate.class),
                 RulesTest.class,
-                "no classes should call method where target owner assignable to "
-                    + ProcessEngine.class.getName(),
-                MyDelegate.class.getName(),
-                ProcessEngine.class.getName()),
+                "no classes should call method where target owner assignable to camunda bpm api",
+                MyDelegate.class.getName()),
             new DynamicTestInput(
                 "should detect spring boot event handlers",
                 Camunda7MigrationRules.ensureNoSpringBootEvents(),
@@ -73,10 +70,10 @@ public class RulesTest {
                 TaskEvent.class.getName()),
             new DynamicTestInput(
                 "should detect repository service invocation",
-                Camunda7MigrationRules.ensureNoInvocationOfRepositoryService(),
+                Camunda7MigrationRules.ensureNoInvocationOfCamunda7Api(),
                 classes(MyProcessEngineServicesBean.class),
                 RulesTest.class,
-                "no classes should call method where target owner assignable to org.camunda.bpm.engine.RepositoryService",
+                "no classes should call method where target owner assignable to camunda bpm api",
                 "org.camunda.community.migration.detector.rules.RulesTest$MyProcessEngineServicesBean.doSomethingWithTheServices()",
                 "org.camunda.bpm.engine.RepositoryService.createDeployment()"))
         .map(
@@ -109,17 +106,10 @@ public class RulesTest {
     assertThat(report.classes().isEmpty()).isFalse();
     assertThat(report.classes()).containsKey(expectedClass.getName());
     assertThat(report.classes().get(RulesTest.class.getName()).rules()).containsKey(expectedRule);
-    assertThat(report.classes().get(expectedClass.getName()).rules().get(expectedRule)).hasSize(1);
-    assertThat(
-            report
-                .classes()
-                .get(expectedClass.getName())
-                .rules()
-                .get(expectedRule)
-                .iterator()
-                .next()
-                .violation())
-        .contains(expectedViolationContains);
+    assertThat(report.classes().get(expectedClass.getName()).rules().get(expectedRule))
+        .hasSizeGreaterThanOrEqualTo(1);
+    assertThat(report.classes().get(expectedClass.getName()).rules().get(expectedRule))
+        .anySatisfy(rule -> assertThat(rule.violation()).contains(expectedViolationContains));
   }
 
   private record DynamicTestInput(
@@ -147,7 +137,7 @@ public class RulesTest {
   static class MyDelegate implements JavaDelegate {
     @Override
     public void execute(DelegateExecution delegateExecution) throws Exception {
-      delegateExecution.getProcessEngine().getRuntimeService().startProcessInstanceByKey("process");
+      delegateExecution.getProcessEngine();
     }
   }
 

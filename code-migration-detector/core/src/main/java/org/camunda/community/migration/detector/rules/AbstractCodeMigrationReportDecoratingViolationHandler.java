@@ -3,10 +3,10 @@ package org.camunda.community.migration.detector.rules;
 import com.tngtech.archunit.core.domain.JavaClass;
 import com.tngtech.archunit.lang.ArchRule;
 import com.tngtech.archunit.lang.ViolationHandler;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.List;
 import org.camunda.community.migration.detector.rules.CodeMigrationReport.CodeMigrationReportForClass;
 import org.camunda.community.migration.detector.rules.CodeMigrationReport.CodeMigrationReportForClass.CodeMigrationReportForRule;
 
@@ -36,10 +36,10 @@ public abstract class AbstractCodeMigrationReportDecoratingViolationHandler<T>
                     .computeIfAbsent(
                         getFileClass(extractJavaClass(violatingObject)).getFullName(),
                         c -> new CodeMigrationReportForClass(new HashMap<>()));
-            Set<CodeMigrationReportForRule> codeMigrationReportForRules =
+            List<CodeMigrationReportForRule> codeMigrationReportForRules =
                 codeMigrationReportForClass
                     .rules()
-                    .computeIfAbsent(archRule.getDescription(), c -> new HashSet<>());
+                    .computeIfAbsent(archRule.getDescription(), c -> new ArrayList<>());
             codeMigrationReportForRules.add(new CodeMigrationReportForRule(message));
           }
         });
