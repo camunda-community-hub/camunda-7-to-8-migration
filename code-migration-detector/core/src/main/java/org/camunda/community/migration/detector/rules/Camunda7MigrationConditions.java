@@ -46,10 +46,6 @@ public class Camunda7MigrationConditions {
             violationCandidates.add(interFace);
           }
         }
-        for (JavaClass violationCandidate : violationCandidates) {
-          System.out.println(
-              violationCandidate.getName() + ": " + violationCandidate.getAllRawInterfaces());
-        }
         for (JavaClass interFace : violationCandidates) {
           conditionEvents.add(
               SimpleConditionEvent.satisfied(

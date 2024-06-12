@@ -12,45 +12,41 @@ import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public class CodeMigrationReportBuilder {
-  private final ArchRule archRule;
-  private final EvaluationResult evaluationResult;
+  private final JavaClasses javaClasses;
   private final CodeMigrationReport codeMigrationReport = new CodeMigrationReport(new HashMap<>());
   private final AtomicBoolean built = new AtomicBoolean(false);
 
-  public CodeMigrationReportBuilder(ArchRule archRule, JavaClasses javaClasses) {
-    this.archRule = archRule;
-    this.evaluationResult = archRule.evaluate(javaClasses);
+  public CodeMigrationReportBuilder(JavaClasses javaClasses) {
+    this.javaClasses = javaClasses;
+  }
+
+  public CodeMigrationReportBuilder withArchRule(ArchRule archRule) {
+    EvaluationResult evaluationResult = archRule.evaluate(javaClasses);
+    getViolationHandlers(archRule)
+        .forEach(violationHandler -> evaluationResult.handleViolations(violationHandler));
+    return this;
   }
 
   public CodeMigrationReport build() {
-    if (!built.get()) {
-      getViolationHandlers()
-          .forEach(violationHandler -> evaluationResult.handleViolations(violationHandler));
-      built.set(true);
-    }
     return codeMigrationReport;
   }
 
-  private Set<ViolationHandler<?>> getViolationHandlers() {
+  private Set<ViolationHandler<?>> getViolationHandlers(ArchRule archRule) {
     return Set.of(
-        javaClassViolationHandler(),
-        javaMethodViolationHandler(),
-        javaMethodCallViolationHandler());
+        javaClassViolationHandler(archRule),
+        javaMethodViolationHandler(archRule),
+        javaMethodCallViolationHandler(archRule));
   }
 
-  private JavaClass getFileClass(JavaClass clazz) {
-    return clazz.getEnclosingClass().map(this::getFileClass).orElse(clazz);
-  }
-
-  private ViolationHandler<JavaClass> javaClassViolationHandler() {
+  private ViolationHandler<JavaClass> javaClassViolationHandler(ArchRule archRule) {
     return new JavaClassViolationHandler(codeMigrationReport, archRule);
   }
 
-  private ViolationHandler<JavaMethod> javaMethodViolationHandler() {
+  private ViolationHandler<JavaMethod> javaMethodViolationHandler(ArchRule archRule) {
     return new JavaMethodViolationHandler(codeMigrationReport, archRule);
   }
 
-  private ViolationHandler<JavaMethodCall> javaMethodCallViolationHandler() {
+  private ViolationHandler<JavaMethodCall> javaMethodCallViolationHandler(ArchRule archRule) {
     return new JavaMethodCallViolationHandler(codeMigrationReport, archRule);
   }
 }
