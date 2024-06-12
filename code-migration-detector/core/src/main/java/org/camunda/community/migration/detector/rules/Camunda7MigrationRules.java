@@ -13,13 +13,13 @@ import com.tngtech.archunit.lang.syntax.ArchRuleDefinition;
 public class Camunda7MigrationRules {
 
   public static ArchRule ensureNoImplementationOfCamunda7Interfaces() {
-    return ArchRuleDefinition.noClasses().should(implementCamundaBpmInterface());
+    return ArchRuleDefinition.noClasses().should(implementCamunda7Interface());
   }
 
   public static ArchRule ensureNoSpringBootEvents() {
     return ArchRuleDefinition.noMethods()
         .that(isSpringEventListener())
-        .should(haveCamundaBpmParameterTypes());
+        .should(haveCamunda7ParameterTypes());
   }
 
   public static ArchRule ensureNoInvocationOfCamunda7Api() {

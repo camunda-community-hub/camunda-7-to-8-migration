@@ -16,7 +16,7 @@ public class Camunda7MigrationPredicates {
   }
 
   public static DescribedPredicate<JavaClass> camunda7Api() {
-    return new DescribedPredicate<>("camunda bpm api") {
+    return new DescribedPredicate<>("camunda 7 api") {
       @Override
       public boolean test(JavaClass javaClass) {
         return javaClass.getPackageName().startsWith("org.camunda.bpm");

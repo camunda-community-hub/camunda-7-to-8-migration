@@ -35,7 +35,7 @@ public class RulesTest {
                 Camunda7MigrationRules.ensureNoImplementationOfCamunda7Interfaces(),
                 classes(MyExecutionListener.class),
                 RulesTest.class,
-                "no classes should implement camunda bpm interface",
+                "no classes should implement camunda 7 interface",
                 MyExecutionListener.class.getName(),
                 ExecutionListener.class.getName()),
             new DynamicTestInput(
@@ -43,7 +43,7 @@ public class RulesTest {
                 Camunda7MigrationRules.ensureNoImplementationOfCamunda7Interfaces(),
                 classes(MyTaskListener.class),
                 RulesTest.class,
-                "no classes should implement camunda bpm interface",
+                "no classes should implement camunda 7 interface",
                 MyTaskListener.class.getName(),
                 TaskListener.class.getName()),
             new DynamicTestInput(
@@ -51,7 +51,7 @@ public class RulesTest {
                 Camunda7MigrationRules.ensureNoImplementationOfCamunda7Interfaces(),
                 classes(MyProcessEnginePlugin.class),
                 RulesTest.class,
-                "no classes should implement camunda bpm interface",
+                "no classes should implement camunda 7 interface",
                 MyProcessEnginePlugin.class.getName(),
                 ProcessEnginePlugin.class.getName()),
             new DynamicTestInput(
@@ -59,21 +59,21 @@ public class RulesTest {
                 Camunda7MigrationRules.ensureNoInvocationOfCamunda7Api(),
                 classes(MyDelegate.class),
                 RulesTest.class,
-                "no classes should call method where target owner assignable to camunda bpm api",
+                "no classes should call method where target owner assignable to camunda 7 api",
                 MyDelegate.class.getName()),
             new DynamicTestInput(
                 "should detect spring boot event handlers",
                 Camunda7MigrationRules.ensureNoSpringBootEvents(),
                 classes(MySpringEventSubscriber.class),
                 RulesTest.class,
-                "no methods that is spring event listener should have camunda bpm parameter types",
+                "no methods that is spring event listener should have camunda 7 parameter types",
                 TaskEvent.class.getName()),
             new DynamicTestInput(
                 "should detect repository service invocation",
                 Camunda7MigrationRules.ensureNoInvocationOfCamunda7Api(),
                 classes(MyProcessEngineServicesBean.class),
                 RulesTest.class,
-                "no classes should call method where target owner assignable to camunda bpm api",
+                "no classes should call method where target owner assignable to camunda 7 api",
                 "org.camunda.community.migration.detector.rules.RulesTest$MyProcessEngineServicesBean.doSomethingWithTheServices()",
                 "org.camunda.bpm.engine.RepositoryService.createDeployment()"))
         .map(

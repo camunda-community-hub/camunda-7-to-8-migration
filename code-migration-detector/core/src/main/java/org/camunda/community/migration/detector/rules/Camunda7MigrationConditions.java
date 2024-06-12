@@ -12,25 +12,25 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 public class Camunda7MigrationConditions {
-  public static ArchCondition<JavaMethod> haveCamundaBpmParameterTypes() {
-    return new ArchCondition<>("have camunda bpm parameter types") {
+  public static ArchCondition<JavaMethod> haveCamunda7ParameterTypes() {
+    return new ArchCondition<>("have camunda 7 parameter types") {
       @Override
       public void check(JavaMethod item, ConditionEvents events) {
         for (JavaClass parameterType : item.getRawParameterTypes()) {
-          if (parameterType.getPackage().getName().startsWith("org.camunda.bpm")) {
+          if (isCamunda7Code(parameterType)) {
             events.add(
                 SimpleConditionEvent.satisfied(
                     item,
                     String.format(
-                        "Parameter type %s comes from camunda bpm", parameterType.getName())));
+                        "Parameter type %s comes from camunda 7", parameterType.getName())));
           }
         }
       }
     };
   }
 
-  public static ArchCondition<JavaClass> implementCamundaBpmInterface() {
-    return new ArchCondition<>("implement camunda bpm interface") {
+  public static ArchCondition<JavaClass> implementCamunda7Interface() {
+    return new ArchCondition<>("implement camunda 7 interface") {
 
       @Override
       public void check(JavaClass javaClass, ConditionEvents conditionEvents) {
@@ -42,7 +42,7 @@ public class Camunda7MigrationConditions {
                 .collect(Collectors.toSet()));
         Set<JavaClass> violationCandidates = new HashSet<>();
         for (JavaClass interFace : interfaces) {
-          if (isCamundaBpmCode(interFace)) {
+          if (isCamunda7Code(interFace)) {
             violationCandidates.add(interFace);
           }
         }
@@ -64,7 +64,7 @@ public class Camunda7MigrationConditions {
     };
   }
 
-  private static boolean isCamundaBpmCode(JavaClass javaClass) {
+  private static boolean isCamunda7Code(JavaClass javaClass) {
     return javaClass.getPackageName().startsWith("org.camunda.bpm");
   }
 }

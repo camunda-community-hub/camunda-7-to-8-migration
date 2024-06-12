@@ -38,8 +38,8 @@ The test will then look like this:
 public class SimpleDetectionTest {
 
   @ArchTest
-    public void testNoTaskListeners(JavaClasses classes) {
-    Camunda7MigrationRules.ensureNoTaskListener().check(classes);
+    public void testCamundaBpmInterfacesImplemented(JavaClasses classes) {
+    Camunda7MigrationRules.ensureNoCamundaBpmInterfacesImplemented().check(classes);
   }
 
 }
@@ -66,77 +66,17 @@ import com.tngtech.archunit.junit.ArchTest;
 public class MigrationPreparationTest {
 
   @ArchTest
-  public void testNoExecutionListeners(JavaClasses classes) {
-    Camunda7MigrationRules.ensureNoExecutionListener().check(classes);
+  public void testNoImplementationOfCamunda7Interfaces(JavaClasses classes) {
+    Camunda7MigrationRules.ensureNoImplementationOfCamunda7Interfaces().check(classes);
   }
 
   @ArchTest
-  public void testNoTaskListeners(JavaClasses classes) {
-    Camunda7MigrationRules.ensureNoTaskListener().check(classes);
+  public void testNoSpringBootEvents(JavaClasses classes) {
+    Camunda7MigrationRules.ensureNoSpringBootEvents().check(classes);
   }
   @ArchTest
-  public void testNoSpringEventTaskListeners(JavaClasses classes) {
-    Camunda7MigrationRules.ensureNoSpringEventTaskListeners().check(classes);
-  }
-
-  @ArchTest
-  public void testNoSpringEventExecutionListeners(JavaClasses classes) {
-    Camunda7MigrationRules.ensureNoSpringEventExecutionListeners().check(classes);
-  }
-
-  @ArchTest
-  public void testNoSpringEventHistoryEventListeners(JavaClasses classes) {
-    Camunda7MigrationRules.ensureNoSpringEventHistoryEventListeners().check(classes);
-  }
-
-  @ArchTest
-  public void testNoInvocationOfRuntimeService(JavaClasses classes) {
-    Camunda7MigrationRules.ensureNoInvocationOfRuntimeService().check(classes);
-  }
-
-  @ArchTest
-  public void testNoInvocationOfHistoryService(JavaClasses classes) {
-    Camunda7MigrationRules.ensureNoInvocationOfHistoryService().check(classes);
-  }
-
-  @ArchTest
-  public void testNoInvocationOfRepositoryService(JavaClasses classes) {
-    Camunda7MigrationRules.ensureNoInvocationOfRepositoryService().check(classes);
-  }
-
-  @ArchTest
-  public void testNoInvocationOfTaskService(JavaClasses classes) {
-    Camunda7MigrationRules.ensureNoInvocationOfTaskService().check(classes);
-  }
-
-  @ArchTest
-  public void testNoInvocationOfIdentityService(JavaClasses classes) {
-    Camunda7MigrationRules.ensureNoInvocationOfIdentityService().check(classes);
-  }
-
-  @ArchTest
-  public void testNoInvocationOfFilterService(JavaClasses classes) {
-    Camunda7MigrationRules.ensureNoInvocationOfFilterService().check(classes);
-  }
-
-  @ArchTest
-  public void testNoInvocationOfDecisionService(JavaClasses classes) {
-    Camunda7MigrationRules.ensureNoInvocationOfDecisionService().check(classes);
-  }
-
-  @ArchTest
-  public void testNoInvocationOfExternalTaskService(JavaClasses classes) {
-    Camunda7MigrationRules.ensureNoInvocationOfExternalTaskService().check(classes);
-  }
-
-  @ArchTest
-  public void testNoInvocationOfManagementService(JavaClasses classes) {
-    Camunda7MigrationRules.ensureNoInvocationOfManagementService().check(classes);
-  }
-
-  @ArchTest
-  public void testNoInvocationOfCaseService(JavaClasses classes) {
-    Camunda7MigrationRules.ensureNoInvocationOfCaseService().check(classes);
+  public void testNoInvocationOfCamunda7Api(JavaClasses classes) {
+    Camunda7MigrationRules.ensureNoInvocationOfCamunda7Api().check(classes);
   }
 }
 ```
