@@ -2,6 +2,8 @@ package org.camunda.community.migration.converter;
 
 import com.opencsv.CSVWriterBuilder;
 import com.opencsv.ICSVWriter;
+import com.samskivert.mustache.Mustache;
+import com.samskivert.mustache.Template;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -9,7 +11,6 @@ import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Map.Entry;
 import java.util.stream.Collectors;
 import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Transformer;
@@ -23,9 +24,12 @@ import org.camunda.bpm.model.bpmn.impl.BpmnParser;
 import org.camunda.bpm.model.xml.impl.util.ModelIoException;
 import org.camunda.bpm.model.xml.instance.DomDocument;
 import org.camunda.bpm.model.xml.instance.DomElement;
+import org.camunda.community.migration.converter.BpmnConverter.MustacheContext.MustacheResultContext;
+import org.camunda.community.migration.converter.BpmnConverter.MustacheContext.MustacheResultContext.MustacheElementResultContext;
+import org.camunda.community.migration.converter.BpmnConverter.MustacheContext.MustacheResultContext.MustacheElementResultContext.MustacheSeverityContext;
+import org.camunda.community.migration.converter.BpmnConverter.MustacheContext.MustacheResultContext.MustacheElementResultContext.MustacheSeverityContext.MustacheMessageContext;
 import org.camunda.community.migration.converter.BpmnDiagramCheckResult.BpmnElementCheckMessage;
 import org.camunda.community.migration.converter.BpmnDiagramCheckResult.BpmnElementCheckResult;
-import org.camunda.community.migration.converter.BpmnDiagramCheckResult.Severity;
 import org.camunda.community.migration.converter.DomElementVisitorContext.DefaultDomElementVisitorContext;
 import org.camunda.community.migration.converter.conversion.Conversion;
 import org.camunda.community.migration.converter.visitor.AbstractProcessElementVisitor;
@@ -35,6 +39,19 @@ import org.slf4j.LoggerFactory;
 
 public class BpmnConverter {
   private static final Logger LOG = LoggerFactory.getLogger(BpmnConverter.class);
+  private static final Template MARKDOWN_TEMPLATE;
+
+  static {
+    try (InputStream in =
+        BpmnConverter.class
+            .getClassLoader()
+            .getResourceAsStream("bpmn-diagram-check-result.mustache")) {
+      MARKDOWN_TEMPLATE = Mustache.compiler().compile(new String(in.readAllBytes()));
+    } catch (IOException e) {
+      throw new RuntimeException("Error while loading result printer template", e);
+    }
+  }
+
   private final BpmnParser bpmnParser = new BpmnParser();
   private final List<DomElementVisitor> visitors;
   private final List<Conversion> conversions;
@@ -198,61 +215,63 @@ public class BpmnConverter {
   }
 
   public void writeMarkdownFile(List<BpmnDiagramCheckResult> results, Writer writer) {
-    try {
-      writeHeader(writer);
-      for (BpmnDiagramCheckResult result : results) {
-        writeMarkdownFile(result, writer);
-      }
-    } catch (IOException e) {
-      throw new RuntimeException("Error while writing markdown file", e);
-    }
+    MARKDOWN_TEMPLATE.execute(createContext(results), writer);
   }
 
-  private void writeHeader(Writer writer) throws IOException {
-    writer.write("# Conversion Report\n\n");
-  }
-
-  private void writeMarkdownFile(BpmnDiagramCheckResult result, Writer writer) throws IOException {
-    writer.write("## " + result.getFilename() + "\n\n");
-    for (BpmnElementCheckResult elementCheckResult : result.getResults()) {
-      writeMarkdownFile(elementCheckResult, writer);
-    }
-  }
-
-  private void writeMarkdownFile(BpmnElementCheckResult result, Writer writer) throws IOException {
-    if (!result.getMessages().isEmpty()) {
-      if (result.getElementName() != null) {
-        writer.write("### " + result.getElementName() + " (`" + result.getElementId() + "`)\n\n");
-      } else {
-        writer.write("### `" + result.getElementId() + "`\n\n");
-      }
-      writer.write("Type: `" + result.getElementType() + "`\n\n");
-      writer.write("Messages by severity:\n\n");
-      for (Entry<Severity, List<BpmnElementCheckMessage>> message :
-          result.getMessages().stream()
-              .collect(Collectors.groupingBy(BpmnElementCheckMessage::getSeverity))
-              .entrySet()) {
-        writeMarkdownFile(message.getKey(), message.getValue(), writer);
-      }
-    }
-  }
-
-  private void writeMarkdownFile(
-      Severity severity, List<BpmnElementCheckMessage> messages, Writer writer) throws IOException {
-    writer.write("* " + severity + " (" + messages.size() + ")\n");
-    for (BpmnElementCheckMessage message : messages) {
-      writeMarkdownFile(message, writer);
-    }
-    writer.write("\n");
-  }
-
-  private void writeMarkdownFile(BpmnElementCheckMessage message, Writer writer)
-      throws IOException {
-    writer.write("  * " + message.getMessage());
-    if (message.getLink() != null) {
-      writer.write(" ([more information](" + message.getLink() + "))");
-    }
-    writer.write("\n");
+  private MustacheContext createContext(List<BpmnDiagramCheckResult> results) {
+    List<MustacheResultContext> contexts = new ArrayList<>();
+    results.forEach(
+        bpmnDiagramCheckResult -> {
+          List<MustacheElementResultContext> resultList = new ArrayList<>();
+          bpmnDiagramCheckResult
+              .getResults()
+              .forEach(
+                  bpmnElementCheckResult -> {
+                    List<MustacheSeverityContext> severities = new ArrayList<>();
+                    bpmnElementCheckResult
+                        .getMessages()
+                        .forEach(
+                            bpmnElementCheckMessage -> {
+                              // create severity if absent
+                              MustacheSeverityContext mustacheSeverityContext =
+                                  severities.stream()
+                                      .filter(
+                                          severity ->
+                                              severity
+                                                  .severity()
+                                                  .equals(
+                                                      bpmnElementCheckMessage.getSeverity().name()))
+                                      .findFirst()
+                                      .orElseGet(
+                                          () -> {
+                                            List<MustacheMessageContext> messages =
+                                                new ArrayList<>();
+                                            MustacheSeverityContext newMustacheSeverityContext =
+                                                new MustacheSeverityContext(
+                                                    bpmnElementCheckMessage.getSeverity().name(),
+                                                    messages,
+                                                    (frag, out) ->
+                                                        out.write(String.valueOf(messages.size())));
+                                            severities.add(newMustacheSeverityContext);
+                                            return newMustacheSeverityContext;
+                                          });
+                              mustacheSeverityContext
+                                  .messages()
+                                  .add(
+                                      new MustacheMessageContext(
+                                          bpmnElementCheckMessage.getMessage(),
+                                          bpmnElementCheckMessage.getLink()));
+                            });
+                    resultList.add(
+                        new MustacheElementResultContext(
+                            bpmnElementCheckResult.getElementName(),
+                            bpmnElementCheckResult.getElementId(),
+                            bpmnElementCheckResult.getElementType(),
+                            severities));
+                  });
+          contexts.add(new MustacheResultContext(bpmnDiagramCheckResult.getFilename(), resultList));
+        });
+    return new MustacheContext(contexts);
   }
 
   private String[] createHeaders() {
@@ -281,5 +300,20 @@ public class BpmnConverter {
                                           message.getLink()
                                         })))
         .collect(Collectors.toList());
+  }
+
+  record MustacheContext(List<MustacheResultContext> contexts) {
+    record MustacheResultContext(String filename, List<MustacheElementResultContext> results) {
+      record MustacheElementResultContext(
+          String elementName,
+          String elementId,
+          String elementType,
+          List<MustacheSeverityContext> severities) {
+        record MustacheSeverityContext(
+            String severity, List<MustacheMessageContext> messages, Mustache.Lambda count) {
+          record MustacheMessageContext(String message, String link) {}
+        }
+      }
+    }
   }
 }
