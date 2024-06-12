@@ -23,15 +23,15 @@ public class ExpressionTransformer {
     if (juelExpression == null) {
       return null;
     }
-    if (juelExpression.length() == 0) {
+    if (juelExpression.isEmpty()) {
       return "=null";
     }
     // split into expressions and non-expressions
     List<String> nonExpressions =
         Arrays.stream(juelExpression.split("(#|\\$)\\{.*}"))
             .map(String::trim)
-            .filter(s -> s.length() > 0)
-            .collect(Collectors.toList());
+            .filter(s -> !s.isEmpty())
+            .toList();
     if (nonExpressions.size() == 1
         && juelExpression.trim().length() == nonExpressions.get(0).length()) {
       return juelExpression;
@@ -39,7 +39,7 @@ public class ExpressionTransformer {
     List<String> expressions =
         Arrays.stream(juelExpression.split("(#|\\$)\\{|}"))
             .map(String::trim)
-            .filter(s -> s.length() > 0)
+            .filter(s -> !s.isEmpty())
             .map(s -> nonExpressions.contains(s) ? "\"" + s + "\"" : handleExpression(s))
             .collect(Collectors.toList());
     return "=" + String.join(" + ", expressions);

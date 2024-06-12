@@ -30,14 +30,16 @@ public class EscalationVisitor extends AbstractEventReferenceVisitor {
   @Override
   protected void postCreationVisitor(DomElementVisitorContext context) {
     String escalationCode = context.getElement().getAttribute(BPMN, "escalationCode");
-    ExpressionTransformationResult expressionTransformationResult =
-        ExpressionTransformer.transform(escalationCode);
-    context.addConversion(
-        EscalationConvertible.class,
-        c -> c.setEscalationCode(expressionTransformationResult.getFeelExpression()));
-    if (expressionTransformationResult != null
-        && expressionTransformationResult.getFeelExpression().startsWith("=")) {
-      context.addMessage(MessageFactory.escalationCodeNoExpression());
+    if (escalationCode != null) {
+      ExpressionTransformationResult expressionTransformationResult =
+          ExpressionTransformer.transform(escalationCode);
+      context.addConversion(
+          EscalationConvertible.class,
+          c -> c.setEscalationCode(expressionTransformationResult.getFeelExpression()));
+      if (expressionTransformationResult != null
+          && expressionTransformationResult.getFeelExpression().startsWith("=")) {
+        context.addMessage(MessageFactory.escalationCodeNoExpression());
+      }
     }
     // this can be enabled as soon as escalation codes can be expressions
     /*
