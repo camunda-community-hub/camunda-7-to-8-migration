@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_1gbx4qr" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.20.0" modeler:executionPlatform="Camunda Platform" modeler:executionPlatformVersion="7.19.0">
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_1gbx4qr" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.23.0" modeler:executionPlatform="Camunda Platform" modeler:executionPlatformVersion="7.19.0">
   <bpmn:process id="TransactionTestProcess" name="Transaction Test" isExecutable="true">
     <bpmn:startEvent id="Event_1i3htun" name="Error code conversion should be tested">
       <bpmn:outgoing>Flow_0we8gbc</bpmn:outgoing>
@@ -21,51 +21,71 @@
       <bpmn:outgoing>Flow_03nn2dd</bpmn:outgoing>
       <bpmn:escalationEventDefinition id="EscalationEventDefinition_075vn24" escalationRef="Escalation_2ja61hj" />
     </bpmn:boundaryEvent>
+    <bpmn:boundaryEvent id="Event_0u2oqnd" attachedToRef="Activity_1h3hatw">
+      <bpmn:outgoing>Flow_1y19z4p</bpmn:outgoing>
+      <bpmn:escalationEventDefinition id="EscalationEventDefinition_1afde1d" escalationRef="Escalation_1rkitc1" />
+    </bpmn:boundaryEvent>
+    <bpmn:endEvent id="Event_075vs0j">
+      <bpmn:incoming>Flow_1y19z4p</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_1y19z4p" sourceRef="Event_0u2oqnd" targetRef="Event_075vs0j" />
   </bpmn:process>
   <bpmn:error id="Error_16zktjx" name="SomeName" errorCode="someCode" />
   <bpmn:escalation id="Escalation_2ja61hj" name="EscalationName" escalationCode="EscalationCode" />
+  <bpmn:escalation id="Escalation_1rkitc1" name="escalationWithoutCode" />
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="TransactionTestProcess">
       <bpmndi:BPMNShape id="Event_1i3htun_di" bpmnElement="Event_1i3htun">
-        <dc:Bounds x="142" y="102" width="36" height="36" />
+        <dc:Bounds x="142" y="202" width="36" height="36" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="116" y="145" width="89" height="40" />
+          <dc:Bounds x="116" y="245" width="89" height="40" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_10af0py_di" bpmnElement="Activity_1h3hatw">
-        <dc:Bounds x="230" y="80" width="100" height="80" />
+        <dc:Bounds x="230" y="180" width="100" height="80" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_09a497u_di" bpmnElement="Event_09a497u">
-        <dc:Bounds x="382" y="102" width="36" height="36" />
+        <dc:Bounds x="382" y="202" width="36" height="36" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="360" y="145" width="81" height="27" />
+          <dc:Bounds x="360" y="245" width="81" height="27" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_1ey9c8f_di" bpmnElement="Event_1ey9c8f">
-        <dc:Bounds x="362" y="222" width="36" height="36" />
+        <dc:Bounds x="362" y="322" width="36" height="36" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="347" y="265" width="67" height="14" />
+          <dc:Bounds x="347" y="365" width="67" height="14" />
         </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_075vs0j_di" bpmnElement="Event_075vs0j">
+        <dc:Bounds x="402" y="82" width="36" height="36" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_1w7mpnk_di" bpmnElement="Event_0apc6gw">
-        <dc:Bounds x="272" y="142" width="36" height="36" />
+        <dc:Bounds x="272" y="242" width="36" height="36" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="248" y="185" width="87" height="14" />
+          <dc:Bounds x="248" y="285" width="87" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0q8enhd_di" bpmnElement="Event_0u2oqnd">
+        <dc:Bounds x="312" y="162" width="36" height="36" />
+      </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="Flow_0we8gbc_di" bpmnElement="Flow_0we8gbc">
-        <di:waypoint x="178" y="120" />
-        <di:waypoint x="230" y="120" />
+        <di:waypoint x="178" y="220" />
+        <di:waypoint x="230" y="220" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0y3k84c_di" bpmnElement="Flow_0y3k84c">
-        <di:waypoint x="330" y="120" />
-        <di:waypoint x="382" y="120" />
+        <di:waypoint x="330" y="220" />
+        <di:waypoint x="382" y="220" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_03nn2dd_di" bpmnElement="Flow_03nn2dd">
-        <di:waypoint x="290" y="178" />
-        <di:waypoint x="290" y="240" />
-        <di:waypoint x="362" y="240" />
+        <di:waypoint x="290" y="278" />
+        <di:waypoint x="290" y="340" />
+        <di:waypoint x="362" y="340" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1y19z4p_di" bpmnElement="Flow_1y19z4p">
+        <di:waypoint x="330" y="162" />
+        <di:waypoint x="330" y="100" />
+        <di:waypoint x="402" y="100" />
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>
