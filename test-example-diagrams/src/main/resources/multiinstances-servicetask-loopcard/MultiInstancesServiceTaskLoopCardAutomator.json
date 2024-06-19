@@ -1,0 +1,47 @@
+{
+  "name": "MultiInstances Service task Loop Cardinality",
+  "processId": "MultiInstanceServiceTaskLoopCard",
+  "executions": [
+    {
+      "name": "Classical path",
+      "steps": [
+        {
+          "type": "STARTEVENT",
+          "taskId": "Start_MultiInstanceServiceTask",
+          "variables": {
+          }
+        },
+        {
+          "comment": "LoopCardinality-parallel - 5 instances, 2 executed, 3 tasks actives",
+          "type": "SERVICETASK",
+          "waitingTime": "PT20S",
+          "taskId": "Activity_Coll_Seq",
+          "numberOfExecutions": 2,
+          "variables": {}
+        },
+        {
+          "comment": " LoopCardinality-sequential - 5 instances 1 executed, 1 task active",
+          "type": "SERVICETASK",
+          "waitingTime": "PT20S",
+          "taskId": "Activity_Card_Seq",
+          "numberOfExecutions": 1,
+          "variables": {}
+        }
+      ],
+      "verifications": {
+        "activities": [
+          {
+            "type": "SERVICETASK",
+            "taskId": "Activity_Card_Para",
+            "numberOfTasks": 16
+          },
+          {
+            "type": "SERVICETASK",
+            "taskId": "Activity_Card_Seq",
+            "numberOfTasks": 1
+          }
+        ]
+      }
+    }
+  ]
+}

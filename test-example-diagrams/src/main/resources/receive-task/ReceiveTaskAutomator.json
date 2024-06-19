@@ -7,13 +7,13 @@
       "steps": [
         {
           "type": "STARTEVENT",
-          "activityId": "Start_ReceiveTask",
+          "taskId": "Start_ReceiveTask",
           "variables": {}
         },
         {
           "type": "USERTASK",
           "delay": "PT0.1S",
-          "activityId": "Activity_Review_1",
+          "taskId": "Activity_Review_1",
           "variables": {}
         }
       ]
