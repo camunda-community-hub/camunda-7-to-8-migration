@@ -1,0 +1,27 @@
+# Conversion Report
+
+{{#contexts}}
+## `{{filename}}`
+{{#results}}
+{{#elementName}}
+### {{elementName}} (`{{elementId}}`)
+{{/elementName}}
+{{^elementName}}
+### `{{elementId}}`
+{{/elementName}}
+
+Type: {{elementType}}
+Messages by severity:
+{{#severities}}
+* {{severity}} ({{#count}}{{/count}})
+{{#messages}}
+{{#link}}
+  * {{message}} ([more information]({{link}}))
+{{/link}}
+{{^link}}
+  * {{message}}
+{{/link}}
+{{/messages}}
+{{/severities}}
+{{/results}}
+{{/contexts}}
