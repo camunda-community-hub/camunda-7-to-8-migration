@@ -61,7 +61,7 @@ public class BpmnConverterTest {
     BpmnConverterFactory.getInstance().get().printXml(modelInstance.getDocument(), true, writer);
     String[] processModel = writer.toString().split("\n");
     for (int i = 1; i < processModel.length; i++) {
-      LOG.debug("" + i + "     " + processModel[i]);
+      LOG.debug("{}     {}", i, processModel[i]);
     }
   }
 
