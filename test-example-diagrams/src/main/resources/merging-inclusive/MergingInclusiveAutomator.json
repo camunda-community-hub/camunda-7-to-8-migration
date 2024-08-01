@@ -8,7 +8,7 @@
       "steps": [
         {
           "type": "STARTEVENT",
-          "activityId": "Start_MergingInclusive",
+          "taskId": "Start_MergingInclusive",
           "variables": {
             "shape": "square",
             "color": "red",
@@ -19,7 +19,7 @@
           "type": "USERTASK",
           "delay": "PT0.1S",
           "waitingTime": "PT20S",
-          "activityId": "Activity_square",
+          "taskId": "Activity_square",
           "variables": {}
         }
       ]
@@ -30,7 +30,7 @@
       "steps": [
         {
           "type": "STARTEVENT",
-          "activityId": "Start_MergingInclusive",
+          "taskId": "Start_MergingInclusive",
           "variables": {
             "shape": "square",
             "color": "blue",
@@ -41,14 +41,14 @@
           "type": "USERTASK",
           "delay": "PT0.1S",
           "waitingTime": "PT20S",
-          "activityId": "Activity_square",
+          "taskId": "Activity_square",
           "variables": {}
         },
         {
           "type": "USERTASK",
           "delay": "PT0.1S",
           "waitingTime": "PT20S",
-          "activityId": "Activity_blue",
+          "taskId": "Activity_blue",
           "variables": {}
         }
       ]
@@ -59,7 +59,7 @@
       "steps": [
         {
           "type": "STARTEVENT",
-          "activityId": "Start_MergingInclusive",
+          "taskId": "Start_MergingInclusive",
           "variables": {
             "shape": "square",
             "color": "blue",
@@ -70,21 +70,21 @@
           "type": "USERTASK",
           "delay": "PT0.1S",
           "waitingTime": "PT20S",
-          "activityId": "Activity_square",
+          "taskId": "Activity_square",
           "variables": {}
         },
         {
           "type": "USERTASK",
           "delay": "PT0.1S",
           "waitingTime": "PT20S",
-          "activityId": "Activity_blue",
+          "taskId": "Activity_blue",
           "variables": {}
         },
         {
           "type": "USERTASK",
           "delay": "PT0.1S",
           "waitingTime": "PT20S",
-          "activityId": "Activity_fill",
+          "taskId": "Activity_fill",
           "variables": {}
         }
       ]
@@ -95,7 +95,7 @@
       "steps": [
         {
           "type": "STARTEVENT",
-          "activityId": "Start_MergingInclusive",
+          "taskId": "Start_MergingInclusive",
           "variables": {
             "shape": "square",
             "color": "blue",
@@ -106,14 +106,14 @@
           "type": "USERTASK",
           "delay": "PT0.1S",
           "waitingTime": "PT20S",
-          "activityId": "Activity_square",
+          "taskId": "Activity_square",
           "variables": {}
         },
         {
           "type": "USERTASK",
           "delay": "PT0.1S",
           "waitingTime": "PT20S",
-          "activityId": "Activity_fill",
+          "taskId": "Activity_fill",
           "variables": {}
         }
       ]

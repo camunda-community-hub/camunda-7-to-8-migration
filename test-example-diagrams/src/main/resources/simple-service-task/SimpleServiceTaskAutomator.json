@@ -8,7 +8,7 @@
       "steps": [
         {
           "type": "STARTEVENT",
-          "activityId": "Start_SimpleServiceTask",
+          "taskId": "Start_SimpleServiceTask",
           "variables": {}
         }
       ]
