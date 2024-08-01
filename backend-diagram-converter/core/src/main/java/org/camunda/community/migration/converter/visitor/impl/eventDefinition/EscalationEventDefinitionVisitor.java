@@ -12,6 +12,25 @@ public class EscalationEventDefinitionVisitor extends AbstractEventDefinitionVis
 
   @Override
   protected SemanticVersion availableFrom(DomElementVisitorContext context) {
-    return SemanticVersion._8_2;
+    if (isThrowing(context)
+        || isAttachedToSubprocess(context)
+        || isAttachedToCallActivity(context)) {
+      return SemanticVersion._8_2;
+    }
+    return null;
+  }
+
+  private boolean isThrowing(DomElementVisitorContext context) {
+    return !isBoundaryEvent(context.getElement());
+  }
+
+  private boolean isAttachedToCallActivity(DomElementVisitorContext context) {
+    return isBoundaryEvent(context.getElement())
+        && findAttachedActivity(context.getElement()).getLocalName().equals("callActivity");
+  }
+
+  private boolean isAttachedToSubprocess(DomElementVisitorContext context) {
+    return isBoundaryEvent(context.getElement())
+        && findAttachedActivity(context.getElement()).getLocalName().equals("subProcess");
   }
 }

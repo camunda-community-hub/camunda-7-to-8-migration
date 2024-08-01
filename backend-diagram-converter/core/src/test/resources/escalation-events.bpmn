@@ -1,9 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_1gbx4qr" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.10.0" modeler:executionPlatform="Camunda Platform" modeler:executionPlatformVersion="7.19.0">
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_1gbx4qr" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.25.0" modeler:executionPlatform="Camunda Platform" modeler:executionPlatformVersion="7.19.0">
   <bpmn:process id="EscalationTestProcess" name="Escalation Test" isExecutable="true">
-    <bpmn:task id="Activity_1yxxd3u">
-      <bpmn:outgoing>Flow_18f7qx0</bpmn:outgoing>
-    </bpmn:task>
     <bpmn:sequenceFlow id="Flow_18f7qx0" sourceRef="Activity_1yxxd3u" targetRef="EscalationThrowEvent" />
     <bpmn:sequenceFlow id="Flow_1yayfbv" sourceRef="EscalationThrowEvent" targetRef="EscalationEndEndEvent" />
     <bpmn:endEvent id="Event_15g5g5i">
@@ -51,12 +48,12 @@
       <bpmn:incoming>Flow_1yayfbv</bpmn:incoming>
       <bpmn:escalationEventDefinition id="EscalationEventDefinition_0khpouq" />
     </bpmn:endEvent>
+    <bpmn:subProcess id="Activity_1yxxd3u">
+      <bpmn:outgoing>Flow_18f7qx0</bpmn:outgoing>
+    </bpmn:subProcess>
   </bpmn:process>
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="EscalationTestProcess">
-      <bpmndi:BPMNShape id="Activity_1yxxd3u_di" bpmnElement="Activity_1yxxd3u">
-        <dc:Bounds x="170" y="187" width="100" height="80" />
-      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_15g5g5i_di" bpmnElement="Event_15g5g5i">
         <dc:Bounds x="282" y="82" width="36" height="36" />
       </bpmndi:BPMNShape>
@@ -107,6 +104,9 @@
           <dc:Bounds x="513" y="252" width="74" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_09v5sov_di" bpmnElement="Activity_1yxxd3u">
+        <dc:Bounds x="170" y="187" width="100" height="80" />
+      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_1envm76_di" bpmnElement="EscalationAttachedBoundaryEvent">
         <dc:Bounds x="192" y="249" width="36" height="36" />
         <bpmndi:BPMNLabel>
@@ -138,5 +138,8 @@
         <di:waypoint x="282" y="350" />
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1x0qedm">
+    <bpmndi:BPMNPlane id="BPMNPlane_16j7rvs" bpmnElement="Activity_1yxxd3u" />
   </bpmndi:BPMNDiagram>
 </bpmn:definitions>
