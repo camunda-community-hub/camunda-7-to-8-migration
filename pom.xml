@@ -36,7 +36,7 @@
     <version.grpc>1.66.0</version.grpc>
     <version.protobuf>3.25.4</version.protobuf>
     <version.guava>33.2.1-jre</version.guava>
-    <version.error_prone_annotations>2.29.2</version.error_prone_annotations>
+    <version.error_prone_annotations>2.30.0</version.error_prone_annotations>
     <version.java-jwt>4.4.0</version.java-jwt>
     <version.okio>3.9.0</version.okio>
     <version.archunit>1.3.0</version.archunit>
