@@ -2,12 +2,11 @@ package org.camunda.community.migration.converter.webapp;
 
 import com.slack.api.Slack;
 import com.slack.api.methods.request.chat.ChatPostMessageRequest;
-import com.slack.api.methods.request.files.FilesUploadRequest;
+import com.slack.api.methods.request.files.FilesUploadV2Request;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Collections;
 import org.camunda.community.migration.converter.NotificationService;
 import org.camunda.community.migration.converter.webapp.properties.NotificationProperties;
 import org.slf4j.Logger;
@@ -45,9 +44,9 @@ public class NotificationServiceImpl implements NotificationService {
           .join();
       slack
           .methodsAsync(slackProperties.getToken())
-          .filesUpload(
-              FilesUploadRequest.builder()
-                  .channels(Collections.singletonList(slackProperties.getChannelName()))
+          .filesUploadV2(
+              FilesUploadV2Request.builder()
+                  .channel(slackProperties.getChannelName())
                   .fileData(buildText(e).getBytes())
                   .filename(buildFilename())
                   .build())
