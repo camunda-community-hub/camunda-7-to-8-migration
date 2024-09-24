@@ -54,7 +54,7 @@
     <plugin.version.maven-site-plugin>3.20.0</plugin.version.maven-site-plugin>
     <plugin.version.maven-assembly-plugin>3.7.1</plugin.version.maven-assembly-plugin>
     <plugin.version.maven-release-plugin>3.1.1</plugin.version.maven-release-plugin>
-    <plugin.version.frontend-maven-plugin>1.15.0</plugin.version.frontend-maven-plugin>
+    <plugin.version.frontend-maven-plugin>1.15.1</plugin.version.frontend-maven-plugin>
     <plugin.version.maven-source-plugin>3.3.1</plugin.version.maven-source-plugin>
   </properties>
 
