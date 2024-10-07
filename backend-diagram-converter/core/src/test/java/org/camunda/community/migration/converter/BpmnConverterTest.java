@@ -40,7 +40,8 @@ public class BpmnConverterTest {
         "flexible-timer-event.bpmn",
         "business-rule-task-as-expression.bpmn",
         "message-event-definition-handling.bpmn",
-        "escalation-code.bpmn"
+        "escalation-code.bpmn",
+        "execution-listener.bpmn"
       })
   public void shouldConvert(String bpmnFile) {
     BpmnConverter converter = BpmnConverterFactory.getInstance().get();
@@ -226,21 +227,21 @@ public class BpmnConverterTest {
         result.getResult("ServiceTaskWithListenerTask");
     assertThat(serviceTaskWithListenerTask).isNotNull();
     assertThat(serviceTaskWithListenerTask.getMessages()).hasSize(7);
-    assertThat(serviceTaskWithListenerTask.getMessages().get(0).getMessage())
-        .isEqualTo(
-            "Listener at 'end' with implementation '${endListener.execute(something)}' cannot be transformed. Execution Listeners do not exist in Zeebe.");
     assertThat(serviceTaskWithListenerTask.getMessages().get(1).getMessage())
         .isEqualTo(
-            "Listener at 'start' with implementation '${anotherStartListener}' cannot be transformed. Execution Listeners do not exist in Zeebe.");
+            "Listener at 'end' with implementation '${endListener.execute(something)}' can be transformed to a job worker. Please adjust the job type.");
     assertThat(serviceTaskWithListenerTask.getMessages().get(2).getMessage())
         .isEqualTo(
-            "Listener at 'end' with implementation 'groovy' cannot be transformed. Execution Listeners do not exist in Zeebe.");
+            "Listener at 'start' with implementation '${anotherStartListener}' can be transformed to a job worker. Please adjust the job type.");
     assertThat(serviceTaskWithListenerTask.getMessages().get(3).getMessage())
+        .isEqualTo(
+            "Listener at 'end' with implementation 'groovy' can be transformed to a job worker. Please adjust the job type.");
+    assertThat(serviceTaskWithListenerTask.getMessages().get(0).getMessage())
         .isEqualTo(
             "Element 'script' cannot be transformed. Script 'print(\"something\");' with format 'groovy' on 'executionListener'.");
     assertThat(serviceTaskWithListenerTask.getMessages().get(4).getMessage())
         .isEqualTo(
-            "Listener at 'start' with implementation 'com.example.StartListener' cannot be transformed. Execution Listeners do not exist in Zeebe.");
+            "Listener at 'start' with implementation 'com.example.StartListener' can be transformed to a job worker. Please adjust the job type.");
   }
 
   @Test
@@ -416,7 +417,7 @@ public class BpmnConverterTest {
     BpmnElementCheckMessage message = messages.get(0);
     assertThat(message.getMessage())
         .isEqualTo(
-            "Listener at 'start' with implementation 'null' cannot be transformed. Execution Listeners do not exist in Zeebe.");
+            "Listener at 'start' with implementation 'null' can be transformed to a job worker. Please adjust the job type.");
   }
 
   @Test

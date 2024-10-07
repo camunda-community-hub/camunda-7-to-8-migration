@@ -3,7 +3,7 @@ package org.camunda.community.migration.converter.convertible;
 import java.util.HashSet;
 import java.util.Set;
 
-public abstract class AbstractDataMapperConvertible extends AbstractProcessElementConvertible {
+public abstract class AbstractDataMapperConvertible extends AbstractExecutionListenerConvertible {
   private Set<ZeebeIoMapping> zeebeIoMappings;
   private Set<ZeebeTaskHeader> zeebeTaskHeaders;
 

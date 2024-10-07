@@ -355,6 +355,15 @@ public class MessageFactory {
             .build());
   }
 
+  public static Message executionListenerSupported(String event, String implementation) {
+    return INSTANCE.composeMessage(
+        "execution-listener-supported",
+        ContextBuilder.builder()
+            .entry("event", event)
+            .entry("implementation", implementation)
+            .build());
+  }
+
   public static Message resultVariableBusinessRule(
       String attributeLocalName, String elementLocalName) {
     return INSTANCE.composeMessage(
