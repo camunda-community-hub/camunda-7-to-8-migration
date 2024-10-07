@@ -10,7 +10,7 @@ public class CreditCardServiceTest {
   public CreditCardService service = new CreditCardService();
   
   @ParameterizedTest
-  @ValueSource(strings = {"01/25", "09/24"})
+  @ValueSource(strings = {"01/30", "09/30"})
   public void testValidExpiryDates(String expiryDate) {
     assertThat(service.validateExpiryDate(expiryDate)).isTrue();
   }
