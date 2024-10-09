@@ -56,7 +56,7 @@
     <dependency>
       <groupId>org.camunda.bpm</groupId>
       <artifactId>camunda-engine-spring</artifactId>
-      <version>7.21.0</version>
+      <version>7.22.0</version>
     </dependency>
     <dependency>
       <groupId>org.camunda.bpm</groupId>
