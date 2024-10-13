@@ -7,7 +7,7 @@
       "steps": [
         {
           "type": "STARTEVENT",
-          "activityId": "Start_CallActivityComplex",
+          "taskId": "Start_CallActivityComplex",
           "variables": {
             "amount": 1000,
             "companyAccount": "COMPANY-7HHD44F",
@@ -26,7 +26,7 @@
       "steps": [
         {
           "type": "STARTEVENT",
-          "activityId": "Start_CallActivityComplex",
+          "taskId": "Start_CallActivityComplex",
           "variables": {
             "amount": 1000,
             "companyAccount": "COMPANY-7HHD44F",
@@ -39,7 +39,7 @@
           "type": "USERTASK",
           "delay": "PT0.1S",
           "waitingTime": "PT20S",
-          "activityId": "Activity_DecideLevelSecretAndNumber",
+          "taskId": "Activity_DecideLevelSecretAndNumber",
           "variables": {
             "listAccounts": [
               "blue",
