@@ -11,6 +11,24 @@ public class CallActivityConvertible extends AbstractActivityConvertible {
     private String processId;
     private boolean propagateAllChildVariables = false;
     private boolean propagateAllParentVariables = false;
+    private ZeebeCalledElementBindingType bindingType;
+    private String versionTag;
+
+    public ZeebeCalledElementBindingType getBindingType() {
+      return bindingType;
+    }
+
+    public void setBindingType(ZeebeCalledElementBindingType bindingType) {
+      this.bindingType = bindingType;
+    }
+
+    public String getVersionTag() {
+      return versionTag;
+    }
+
+    public void setVersionTag(String versionTag) {
+      this.versionTag = versionTag;
+    }
 
     public boolean isPropagateAllParentVariables() {
       return propagateAllParentVariables;
@@ -34,6 +52,11 @@ public class CallActivityConvertible extends AbstractActivityConvertible {
 
     public void setPropagateAllChildVariables(boolean propagateAllChildVariables) {
       this.propagateAllChildVariables = propagateAllChildVariables;
+    }
+
+    public enum ZeebeCalledElementBindingType {
+      versionTag,
+      deployment
     }
   }
 }

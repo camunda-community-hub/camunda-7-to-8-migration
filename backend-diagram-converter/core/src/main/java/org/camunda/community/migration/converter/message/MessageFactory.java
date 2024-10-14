@@ -697,6 +697,30 @@ public class MessageFactory {
     return INSTANCE.staticMessage("old-in-all-hint");
   }
 
+  public static Message versionTag() {
+    return INSTANCE.staticMessage("version-tag");
+  }
+
+  public static Message formRefBinding() {
+    return INSTANCE.staticMessage("form-ref-binding");
+  }
+
+  public static Message decisionRefVersionTag() {
+    return INSTANCE.staticMessage("decision-ref-version-tag");
+  }
+
+  public static Message decisionRefBinding() {
+    return INSTANCE.staticMessage("decision-ref-binding");
+  }
+
+  public static Message calledElementRefVersionTag() {
+    return INSTANCE.staticMessage("called-element-ref-version-tag");
+  }
+
+  public static Message calledElementRefBinding() {
+    return INSTANCE.staticMessage("called-element-ref-binding");
+  }
+
   private Message composeMessage(String templateName, Map<String, String> context) {
     ComposedMessage message = new ComposedMessage();
     MessageTemplate template = messageTemplateProvider.getMessageTemplate(templateName);
