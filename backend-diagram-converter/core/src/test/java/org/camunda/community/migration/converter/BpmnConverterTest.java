@@ -40,7 +40,13 @@ public class BpmnConverterTest {
         "flexible-timer-event.bpmn",
         "business-rule-task-as-expression.bpmn",
         "message-event-definition-handling.bpmn",
-        "escalation-code.bpmn"
+        "escalation-code.bpmn",
+        "execution-listener.bpmn",
+        "version-tag.bpmn",
+        "form-ref-version.bpmn",
+        "form-ref-deployment.bpmn",
+        "decision-ref-version.bpmn",
+        "decision-ref-deployment.bpmn"
       })
   public void shouldConvert(String bpmnFile) {
     BpmnConverter converter = BpmnConverterFactory.getInstance().get();
@@ -185,7 +191,8 @@ public class BpmnConverterTest {
 
   @Test
   void testCallActivityDeployment() {
-    BpmnDiagramCheckResult result = loadAndCheck("call-activity-deployment.bpmn");
+    BpmnDiagramCheckResult result =
+        loadAndCheckAgainstVersion("call-activity-deployment.bpmn", "8.5");
     BpmnElementCheckResult callActivityResult = result.getResult("callDeployment");
     assertThat(callActivityResult.getMessages()).hasSize(4);
     assertThat(callActivityResult.getMessages().get(0).getMessage())
@@ -196,6 +203,29 @@ public class BpmnConverterTest {
         .isEqualTo(
             "Attribute 'calledElement' on 'callActivity' was mapped. Please review transformed expression: 'myLatestProcess' -> 'myLatestProcess'.");
     assertThat(callActivityResult.getMessages().get(1).getSeverity()).isEqualTo(Severity.REVIEW);
+    assertThat(callActivityResult.getMessages().get(2).getMessage())
+        .isEqualTo(
+            "Element 'camunda:in' with attribute 'variables=\"all\"' is mapped to 'propagateAllParentVariables=\"true\"'.");
+    assertThat(callActivityResult.getMessages().get(2).getSeverity()).isEqualTo(Severity.INFO);
+    assertThat(callActivityResult.getMessages().get(3).getMessage())
+        .isEqualTo(
+            "Element 'camunda:out' with attribute 'variables=\"all\"' is mapped to 'propagateAllChildVariables=\"true\"'.");
+    assertThat(callActivityResult.getMessages().get(3).getSeverity()).isEqualTo(Severity.INFO);
+  }
+
+  @Test
+  void testCallActivityDeployment_8_6() {
+    BpmnDiagramCheckResult result =
+        loadAndCheckAgainstVersion("call-activity-deployment.bpmn", "8.6");
+    BpmnElementCheckResult callActivityResult = result.getResult("callDeployment");
+    assertThat(callActivityResult.getMessages()).hasSize(4);
+    assertThat(callActivityResult.getMessages().get(0).getMessage())
+        .isEqualTo(
+            "Attribute 'calledElement' on 'callActivity' was mapped. Please review transformed expression: 'myLatestProcess' -> 'myLatestProcess'.");
+    assertThat(callActivityResult.getMessages().get(0).getSeverity()).isEqualTo(Severity.REVIEW);
+    assertThat(callActivityResult.getMessages().get(1).getMessage())
+        .isEqualTo("Called element reference binding has been mapped.");
+    assertThat(callActivityResult.getMessages().get(1).getSeverity()).isEqualTo(Severity.INFO);
     assertThat(callActivityResult.getMessages().get(2).getMessage())
         .isEqualTo(
             "Element 'camunda:in' with attribute 'variables=\"all\"' is mapped to 'propagateAllParentVariables=\"true\"'.");
@@ -226,21 +256,21 @@ public class BpmnConverterTest {
         result.getResult("ServiceTaskWithListenerTask");
     assertThat(serviceTaskWithListenerTask).isNotNull();
     assertThat(serviceTaskWithListenerTask.getMessages()).hasSize(7);
-    assertThat(serviceTaskWithListenerTask.getMessages().get(0).getMessage())
-        .isEqualTo(
-            "Listener at 'end' with implementation '${endListener.execute(something)}' cannot be transformed. Execution Listeners do not exist in Zeebe.");
     assertThat(serviceTaskWithListenerTask.getMessages().get(1).getMessage())
         .isEqualTo(
-            "Listener at 'start' with implementation '${anotherStartListener}' cannot be transformed. Execution Listeners do not exist in Zeebe.");
+            "Listener at 'end' with implementation '${endListener.execute(something)}' can be transformed to a job worker. Please adjust the job type.");
     assertThat(serviceTaskWithListenerTask.getMessages().get(2).getMessage())
         .isEqualTo(
-            "Listener at 'end' with implementation 'groovy' cannot be transformed. Execution Listeners do not exist in Zeebe.");
+            "Listener at 'start' with implementation '${anotherStartListener}' can be transformed to a job worker. Please adjust the job type.");
     assertThat(serviceTaskWithListenerTask.getMessages().get(3).getMessage())
+        .isEqualTo(
+            "Listener at 'end' with implementation 'groovy' can be transformed to a job worker. Please adjust the job type.");
+    assertThat(serviceTaskWithListenerTask.getMessages().get(0).getMessage())
         .isEqualTo(
             "Element 'script' cannot be transformed. Script 'print(\"something\");' with format 'groovy' on 'executionListener'.");
     assertThat(serviceTaskWithListenerTask.getMessages().get(4).getMessage())
         .isEqualTo(
-            "Listener at 'start' with implementation 'com.example.StartListener' cannot be transformed. Execution Listeners do not exist in Zeebe.");
+            "Listener at 'start' with implementation 'com.example.StartListener' can be transformed to a job worker. Please adjust the job type.");
   }
 
   @Test
@@ -416,7 +446,7 @@ public class BpmnConverterTest {
     BpmnElementCheckMessage message = messages.get(0);
     assertThat(message.getMessage())
         .isEqualTo(
-            "Listener at 'start' with implementation 'null' cannot be transformed. Execution Listeners do not exist in Zeebe.");
+            "Listener at 'start' with implementation 'null' can be transformed to a job worker. Please adjust the job type.");
   }
 
   @Test
@@ -613,5 +643,153 @@ public class BpmnConverterTest {
     DomElement userTask = modelInstance.getDocument().getElementById("Activity_1b9oq8z");
     assertThat(userTask).isNotNull();
     assertThat(userTask.getChildElementsByNameNs(BPMN, "extensionElements")).isEmpty();
+  }
+
+  @Test
+  void testVersionTagConversion() {
+    BpmnModelInstance modelInstance = loadAndConvert("version-tag.bpmn");
+    DomElement process = modelInstance.getDocument().getElementById("process");
+    assertThat(process).isNotNull();
+    assertThat(process.getChildElementsByNameNs(BPMN, "extensionElements")).hasSize(1);
+    assertThat(
+            process
+                .getChildElementsByNameNs(BPMN, "extensionElements")
+                .get(0)
+                .getChildElementsByNameNs(ZEEBE, "versionTag"))
+        .hasSize(1);
+    assertThat(
+            process
+                .getChildElementsByNameNs(BPMN, "extensionElements")
+                .get(0)
+                .getChildElementsByNameNs(ZEEBE, "versionTag")
+                .get(0)
+                .getAttribute(ZEEBE, "value"))
+        .isEqualTo("1.0");
+  }
+
+  @Test
+  void testFormRefDeploymentBindingConversion() {
+    BpmnModelInstance modelInstance = loadAndConvert("form-ref-deployment.bpmn");
+    DomElement userTask = modelInstance.getDocument().getElementById("userTask");
+    assertThat(userTask).isNotNull();
+    assertThat(userTask.getChildElementsByNameNs(BPMN, "extensionElements")).hasSize(1);
+    assertThat(
+            userTask
+                .getChildElementsByNameNs(BPMN, "extensionElements")
+                .get(0)
+                .getChildElementsByNameNs(ZEEBE, "formDefinition"))
+        .hasSize(1);
+    assertThat(
+            userTask
+                .getChildElementsByNameNs(BPMN, "extensionElements")
+                .get(0)
+                .getChildElementsByNameNs(ZEEBE, "formDefinition")
+                .get(0)
+                .getAttribute(ZEEBE, "bindingType"))
+        .isEqualTo("deployment");
+  }
+
+  @Test
+  void testDecisionRefVersionBindingConversion() {
+    BpmnModelInstance modelInstance = loadAndConvert("decision-ref-version.bpmn");
+    DomElement userTask = modelInstance.getDocument().getElementById("businessRuleTask");
+    assertThat(userTask).isNotNull();
+    assertThat(userTask.getChildElementsByNameNs(BPMN, "extensionElements")).hasSize(1);
+    assertThat(
+            userTask
+                .getChildElementsByNameNs(BPMN, "extensionElements")
+                .get(0)
+                .getChildElementsByNameNs(ZEEBE, "calledDecision"))
+        .hasSize(1);
+    assertThat(
+            userTask
+                .getChildElementsByNameNs(BPMN, "extensionElements")
+                .get(0)
+                .getChildElementsByNameNs(ZEEBE, "calledDecision")
+                .get(0)
+                .getAttribute(ZEEBE, "versionTag"))
+        .isEqualTo("1.0");
+    assertThat(
+            userTask
+                .getChildElementsByNameNs(BPMN, "extensionElements")
+                .get(0)
+                .getChildElementsByNameNs(ZEEBE, "calledDecision")
+                .get(0)
+                .getAttribute(ZEEBE, "bindingType"))
+        .isEqualTo("versionTag");
+  }
+
+  @Test
+  void testDecisionRefDeploymentBindingConversion() {
+    BpmnModelInstance modelInstance = loadAndConvert("decision-ref-deployment.bpmn");
+    DomElement userTask = modelInstance.getDocument().getElementById("businessRuleTask");
+    assertThat(userTask).isNotNull();
+    assertThat(userTask.getChildElementsByNameNs(BPMN, "extensionElements")).hasSize(1);
+    assertThat(
+            userTask
+                .getChildElementsByNameNs(BPMN, "extensionElements")
+                .get(0)
+                .getChildElementsByNameNs(ZEEBE, "calledDecision"))
+        .hasSize(1);
+    assertThat(
+            userTask
+                .getChildElementsByNameNs(BPMN, "extensionElements")
+                .get(0)
+                .getChildElementsByNameNs(ZEEBE, "calledDecision")
+                .get(0)
+                .getAttribute(ZEEBE, "bindingType"))
+        .isEqualTo("deployment");
+  }
+
+  @Test
+  void testCalledElementRefVersionBindingConversion() {
+    BpmnModelInstance modelInstance = loadAndConvert("called-element-ref-version.bpmn");
+    DomElement userTask = modelInstance.getDocument().getElementById("callActivity");
+    assertThat(userTask).isNotNull();
+    assertThat(userTask.getChildElementsByNameNs(BPMN, "extensionElements")).hasSize(1);
+    assertThat(
+            userTask
+                .getChildElementsByNameNs(BPMN, "extensionElements")
+                .get(0)
+                .getChildElementsByNameNs(ZEEBE, "calledElement"))
+        .hasSize(1);
+    assertThat(
+            userTask
+                .getChildElementsByNameNs(BPMN, "extensionElements")
+                .get(0)
+                .getChildElementsByNameNs(ZEEBE, "calledElement")
+                .get(0)
+                .getAttribute(ZEEBE, "versionTag"))
+        .isEqualTo("1.0");
+    assertThat(
+            userTask
+                .getChildElementsByNameNs(BPMN, "extensionElements")
+                .get(0)
+                .getChildElementsByNameNs(ZEEBE, "calledElement")
+                .get(0)
+                .getAttribute(ZEEBE, "bindingType"))
+        .isEqualTo("versionTag");
+  }
+
+  @Test
+  void testCalledElementRefDeploymentBindingConversion() {
+    BpmnModelInstance modelInstance = loadAndConvert("called-element-ref-deployment.bpmn");
+    DomElement userTask = modelInstance.getDocument().getElementById("callActivity");
+    assertThat(userTask).isNotNull();
+    assertThat(userTask.getChildElementsByNameNs(BPMN, "extensionElements")).hasSize(1);
+    assertThat(
+            userTask
+                .getChildElementsByNameNs(BPMN, "extensionElements")
+                .get(0)
+                .getChildElementsByNameNs(ZEEBE, "calledElement"))
+        .hasSize(1);
+    assertThat(
+            userTask
+                .getChildElementsByNameNs(BPMN, "extensionElements")
+                .get(0)
+                .getChildElementsByNameNs(ZEEBE, "calledElement")
+                .get(0)
+                .getAttribute(ZEEBE, "bindingType"))
+        .isEqualTo("deployment");
   }
 }

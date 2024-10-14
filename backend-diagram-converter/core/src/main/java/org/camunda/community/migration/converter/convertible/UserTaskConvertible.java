@@ -1,11 +1,11 @@
 package org.camunda.community.migration.converter.convertible;
 
 public class UserTaskConvertible extends AbstractActivityConvertible {
-  private boolean zeebeUserTask;
   private final ZeebeFormDefinition zeebeFormDefinition = new ZeebeFormDefinition();
   private final ZeebeAssignmentDefinition zeebeAssignmentDefinition =
       new ZeebeAssignmentDefinition();
   private final ZeebeTaskSchedule zeebeTaskSchedule = new ZeebeTaskSchedule();
+  private boolean zeebeUserTask;
 
   public ZeebeTaskSchedule getZeebeTaskSchedule() {
     return zeebeTaskSchedule;
@@ -29,6 +29,24 @@ public class UserTaskConvertible extends AbstractActivityConvertible {
 
   public static class ZeebeFormDefinition {
     private String formKey;
+    private ZeebeFormDefinitionBindingType bindingType;
+    private String versionTag;
+
+    public String getVersionTag() {
+      return versionTag;
+    }
+
+    public void setVersionTag(String versionTag) {
+      this.versionTag = versionTag;
+    }
+
+    public ZeebeFormDefinitionBindingType getBindingType() {
+      return bindingType;
+    }
+
+    public void setBindingType(ZeebeFormDefinitionBindingType bindingType) {
+      this.bindingType = bindingType;
+    }
 
     public String getFormKey() {
       return formKey;
@@ -36,6 +54,11 @@ public class UserTaskConvertible extends AbstractActivityConvertible {
 
     public void setFormKey(String formKey) {
       this.formKey = formKey;
+    }
+
+    public enum ZeebeFormDefinitionBindingType {
+      deployment,
+      versionTag
     }
   }
 

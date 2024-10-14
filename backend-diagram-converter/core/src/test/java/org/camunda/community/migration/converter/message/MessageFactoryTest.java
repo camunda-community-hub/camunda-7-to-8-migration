@@ -349,7 +349,17 @@ public class MessageFactoryTest {
     assertNotNull(message.getMessage());
     assertThat(message.getMessage())
         .isEqualTo(
-            "Listener at 'start' with implementation '${myExecutionListener}' cannot be transformed. Execution Listeners do not exist in Zeebe.");
+            "Listener at 'start' with implementation '${myExecutionListener}' cannot be transformed. Execution Listeners do not exist before Zeebe 8.6.");
+  }
+
+  @Test
+  void shouldBuildExecutionListenerSupported() {
+    Message message = MessageFactory.executionListenerSupported("start", "${myExecutionListener}");
+    assertNotNull(message);
+    assertNotNull(message.getMessage());
+    assertThat(message.getMessage())
+        .isEqualTo(
+            "Listener at 'start' with implementation '${myExecutionListener}' can be transformed to a job worker. Please adjust the job type.");
   }
 
   @Test

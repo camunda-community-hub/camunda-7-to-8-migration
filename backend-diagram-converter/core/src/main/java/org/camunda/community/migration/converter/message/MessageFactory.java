@@ -355,6 +355,15 @@ public class MessageFactory {
             .build());
   }
 
+  public static Message executionListenerSupported(String event, String implementation) {
+    return INSTANCE.composeMessage(
+        "execution-listener-supported",
+        ContextBuilder.builder()
+            .entry("event", event)
+            .entry("implementation", implementation)
+            .build());
+  }
+
   public static Message resultVariableBusinessRule(
       String attributeLocalName, String elementLocalName) {
     return INSTANCE.composeMessage(
@@ -686,6 +695,30 @@ public class MessageFactory {
 
   public static Message oldInAllHint() {
     return INSTANCE.staticMessage("old-in-all-hint");
+  }
+
+  public static Message versionTag() {
+    return INSTANCE.staticMessage("version-tag");
+  }
+
+  public static Message formRefBinding() {
+    return INSTANCE.staticMessage("form-ref-binding");
+  }
+
+  public static Message decisionRefVersionTag() {
+    return INSTANCE.staticMessage("decision-ref-version-tag");
+  }
+
+  public static Message decisionRefBinding() {
+    return INSTANCE.staticMessage("decision-ref-binding");
+  }
+
+  public static Message calledElementRefVersionTag() {
+    return INSTANCE.staticMessage("called-element-ref-version-tag");
+  }
+
+  public static Message calledElementRefBinding() {
+    return INSTANCE.staticMessage("called-element-ref-binding");
   }
 
   private Message composeMessage(String templateName, Map<String, String> context) {

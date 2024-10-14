@@ -11,3 +11,5 @@ org.camunda.community.migration.converter.conversion.ErrorConversion
 org.camunda.community.migration.converter.conversion.EscalationConversion
 org.camunda.community.migration.converter.conversion.ScriptTaskConversion
 org.camunda.community.migration.converter.conversion.AbstractCatchEventConversion
+org.camunda.community.migration.converter.conversion.ExecutionListenerConversion
+org.camunda.community.migration.converter.conversion.ProcessConversion

@@ -3,6 +3,7 @@ package org.camunda.community.migration.converter.conversion;
 import static org.camunda.community.migration.converter.BpmnElementFactory.*;
 import static org.camunda.community.migration.converter.NamespaceUri.*;
 
+import org.apache.commons.lang3.StringUtils;
 import org.camunda.bpm.model.xml.instance.DomDocument;
 import org.camunda.bpm.model.xml.instance.DomElement;
 import org.camunda.community.migration.converter.convertible.UserTaskConvertible;
@@ -43,7 +44,16 @@ public class UserTaskConversion extends AbstractTypedConversion<UserTaskConverti
 
   private DomElement createFormDefinition(DomDocument document, UserTaskConvertible convertible) {
     DomElement formDefinition = document.createElement(ZEEBE, "formDefinition");
-    formDefinition.setAttribute("formKey", convertible.getZeebeFormDefinition().getFormKey());
+    formDefinition.setAttribute(
+        ZEEBE, "formKey", convertible.getZeebeFormDefinition().getFormKey());
+    if (convertible.getZeebeFormDefinition().getBindingType() != null) {
+      formDefinition.setAttribute(
+          ZEEBE, "bindingType", convertible.getZeebeFormDefinition().getBindingType().name());
+    }
+    if (StringUtils.isNotBlank(convertible.getZeebeFormDefinition().getVersionTag())) {
+      formDefinition.setAttribute(
+          ZEEBE, "versionTag", convertible.getZeebeFormDefinition().getVersionTag());
+    }
     return formDefinition;
   }
 
