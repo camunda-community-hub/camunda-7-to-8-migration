@@ -740,4 +740,56 @@ public class BpmnConverterTest {
                 .getAttribute(ZEEBE, "bindingType"))
         .isEqualTo("deployment");
   }
+
+  @Test
+  void testCalledElementRefVersionBindingConversion() {
+    BpmnModelInstance modelInstance = loadAndConvert("called-element-ref-version.bpmn");
+    DomElement userTask = modelInstance.getDocument().getElementById("callActivity");
+    assertThat(userTask).isNotNull();
+    assertThat(userTask.getChildElementsByNameNs(BPMN, "extensionElements")).hasSize(1);
+    assertThat(
+            userTask
+                .getChildElementsByNameNs(BPMN, "extensionElements")
+                .get(0)
+                .getChildElementsByNameNs(ZEEBE, "calledElement"))
+        .hasSize(1);
+    assertThat(
+            userTask
+                .getChildElementsByNameNs(BPMN, "extensionElements")
+                .get(0)
+                .getChildElementsByNameNs(ZEEBE, "calledElement")
+                .get(0)
+                .getAttribute(ZEEBE, "versionTag"))
+        .isEqualTo("1.0");
+    assertThat(
+            userTask
+                .getChildElementsByNameNs(BPMN, "extensionElements")
+                .get(0)
+                .getChildElementsByNameNs(ZEEBE, "calledElement")
+                .get(0)
+                .getAttribute(ZEEBE, "bindingType"))
+        .isEqualTo("versionTag");
+  }
+
+  @Test
+  void testCalledElementRefDeploymentBindingConversion() {
+    BpmnModelInstance modelInstance = loadAndConvert("called-element-ref-deployment.bpmn");
+    DomElement userTask = modelInstance.getDocument().getElementById("callActivity");
+    assertThat(userTask).isNotNull();
+    assertThat(userTask.getChildElementsByNameNs(BPMN, "extensionElements")).hasSize(1);
+    assertThat(
+            userTask
+                .getChildElementsByNameNs(BPMN, "extensionElements")
+                .get(0)
+                .getChildElementsByNameNs(ZEEBE, "calledElement"))
+        .hasSize(1);
+    assertThat(
+            userTask
+                .getChildElementsByNameNs(BPMN, "extensionElements")
+                .get(0)
+                .getChildElementsByNameNs(ZEEBE, "calledElement")
+                .get(0)
+                .getAttribute(ZEEBE, "bindingType"))
+        .isEqualTo("deployment");
+  }
 }
