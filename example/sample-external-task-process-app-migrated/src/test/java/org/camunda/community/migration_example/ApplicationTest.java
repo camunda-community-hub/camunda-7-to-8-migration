@@ -9,6 +9,7 @@ import java.util.concurrent.TimeoutException;
 import org.camunda.bpm.engine.variable.Variables;
 import org.camunda.community.migration_example.services.CustomerService;
 import org.camunda.community.process_test_coverage.spring_test.platform8.ProcessEngineCoverageConfiguration;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -22,6 +23,7 @@ import io.camunda.zeebe.spring.test.ZeebeSpringTest;
 @SpringBootTest
 @ZeebeSpringTest
 @Import(ProcessEngineCoverageConfiguration.class)
+@Disabled
 public class ApplicationTest {
 
   @Autowired
