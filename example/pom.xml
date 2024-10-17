@@ -11,5 +11,6 @@
     <module>process-solution-migrated</module>
     <module>sample-external-task-process-app</module>
     <module>sample-external-task-process-app-migrated</module>
+    <module>extended-converter</module>
   </modules>
 </project>
