@@ -35,32 +35,32 @@ public class ConverterPropertiesFactory extends AbstractFactory<ConverterPropert
     return merge(new DefaultConverterProperties());
   }
 
-  public ConverterProperties merge(DefaultConverterProperties properties) {
-    readDefaultValues(properties);
-    return properties;
+  public ConverterProperties merge(ConverterProperties properties) {
+    return merge(new DefaultConverterProperties(), properties);
   }
 
-  private void readDefaultValues(DefaultConverterProperties properties) {
-    readZeebeJobType("default", properties::getDefaultJobType, properties::setDefaultJobType);
-    readZeebeJobType("script", properties::getScriptJobType, properties::setScriptJobType);
-    readZeebeHeader("script", properties::getScriptHeader, properties::setScriptHeader);
+  private ConverterProperties merge(
+      DefaultConverterProperties base, ConverterProperties properties) {
+    readDefaultValues(base, properties);
+    return base;
+  }
+
+  private void readDefaultValues(DefaultConverterProperties base, ConverterProperties properties) {
+    readZeebeJobType("default", properties::getDefaultJobType, base::setDefaultJobType);
+    readZeebeJobType("script", properties::getScriptJobType, base::setScriptJobType);
+    readZeebeHeader("script", properties::getScriptHeader, base::setScriptHeader);
     readZeebeHeader(
-        "result-variable",
-        properties::getResultVariableHeader,
-        properties::setResultVariableHeader);
-    readZeebeHeader("resource", properties::getResourceHeader, properties::setResourceHeader);
+        "result-variable", properties::getResultVariableHeader, base::setResultVariableHeader);
+    readZeebeHeader("resource", properties::getResourceHeader, base::setResourceHeader);
     readZeebeHeader(
-        "script-format", properties::getScriptFormatHeader, properties::setScriptFormatHeader);
-    readZeebePlatformInfo(
-        "version", properties::getPlatformVersion, properties::setPlatformVersion);
+        "script-format", properties::getScriptFormatHeader, base::setScriptFormatHeader);
+    readZeebePlatformInfo("version", properties::getPlatformVersion, base::setPlatformVersion);
     readFlag(
         "default-job-type-enabled",
         properties::getDefaultJobTypeEnabled,
-        properties::setDefaultJobTypeEnabled);
+        base::setDefaultJobTypeEnabled);
     readFlag(
-        "append-documentation",
-        properties::getAppendDocumentation,
-        properties::setAppendDocumentation);
+        "append-documentation", properties::getAppendDocumentation, base::setAppendDocumentation);
   }
 
   private void readZeebeJobType(String jobType, Supplier<String> getter, Consumer<String> setter) {
@@ -89,6 +89,7 @@ public class ConverterPropertiesFactory extends AbstractFactory<ConverterPropert
     T currentValue = getter.get();
     if (currentValue != null) {
       LOG.debug("Converter property {} already set", key);
+      setter.accept(currentValue);
       return;
     }
     LOG.debug("Reading converter property {}", key);
