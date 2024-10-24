@@ -19,6 +19,6 @@ public class ConverterPropertiesTest {
     ConverterProperties converterProperties =
         ConverterPropertiesFactory.getInstance().merge(properties);
     assertEquals("adapter", converterProperties.getDefaultJobType());
-    assertNotNull(properties.getResourceHeader());
+    assertNotNull(converterProperties.getResourceHeader());
   }
 }
