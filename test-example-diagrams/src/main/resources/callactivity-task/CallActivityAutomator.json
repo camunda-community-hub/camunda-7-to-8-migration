@@ -7,7 +7,7 @@
       "steps": [
         {
           "type": "STARTEVENT",
-          "activityId": "Start_CallActivity",
+          "taskId": "Start_CallActivity",
           "variables": {
             "amount": 1000,
             "companyAccount": "COMPANY-7HHD44F",
