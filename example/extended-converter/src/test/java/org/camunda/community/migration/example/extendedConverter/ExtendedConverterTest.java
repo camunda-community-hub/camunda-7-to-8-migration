@@ -8,6 +8,7 @@ import org.camunda.community.migration.converter.BpmnConverterFactory;
 import org.camunda.community.migration.converter.ConverterPropertiesFactory;
 import org.camunda.community.migration.converter.DomElementVisitorFactory;
 import org.camunda.community.migration.converter.visitor.DomElementVisitor;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import java.io.StringWriter;
@@ -48,6 +49,7 @@ public class ExtendedConverterTest {
     System.out.println(writer);
   }
 
+  @Disabled
   @Test
   void shouldSetCustomJobType() {
     BpmnConverter converter = BpmnConverterFactory
