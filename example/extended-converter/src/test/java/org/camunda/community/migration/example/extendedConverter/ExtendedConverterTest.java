@@ -49,7 +49,6 @@ public class ExtendedConverterTest {
     System.out.println(writer);
   }
 
-  @Disabled
   @Test
   void shouldSetCustomJobType() {
     BpmnConverter converter = BpmnConverterFactory

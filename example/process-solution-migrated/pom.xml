@@ -18,14 +18,23 @@
 
     <version.spring-boot>3.3.5</version.spring-boot>
     <version.camunda>7.22.0</version.camunda>
-    <version.adapter>0.10.0</version.adapter>
-    <version.spring-zeebe>8.5.14</version.spring-zeebe>
+    <version.adapter>0.10.1</version.adapter>
+    <version.spring-zeebe>8.5.13</version.spring-zeebe>
 
     <plugin.version.maven-surefire-plugin>3.5.1</plugin.version.maven-surefire-plugin>
   </properties>
 
   <dependencyManagement>
+
     <dependencies>
+      <dependency>
+        <groupId>io.grpc</groupId>
+        <artifactId>grpc-bom</artifactId>
+        <version>1.65.1</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+
       <dependency>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-dependencies</artifactId>
