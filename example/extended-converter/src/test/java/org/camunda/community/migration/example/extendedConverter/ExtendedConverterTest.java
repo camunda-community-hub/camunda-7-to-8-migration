@@ -66,13 +66,13 @@ public class ExtendedConverterTest {
         .getDocument()
         .getElementById("Activity_1qqj67q")
         .getChildElementsByNameNs(BPMN, "extensionElements")
-        .getFirst();
-    DomElement header = extensionElements.getChildElementsByNameNs(ZEEBE, "taskHeaders").getFirst().getChildElementsByNameNs(ZEEBE,"header").getFirst();
+        .get(0);
+    DomElement header = extensionElements.getChildElementsByNameNs(ZEEBE, "taskHeaders").get(0).getChildElementsByNameNs(ZEEBE,"header").get(0);
     String headerKey = header.getAttribute(ZEEBE,"key");
     String headerValue = header.getAttribute(ZEEBE,"value");
     String jobType = extensionElements
         .getChildElementsByNameNs(ZEEBE, "taskDefinition")
-        .getFirst()
+        .get(0)
         .getAttribute(ZEEBE, "type");
     assertThat(jobType).isEqualTo("GenericWorker");
     assertThat(headerKey).isEqualTo("topic");

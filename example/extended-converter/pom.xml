@@ -15,7 +15,7 @@
     <encoding>UTF-8</encoding>
     <project.build.sourceEncoding>${encoding}</project.build.sourceEncoding>
     <project.build.resourceEncoding>${encoding}</project.build.resourceEncoding>
-    <version.java>21</version.java>
+    <version.java>17</version.java>
     <maven.compiler.source>${version.java}</maven.compiler.source>
     <maven.compiler.target>${version.java}</maven.compiler.target>
     <version.camunda-7-to-8-migration>0.10.0</version.camunda-7-to-8-migration>
