@@ -198,5 +198,15 @@ class CamundaPlatform7DelegationWorkerTest {
     public ZeebeFuture<CompleteJobResponse> send() {
       return mock(ZeebeFuture.class);
     }
+
+    @Override
+    public CompleteJobCommandStep1 useRest() {
+      throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public CompleteJobCommandStep1 useGrpc() {
+      throw new UnsupportedOperationException();
+    }
   }
 }
