@@ -132,6 +132,11 @@
         <version>${version.spring-boot-starter-camunda}</version>
       </dependency>
       <dependency>
+        <groupId>io.camunda.spring</groupId>
+        <artifactId>java-common</artifactId>
+        <version>${version.spring-boot-starter-camunda}</version>
+      </dependency>
+      <dependency>
         <groupId>io.camunda</groupId>
         <artifactId>camunda-operate-client-java</artifactId>
         <version>${version.operate-client}</version>

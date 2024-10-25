@@ -200,9 +200,25 @@ public class BpmnConverter {
         new DefaultDomElementVisitorContext(
             element, context, result, notificationService, properties);
     visitors.stream()
-        .sorted(Comparator.comparingInt(v -> v instanceof AbstractProcessElementVisitor ? 2 : 3))
+        .sorted(Comparator.comparingInt(this::sortVisitor))
         .forEach(visitor -> visitor.visit(elementContext));
     element.getChildElements().forEach(child -> traverse(child, result, context, properties));
+  }
+
+  private int sortVisitor(DomElementVisitor visitor) {
+    if (visitor instanceof AbstractProcessElementVisitor) {
+      // apply process element visitors first
+      return 2;
+    }
+    if (visitor
+        .getClass()
+        .getPackageName()
+        .startsWith(DomElementVisitor.class.getPackage().getName())) {
+      // then, apply native implementations
+      return 3;
+    }
+    // everything else is applied last
+    return 4;
   }
 
   public void writeCsvFile(List<BpmnDiagramCheckResult> results, Writer writer) {
