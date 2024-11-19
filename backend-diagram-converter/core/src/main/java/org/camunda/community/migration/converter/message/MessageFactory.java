@@ -227,6 +227,17 @@ public class MessageFactory {
             .build());
   }
 
+  public static Message inputOutputParameterFeelScript(
+      String elementLocalName, String parameterName, String feelScript) {
+    return INSTANCE.composeMessage(
+        "input-output-parameter-feel-script",
+        ContextBuilder.builder()
+            .entry("parameterName", parameterName)
+            .context(elementTransformedPrefix(elementLocalName))
+            .entry("feelScript", feelScript)
+            .build());
+  }
+
   public static Message inputOutputParameterExecution(
       String elementLocalName, String parameterName, String juelExpression, String feelExpression) {
     return INSTANCE.composeMessage(
@@ -502,6 +513,10 @@ public class MessageFactory {
   }
 
   public static Message inputOutput() {
+    return INSTANCE.emptyMessage();
+  }
+
+  public static Message inputOutputScript() {
     return INSTANCE.emptyMessage();
   }
 

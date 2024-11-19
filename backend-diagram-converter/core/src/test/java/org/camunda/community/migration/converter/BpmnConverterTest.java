@@ -47,6 +47,8 @@ public class BpmnConverterTest {
         "form-ref-deployment.bpmn",
         "decision-ref-version.bpmn",
         "decision-ref-deployment.bpmn",
+        "feel_expr_not_tranformed.bpmn",
+        "decision-ref-deployment.bpmn",
         "delegate.bpmn",
         "decision-ref-deployment.bpmn",
         "delegate-expression-listener.bpmn"

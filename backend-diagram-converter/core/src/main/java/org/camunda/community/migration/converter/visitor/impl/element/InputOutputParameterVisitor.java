@@ -16,7 +16,7 @@ public abstract class InputOutputParameterVisitor extends AbstractCamundaElement
 
   @Override
   public boolean canBeTransformed(DomElementVisitorContext context) {
-    return !isNotStringOrExpression(context.getElement());
+    return !isNotStringOrExpressionOrFeelScript(context.getElement());
   }
 
   @Override
@@ -24,8 +24,16 @@ public abstract class InputOutputParameterVisitor extends AbstractCamundaElement
     DomElement element = context.getElement();
     String name = element.getAttribute("name");
     MappingDirection direction = findMappingDirection(element);
-    if (isNotStringOrExpression(element)) {
+    if (isNotStringOrExpressionOrFeelScript(element)) {
       return MessageFactory.inputOutputParameterIsNoExpression(localName(), name);
+    }
+    if (isFeelScript(element)) {
+      String feelScript = extractFeelScript(element);
+      context.addConversion(
+          AbstractDataMapperConvertible.class,
+          abstractTaskConversion ->
+              abstractTaskConversion.addZeebeIoMapping(direction, feelScript, name));
+      return MessageFactory.inputOutputParameterFeelScript(localName(), name, feelScript);
     }
     String expression = element.getTextContent();
     ExpressionTransformationResult transformationResult =
@@ -61,6 +69,11 @@ public abstract class InputOutputParameterVisitor extends AbstractCamundaElement
     return resultMessage;
   }
 
+  private String extractFeelScript(DomElement inputParameter) {
+    DomElement script = inputParameter.getChildElements().get(0);
+    return "=" + script.getTextContent();
+  }
+
   private MappingDirection findMappingDirection(DomElement element) {
     if (isInputParameter(element.getLocalName())) {
       return MappingDirection.INPUT;
@@ -71,8 +84,17 @@ public abstract class InputOutputParameterVisitor extends AbstractCamundaElement
     throw new IllegalStateException("Must be input or output!");
   }
 
-  private boolean isNotStringOrExpression(DomElement element) {
-    return element.getChildElements().size() > 0;
+  private boolean isNotStringOrExpressionOrFeelScript(DomElement element) {
+    return !element.getChildElements().isEmpty() && !isFeelScript(element);
+  }
+
+  private boolean isFeelScript(DomElement element) {
+    if (element.getChildElements().isEmpty()) {
+      return false;
+    }
+    DomElement script = element.getChildElements().get(0);
+    String scriptFormat = script.getAttribute("scriptFormat");
+    return "feel".equalsIgnoreCase(scriptFormat);
   }
 
   private boolean isInputParameter(String localName) {
