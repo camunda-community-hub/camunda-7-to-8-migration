@@ -11,6 +11,9 @@
           <camunda:inputParameter name="HinweisText">
             <camunda:script scriptFormat="feel">"Vorgang automatisiert durchgeführt und abgeschlossen"</camunda:script>
           </camunda:inputParameter>
+          <camunda:inputParameter name="anotherReference">
+            <camunda:script scriptFormat="feel" resource="external.feel" />
+          </camunda:inputParameter>
         </camunda:inputOutput>
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_1wn0wn6</bpmn:incoming>
