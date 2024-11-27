@@ -1,6 +1,7 @@
 package org.camunda.community.migration.converter.visitor;
 
 import java.util.Set;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.camunda.community.migration.converter.DomElementVisitorContext;
@@ -10,6 +11,7 @@ import org.camunda.community.migration.converter.message.MessageFactory;
 
 public abstract class AbstractDelegateImplementationVisitor
     extends AbstractSupportedAttributeVisitor {
+  public static final Pattern DELEGATE_NAME_EXTRACT = Pattern.compile("\\$\\{(.*)\\}");
   private static final Set<String> IGNORE =
       Stream.of("taskListener", "executionListener", "errorEventDefinition")
           .collect(Collectors.toSet());
