@@ -721,6 +721,18 @@ public class MessageFactory {
     return INSTANCE.staticMessage("called-element-ref-binding");
   }
 
+  public static Message delegateExpressionAsJobType(String jobType) {
+    return INSTANCE.composeMessage(
+        "delegate-expression-as-job-type",
+        ContextBuilder.builder().entry("jobType", jobType).build());
+  }
+
+  public static Message delegateExpressionAsJobTypeNull(String delegateExpression) {
+    return INSTANCE.composeMessage(
+        "delegate-expression-as-job-type-null",
+        ContextBuilder.builder().entry("delegateExpression", delegateExpression).build());
+  }
+
   private Message composeMessage(String templateName, Map<String, String> context) {
     ComposedMessage message = new ComposedMessage();
     MessageTemplate template = messageTemplateProvider.getMessageTemplate(templateName);

@@ -583,4 +583,28 @@ public class MessageFactoryTest {
             "FEEL Condition expression: Please review transformed expression: '%s' -> '%s'. Check for custom FEEL functions as they are not supported by Zeebe.",
             oldExpression, newExpression);
   }
+
+  @Test
+  void shouldBuildDelegateExpressionAsJobType() {
+    String jobType = random();
+    Message message = delegateExpressionAsJobType(jobType);
+    assertNotNull(message);
+    assertNotNull(message.getMessage());
+    assertNotNull(message.getSeverity());
+    assertThat(message.getMessage())
+        .isEqualTo("Delegate expression has been transformed to job type %s.", jobType);
+  }
+
+  @Test
+  void shouldBuildDelegateExpressionAsJobTypeNull() {
+    String jobType = random();
+    Message message = delegateExpressionAsJobTypeNull(jobType);
+    assertNotNull(message);
+    assertNotNull(message.getMessage());
+    assertNotNull(message.getSeverity());
+    assertThat(message.getMessage())
+        .isEqualTo(
+            "Delegate expression %s could not be transformed to job type. Please define manually.",
+            jobType);
+  }
 }

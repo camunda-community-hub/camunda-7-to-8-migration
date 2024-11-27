@@ -1,10 +1,10 @@
 package org.camunda.community.migration.converter.conversion;
 
 import static org.camunda.community.migration.converter.BpmnElementFactory.*;
+import static org.camunda.community.migration.converter.NamespaceUri.*;
 
 import org.camunda.bpm.model.xml.instance.DomDocument;
 import org.camunda.bpm.model.xml.instance.DomElement;
-import org.camunda.community.migration.converter.NamespaceUri;
 import org.camunda.community.migration.converter.convertible.ServiceTaskConvertible;
 import org.camunda.community.migration.converter.convertible.ServiceTaskConvertible.ZeebeTaskDefinition;
 
@@ -12,12 +12,12 @@ public class ServiceTaskConversion extends AbstractTypedConversion<ServiceTaskCo
 
   private DomElement createTaskDefinition(
       DomDocument document, ZeebeTaskDefinition zeebeTaskDefinition) {
-    DomElement taskDefinition = document.createElement(NamespaceUri.ZEEBE, "taskDefinition");
+    DomElement taskDefinition = document.createElement(ZEEBE, "taskDefinition");
     if (zeebeTaskDefinition.getType() != null) {
-      taskDefinition.setAttribute("type", zeebeTaskDefinition.getType());
+      taskDefinition.setAttribute(ZEEBE, "type", zeebeTaskDefinition.getType());
     }
     if (zeebeTaskDefinition.getRetries() != null) {
-      taskDefinition.setAttribute("retries", zeebeTaskDefinition.getRetries().toString());
+      taskDefinition.setAttribute(ZEEBE, "retries", zeebeTaskDefinition.getRetries().toString());
     }
     return taskDefinition;
   }
