@@ -6,6 +6,7 @@ import org.camunda.community.migration.converter.message.Message;
 import org.camunda.community.migration.converter.visitor.AbstractListenerVisitor.ListenerImplementation.ClassImplementation;
 import org.camunda.community.migration.converter.visitor.AbstractListenerVisitor.ListenerImplementation.DelegateExpressionImplementation;
 import org.camunda.community.migration.converter.visitor.AbstractListenerVisitor.ListenerImplementation.ExpressionImplementation;
+import org.camunda.community.migration.converter.visitor.AbstractListenerVisitor.ListenerImplementation.NullImplementation;
 import org.camunda.community.migration.converter.visitor.AbstractListenerVisitor.ListenerImplementation.ScriptImplementation;
 
 public abstract class AbstractListenerVisitor extends AbstractCamundaElementVisitor {
@@ -47,10 +48,10 @@ public abstract class AbstractListenerVisitor extends AbstractCamundaElementVisi
               .getAttribute("scriptFormat");
       return new ScriptImplementation(listenerImplementation);
     }
-    throw new IllegalStateException("Unknown listener implementation");
+    return new NullImplementation();
   }
 
-  protected sealed interface ListenerImplementation {
+  public sealed interface ListenerImplementation {
     String implementation();
 
     record DelegateExpressionImplementation(String implementation)
@@ -61,5 +62,12 @@ public abstract class AbstractListenerVisitor extends AbstractCamundaElementVisi
     record ExpressionImplementation(String implementation) implements ListenerImplementation {}
 
     record ScriptImplementation(String implementation) implements ListenerImplementation {}
+
+    record NullImplementation() implements ListenerImplementation {
+      @Override
+      public String implementation() {
+        return null;
+      }
+    }
   }
 }

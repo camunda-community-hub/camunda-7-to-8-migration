@@ -13,8 +13,8 @@ public class TaskListenerVisitor extends AbstractListenerVisitor {
 
   @Override
   protected Message visitListener(
-      DomElementVisitorContext context, String event, String implementation) {
-    return MessageFactory.taskListener(event, implementation);
+      DomElementVisitorContext context, String event, ListenerImplementation implementation) {
+    return MessageFactory.taskListener(event, implementation.implementation());
   }
 
   @Override

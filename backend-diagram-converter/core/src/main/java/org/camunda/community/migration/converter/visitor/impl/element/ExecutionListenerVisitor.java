@@ -1,5 +1,8 @@
 package org.camunda.community.migration.converter.visitor.impl.element;
 
+import static org.camunda.community.migration.converter.visitor.AbstractDelegateImplementationVisitor.*;
+
+import java.util.regex.Matcher;
 import org.camunda.community.migration.converter.DomElementVisitorContext;
 import org.camunda.community.migration.converter.convertible.AbstractExecutionListenerConvertible;
 import org.camunda.community.migration.converter.convertible.AbstractExecutionListenerConvertible.ZeebeExecutionListener;
@@ -23,10 +26,11 @@ public class ExecutionListenerVisitor extends AbstractListenerVisitor {
         SemanticVersion.parse(context.getProperties().getPlatformVersion()))) {
       ZeebeExecutionListener executionListener = new ZeebeExecutionListener();
       executionListener.setEventType(EventType.valueOf(event));
-      if(implementation instanceof DelegateExpressionImplementation){
-        // TODO get the pattern as soon as its on the main
-        executionListener.setListenerType();
-      }else{
+      if (implementation instanceof DelegateExpressionImplementation) {
+        Matcher matcher = DELEGATE_NAME_EXTRACT.matcher(implementation.implementation());
+        String delegateName = matcher.find() ? matcher.group(1) : implementation.implementation();
+        executionListener.setListenerType(delegateName);
+      } else {
         executionListener.setListenerType(implementation.implementation());
       }
       context.addConversion(
