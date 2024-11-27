@@ -8,6 +8,7 @@ import org.camunda.community.migration.converter.message.Message;
 import org.camunda.community.migration.converter.message.MessageFactory;
 import org.camunda.community.migration.converter.version.SemanticVersion;
 import org.camunda.community.migration.converter.visitor.AbstractListenerVisitor;
+import org.camunda.community.migration.converter.visitor.AbstractListenerVisitor.ListenerImplementation.DelegateExpressionImplementation;
 
 public class ExecutionListenerVisitor extends AbstractListenerVisitor {
   @Override
@@ -17,18 +18,23 @@ public class ExecutionListenerVisitor extends AbstractListenerVisitor {
 
   @Override
   protected Message visitListener(
-      DomElementVisitorContext context, String event, String implementation) {
+      DomElementVisitorContext context, String event, ListenerImplementation implementation) {
     if (isExecutionListenerSupported(
         SemanticVersion.parse(context.getProperties().getPlatformVersion()))) {
       ZeebeExecutionListener executionListener = new ZeebeExecutionListener();
       executionListener.setEventType(EventType.valueOf(event));
-      executionListener.setListenerType(implementation);
+      if(implementation instanceof DelegateExpressionImplementation){
+        // TODO get the pattern as soon as its on the main
+        executionListener.setListenerType();
+      }else{
+        executionListener.setListenerType(implementation.implementation());
+      }
       context.addConversion(
           AbstractExecutionListenerConvertible.class,
           c -> c.addZeebeExecutionListener(executionListener));
-      return MessageFactory.executionListenerSupported(event, implementation);
+      return MessageFactory.executionListenerSupported(event, implementation.implementation());
     }
-    return MessageFactory.executionListener(event, implementation);
+    return MessageFactory.executionListener(event, implementation.implementation());
   }
 
   private boolean isExecutionListenerSupported(SemanticVersion version) {
