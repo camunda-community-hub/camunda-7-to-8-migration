@@ -794,6 +794,11 @@ public class BpmnConverterTest {
   }
 
   @Test
+  void testShouldConvertDelegateExpressionListener(){
+    throw new IllegalStateException("Not implemented yet");
+  }
+
+  @Test
   void testShouldNotAppendElements() {
     DefaultConverterProperties properties = new DefaultConverterProperties();
     properties.setAppendElements(false);
