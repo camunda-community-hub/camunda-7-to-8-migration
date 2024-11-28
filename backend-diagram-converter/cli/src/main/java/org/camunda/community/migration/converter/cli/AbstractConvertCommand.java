@@ -65,6 +65,11 @@ public abstract class AbstractConvertCommand implements Callable<Integer> {
           "If enabled, a markdown file will be created containing the results for all conversions")
   boolean markdown;
 
+  @Option(
+      names = "--delegate-execution-as-job-type",
+      description = "If enabled, sets the delegate expression as the job type")
+  boolean delegateExecutionAsJobType;
+
   @Option(names = "--check", description = "If enabled, no converted diagrams are exported")
   boolean check;
 
@@ -163,6 +168,7 @@ public abstract class AbstractConvertCommand implements Callable<Integer> {
     properties.setDefaultJobTypeEnabled(!defaultJobTypeDisabled);
     properties.setAppendDocumentation(documentation);
     properties.setAppendElements(!disableAppendElements);
+    properties.setUseDelegateExpressionAsJobType(delegateExecutionAsJobType);
     return properties;
   }
 
