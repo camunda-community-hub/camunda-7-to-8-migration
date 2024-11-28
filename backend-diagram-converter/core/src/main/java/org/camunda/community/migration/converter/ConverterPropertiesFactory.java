@@ -61,6 +61,7 @@ public class ConverterPropertiesFactory extends AbstractFactory<ConverterPropert
         base::setDefaultJobTypeEnabled);
     readFlag(
         "append-documentation", properties::getAppendDocumentation, base::setAppendDocumentation);
+    readFlag("append-elements", properties::getAppendElements, base::setAppendElements);
   }
 
   private void readZeebeJobType(String jobType, Supplier<String> getter, Consumer<String> setter) {

@@ -792,4 +792,18 @@ public class BpmnConverterTest {
                 .getAttribute(ZEEBE, "bindingType"))
         .isEqualTo("deployment");
   }
+
+  @Test
+  void testShouldNotAppendElements() {
+    DefaultConverterProperties properties = new DefaultConverterProperties();
+    properties.setAppendElements(false);
+    ConverterProperties converterProperties =
+        ConverterPropertiesFactory.getInstance().merge(properties);
+    BpmnModelInstance bpmnModelInstance =
+        loadAndConvert("history-time-to-live.bpmn", converterProperties);
+    DomElement historyTimeToLive =
+        bpmnModelInstance.getDocument().getElementById("HistoryTimeToLive");
+    assertThat(historyTimeToLive).isNotNull();
+    assertThat(historyTimeToLive.getChildElements()).isEmpty();
+  }
 }
