@@ -7,7 +7,7 @@
       "steps": [
         {
           "type": "STARTEVENT",
-          "activityId": "Start_ParallelUserTask",
+          "taskId": "Start_ParallelUserTask",
           "variables": {}
         }
       ]

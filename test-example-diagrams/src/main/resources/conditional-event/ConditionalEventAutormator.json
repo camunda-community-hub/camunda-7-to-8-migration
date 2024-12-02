@@ -7,7 +7,7 @@
       "steps": [
         {
           "type": "STARTEVENT",
-          "activityId": "Start_ConditionalEvent",
+          "taskId": "Start_ConditionalEvent",
           "variables": {
             "temperature": 20
           }
@@ -16,7 +16,7 @@
           "type": "USERTASK",
           "delay": "PT0.1S",
           "waitingTime": "PT10S",
-          "activityId": "Activity_Review_1",
+          "taskId": "Activity_Review_1",
           "variables": {}
         }
 
