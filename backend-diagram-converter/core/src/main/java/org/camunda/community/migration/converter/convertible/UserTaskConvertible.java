@@ -28,9 +28,18 @@ public class UserTaskConvertible extends AbstractActivityConvertible {
   }
 
   public static class ZeebeFormDefinition {
+    private String formId;
     private String formKey;
     private ZeebeFormDefinitionBindingType bindingType;
     private String versionTag;
+
+    public String getFormId() {
+      return formId;
+    }
+
+    public void setFormId(String formId) {
+      this.formId = formId;
+    }
 
     public String getVersionTag() {
       return versionTag;

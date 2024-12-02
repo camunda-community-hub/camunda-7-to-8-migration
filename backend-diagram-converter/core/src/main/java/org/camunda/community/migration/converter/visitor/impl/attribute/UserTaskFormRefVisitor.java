@@ -23,7 +23,7 @@ public class UserTaskFormRefVisitor extends AbstractSupportedAttributeVisitor {
         conversion ->
             conversion
                 .getZeebeFormDefinition()
-                .setFormKey(transformationResult.getFeelExpression()));
+                .setFormId(transformationResult.getFeelExpression()));
     return MessageFactory.formRef(
         attributeLocalName(),
         context.getElement().getLocalName(),
