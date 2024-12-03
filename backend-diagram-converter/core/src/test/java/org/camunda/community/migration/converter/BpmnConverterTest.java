@@ -797,21 +797,16 @@ public class BpmnConverterTest {
   @Test
   void testGatewayExecutionListenerShouldBeTransformed() {
     BpmnModelInstance modelInstance = loadAndConvert("gateway-with-el.bpmn");
-    DomElement gateway = modelInstance
-        .getDocument()
-        .getElementById("GatewayWithEL");
+    DomElement gateway = modelInstance.getDocument().getElementById("GatewayWithEL");
     assertThat(gateway).isNotNull();
-    DomElement extensionElements = gateway
-        .getChildElementsByNameNs(BPMN, "extensionElements")
-        .get(0);
+    DomElement extensionElements =
+        gateway.getChildElementsByNameNs(BPMN, "extensionElements").get(0);
     assertThat(extensionElements).isNotNull();
-    DomElement executionListeners = extensionElements
-        .getChildElementsByNameNs(ZEEBE, "executionListeners")
-        .get(0);
+    DomElement executionListeners =
+        extensionElements.getChildElementsByNameNs(ZEEBE, "executionListeners").get(0);
     assertThat(executionListeners).isNotNull();
-    DomElement executionListener = executionListeners
-        .getChildElementsByNameNs(ZEEBE, "executionListener")
-        .get(0);
+    DomElement executionListener =
+        executionListeners.getChildElementsByNameNs(ZEEBE, "executionListener").get(0);
     assertThat(executionListener).isNotNull();
     assertThat(executionListener.getAttribute("type")).contains("hellYeah");
   }
