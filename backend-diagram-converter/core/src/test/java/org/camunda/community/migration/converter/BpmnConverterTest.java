@@ -795,6 +795,22 @@ public class BpmnConverterTest {
   }
 
   @Test
+  void testDefaultResultVariable() {
+    BpmnModelInstance modelInstance = loadAndConvert("default-result-variable.bpmn");
+    DomElement businessRuleTask = modelInstance.getDocument().getElementById("businessRuleTask");
+    assertThat(businessRuleTask).isNotNull();
+    assertThat(businessRuleTask.getChildElementsByNameNs(BPMN, "extensionElements")).hasSize(1);
+    DomElement extensionElements =
+        businessRuleTask.getChildElementsByNameNs(BPMN, "extensionElements").get(0);
+    assertThat(extensionElements).isNotNull();
+    DomElement calledDecision =
+        extensionElements.getChildElementsByNameNs(ZEEBE, "calledDecision").get(0);
+    assertThat(calledDecision).isNotNull();
+    String resultVariable = calledDecision.getAttribute(ZEEBE, "resultVariable");
+    assertThat(resultVariable).isNotNull().isEqualTo("decisionResult");
+  }
+
+  @Test
   void testGatewayExecutionListenerShouldBeTransformed() {
     BpmnModelInstance modelInstance = loadAndConvert("gateway-with-el.bpmn");
     DomElement gateway = modelInstance.getDocument().getElementById("GatewayWithEL");
