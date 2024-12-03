@@ -19,4 +19,6 @@ public interface ConverterProperties {
   Boolean getDefaultJobTypeEnabled();
 
   Boolean getAppendDocumentation();
+
+  Boolean getAppendElements();
 }

@@ -10,6 +10,7 @@ public class DefaultConverterProperties implements ConverterProperties {
   private String platformVersion;
   private Boolean defaultJobTypeEnabled;
   private Boolean appendDocumentation;
+  private Boolean appendElements;
 
   @Override
   public Boolean getAppendDocumentation() {
@@ -90,5 +91,14 @@ public class DefaultConverterProperties implements ConverterProperties {
 
   public void setScriptFormatHeader(String scriptFormatHeader) {
     this.scriptFormatHeader = scriptFormatHeader;
+  }
+
+  @Override
+  public Boolean getAppendElements() {
+    return appendElements;
+  }
+
+  public void setAppendElements(Boolean appendElements) {
+    this.appendElements = appendElements;
   }
 }

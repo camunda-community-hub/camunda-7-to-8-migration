@@ -71,6 +71,11 @@ public abstract class AbstractConvertCommand implements Callable<Integer> {
   @Option(names = "--disable-default-job-type", description = "Disables the default job type")
   boolean defaultJobTypeDisabled;
 
+  @Option(
+      names = "--disable-append-elements",
+      description = "Disables adding conversion messages to the bpmn xml")
+  boolean disableAppendElements;
+
   public AbstractConvertCommand() {
     BpmnConverterFactory factory = BpmnConverterFactory.getInstance();
     factory.getNotificationServiceFactory().setInstance(new PrintNotificationServiceImpl());
@@ -157,6 +162,7 @@ public abstract class AbstractConvertCommand implements Callable<Integer> {
     properties.setPlatformVersion(platformVersion);
     properties.setDefaultJobTypeEnabled(!defaultJobTypeDisabled);
     properties.setAppendDocumentation(documentation);
+    properties.setAppendElements(!disableAppendElements);
     return properties;
   }
 

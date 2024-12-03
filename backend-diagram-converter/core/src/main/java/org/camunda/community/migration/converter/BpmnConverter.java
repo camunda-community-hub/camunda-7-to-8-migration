@@ -101,9 +101,11 @@ public class BpmnConverter {
               List<BpmnElementCheckMessage> messages = getMessages(element, result);
               List<String> references = getReferences(element, result);
               List<String> referencedBys = getReferencedBys(element, result);
-              conversionElementAppender.appendMessages(element, messages);
-              conversionElementAppender.appendReferences(element, references);
-              conversionElementAppender.appendReferencedBy(element, referencedBys);
+              if (properties.getAppendElements()) {
+                conversionElementAppender.appendMessages(element, messages);
+                conversionElementAppender.appendReferences(element, references);
+                conversionElementAppender.appendReferencedBy(element, referencedBys);
+              }
               if (properties.getAppendDocumentation()) {
                 conversionElementAppender.appendDocumentation(
                     element, collectMessages(result, messages, references));
