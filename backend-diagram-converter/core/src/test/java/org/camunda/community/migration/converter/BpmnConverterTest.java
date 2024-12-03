@@ -46,7 +46,8 @@ public class BpmnConverterTest {
         "form-ref-version.bpmn",
         "form-ref-deployment.bpmn",
         "decision-ref-version.bpmn",
-        "decision-ref-deployment.bpmn"
+        "decision-ref-deployment.bpmn",
+        "delegate-expression-listener.bpmn"
       })
   public void shouldConvert(String bpmnFile) {
     BpmnConverter converter = BpmnConverterFactory.getInstance().get();
@@ -791,6 +792,24 @@ public class BpmnConverterTest {
                 .get(0)
                 .getAttribute(ZEEBE, "bindingType"))
         .isEqualTo("deployment");
+  }
+
+  @Test
+  void testShouldConvertDelegateExpressionListener() {
+    BpmnModelInstance modelInstance = loadAndConvert("delegate-expression-listener.bpmn");
+    DomElement serviceTask = modelInstance.getDocument().getElementById("serviceTask");
+    assertThat(serviceTask).isNotNull();
+    DomElement extensionElements =
+        serviceTask.getChildElementsByNameNs(BPMN, "extensionElements").get(0);
+    assertThat(extensionElements).isNotNull();
+    DomElement executionListeners =
+        extensionElements.getChildElementsByNameNs(ZEEBE, "executionListeners").get(0);
+    assertThat(executionListeners).isNotNull();
+    DomElement executionListener =
+        executionListeners.getChildElementsByNameNs(ZEEBE, "executionListener").get(0);
+    assertThat(executionListener).isNotNull();
+    String type = executionListener.getAttribute("type");
+    assertThat(type).isEqualTo("myNewJobType");
   }
 
   @Test
