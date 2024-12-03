@@ -1,5 +1,7 @@
 package org.camunda.community.migration.converter.visitor.impl.element;
 
+import static org.camunda.community.migration.converter.NamespaceUri.*;
+
 import org.camunda.bpm.model.xml.instance.DomElement;
 import org.camunda.community.migration.converter.DomElementVisitorContext;
 import org.camunda.community.migration.converter.convertible.AbstractDataMapperConvertible;
@@ -24,6 +26,10 @@ public abstract class InputOutputParameterVisitor extends AbstractCamundaElement
     DomElement element = context.getElement();
     String name = element.getAttribute("name");
     MappingDirection direction = findMappingDirection(element);
+    if (isScript(element)) {
+      // Scripts are handled in ScriptVisitor
+      return MessageFactory.inputOutputScript();
+    }
     if (isNotStringOrExpression(element)) {
       return MessageFactory.inputOutputParameterIsNoExpression(localName(), name);
     }
@@ -61,6 +67,11 @@ public abstract class InputOutputParameterVisitor extends AbstractCamundaElement
     return resultMessage;
   }
 
+  private boolean isScript(DomElement element) {
+    return element.getChildElements().stream()
+        .anyMatch(e -> e.getNamespaceURI().equals(CAMUNDA) && e.getLocalName().equals("script"));
+  }
+
   private MappingDirection findMappingDirection(DomElement element) {
     if (isInputParameter(element.getLocalName())) {
       return MappingDirection.INPUT;
@@ -72,7 +83,7 @@ public abstract class InputOutputParameterVisitor extends AbstractCamundaElement
   }
 
   private boolean isNotStringOrExpression(DomElement element) {
-    return element.getChildElements().size() > 0;
+    return !element.getChildElements().isEmpty();
   }
 
   private boolean isInputParameter(String localName) {

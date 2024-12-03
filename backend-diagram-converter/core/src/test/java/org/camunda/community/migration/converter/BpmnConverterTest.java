@@ -9,6 +9,7 @@ import java.io.ByteArrayInputStream;
 import java.io.StringWriter;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import org.camunda.bpm.model.bpmn.Bpmn;
 import org.camunda.bpm.model.bpmn.BpmnModelInstance;
@@ -46,6 +47,8 @@ public class BpmnConverterTest {
         "form-ref-version.bpmn",
         "form-ref-deployment.bpmn",
         "decision-ref-version.bpmn",
+        "decision-ref-deployment.bpmn",
+        "feel_expr_not_tranformed.bpmn",
         "decision-ref-deployment.bpmn",
         "delegate.bpmn",
         "decision-ref-deployment.bpmn",
@@ -794,6 +797,44 @@ public class BpmnConverterTest {
                 .get(0)
                 .getAttribute(ZEEBE, "bindingType"))
         .isEqualTo("deployment");
+  }
+
+  @Test
+  void testFeelScriptInputShouldBeTransformed() {
+    BpmnModelInstance modelInstance = loadAndConvert("feel_expr_not_tranformed.bpmn");
+    DomElement serviceTask = modelInstance.getDocument().getElementById("Activity_1s02kf9");
+    assertThat(serviceTask).isNotNull();
+    DomElement extensionElements =
+        serviceTask.getChildElementsByNameNs(BPMN, "extensionElements").get(0);
+    assertThat(extensionElements).isNotNull();
+    DomElement ioMapping = extensionElements.getChildElementsByNameNs(ZEEBE, "ioMapping").get(0);
+    assertThat(ioMapping).isNotNull();
+    DomElement input =
+        ioMapping.getChildElementsByNameNs(ZEEBE, "input").stream()
+            .filter(e -> e.getAttribute(ZEEBE, "target").equals("HinweisText"))
+            .findFirst()
+            .get();
+    assertThat(input).isNotNull();
+    assertThat(input.getAttribute(ZEEBE, "target")).isEqualTo("HinweisText");
+    assertThat(input.getAttribute(ZEEBE, "source"))
+        .isEqualTo("=\"Vorgang automatisiert durchgeführt und abgeschlossen\"");
+  }
+
+  @Test
+  void testNonFeelScriptInputShouldNotBeTransformed() {
+    BpmnModelInstance modelInstance = loadAndConvert("feel_expr_not_tranformed.bpmn");
+    DomElement serviceTask = modelInstance.getDocument().getElementById("Activity_1s02kf9");
+    assertThat(serviceTask).isNotNull();
+    DomElement extensionElements =
+        serviceTask.getChildElementsByNameNs(BPMN, "extensionElements").get(0);
+    assertThat(extensionElements).isNotNull();
+    DomElement ioMapping = extensionElements.getChildElementsByNameNs(ZEEBE, "ioMapping").get(0);
+    assertThat(ioMapping).isNotNull();
+    Optional<DomElement> input =
+        ioMapping.getChildElementsByNameNs(ZEEBE, "input").stream()
+            .filter(e -> e.getAttribute(ZEEBE, "target").equals("anotherReference"))
+            .findFirst();
+    assertThat(input).isEmpty();
   }
 
   @Test

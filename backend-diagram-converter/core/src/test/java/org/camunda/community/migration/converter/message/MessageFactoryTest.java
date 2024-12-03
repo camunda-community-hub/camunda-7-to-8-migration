@@ -607,4 +607,18 @@ public class MessageFactoryTest {
             "Delegate expression %s could not be transformed to job type. Please define manually.",
             jobType);
   }
+
+  @Test
+  void shouldBuildInputOutputParameterFeelScript() {
+    String elementLocalName = random();
+    String parameterName = random();
+    String feelScript = random();
+    Message message =
+        MessageFactory.inputOutputParameterFeelScript(elementLocalName, parameterName, feelScript);
+    assertNotNull(message);
+    assertThat(message.getMessage())
+        .isEqualTo(
+            "Element '%s' was transformed. Parameter '%s': '%s' has been mapped.",
+            elementLocalName, parameterName, feelScript);
+  }
 }
