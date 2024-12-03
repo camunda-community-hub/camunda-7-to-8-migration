@@ -47,6 +47,8 @@ public class BpmnConverterTest {
         "form-ref-deployment.bpmn",
         "decision-ref-version.bpmn",
         "decision-ref-deployment.bpmn",
+        "delegate.bpmn",
+        "decision-ref-deployment.bpmn",
         "delegate-expression-listener.bpmn"
       })
   public void shouldConvert(String bpmnFile) {
@@ -857,5 +859,25 @@ public class BpmnConverterTest {
         bpmnModelInstance.getDocument().getElementById("HistoryTimeToLive");
     assertThat(historyTimeToLive).isNotNull();
     assertThat(historyTimeToLive.getChildElements()).isEmpty();
+  }
+
+  @Test
+  void shouldTransformDelegateExpressionAsJobType() {
+    DefaultConverterProperties converterProperties = new DefaultConverterProperties();
+    converterProperties.setUseDelegateExpressionAsJobType(true);
+    BpmnModelInstance modelInstance =
+        loadAndConvert(
+            "delegate.bpmn", ConverterPropertiesFactory.getInstance().merge(converterProperties));
+    printModel(modelInstance);
+    DomElement serviceTask = modelInstance.getDocument().getElementById("serviceTask");
+    assertThat(serviceTask).isNotNull();
+    assertThat(serviceTask.getChildElementsByNameNs(BPMN, "extensionElements")).hasSize(1);
+    DomElement extensionProperties =
+        serviceTask.getChildElementsByNameNs(BPMN, "extensionElements").get(0);
+    assertThat(extensionProperties.getChildElementsByNameNs(ZEEBE, "taskDefinition")).hasSize(1);
+    DomElement taskDefinition =
+        extensionProperties.getChildElementsByNameNs(ZEEBE, "taskDefinition").get(0);
+    assertThat(taskDefinition.hasAttribute("type")).isTrue();
+    assertThat(taskDefinition.getAttribute("type")).isEqualTo("myDelegate");
   }
 }

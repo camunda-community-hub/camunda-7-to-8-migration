@@ -61,6 +61,10 @@ public class ConverterPropertiesFactory extends AbstractFactory<ConverterPropert
         base::setDefaultJobTypeEnabled);
     readFlag(
         "append-documentation", properties::getAppendDocumentation, base::setAppendDocumentation);
+    readFlag(
+        "use-delegate-expression-as-job-type",
+        properties::getUseDelegateExpressionAsJobType,
+        base::setUseDelegateExpressionAsJobType);
     readFlag("append-elements", properties::getAppendElements, base::setAppendElements);
   }
 

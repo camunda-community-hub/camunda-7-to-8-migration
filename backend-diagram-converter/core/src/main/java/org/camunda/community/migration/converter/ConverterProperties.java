@@ -20,5 +20,7 @@ public interface ConverterProperties {
 
   Boolean getAppendDocumentation();
 
+  Boolean getUseDelegateExpressionAsJobType();
+
   Boolean getAppendElements();
 }

@@ -10,6 +10,7 @@ public class DefaultConverterProperties implements ConverterProperties {
   private String platformVersion;
   private Boolean defaultJobTypeEnabled;
   private Boolean appendDocumentation;
+  private Boolean useDelegateExpressionAsJobType;
   private Boolean appendElements;
 
   @Override
@@ -91,6 +92,15 @@ public class DefaultConverterProperties implements ConverterProperties {
 
   public void setScriptFormatHeader(String scriptFormatHeader) {
     this.scriptFormatHeader = scriptFormatHeader;
+  }
+
+  @Override
+  public Boolean getUseDelegateExpressionAsJobType() {
+    return useDelegateExpressionAsJobType;
+  }
+
+  public void setUseDelegateExpressionAsJobType(Boolean useDelegateExpressionAsJobType) {
+    this.useDelegateExpressionAsJobType = useDelegateExpressionAsJobType;
   }
 
   @Override

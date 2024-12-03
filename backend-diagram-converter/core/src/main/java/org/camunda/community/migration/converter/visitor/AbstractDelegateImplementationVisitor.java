@@ -1,6 +1,7 @@
 package org.camunda.community.migration.converter.visitor;
 
 import java.util.Set;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -19,24 +20,42 @@ public abstract class AbstractDelegateImplementationVisitor
   @Override
   protected Message visitSupportedAttribute(DomElementVisitorContext context, String attribute) {
     if (context.getProperties().getDefaultJobTypeEnabled()) {
-      context.addConversion(
-          ServiceTaskConvertible.class,
-          serviceTaskConversion ->
-              serviceTaskConversion.addZeebeTaskHeader(attributeLocalName(), attribute));
-      context.addConversion(
-          ServiceTaskConvertible.class,
-          serviceTaskConversion ->
-              serviceTaskConversion
-                  .getZeebeTaskDefinition()
-                  .setType(context.getProperties().getDefaultJobType()));
-      return MessageFactory.delegateImplementation(
-          attributeLocalName(),
-          context.getElement().getLocalName(),
-          attribute,
-          context.getProperties().getDefaultJobType());
+      if (context.getProperties().getUseDelegateExpressionAsJobType()) {
+        String jobType = extractJobType(attribute);
+        if (jobType != null) {
+          context.addConversion(
+              ServiceTaskConvertible.class,
+              serviceTaskConversion ->
+                  serviceTaskConversion.getZeebeTaskDefinition().setType(jobType));
+          return MessageFactory.delegateExpressionAsJobType(jobType);
+        } else {
+          return MessageFactory.delegateExpressionAsJobTypeNull(attribute);
+        }
+      } else {
+        context.addConversion(
+            ServiceTaskConvertible.class,
+            serviceTaskConversion ->
+                serviceTaskConversion.addZeebeTaskHeader(attributeLocalName(), attribute));
+        context.addConversion(
+            ServiceTaskConvertible.class,
+            serviceTaskConversion ->
+                serviceTaskConversion
+                    .getZeebeTaskDefinition()
+                    .setType(context.getProperties().getDefaultJobType()));
+        return MessageFactory.delegateImplementation(
+            attributeLocalName(),
+            context.getElement().getLocalName(),
+            attribute,
+            context.getProperties().getDefaultJobType());
+      }
     } else {
       return MessageFactory.delegateImplementationNoDefaultJobType(attributeLocalName(), attribute);
     }
+  }
+
+  private String extractJobType(String attribute) {
+    Matcher matcher = DELEGATE_NAME_EXTRACT.matcher(attribute);
+    return matcher.find() ? matcher.group(1) : null;
   }
 
   @Override
