@@ -18,7 +18,7 @@
     <version.java>17</version.java>
     <maven.compiler.source>${version.java}</maven.compiler.source>
     <maven.compiler.target>${version.java}</maven.compiler.target>
-    <version.camunda-7-to-8-migration>0.10.1</version.camunda-7-to-8-migration>
+    <version.camunda-7-to-8-migration>0.10.2</version.camunda-7-to-8-migration>
   </properties>
 
   <dependencies>
