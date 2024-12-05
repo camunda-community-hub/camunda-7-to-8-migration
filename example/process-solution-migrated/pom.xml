@@ -18,7 +18,7 @@
 
     <version.spring-boot>3.3.6</version.spring-boot>
     <version.camunda>7.22.0</version.camunda>
-    <version.adapter>0.10.1</version.adapter>
+    <version.adapter>0.10.2</version.adapter>
     <version.spring-zeebe>8.5.13</version.spring-zeebe>
 
     <plugin.version.maven-surefire-plugin>3.5.2</plugin.version.maven-surefire-plugin>
