@@ -144,7 +144,7 @@ public class BpmnConverterTest {
     assertThat(joinGateway.getMessages()).hasSize(1);
     assertThat(joinGateway.getMessages().get(0).getMessage())
         .isEqualTo(
-            "Element 'Inclusive Gateway' is not supported in Zeebe version '8.0.0'. Please review.");
+            "Element 'Inclusive Gateway' is not supported in Zeebe version '8.0.0'. It is available in version '8.6.0'.");
   }
 
   @Test
@@ -154,7 +154,8 @@ public class BpmnConverterTest {
     BpmnElementCheckResult joinGateway = result.getResult("JoinGateway");
     assertThat(joinGateway.getMessages()).hasSize(1);
     assertThat(joinGateway.getMessages().get(0).getMessage())
-        .isEqualTo("A joining inclusive gateway is not supported.");
+        .isEqualTo(
+            "Element 'Inclusive Gateway' is not supported in Zeebe version '8.1.0'. It is available in version '8.6.0'.");
   }
 
   @Test

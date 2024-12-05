@@ -12,6 +12,7 @@ import org.camunda.community.migration.converter.visitor.AbstractGatewayVisitor;
 
 public class InclusiveGatewayVisitor extends AbstractGatewayVisitor {
   private static final SemanticVersion FORK_AVAILABLE_VERSION = SemanticVersion._8_1;
+  private static final SemanticVersion JOIN_AVAILABLE_VERSION = SemanticVersion._8_6;
   public static final String ELEMENT_LOCAL_NAME = "inclusiveGateway";
 
   @Override
@@ -37,7 +38,7 @@ public class InclusiveGatewayVisitor extends AbstractGatewayVisitor {
     if (isNotJoining(context.getElement())) {
       return FORK_AVAILABLE_VERSION;
     }
-    return null;
+    return JOIN_AVAILABLE_VERSION;
   }
 
   @Override
