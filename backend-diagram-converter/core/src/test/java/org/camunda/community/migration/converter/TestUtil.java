@@ -2,9 +2,9 @@ package org.camunda.community.migration.converter;
 
 import java.util.HashMap;
 import java.util.Map;
+import org.apache.commons.lang3.RandomStringUtils;
 import org.camunda.bpm.model.bpmn.Bpmn;
 import org.camunda.bpm.model.bpmn.BpmnModelInstance;
-import org.testcontainers.shaded.org.apache.commons.lang3.RandomStringUtils;
 
 public class TestUtil {
 

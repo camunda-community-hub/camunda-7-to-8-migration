@@ -5,16 +5,15 @@ import static org.camunda.bpm.engine.test.assertions.bpmn.BpmnAwareTests.*;
 import static org.camunda.community.migration.processInstance.TestUtil.*;
 import static org.mockito.Mockito.*;
 
-import io.camunda.common.auth.Authentication;
 import io.camunda.operate.CamundaOperateClient;
+import io.camunda.operate.auth.Authentication;
 import io.camunda.operate.exception.OperateException;
 import io.camunda.operate.model.ProcessDefinition;
+import io.camunda.process.test.api.CamundaSpringProcessTest;
 import io.camunda.zeebe.client.ZeebeClient;
 import io.camunda.zeebe.client.api.JsonMapper;
 import io.camunda.zeebe.model.bpmn.Bpmn;
 import io.camunda.zeebe.model.bpmn.BpmnModelInstance;
-import io.camunda.zeebe.process.test.api.ZeebeTestEngine;
-import io.camunda.zeebe.spring.test.ZeebeSpringTest;
 import java.io.ByteArrayOutputStream;
 import java.util.Arrays;
 import java.util.Collections;
@@ -37,23 +36,21 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 
 @SpringBootTest
-@ZeebeSpringTest
+@CamundaSpringProcessTest
 @ExtendWith(ProcessEngineExtension.class)
 public class ProcessInstanceMigrationAppTest {
   @Autowired Camunda8Service camunda8Service;
-  @MockBean CamundaOperateClient operateClient;
   @MockBean Authentication authentication;
+  @MockBean CamundaOperateClient operateClient;
   @Autowired Camunda7Service camunda7Service;
   @Autowired JsonMapper jsonMapper;
   @Autowired ProcessDefinitionMigrationHintService processDefinitionMigrationHintService;
   @Autowired ProcessInstanceMigrationHintService processInstanceMigrationHintService;
-  @Autowired ZeebeTestEngine zeebeTestEngine;
   @Autowired ZeebeClient zeebeClient;
 
   @BeforeEach
   void setup() throws OperateException {
     TestUtil.zeebeClient = zeebeClient;
-    TestUtil.zeebeTestEngine = zeebeTestEngine;
     when(operateClient.searchProcessDefinitions(any()))
         .thenReturn(Collections.singletonList(new ProcessDefinition()));
   }

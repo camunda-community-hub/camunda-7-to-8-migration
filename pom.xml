@@ -21,7 +21,6 @@
     <maven.compiler.target>${version.java}</maven.compiler.target>
 
     <version.zeebe>8.6.6</version.zeebe>
-    <version.spring-boot-starter-camunda>8.5.13</version.spring-boot-starter-camunda>
     <version.zeebe-process-test-extension-testcontainer>8.6.6</version.zeebe-process-test-extension-testcontainer>
     <version.camunda.platform>7.22.0</version.camunda.platform>
     <version.jsoup>1.18.3</version.jsoup>
@@ -127,31 +126,34 @@
         <version>${version.commons-io}</version>
       </dependency>
       <dependency>
-        <groupId>io.camunda.spring</groupId>
-        <artifactId>spring-boot-starter-camunda</artifactId>
-        <version>${version.spring-boot-starter-camunda}</version>
+        <groupId>io.camunda</groupId>
+        <artifactId>spring-boot-starter-camunda-sdk</artifactId>
+        <version>${version.zeebe}</version>
       </dependency>
       <dependency>
         <groupId>io.camunda.spring</groupId>
-        <artifactId>java-common</artifactId>
-        <version>${version.spring-boot-starter-camunda}</version>
+        <artifactId>spring-boot-starter-camunda-operate</artifactId>
+        <version>8.6.2</version>
+      </dependency>
+      <dependency>
+        <groupId>org.camunda.feel</groupId>
+        <artifactId>feel-engine</artifactId>
+        <version>1.18.1</version>
+      </dependency>
+      <dependency>
+        <groupId>org.scala-lang</groupId>
+        <artifactId>scala-library</artifactId>
+        <version>2.13.15</version>
+      </dependency>
+      <dependency>
+        <groupId>jakarta.xml.bind</groupId>
+        <artifactId>jakarta.xml.bind-api</artifactId>
+        <version>4.0.2</version>
       </dependency>
       <dependency>
         <groupId>io.camunda</groupId>
-        <artifactId>camunda-operate-client-java</artifactId>
-        <version>${version.operate-client}</version>
-      </dependency>
-      <dependency>
-        <groupId>io.camunda.spring</groupId>
-        <artifactId>spring-boot-starter-camunda-test-testcontainer</artifactId>
-        <version>${version.spring-boot-starter-camunda}</version>
-        <scope>test</scope>
-      </dependency>
-      <dependency>
-        <groupId>io.camunda</groupId>
-        <artifactId>zeebe-process-test-extension-testcontainer</artifactId>
-        <version>${version.zeebe-process-test-extension-testcontainer}</version>
-        <scope>test</scope>
+        <artifactId>camunda-process-test-spring</artifactId>
+        <version>${version.zeebe}</version>
       </dependency>
       <dependency>
         <groupId>org.jsoup</groupId>
