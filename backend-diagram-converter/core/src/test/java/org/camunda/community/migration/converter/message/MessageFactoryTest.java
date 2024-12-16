@@ -344,12 +344,13 @@ public class MessageFactoryTest {
 
   @Test
   void shouldBuildExecutionListener() {
-    Message message = MessageFactory.executionListener("start", "${myExecutionListener}");
+    Message message =
+        MessageFactory.executionListener("start", "delegateExpression", "${myExecutionListener}");
     assertNotNull(message);
     assertNotNull(message.getMessage());
     assertThat(message.getMessage())
         .isEqualTo(
-            "Listener at 'start' with implementation '${myExecutionListener}' cannot be transformed. Execution Listeners do not exist before Zeebe 8.6.");
+            "Listener at 'start' with implementation 'delegateExpression' '${myExecutionListener}' cannot be transformed.");
   }
 
   @Test

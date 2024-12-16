@@ -357,11 +357,12 @@ public class MessageFactory {
             .build());
   }
 
-  public static Message executionListener(String event, String implementation) {
+  public static Message executionListener(String event, String type, String implementation) {
     return INSTANCE.composeMessage(
         "execution-listener",
         ContextBuilder.builder()
             .entry("event", event)
+            .entry("type", type)
             .entry("implementation", implementation)
             .build());
   }

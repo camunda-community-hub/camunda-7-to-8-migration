@@ -922,4 +922,17 @@ public class BpmnConverterTest {
     assertThat(taskDefinition.hasAttribute("type")).isTrue();
     assertThat(taskDefinition.getAttribute("type")).isEqualTo("myDelegate");
   }
+
+  @Test
+  void shouldNotTransformTakeListener() {
+    BpmnDiagramCheckResult bpmnDiagramCheckResult = loadAndCheck("take-listener.bpmn");
+    BpmnElementCheckResult takeListenerFlow = bpmnDiagramCheckResult.getResult("takeListenerFlow");
+    assertThat(takeListenerFlow).isNotNull();
+    assertThat(takeListenerFlow.getMessages()).hasSize(1);
+    BpmnElementCheckMessage message = takeListenerFlow.getMessages().get(0);
+    assertThat(message).isNotNull();
+    assertThat(message.getMessage())
+        .isEqualTo(
+            "Listener at 'take' with implementation 'class' 'abc.def' cannot be transformed.");
+  }
 }
