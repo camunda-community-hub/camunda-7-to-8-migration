@@ -104,22 +104,6 @@ The external task workers can be mapped by using the `taskType` and insert the
 </bpmn:serviceTask>
 ```
 
-## Using Execution listener
-
-To use execution listeners, use the header `executionListener.start` or `executionListener.end`. The value should be of type `delegateExpression` which returns a bean of type `ExecutionListener`:
-
-```xml
-
-<bpmn:serviceTask id="task3" name="Expression">
-  <bpmn:extensionElements>
-    <zeebe:taskHeaders>
-      <zeebe:header key="executionListener.start" value="${startExecutionListenerBean}"/>
-      <zeebe:header key="executionListener.end" value="${endExecutionListenerBean}"/>
-    </zeebe:taskHeaders>
-  </bpmn:extensionElements>
-</bpmn:serviceTask>
-```
-
 ## Handling Object Variables
 
 As Zeebe does not support explicit typing anymore (everything is JSON), it is not possible to retrieve typed variables from the process instance directly.
