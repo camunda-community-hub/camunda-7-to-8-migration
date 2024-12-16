@@ -23,7 +23,7 @@ public class ExecutionListenerVisitor extends AbstractListenerVisitor {
   protected Message visitListener(
       DomElementVisitorContext context, String event, ListenerImplementation implementation) {
     if (isExecutionListenerSupported(
-        SemanticVersion.parse(context.getProperties().getPlatformVersion()))) {
+        SemanticVersion.parse(context.getProperties().getPlatformVersion()), event)) {
       ZeebeExecutionListener executionListener = new ZeebeExecutionListener();
       executionListener.setEventType(EventType.valueOf(event));
       if (implementation instanceof DelegateExpressionImplementation) {
@@ -38,16 +38,27 @@ public class ExecutionListenerVisitor extends AbstractListenerVisitor {
           c -> c.addZeebeExecutionListener(executionListener));
       return MessageFactory.executionListenerSupported(event, implementation.implementation());
     }
-    return MessageFactory.executionListener(event, implementation.implementation());
+    return MessageFactory.executionListener(
+        event, ListenerImplementation.type(implementation), implementation.implementation());
   }
 
-  private boolean isExecutionListenerSupported(SemanticVersion version) {
-    return version.ordinal() >= SemanticVersion._8_6.ordinal();
+  private boolean isExecutionListenerSupported(SemanticVersion version, String event) {
+    return version.ordinal() >= SemanticVersion._8_6.ordinal() && isKnownEventType(event);
+  }
+
+  private boolean isKnownEventType(String event) {
+    for (EventType eventType : EventType.values()) {
+      if (eventType.name().equals(event)) {
+        return true;
+      }
+    }
+    return false;
   }
 
   @Override
   public boolean canBeTransformed(DomElementVisitorContext context) {
     return isExecutionListenerSupported(
-        SemanticVersion.parse(context.getProperties().getPlatformVersion()));
+        SemanticVersion.parse(context.getProperties().getPlatformVersion()),
+        findEventName(context));
   }
 }

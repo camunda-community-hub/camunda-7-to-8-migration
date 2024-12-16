@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_0cqrrmo" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.30.0" modeler:executionPlatform="Camunda Platform" modeler:executionPlatformVersion="7.22.0">
+  <bpmn:process id="Process_0wmzg2z" isExecutable="true">
+    <bpmn:startEvent id="StartEvent_1">
+      <bpmn:outgoing>takeListenerFlow</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:endEvent id="Event_1ak6z4s">
+      <bpmn:incoming>takeListenerFlow</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="takeListenerFlow" sourceRef="StartEvent_1" targetRef="Event_1ak6z4s">
+      <bpmn:extensionElements>
+        <camunda:executionListener class="abc.def" event="take" />
+      </bpmn:extensionElements>
+    </bpmn:sequenceFlow>
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Process_0wmzg2z">
+      <bpmndi:BPMNShape id="StartEvent_1_di" bpmnElement="StartEvent_1">
+        <dc:Bounds x="182" y="82" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1ak6z4s_di" bpmnElement="Event_1ak6z4s">
+        <dc:Bounds x="272" y="82" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_1gqasw7_di" bpmnElement="takeListenerFlow">
+        <di:waypoint x="218" y="100" />
+        <di:waypoint x="272" y="100" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

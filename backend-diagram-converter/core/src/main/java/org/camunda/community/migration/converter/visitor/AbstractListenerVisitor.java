@@ -14,8 +14,12 @@ public abstract class AbstractListenerVisitor extends AbstractCamundaElementVisi
   @Override
   protected final Message visitCamundaElement(DomElementVisitorContext context) {
     ListenerImplementation implementation = findListenerImplementation(context);
-    String event = context.getElement().getAttribute(NamespaceUri.CAMUNDA, "event");
+    String event = findEventName(context);
     return visitListener(context, event, implementation);
+  }
+
+  protected String findEventName(DomElementVisitorContext context) {
+    return context.getElement().getAttribute(NamespaceUri.CAMUNDA, "event");
   }
 
   protected abstract Message visitListener(
@@ -53,6 +57,23 @@ public abstract class AbstractListenerVisitor extends AbstractCamundaElementVisi
 
   public sealed interface ListenerImplementation {
     String implementation();
+
+    static String type(ListenerImplementation implementation) {
+      if (implementation == null) {
+        return null;
+      } else if (implementation instanceof NullImplementation) {
+        return "null";
+      } else if (implementation instanceof DelegateExpressionImplementation) {
+        return "delegateExpression";
+      } else if (implementation instanceof ClassImplementation) {
+        return "class";
+      } else if (implementation instanceof ExpressionImplementation) {
+        return "expression";
+      } else if (implementation instanceof ScriptImplementation) {
+        return "script";
+      }
+      throw new IllegalArgumentException("Unsupported implementation: " + implementation);
+    }
 
     record DelegateExpressionImplementation(String implementation)
         implements ListenerImplementation {}
