@@ -19,8 +19,7 @@
     <version.spring-boot>3.3.6</version.spring-boot>
     <version.camunda>7.22.0</version.camunda>
     <version.adapter>0.10.2</version.adapter>
-    <version.spring-zeebe>8.5.13</version.spring-zeebe>
-
+<version.zeebe>8.6.6</version.zeebe>
     <plugin.version.maven-surefire-plugin>3.5.2</plugin.version.maven-surefire-plugin>
   </properties>
 
@@ -54,11 +53,10 @@
         <artifactId>camunda-7-adapter</artifactId>
         <version>${version.adapter}</version>
       </dependency>
-      <!-- Testcontainers is required as we run on Java 1.8 here. 'spring-boot-starter-camunda-test' can be used with Java 17 upwards-->
       <dependency>
-        <groupId>io.camunda.spring</groupId>
-        <artifactId>spring-boot-starter-camunda-test-testcontainer</artifactId>
-        <version>${version.spring-zeebe}</version>
+        <groupId>io.camunda</groupId>
+        <artifactId>camunda-process-test-spring</artifactId>
+        <version>${version.zeebe}</version>
       </dependency>
     </dependencies>
   </dependencyManagement>
@@ -69,8 +67,8 @@
       <artifactId>camunda-7-adapter</artifactId>
     </dependency>
     <dependency>
-      <groupId>io.camunda.spring</groupId>
-      <artifactId>spring-boot-starter-camunda-test-testcontainer</artifactId>
+      <groupId>io.camunda</groupId>
+      <artifactId>camunda-process-test-spring</artifactId>
       <scope>test</scope>
     </dependency>
   </dependencies>
