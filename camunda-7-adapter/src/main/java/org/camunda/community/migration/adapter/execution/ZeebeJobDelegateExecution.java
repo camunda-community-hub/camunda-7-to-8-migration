@@ -11,7 +11,7 @@ import org.camunda.community.migration.adapter.execution.variable.VariableTyper;
 
 /**
  * DelegateExecution implementation that can be initialized with an {@link ActivatedJob} and
- * provides all methods required for executing a JavaDelegate as part of an job worker.
+ * provides all methods required for executing a JavaDelegate as part of a job worker.
  *
  * @author Falko Menge (Camunda)
  */

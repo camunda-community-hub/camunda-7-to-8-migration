@@ -4,8 +4,8 @@ import static org.assertj.core.api.Assertions.*;
 import static org.camunda.community.migration.converter.message.MessageFactory.*;
 import static org.junit.jupiter.api.Assertions.*;
 
+import org.apache.commons.lang3.RandomStringUtils;
 import org.junit.jupiter.api.Test;
-import org.testcontainers.shaded.org.apache.commons.lang3.RandomStringUtils;
 
 // TODO create more fine-grained tests
 public class MessageFactoryTest {

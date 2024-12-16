@@ -10,7 +10,7 @@ import io.camunda.zeebe.client.api.response.ActivatedJob;
 import io.camunda.zeebe.client.api.response.ProcessInstanceEvent;
 import io.camunda.zeebe.spring.client.annotation.JobWorker;
 import io.camunda.zeebe.spring.client.annotation.VariablesAsType;
-import io.camunda.zeebe.spring.client.exception.ZeebeBpmnError;
+import io.camunda.zeebe.spring.common.exception.ZeebeBpmnError;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
@@ -164,7 +164,8 @@ public class ZeebeJobClient {
     } catch (Exception e) {
       throw new ZeebeBpmnError(
           CANCEL_PROCESS_INSTANCE,
-          "Error while cancelling process instance " + variables.getCamunda7ProcessInstanceId());
+          "Error while cancelling process instance " + variables.getCamunda7ProcessInstanceId(),
+          Map.of());
     }
   }
 

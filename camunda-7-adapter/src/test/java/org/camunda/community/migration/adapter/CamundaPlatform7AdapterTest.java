@@ -1,25 +1,35 @@
 package org.camunda.community.migration.adapter;
 
-import static io.camunda.zeebe.spring.test.ZeebeTestThreadSupport.*;
 import static org.junit.jupiter.api.Assertions.*;
 
+import io.camunda.process.test.api.CamundaAssert;
+import io.camunda.process.test.api.CamundaSpringProcessTest;
 import io.camunda.zeebe.client.ZeebeClient;
 import io.camunda.zeebe.client.api.response.ProcessInstanceEvent;
 import io.camunda.zeebe.model.bpmn.Bpmn;
 import io.camunda.zeebe.model.bpmn.BpmnModelInstance;
-import io.camunda.zeebe.spring.test.ZeebeSpringTest;
-import java.time.Duration;
+import io.micrometer.core.instrument.MeterRegistry;
+import io.micrometer.core.instrument.simple.SimpleMeterRegistry;
 import java.util.Collections;
+import org.camunda.community.migration.adapter.CamundaPlatform7AdapterTest.Config;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Import;
 
-@SpringBootTest(
-    classes = CamundaPlatform7AdapterConfig.class,
-    properties = "logging.level.root=INFO")
-@ZeebeSpringTest
+@SpringBootTest(classes = Config.class, properties = "logging.level.root=INFO")
+@CamundaSpringProcessTest
 public class CamundaPlatform7AdapterTest {
+
+  @Import({CamundaPlatform7AdapterConfig.class})
+  static class Config {
+    @Bean
+    public MeterRegistry meterRegistry() {
+      return new SimpleMeterRegistry();
+    }
+  }
 
   @Autowired private ZeebeClient zeebeClient;
 
@@ -59,8 +69,7 @@ public class CamundaPlatform7AdapterTest {
             .variables(Collections.singletonMap("someVariable", variableValue))
             .send()
             .join();
-
-    waitForProcessInstanceCompleted(processInstance, Duration.ofSeconds(60));
+    CamundaAssert.assertThat(processInstance).isCompleted();
 
     assertTrue(SampleDelegate.executed);
     assertFalse(SampleDelegate.canReachExecutionVariable);
@@ -89,8 +98,7 @@ public class CamundaPlatform7AdapterTest {
             .variables(Collections.singletonMap("someVariable", "value"))
             .send()
             .join();
-
-    waitForProcessInstanceCompleted(processInstance, Duration.ofSeconds(60));
+    CamundaAssert.assertThat(processInstance).isCompleted();
 
     assertTrue(SampleDelegateBean.executed);
     assertFalse(SampleDelegateBean.canReachExecutionVariable);
@@ -120,7 +128,7 @@ public class CamundaPlatform7AdapterTest {
             .send()
             .join();
 
-    waitForProcessInstanceCompleted(processInstance, Duration.ofSeconds(60));
+    CamundaAssert.assertThat(processInstance).isCompleted();
 
     assertTrue(SampleBean.executionReceived);
     assertTrue(SampleBean.someVariableReceived);
@@ -147,7 +155,7 @@ public class CamundaPlatform7AdapterTest {
             .send()
             .join();
 
-    waitForProcessInstanceCompleted(processInstance, Duration.ofSeconds(60));
+    CamundaAssert.assertThat(processInstance).isCompleted();
     assertEquals("value", SampleExternalTaskHandler.someVariable);
   }
 
@@ -158,14 +166,14 @@ public class CamundaPlatform7AdapterTest {
         .addResourceFromClasspath("test-with-error-event.bpmn")
         .send()
         .join();
-    ProcessInstanceEvent join =
+    ProcessInstanceEvent processInstance =
         zeebeClient
             .newCreateInstanceCommand()
             .bpmnProcessId("error-test")
             .latestVersion()
             .send()
             .join();
-    waitForProcessInstanceCompleted(join, Duration.ofSeconds(60));
+    CamundaAssert.assertThat(processInstance).isCompleted();
     assertTrue(SampleDelegateBean.executed);
   }
 }

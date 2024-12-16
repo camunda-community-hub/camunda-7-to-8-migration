@@ -8,13 +8,11 @@ import io.camunda.zeebe.client.api.response.ActivateJobsResponse;
 import io.camunda.zeebe.client.api.response.ActivatedJob;
 import io.camunda.zeebe.client.api.response.Process;
 import io.camunda.zeebe.model.bpmn.BpmnModelInstance;
-import io.camunda.zeebe.process.test.api.ZeebeTestEngine;
 import org.camunda.bpm.engine.ProcessEngine;
 import org.camunda.bpm.engine.ProcessEngines;
 
 public class TestUtil {
   static ZeebeClient zeebeClient;
-  static ZeebeTestEngine zeebeTestEngine;
 
   public static void completeUserTask(Object variables) {
     ActivateJobsResponse response =

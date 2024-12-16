@@ -10,7 +10,7 @@
     <version.spring-boot>3.3.6</version.spring-boot>
     <version.maven-surefire>3.5.2</version.maven-surefire>
     <version.adapter>0.10.2</version.adapter>
-    <version.spring-zeebe>8.5.13</version.spring-zeebe>
+    <version.zeebe>8.6.6</version.zeebe>
 
     <version.java>17</version.java>
     <maven.compiler.source>${version.java}</maven.compiler.source>
@@ -58,12 +58,12 @@
         <artifactId>camunda-7-adapter</artifactId>
         <version>${version.adapter}</version>
       </dependency>
-      <!-- Testcontainers is required as we run on Java 1.8 here. 'spring-boot-starter-camunda-test' can be used with Java 17 upwards-->
       <dependency>
-        <groupId>io.camunda.spring</groupId>
-        <artifactId>spring-boot-starter-camunda-test-testcontainer</artifactId>
-        <version>${version.spring-zeebe}</version>
+        <groupId>io.camunda</groupId>
+        <artifactId>camunda-process-test-spring</artifactId>
+        <version>${version.zeebe}</version>
       </dependency>
+
     </dependencies>
   </dependencyManagement>
   
@@ -84,15 +84,10 @@
       <artifactId>spring-boot-starter-test</artifactId>
       <scope>test</scope>
     </dependency>
+
     <dependency>
-      <groupId>io.camunda.spring</groupId>
-      <artifactId>spring-boot-starter-camunda-test-testcontainer</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.camunda.community.process_test_coverage</groupId>
-      <artifactId>camunda-process-test-coverage-spring-test-platform-8</artifactId> 
-      <version>2.7.0</version>
+      <groupId>io.camunda</groupId>
+      <artifactId>camunda-process-test-spring</artifactId>
       <scope>test</scope>
     </dependency>
   </dependencies>

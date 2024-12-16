@@ -42,17 +42,8 @@
       <artifactId>spring-boot-starter</artifactId>
       <version>3.3.6</version>
     </dependency>
-    <dependency>
-      <groupId>io.camunda.spring</groupId>
-      <artifactId>spring-boot-starter-camunda</artifactId>
-      <version>8.5.15</version>
-    </dependency>
-    <dependency>
-      <groupId>io.camunda.spring</groupId>
-      <artifactId>spring-boot-starter-camunda-test-testcontainer</artifactId>
-      <version>8.5.15</version>
-      <scope>test</scope>
-    </dependency>
+
+
     <dependency>
       <groupId>org.camunda.bpm</groupId>
       <artifactId>camunda-engine-spring</artifactId>
