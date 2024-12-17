@@ -94,7 +94,7 @@ public class ConditionExpressionVisitor extends AbstractBpmnElementVisitor {
     context.addConversion(
         SequenceFlowConvertible.class,
         conversion -> conversion.setConditionExpression(transformationResult.getFeelExpression()));
-    if (transformationResult.hasExecution()) {
+    if (transformationResult.hasExecutionOnly()) {
       context.addMessage(
           MessageFactory.conditionExpressionExecution(
               transformationResult.getJuelExpression(), transformationResult.getFeelExpression()));
