@@ -328,6 +328,21 @@ public class BpmnConverterTest {
   }
 
   @Test
+  void testExcutionGetVariable() {
+    BpmnDiagramCheckResult result = loadAndCheck("expression-get-variable.bpmn");
+    List<BpmnElementCheckMessage> equalsYesMessage =
+        result.getResult("GetVariableEqualsYesFlow").getMessages();
+    assertThat(equalsYesMessage).hasSize(1);
+    assertThat(equalsYesMessage.get(0).getSeverity()).isEqualTo(Severity.REVIEW);
+    assertThat(equalsYesMessage.get(0).getMessage()).contains("-> '=exampleVar = \"yes\"");
+    List<BpmnElementCheckMessage> notEqualsYesMessage =
+        result.getResult("GetVariableNotEqualsYesFlow").getMessages();
+    assertThat(notEqualsYesMessage).hasSize(1);
+    assertThat(notEqualsYesMessage.get(0).getSeverity()).isEqualTo(Severity.REVIEW);
+    assertThat(notEqualsYesMessage.get(0).getMessage()).contains("-> '=exampleVar != \"yes\"");
+  }
+
+  @Test
   void testExpressionWithMethodInvocation() {
     BpmnDiagramCheckResult result = loadAndCheck("expression-method-invocation.bpmn");
     List<BpmnElementCheckMessage> easyExpressionMessage =
@@ -338,9 +353,9 @@ public class BpmnConverterTest {
     List<BpmnElementCheckMessage> executionIsUsedMessage =
         result.getResult("ExecutionIsUsedSequenceFlow").getMessages();
     assertThat(executionIsUsedMessage).hasSize(1);
-    assertThat(executionIsUsedMessage.get(0).getSeverity()).isEqualTo(Severity.TASK);
+    assertThat(executionIsUsedMessage.get(0).getSeverity()).isEqualTo(Severity.REVIEW);
     assertThat(executionIsUsedMessage.get(0).getMessage())
-        .contains("'execution' is not available in FEEL");
+        .contains("-> '=input != null and input > 5");
 
     List<BpmnElementCheckMessage> methodInvocationIsUsedMessage =
         result.getResult("MethodInvocationIsUsedSequenceFlow").getMessages();
@@ -401,13 +416,12 @@ public class BpmnConverterTest {
     assertThat(messages.get(0).getSeverity()).isEqualTo(Severity.TASK);
     assertThat(messages.get(0).getMessage()).contains("Collecting results");
 
-    assertThat(messages.get(1).getSeverity()).isEqualTo(Severity.TASK);
-    assertThat(messages.get(1).getMessage())
-        .contains(Arrays.asList("collection", "'execution' is not available in FEEL"));
+    assertThat(messages.get(1).getSeverity()).isEqualTo(Severity.REVIEW);
+    assertThat(messages.get(1).getMessage()).contains(Arrays.asList("collection", "-> '=myList'"));
 
-    assertThat(messages.get(2).getSeverity()).isEqualTo(Severity.TASK);
+    assertThat(messages.get(2).getSeverity()).isEqualTo(Severity.REVIEW);
     assertThat(messages.get(2).getMessage())
-        .contains(Arrays.asList("Completion condition", "'execution' is not available in FEEL"));
+        .contains(Arrays.asList("Completion condition", "-> '=complete = true'"));
 
     assertThat(messages.get(3).getSeverity()).isEqualTo(Severity.INFO);
   }
