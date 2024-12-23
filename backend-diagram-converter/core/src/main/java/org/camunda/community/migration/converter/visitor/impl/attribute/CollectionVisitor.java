@@ -30,7 +30,7 @@ public class CollectionVisitor extends AbstractSupportedAttributeVisitor {
                 .setInputCollection(transformationResult.getFeelExpression()));
     context.addMessage(MessageFactory.collectionHint());
     Message message;
-    if (transformationResult.hasExecution()) {
+    if (transformationResult.hasExecutionOnly()) {
       message =
           MessageFactory.collectionExecution(
               attributeLocalName(),
