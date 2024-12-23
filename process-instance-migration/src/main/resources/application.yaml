@@ -14,6 +14,8 @@ operate:
 
 camunda7:
   client:
-    base-url: http://localhost:8082
+    base-url: http://localhost:8080
     rest-api-context: engine-rest
     check-on-init: true
+
+server.port: 8085

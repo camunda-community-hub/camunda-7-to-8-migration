@@ -1,0 +1,53 @@
+{
+  "name": "MultiInstances Service Task Collection",
+  "processId": "MultiInstanceServiceTaskCollection",
+  "executions": [
+    {
+      "name": "Classical path",
+      "steps": [
+        {
+          "type": "STARTEVENT",
+          "taskId": "Start_MultiInstanceServiceTask",
+          "variables": {
+            "listOfColors": [
+              "blue",
+              "red",
+              "green"
+            ]
+          }
+        },
+        {
+          "comment": "collection-parallel - 3 instances, 1 executed, 2 tasks active",
+          "type": "SERVICETASK",
+          "waitingTime": "PT20S",
+          "taskId": "Activity_Coll_Para",
+          "numberOfExecutions": 1,
+          "variables": {}
+        },
+        {
+          "comment": "collection-sequential - 5 instances, 2 executed, 3 tasks actives",
+          "type": "SERVICETASK",
+          "waitingTime": "PT20S",
+          "taskId": "Activity_Coll_Seq",
+          "numberOfExecutions": 2,
+          "variables": {}
+        }
+      ],
+      "verifications": {
+        "activities": [
+          {
+            "type": "SERVICETASK",
+            "taskId": "Activity_Coll_Para",
+            "numberOfTasks": 2
+          },
+
+          {
+            "type": "SERVICETASK",
+            "taskId": "Activity_Coll_Seq",
+            "numberOfTasks": 1
+          }
+        ]
+      }
+    }
+  ]
+}

@@ -1,5 +1,5 @@
 {
-  "name": "MultiInstances User Task",
+  "name": "MultiInstances User Task Collection",
   "processId": "MultiInstanceUserTaskCollection",
   "executions": [
     {
@@ -7,7 +7,7 @@
       "steps": [
         {
           "type": "STARTEVENT",
-          "activityId": "Start_MultiInstanceUserTask",
+          "taskId": "Start_MultiInstanceUserTask",
           "variables": {
             "listOfColors": ["blue", "red","green", "Pink", "Orange" ]
           }
@@ -16,7 +16,7 @@
           "type": "USERTASK",
           "delay": "PT0.1S",
           "waitingTime": "PT10S",
-          "activityId": "Activity_Coll_Para_Reviews",
+          "taskId": "Activity_Coll_Para_Reviews",
           "variables": {},
           "numberOfExecutions": 1
         },
@@ -24,7 +24,7 @@
           "type": "USERTASK",
           "delay": "PT0.1S",
           "waitingTime": "PT10S",
-          "activityId": "Activity_Coll_Seq_Reviews",
+          "taskId": "Activity_Coll_Seq_Reviews",
           "variables": {},
           "numberOfExecutions": 3
         }
