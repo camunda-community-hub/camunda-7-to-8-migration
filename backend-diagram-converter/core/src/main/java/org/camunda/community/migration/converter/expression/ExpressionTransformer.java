@@ -65,7 +65,8 @@ public class ExpressionTransformer {
             .replaceAll("!\\(([^\\(\\)]*)\\)", "not($1)")
             .replaceAll(" && ", " and ")
             .replaceAll(" \\|\\| ", " or ")
-            .replaceAll("'", "\"");
+            .replaceAll("'", "\"")
+            .replaceAll("execution\\.getVariable\\(\"(.*)\"\\)", "$1");
     // increment all indexes
     Pattern pattern = Pattern.compile("\\[(\\d*)\\]");
     Matcher m = pattern.matcher(replaced);

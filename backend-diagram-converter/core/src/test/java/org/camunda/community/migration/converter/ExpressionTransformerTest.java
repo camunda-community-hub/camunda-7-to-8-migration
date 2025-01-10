@@ -9,6 +9,7 @@ import org.camunda.community.migration.converter.expression.ExpressionTransforma
 import org.camunda.community.migration.converter.expression.ExpressionTransformer;
 import org.junit.jupiter.api.DynamicContainer;
 import org.junit.jupiter.api.DynamicTest;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestFactory;
 
 public class ExpressionTransformerTest {
@@ -57,7 +58,8 @@ public class ExpressionTransformerTest {
             expression("${empty donut || coffee}").isMappedTo("=donut=null or coffee"),
             expression("${not empty donut || coffee}").isMappedTo("=not(donut=null) or coffee"),
             expression("${not(empty donut || coffee)}").isMappedTo("=not(donut=null or coffee)"),
-            expression("${execution.getVariable(\"a\")}").hasUsedExecution(true),
+            expression("${execution.getVariable(\"a\")}").isMappedTo("=a"),
+            expression("${execution.getProcessInstanceId()}").hasUsedExecution(true),
             expression("${myexecutionContext.isSpecial()}").hasUsedExecution(false),
             expression("${var.getSomething()}").hasMethodInvocation(true),
             expression("${!dauerbuchungVoat21Ids.isEmpty()}").hasMethodInvocation(true),
@@ -108,8 +110,19 @@ public class ExpressionTransformerTest {
       tests.add(
           DynamicTest.dynamicTest(
               String.format("Expect %s execution used", expected ? "a" : "no"),
-              () -> assertThat(result.hasExecution()).isEqualTo(expected)));
+              () -> assertThat(result.hasExecutionOnly()).isEqualTo(expected)));
       return this;
     }
+  }
+
+  @Test
+  public void testExpressions() {
+    ExpressionTransformationResult underTest =
+        new ExpressionTransformationResult("execution.", null);
+    assertThat(underTest.hasExecutionOnly()).isEqualTo(true);
+    underTest = new ExpressionTransformationResult("execution.getVariable", null);
+    assertThat(underTest.hasExecutionOnly()).isEqualTo(false);
+    underTest = new ExpressionTransformationResult("execution.getProcessInstanceId()", null);
+    assertThat(underTest.hasExecutionOnly()).isEqualTo(true);
   }
 }

@@ -42,7 +42,7 @@ public abstract class InputOutputParameterVisitor extends AbstractCamundaElement
             abstractTaskConversion.addZeebeIoMapping(
                 direction, transformationResult.getFeelExpression(), name));
     Message resultMessage;
-    if (transformationResult.hasExecution()) {
+    if (transformationResult.hasExecutionOnly()) {
       resultMessage =
           MessageFactory.inputOutputParameterExecution(
               localName(),
