@@ -1,6 +1,6 @@
 package org.camunda.community.migration.adapter.execution;
 
-import io.camunda.zeebe.client.api.response.ActivatedJob;
+import io.camunda.client.api.response.ActivatedJob;
 import org.camunda.bpm.engine.ProcessEngine;
 import org.camunda.bpm.engine.ProcessEngineServices;
 import org.camunda.bpm.engine.delegate.DelegateExecution;
@@ -76,6 +76,7 @@ public class ZeebeJobDelegateExecution extends SimpleVariableScope implements De
     throw new UnsupportedOperationException();
   }
 
+  @Override
   public ProcessEngine getProcessEngine() {
     throw new UnsupportedOperationException();
   }
@@ -117,14 +118,17 @@ public class ZeebeJobDelegateExecution extends SimpleVariableScope implements De
     throw new UnsupportedOperationException();
   }
 
+  @Override
   public Incident createIncident(String incidentType, String configuration) {
     throw new UnsupportedOperationException();
   }
 
+  @Override
   public Incident createIncident(String incidentType, String configuration, String message) {
     throw new UnsupportedOperationException();
   }
 
+  @Override
   public void resolveIncident(String incidentId) {
     throw new UnsupportedOperationException();
   }
@@ -139,6 +143,7 @@ public class ZeebeJobDelegateExecution extends SimpleVariableScope implements De
     return (String) getVariable(VARIABLE_NAME_BUSINESS_KEY);
   }
 
+  @Override
   public void setProcessBusinessKey(String businessKey) {
     setVariable(VARIABLE_NAME_BUSINESS_KEY, businessKey);
   }

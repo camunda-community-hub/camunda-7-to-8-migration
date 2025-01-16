@@ -2,10 +2,10 @@ package org.camunda.community.migration.adapter;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import io.camunda.client.CamundaClient;
+import io.camunda.client.api.response.ProcessInstanceEvent;
 import io.camunda.process.test.api.CamundaAssert;
 import io.camunda.process.test.api.CamundaSpringProcessTest;
-import io.camunda.zeebe.client.ZeebeClient;
-import io.camunda.zeebe.client.api.response.ProcessInstanceEvent;
 import io.camunda.zeebe.model.bpmn.Bpmn;
 import io.camunda.zeebe.model.bpmn.BpmnModelInstance;
 import io.micrometer.core.instrument.MeterRegistry;
@@ -31,7 +31,7 @@ public class CamundaPlatform7AdapterTest {
     }
   }
 
-  @Autowired private ZeebeClient zeebeClient;
+  @Autowired private CamundaClient camundaClient;
 
   @BeforeEach
   public void setup() {
@@ -58,11 +58,11 @@ public class CamundaPlatform7AdapterTest {
             .endEvent()
             .done();
 
-    zeebeClient.newDeployResourceCommand().addProcessModel(bpmn, "test.bpmn").send().join();
+    camundaClient.newDeployResourceCommand().addProcessModel(bpmn, "test.bpmn").send().join();
     VariableDto variableValue = new VariableDto();
     variableValue.setValue("value");
     ProcessInstanceEvent processInstance =
-        zeebeClient
+        camundaClient
             .newCreateInstanceCommand()
             .bpmnProcessId("test")
             .latestVersion()
@@ -88,10 +88,10 @@ public class CamundaPlatform7AdapterTest {
             .endEvent()
             .done();
 
-    zeebeClient.newDeployResourceCommand().addProcessModel(bpmn, "test.bpmn").send().join();
+    camundaClient.newDeployResourceCommand().addProcessModel(bpmn, "test.bpmn").send().join();
 
     ProcessInstanceEvent processInstance =
-        zeebeClient
+        camundaClient
             .newCreateInstanceCommand()
             .bpmnProcessId("test2")
             .latestVersion()
@@ -117,10 +117,10 @@ public class CamundaPlatform7AdapterTest {
             .endEvent()
             .done();
 
-    zeebeClient.newDeployResourceCommand().addProcessModel(bpmn, "test.bpmn").send().join();
+    camundaClient.newDeployResourceCommand().addProcessModel(bpmn, "test.bpmn").send().join();
 
     ProcessInstanceEvent processInstance =
-        zeebeClient
+        camundaClient
             .newCreateInstanceCommand()
             .bpmnProcessId("test2")
             .latestVersion()
@@ -144,10 +144,10 @@ public class CamundaPlatform7AdapterTest {
             .endEvent()
             .done();
 
-    zeebeClient.newDeployResourceCommand().addProcessModel(bpmn, "test.bpmn").send().join();
+    camundaClient.newDeployResourceCommand().addProcessModel(bpmn, "test.bpmn").send().join();
 
     ProcessInstanceEvent processInstance =
-        zeebeClient
+        camundaClient
             .newCreateInstanceCommand()
             .bpmnProcessId("test2")
             .latestVersion()
@@ -161,13 +161,13 @@ public class CamundaPlatform7AdapterTest {
 
   @Test
   void testBpmnError() {
-    zeebeClient
+    camundaClient
         .newDeployResourceCommand()
         .addResourceFromClasspath("test-with-error-event.bpmn")
         .send()
         .join();
     ProcessInstanceEvent processInstance =
-        zeebeClient
+        camundaClient
             .newCreateInstanceCommand()
             .bpmnProcessId("error-test")
             .latestVersion()
