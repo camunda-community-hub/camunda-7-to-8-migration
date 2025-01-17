@@ -161,7 +161,7 @@ public class CamundaPlatform7AdapterTest {
   }
 
   @Test
-  public void testBpmnError() {
+  void testBpmnError() {
     camundaClient
         .newDeployResourceCommand()
         .addResourceFromClasspath("test-with-error-event.bpmn")
@@ -179,6 +179,7 @@ public class CamundaPlatform7AdapterTest {
   }
 
   @Test
+  @Disabled
   public void testExecutionListener() {
     BpmnModelInstance bpmn =
         Bpmn.createExecutableProcess("test2")

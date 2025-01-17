@@ -40,8 +40,10 @@ public class CamundaPlatform7DelegationWorker {
     String delegateExpression = job.getCustomHeaders().get("delegateExpression");
     String expression = job.getCustomHeaders().get("expression");
     String resultVariable = job.getCustomHeaders().get("resultVariable");
-    String startListener = job.getCustomHeaders().get("executionListener.start");
-    String endListener = job.getCustomHeaders().get("executionListener.end");
+    String startListener =
+        job.getCustomHeaders()
+            .get("executionListener.start"); // TODO was workaround before 8.6 so can be removed
+    String endListener = job.getCustomHeaders().get("executionListener.end"); // ----||-----
     // and delegate depending on exact way of implementation
 
     final DelegateExecution execution = new ZeebeJobDelegateExecution(job, variableTyper);
@@ -53,7 +55,7 @@ public class CamundaPlatform7DelegationWorker {
                 + job);
       }
 
-      if (startListener != null) {
+      if (startListener != null) { // TODO removed?
         ExecutionListener executionListener =
             (ExecutionListener) expressionResolver.evaluate(startListener, execution);
 
@@ -75,7 +77,7 @@ public class CamundaPlatform7DelegationWorker {
         }
       }
 
-      if (endListener != null) {
+      if (endListener != null) { // TODO removed?
         ExecutionListener executionListener =
             (ExecutionListener) expressionResolver.evaluate(endListener, execution);
         executionListener.notify(execution);
