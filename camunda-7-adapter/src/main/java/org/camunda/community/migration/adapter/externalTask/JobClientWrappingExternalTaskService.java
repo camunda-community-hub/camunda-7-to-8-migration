@@ -1,7 +1,7 @@
 package org.camunda.community.migration.adapter.externalTask;
 
-import io.camunda.zeebe.client.ZeebeClient;
-import io.camunda.zeebe.client.api.worker.JobClient;
+import io.camunda.client.CamundaClient;
+import io.camunda.client.api.worker.JobClient;
 import java.time.Duration;
 import java.util.HashMap;
 import java.util.Map;
@@ -46,8 +46,8 @@ public class JobClientWrappingExternalTaskService implements ExternalTaskService
   private void setVariables(
       Optional<String> processInstanceId, boolean local, Map<String, Object> variables) {
     if (variables != null && !variables.isEmpty()) {
-      if (client instanceof ZeebeClient) {
-        ((ZeebeClient) client)
+      if (client instanceof CamundaClient) {
+        ((CamundaClient) client)
             .newSetVariablesCommand(
                 Long.parseLong(processInstanceId.orElse(task.getProcessInstanceId())))
             .variables(variables)

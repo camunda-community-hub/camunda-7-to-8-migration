@@ -25,6 +25,7 @@ public class SimpleVariableScope extends AbstractVariableScope {
     setVariables(variables);
   }
 
+  @Override
   protected VariableStore<CoreVariableInstance> getVariableStore() {
     return variableStore;
   }

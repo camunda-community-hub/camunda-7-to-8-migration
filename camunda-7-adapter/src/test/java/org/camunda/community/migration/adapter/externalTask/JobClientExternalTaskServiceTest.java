@@ -3,18 +3,18 @@ package org.camunda.community.migration.adapter.externalTask;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
-import io.camunda.zeebe.client.ZeebeClient;
-import io.camunda.zeebe.client.api.ZeebeFuture;
-import io.camunda.zeebe.client.api.command.CompleteJobCommandStep1;
-import io.camunda.zeebe.client.api.command.FailJobCommandStep1;
-import io.camunda.zeebe.client.api.command.FailJobCommandStep1.FailJobCommandStep2;
-import io.camunda.zeebe.client.api.command.SetVariablesCommandStep1;
-import io.camunda.zeebe.client.api.command.SetVariablesCommandStep1.SetVariablesCommandStep2;
-import io.camunda.zeebe.client.api.command.ThrowErrorCommandStep1;
-import io.camunda.zeebe.client.api.command.ThrowErrorCommandStep1.ThrowErrorCommandStep2;
-import io.camunda.zeebe.client.api.response.CompleteJobResponse;
-import io.camunda.zeebe.client.api.response.FailJobResponse;
-import io.camunda.zeebe.client.api.response.SetVariablesResponse;
+import io.camunda.client.CamundaClient;
+import io.camunda.client.api.CamundaFuture;
+import io.camunda.client.api.command.CompleteJobCommandStep1;
+import io.camunda.client.api.command.FailJobCommandStep1;
+import io.camunda.client.api.command.FailJobCommandStep1.FailJobCommandStep2;
+import io.camunda.client.api.command.SetVariablesCommandStep1;
+import io.camunda.client.api.command.SetVariablesCommandStep1.SetVariablesCommandStep2;
+import io.camunda.client.api.command.ThrowErrorCommandStep1;
+import io.camunda.client.api.command.ThrowErrorCommandStep1.ThrowErrorCommandStep2;
+import io.camunda.client.api.response.CompleteJobResponse;
+import io.camunda.client.api.response.FailJobResponse;
+import io.camunda.client.api.response.SetVariablesResponse;
 import java.util.Collections;
 import java.util.Map;
 import org.camunda.bpm.client.task.ExternalTask;
@@ -26,7 +26,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
 public class JobClientExternalTaskServiceTest {
-  @Mock ZeebeClient client;
+  @Mock CamundaClient client;
 
   @Mock ExternalTask externalTask;
   JobClientWrappingExternalTaskService service;
@@ -46,6 +46,7 @@ public class JobClientExternalTaskServiceTest {
     }
   }
 
+  // TODO are these all operations?
   @Test
   public void testLock() {
     when(externalTask.getId()).thenReturn("123");
@@ -63,7 +64,7 @@ public class JobClientExternalTaskServiceTest {
   public void testComplete() {
     setupSetVariablesCommand();
     CompleteJobCommandStep1 command = mock(CompleteJobCommandStep1.class);
-    ZeebeFuture<CompleteJobResponse> future = mock(ZeebeFuture.class);
+    CamundaFuture<CompleteJobResponse> future = mock(CamundaFuture.class);
 
     when(externalTask.getId()).thenReturn("123");
     when(externalTask.getProcessInstanceId()).thenReturn("456");
@@ -96,7 +97,7 @@ public class JobClientExternalTaskServiceTest {
     setupSetVariablesCommand();
     FailJobCommandStep1 failJobCommandStep1 = mock(FailJobCommandStep1.class);
     FailJobCommandStep2 failJobCommandStep2 = mock(FailJobCommandStep2.class);
-    ZeebeFuture<FailJobResponse> future = mock(ZeebeFuture.class);
+    CamundaFuture<FailJobResponse> future = mock(CamundaFuture.class);
 
     when(externalTask.getId()).thenReturn("123");
     when(externalTask.getProcessInstanceId()).thenReturn("456");
@@ -125,7 +126,7 @@ public class JobClientExternalTaskServiceTest {
     setupSetVariablesCommand();
     ThrowErrorCommandStep1 throwErrorCommandStep1 = mock(ThrowErrorCommandStep1.class);
     ThrowErrorCommandStep2 throwErrorCommandStep2 = mock(ThrowErrorCommandStep2.class);
-    ZeebeFuture<Void> future = mock(ZeebeFuture.class);
+    CamundaFuture<Void> future = mock(CamundaFuture.class);
 
     when(externalTask.getId()).thenReturn("123");
     when(externalTask.getProcessInstanceId()).thenReturn("456");
@@ -152,7 +153,7 @@ public class JobClientExternalTaskServiceTest {
   }
 
   private void setupSetVariablesCommand() {
-    ZeebeFuture<SetVariablesResponse> future = mock(ZeebeFuture.class);
+    CamundaFuture<SetVariablesResponse> future = mock(CamundaFuture.class);
     SetVariablesCommandStep1 setVariablesCommandStep1 = mock(SetVariablesCommandStep1.class);
     SetVariablesCommandStep2 setVariablesCommandStep2 = mock(SetVariablesCommandStep2.class);
 

@@ -1,8 +1,8 @@
 package org.camunda.community.migration.adapter;
 
-import io.camunda.zeebe.client.ZeebeClient;
-import io.camunda.zeebe.client.api.worker.JobWorker;
-import io.camunda.zeebe.client.api.worker.JobWorkerBuilderStep1.JobWorkerBuilderStep3;
+import io.camunda.client.CamundaClient;
+import io.camunda.client.api.worker.JobWorker;
+import io.camunda.client.api.worker.JobWorkerBuilderStep1.JobWorkerBuilderStep3;
 import io.camunda.zeebe.spring.client.annotation.processor.AbstractZeebeAnnotationProcessor;
 import io.camunda.zeebe.spring.client.bean.ClassInfo;
 import java.time.Duration;
@@ -49,17 +49,17 @@ public class ExternalTaskWorkerRegistration extends AbstractZeebeAnnotationProce
 
   @Override
   public void configureFor(ClassInfo beanInfo) {
-    LOG.info("Registering Zeebe worker(s) of bean: {}", beanInfo.getBean());
+    LOG.info("Registering Camunda worker(s) of bean: {}", beanInfo.getBean());
     springTopicSubscriptions.put(
         beanInfo.getBeanName(), (SpringTopicSubscriptionImpl) beanInfo.getBean());
   }
 
   @Override
-  public void start(ZeebeClient zeebeClient) {
+  public void start(CamundaClient camundaClient) {
     springTopicSubscriptions.forEach(
         (beanName, bean) -> {
           JobWorkerBuilderStep3 builder =
-              zeebeClient
+              camundaClient
                   .newWorker()
                   .jobType(bean.getTopicName())
                   .handler(
@@ -80,7 +80,7 @@ public class ExternalTaskWorkerRegistration extends AbstractZeebeAnnotationProce
   }
 
   @Override
-  public void stop(ZeebeClient zeebeClient) {
+  public void stop(CamundaClient camundaClient) {
     openedWorkers.forEach(JobWorker::close);
   }
 }

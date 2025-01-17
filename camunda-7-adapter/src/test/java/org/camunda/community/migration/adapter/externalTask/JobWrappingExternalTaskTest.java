@@ -7,7 +7,7 @@ import static org.mockito.Mockito.*;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.io.Resources;
-import io.camunda.zeebe.client.api.response.ActivatedJob;
+import io.camunda.client.api.response.ActivatedJob;
 import java.io.IOException;
 import java.time.Instant;
 import java.util.Collections;
@@ -69,6 +69,7 @@ public class JobWrappingExternalTaskTest {
     }
   }
 
+  // TODO are these all operations?
   @Test
   public void testActivityId() {
     when(job.getElementId()).thenReturn(TEST_ID);
