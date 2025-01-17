@@ -46,6 +46,7 @@ public class JobClientExternalTaskServiceTest {
     }
   }
 
+  //TODO are these all operations?
   @Test
   public void testLock() {
     when(externalTask.getId()).thenReturn("123");
