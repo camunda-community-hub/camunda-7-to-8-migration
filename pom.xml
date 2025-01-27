@@ -156,6 +156,11 @@
         <version>${version.zeebe}</version>
       </dependency>
       <dependency>
+        <groupId>io.camunda</groupId>
+        <artifactId>camunda-process-test-java</artifactId>
+        <version>${version.zeebe}</version>
+      </dependency>
+      <dependency>
         <groupId>org.jsoup</groupId>
         <artifactId>jsoup</artifactId>
         <version>${version.jsoup}</version>
@@ -171,9 +176,19 @@
         <version>${version.opencsv}</version>
       </dependency>
       <dependency>
-        <groupId>org.camunda.bpm.assert</groupId>
+        <groupId>org.camunda.bpm</groupId>
         <artifactId>camunda-bpm-assert</artifactId>
-        <version>${version.camunda-bpm-assert}</version>
+        <version>${version.camunda.platform}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.camunda.community</groupId>
+        <artifactId>camunda-engine-rest-client-openapi-java</artifactId>
+        <version>7.21.1</version>
+      </dependency>
+      <dependency>
+        <groupId>nl.jqno.equalsverifier</groupId>
+        <artifactId>equalsverifier</artifactId>
+        <version>3.18.1</version>
       </dependency>
       <dependency>
         <groupId>javax.xml.bind</groupId>
@@ -213,6 +228,16 @@
       <dependency>
         <groupId>org.camunda.community.migration</groupId>
         <artifactId>process-instance-migration-camunda-7-base-exporter</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.camunda.community.migration</groupId>
+        <artifactId>process-instance-migration-camunda-7-embedded-exporter</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.camunda.community.migration</groupId>
+        <artifactId>process-instance-migration-camunda-8-importer</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>
