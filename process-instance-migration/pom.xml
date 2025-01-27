@@ -14,5 +14,6 @@
     <module>webapp</module>
     <module>camunda-7-embedded-exporter</module>
     <module>camunda7-base-exporter</module>
+    <module>migrator</module>
   </modules>
 </project>
