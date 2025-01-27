@@ -132,7 +132,7 @@ public class Camunda7Exporter implements ProcessInstanceDataExporter {
         List<Integer> activeLoopCounters =
             instances.stream()
                 .map(activityNodeData -> activityNodeData.getVariables().get("loopCounter").asInt())
-                .collect(Collectors.toList());
+                .toList();
         Map<String, JsonNode> variables = extractVariables(activityInstance);
         List<Integer> completedInstances =
             IntStream.range(0, variables.get("nrOfInstances").asInt())
@@ -143,7 +143,7 @@ public class Camunda7Exporter implements ProcessInstanceDataExporter {
             .withVariables(variables)
             .withExecuted(false)
             .withName(
-                activityInstance.getChildActivityInstances().size() > 0
+                !activityInstance.getChildActivityInstances().isEmpty()
                     ? activityInstance.getChildActivityInstances().get(0).getActivityName()
                     : null)
             .withInstances(instances)
@@ -228,8 +228,7 @@ public class Camunda7Exporter implements ProcessInstanceDataExporter {
       processInstances =
           processInstances.stream()
               .filter(e -> activityInstance.getExecutionIds().contains(e.getSuperExecutionId()))
-              .map(ProcessInstance.class::cast)
-              .collect(Collectors.toList());
+              .toList();
     }
     if (processInstances.size() != 1) {
       throw new RuntimeException("There was no explicit child process instance identified");
