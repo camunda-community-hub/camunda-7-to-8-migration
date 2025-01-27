@@ -1,18 +1,20 @@
 package org.camunda.community.migration.processInstance.importer;
 
-import java.util.Set;
+import java.util.List;
 import org.camunda.community.migration.processInstance.api.model.data.ProcessInstanceData;
-import org.camunda.community.migration.processInstance.importer.visitor.ActivityNodeDataVisitor;
+import org.camunda.community.migration.processInstance.api.model.data.chunk.ActivityNodeData;
 
-public class Camunda8ProcessInstanceImporter {
-  private final Set<ActivityNodeDataVisitor> activityNodeDataHandlers;
+public interface Camunda8ProcessInstanceImporter {
+  Camunda8ProcessInstance createProcessInstance(ProcessInstanceData processInstanceData);
 
-  public Camunda8ProcessInstanceImporter(Set<ActivityNodeDataVisitor> activityNodeDataHandlers) {
-    this.activityNodeDataHandlers = activityNodeDataHandlers;
-  }
+  ProcessInstanceDataForPostProcessing updateProcessInstanceToStatus(
+      Camunda8ProcessInstance camunda8ProcessInstance,
+      ProcessInstanceData data,
+      Camunda8ProcessInstanceState stateToTerminate);
 
-  public long importProcessInstance(ProcessInstanceData processInstanceData) {
-    // TODO create a process instance and drive it to the described state
-    return 0;
-  }
+  record Camunda8ProcessInstance(Long processInstanceKey) {}
+
+  record Camunda8ProcessInstanceState(List<Long> elementInstanceKeys) {}
+
+  record ProcessInstanceDataForPostProcessing(List<ActivityNodeData> nodesToPostProcess) {}
 }
