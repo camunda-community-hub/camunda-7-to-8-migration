@@ -1,0 +1,6 @@
+spring:
+  datasource:
+    url: jdbc:h2:file:./process-engine
+camunda:
+  client:
+    mode: self-managed
