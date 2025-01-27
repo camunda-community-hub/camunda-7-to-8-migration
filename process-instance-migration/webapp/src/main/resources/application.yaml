@@ -1,10 +1,6 @@
-zeebe:
+camunda:
   client:
-    security:
-      plaintext: true
-    broker:
-      gateway-address: localhost:26500
-    request-timeout: PT60S
+    mode: self-managed
 
 operate:
   client:
