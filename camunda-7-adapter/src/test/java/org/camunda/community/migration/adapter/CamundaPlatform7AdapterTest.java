@@ -176,5 +176,4 @@ public class CamundaPlatform7AdapterTest {
     CamundaAssert.assertThat(processInstance).isCompleted();
     assertTrue(SampleDelegateBean.executed);
   }
-
 }
