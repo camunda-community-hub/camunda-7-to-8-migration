@@ -169,6 +169,7 @@ public interface DomElementVisitorContext {
       m.setMessage(message.getMessage());
       m.setSeverity(message.getSeverity());
       m.setLink(message.getLink());
+      m.setId(message.getId());
       return m;
     }
 

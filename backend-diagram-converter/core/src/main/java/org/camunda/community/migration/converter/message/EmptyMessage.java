@@ -18,4 +18,9 @@ public class EmptyMessage implements Message {
   public String getLink() {
     return "";
   }
+
+  @Override
+  public String getId() {
+    return "";
+  }
 }

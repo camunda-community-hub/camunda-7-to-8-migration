@@ -6,6 +6,7 @@ public class ComposedMessage implements Message {
   private Severity severity;
   private String message;
   private String link;
+  private String id;
 
   @Override
   public String getMessage() {
@@ -32,5 +33,14 @@ public class ComposedMessage implements Message {
 
   public void setSeverity(Severity severity) {
     this.severity = severity;
+  }
+
+  @Override
+  public String getId() {
+    return id;
+  }
+
+  public void setId(String id) {
+    this.id = id;
   }
 }

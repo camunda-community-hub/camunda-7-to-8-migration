@@ -19,6 +19,7 @@ import org.junit.jupiter.api.Test;
 public class CsvWriterTest {
   private static final String FILENAME = "mock-process.bpmn";
   private static final String LINK = "https://www.example.com";
+  private static final String MESSAGE_ID = "test-message";
   private static final String MESSAGE = "Test message";
   private static final String ELEMENT_ID = "abc.123";
   private static final String ELEMENT_NAME = "Example;Name";
@@ -41,10 +42,24 @@ public class CsvWriterTest {
       assertThat(lines).hasSize(2);
       assertThat(lines.get(0))
           .containsExactly(
-              "filename", "elementName", "elementId", "elementType", "severity", "message", "link");
+              "filename",
+              "elementName",
+              "elementId",
+              "elementType",
+              "severity",
+              "messageId",
+              "message",
+              "link");
       assertThat(lines.get(1))
           .containsExactly(
-              FILENAME, ELEMENT_NAME, ELEMENT_ID, ELEMENT_TYPE, SEVERITY.name(), MESSAGE, LINK);
+              FILENAME,
+              ELEMENT_NAME,
+              ELEMENT_ID,
+              ELEMENT_TYPE,
+              SEVERITY.name(),
+              MESSAGE_ID,
+              MESSAGE,
+              LINK);
     } catch (IOException | CsvException e) {
       throw new RuntimeException(e);
     }
@@ -77,6 +92,7 @@ public class CsvWriterTest {
     message.setSeverity(SEVERITY);
     message.setMessage(MESSAGE);
     message.setLink(LINK);
+    message.setId(MESSAGE_ID);
     return message;
   }
 }
