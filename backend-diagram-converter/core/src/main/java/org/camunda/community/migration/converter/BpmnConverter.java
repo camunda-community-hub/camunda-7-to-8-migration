@@ -294,7 +294,14 @@ public class BpmnConverter {
 
   private String[] createHeaders() {
     return new String[] {
-      "filename", "elementName", "elementId", "elementType", "severity", "message", "link"
+      "filename",
+      "elementName",
+      "elementId",
+      "elementType",
+      "severity",
+      "messageId",
+      "message",
+      "link"
     };
   }
 
@@ -314,6 +321,7 @@ public class BpmnConverter {
                                           elementCheckResult.getElementId(),
                                           elementCheckResult.getElementType(),
                                           message.getSeverity().name(),
+                                          message.getId(),
                                           message.getMessage(),
                                           message.getLink()
                                         })))

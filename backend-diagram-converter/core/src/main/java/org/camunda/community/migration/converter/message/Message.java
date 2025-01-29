@@ -8,4 +8,6 @@ public interface Message {
   String getMessage();
 
   String getLink();
+
+  String getId();
 }

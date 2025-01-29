@@ -123,6 +123,7 @@ public class BpmnDiagramCheckResult {
     private Severity severity;
     private String message;
     private String link;
+    private String id;
 
     public Severity getSeverity() {
       return severity;
@@ -148,6 +149,14 @@ public class BpmnDiagramCheckResult {
       this.link = link;
     }
 
+    public String getId() {
+      return id;
+    }
+
+    public void setId(String id) {
+      this.id = id;
+    }
+
     @Override
     public String toString() {
       return "BpmnElementCheckMessage{"
@@ -158,6 +167,9 @@ public class BpmnDiagramCheckResult {
           + '\''
           + ", link='"
           + link
+          + '\''
+          + ", id='"
+          + id
           + '\''
           + '}';
     }

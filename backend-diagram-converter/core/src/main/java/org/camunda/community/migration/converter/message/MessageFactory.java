@@ -755,6 +755,7 @@ public class MessageFactory {
     message.setMessage(messageTemplateProcessor.decorate(template, context));
     message.setLink(template.getLink());
     message.setSeverity(template.getSeverity());
+    message.setId(templateName);
     return message;
   }
 
