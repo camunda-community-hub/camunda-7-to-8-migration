@@ -80,12 +80,12 @@ jobs:
 #          asset_path: cawemo-to-web-modeler-migration/cawemo-to-web-modeler-migration
 #          asset_name: cawemo-to-web-modeler-migration
 #          asset_content_type: application/octet-stream
-      - name: Publish Unit Test Results
-        id: publish
-        uses: EnricoMi/publish-unit-test-result-action@v2
-        if: always()
-        with:
-          files: '**/target/surefire-reports/*.xml'
+#      - name: Publish Unit Test Results
+#        id: publish
+#        uses: EnricoMi/publish-unit-test-result-action@v2
+#        if: always()
+#        with:
+#          files: '**/target/surefire-reports/*.xml'
 #  publish-modeler-plugin:
 #    runs-on: ubuntu-latest
 #    steps:
