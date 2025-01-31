@@ -86,21 +86,3 @@ jobs:
         if: always()
         with:
           files: '**/target/surefire-reports/*.xml'
-  publish-modeler-plugin:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@master
-      - name: Archive Plugin
-        uses: thedoctor0/zip-release@master
-        with:
-          path: 'modeler-plugin-7-to-8-converter'
-          type: 'zip'
-          filename: 'modeler-plugin-7-to-8-converter.zip'
-          exclusions: '*.git* /*node_modules/*'
-      - if: github.event.release
-        name: Upload Release
-        uses: ncipollo/release-action@v1
-        with:
-          artifacts: "modeler-plugin-7-to-8-converter.zip"
-          allowUpdates: true
-          token: ${{ secrets.GITHUB_TOKEN }}
