@@ -45,8 +45,13 @@ public class UserTaskConversion extends AbstractTypedConversion<UserTaskConverti
   private DomElement createFormDefinition(DomDocument document, UserTaskConvertible convertible) {
     DomElement formDefinition = document.createElement(ZEEBE, "formDefinition");
     if (convertible.getZeebeFormDefinition().getFormKey() != null) {
-      formDefinition.setAttribute(
-          ZEEBE, "formKey", convertible.getZeebeFormDefinition().getFormKey());
+      if (convertible.isZeebeUserTask()) {
+        formDefinition.setAttribute(
+            ZEEBE, "externalReference", convertible.getZeebeFormDefinition().getFormKey());
+      } else {
+        formDefinition.setAttribute(
+            ZEEBE, "formKey", convertible.getZeebeFormDefinition().getFormKey());
+      }
     }
     if (convertible.getZeebeFormDefinition().getFormId() != null) {
       formDefinition.setAttribute(
