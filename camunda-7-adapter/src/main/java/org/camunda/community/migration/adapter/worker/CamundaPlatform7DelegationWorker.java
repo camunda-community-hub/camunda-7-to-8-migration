@@ -1,3 +1,10 @@
+/*
+ * Copyright Camunda Services GmbH and/or licensed to Camunda Services GmbH under
+ * one or more contributor license agreements. See the NOTICE file distributed
+ * with this work for additional information regarding copyright ownership.
+ * Licensed under the Camunda License 1.0. You may not use this file
+ * except in compliance with the Camunda License 1.0.
+ */
 package org.camunda.community.migration.adapter.worker;
 
 import io.camunda.client.api.command.CompleteJobCommandStep1;
@@ -36,14 +43,12 @@ public class CamundaPlatform7DelegationWorker {
   public void delegateToCamundaPlatformCode(final JobClient client, final ActivatedJob job)
       throws Exception {
     // Read config
-    String delegateClass = job.getCustomHeaders().get("class");
-    String delegateExpression = job.getCustomHeaders().get("delegateExpression");
-    String expression = job.getCustomHeaders().get("expression");
-    String resultVariable = job.getCustomHeaders().get("resultVariable");
-    String startListener =
-        job.getCustomHeaders()
-            .get("executionListener.start"); // TODO was workaround before 8.6 so can be removed
-    String endListener = job.getCustomHeaders().get("executionListener.end"); // ----||-----
+    final String delegateClass = job.getCustomHeaders().get("class");
+    final String delegateExpression = job.getCustomHeaders().get("delegateExpression");
+    final String expression = job.getCustomHeaders().get("expression");
+    final String resultVariable = job.getCustomHeaders().get("resultVariable");
+    final String startListener = job.getCustomHeaders().get("executionListener.start");
+    final String endListener = job.getCustomHeaders().get("executionListener.end");
     // and delegate depending on exact way of implementation
 
     final DelegateExecution execution = new ZeebeJobDelegateExecution(job, variableTyper);
@@ -55,35 +60,35 @@ public class CamundaPlatform7DelegationWorker {
                 + job);
       }
 
-      if (startListener != null) { // TODO removed?
-        ExecutionListener executionListener =
+      if (startListener != null) {
+        final ExecutionListener executionListener =
             (ExecutionListener) expressionResolver.evaluate(startListener, execution);
 
         executionListener.notify(execution);
       }
 
       if (delegateClass != null) {
-        JavaDelegate javaDelegate = classResolver.loadJavaDelegate(delegateClass);
+        final JavaDelegate javaDelegate = classResolver.loadJavaDelegate(delegateClass);
         javaDelegate.execute(execution);
       } else if (delegateExpression != null) {
-        JavaDelegate javaDelegate =
+        final JavaDelegate javaDelegate =
             (JavaDelegate) expressionResolver.evaluate(delegateExpression, execution);
         javaDelegate.execute(execution);
       } else if (expression != null) {
-        Object result = expressionResolver.evaluate(expression, execution);
+        final Object result = expressionResolver.evaluate(expression, execution);
 
         if (resultVariable != null) {
           execution.setVariable(resultVariable, result);
         }
       }
 
-      if (endListener != null) { // TODO removed?
-        ExecutionListener executionListener =
+      if (endListener != null) {
+        final ExecutionListener executionListener =
             (ExecutionListener) expressionResolver.evaluate(endListener, execution);
         executionListener.notify(execution);
       }
 
-      CompleteJobCommandStep1 completeCommand = client.newCompleteCommand(job.getKey());
+      final CompleteJobCommandStep1 completeCommand = client.newCompleteCommand(job.getKey());
       completeCommand.variables(execution.getVariables());
       completeCommand.send().join();
     } catch (BpmnError e) {

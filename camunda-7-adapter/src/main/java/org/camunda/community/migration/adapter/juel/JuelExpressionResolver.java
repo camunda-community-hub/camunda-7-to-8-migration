@@ -1,3 +1,10 @@
+/*
+ * Copyright Camunda Services GmbH and/or licensed to Camunda Services GmbH under
+ * one or more contributor license agreements. See the NOTICE file distributed
+ * with this work for additional information regarding copyright ownership.
+ * Licensed under the Camunda License 1.0. You may not use this file
+ * except in compliance with the Camunda License 1.0.
+ */
 package org.camunda.community.migration.adapter.juel;
 
 import org.camunda.bpm.engine.delegate.DelegateExecution;
@@ -26,11 +33,11 @@ public class JuelExpressionResolver {
   }
 
   public Object evaluate(String expressionString, DelegateExecution execution) {
-    ValueExpression valueExpression =
+    final ValueExpression valueExpression =
         expressionFactory.createValueExpression(elContext, expressionString, Object.class);
 
     // required because (in C7) we can use juel like `${execution.xxx()}`
-    VariableScope variableScope = new SimpleVariableScope(execution.getVariables());
+    final VariableScope variableScope = new SimpleVariableScope(execution.getVariables());
     variableScope.setVariable("execution", execution);
 
     return new EnginelessJuelExpression(valueExpression, expressionManager, expressionString)

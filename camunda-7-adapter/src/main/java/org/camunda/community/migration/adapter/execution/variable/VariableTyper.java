@@ -1,3 +1,10 @@
+/*
+ * Copyright Camunda Services GmbH and/or licensed to Camunda Services GmbH under
+ * one or more contributor license agreements. See the NOTICE file distributed
+ * with this work for additional information regarding copyright ownership.
+ * Licensed under the Camunda License 1.0. You may not use this file
+ * except in compliance with the Camunda License 1.0.
+ */
 package org.camunda.community.migration.adapter.execution.variable;
 
 import static java.util.Optional.*;
@@ -22,11 +29,11 @@ public class VariableTyper {
   }
 
   public Map<String, Object> typeVariables(String bpmnProcessId, Map<String, Object> variables) {
-    Map<String, Object> result = new HashMap<>();
+    final Map<String, Object> result = new HashMap<>();
     variables.forEach(
         (variableName, variableValue) -> {
           LOG.debug("Handling variable {} of process {}", variableName, bpmnProcessId);
-          DefaultVariableTypingContext context =
+          final DefaultVariableTypingContext context =
               new DefaultVariableTypingContext(bpmnProcessId, variableName, variableValue);
           rules.forEach(rule -> rule.handle(context));
           result.put(
