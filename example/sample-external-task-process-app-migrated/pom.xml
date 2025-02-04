@@ -10,7 +10,7 @@
     <version.spring-boot>3.3.8</version.spring-boot>
     <version.maven-surefire>3.5.2</version.maven-surefire>
     <version.adapter>0.10.2</version.adapter>
-    <version.zeebe>8.6.7</version.zeebe>
+    <version.zeebe>8.6.8</version.zeebe>
 
     <version.java>17</version.java>
     <maven.compiler.source>${version.java}</maven.compiler.source>
