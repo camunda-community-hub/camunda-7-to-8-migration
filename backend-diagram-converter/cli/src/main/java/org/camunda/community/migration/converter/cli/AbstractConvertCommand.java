@@ -66,7 +66,7 @@ public abstract class AbstractConvertCommand implements Callable<Integer> {
   boolean markdown;
 
   @Option(
-      names = "--delegate-execution-as-job-type",
+      names = {"--delegate-execution-as-job-type", "--delegate-expression-as-job-type"},
       description = "If enabled, sets the delegate expression as the job type")
   boolean delegateExecutionAsJobType;
 
