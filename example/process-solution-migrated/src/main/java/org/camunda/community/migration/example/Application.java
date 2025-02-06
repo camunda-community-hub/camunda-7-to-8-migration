@@ -1,7 +1,6 @@
 package org.camunda.community.migration.example;
 
 import io.camunda.zeebe.client.ZeebeClient;
-import io.camunda.zeebe.spring.client.EnableZeebeClient;
 import io.camunda.zeebe.spring.client.annotation.Deployment;
 import java.util.Collections;
 import org.camunda.community.migration.adapter.EnableCamunda7Adapter;
@@ -10,7 +9,6 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ConfigurableApplicationContext;
 
 @SpringBootApplication
-@EnableZeebeClient
 @EnableCamunda7Adapter
 @Deployment(resources = "classpath*:*.bpmn")
 public class Application {
