@@ -38,7 +38,7 @@
     <version.error_prone_annotations>2.36.0</version.error_prone_annotations>
     <version.java-jwt>4.5.0</version.java-jwt>
     <version.okio>3.10.2</version.okio>
-    <version.archunit>1.3.0</version.archunit>
+    <version.archunit>1.4.0</version.archunit>
 
     <plugin.version.function-maven-plugin>0.11.1</plugin.version.function-maven-plugin>
     <plugin.version.maven-enforcer-plugin>3.5.0</plugin.version.maven-enforcer-plugin>
