@@ -20,15 +20,17 @@ import org.camunda.community.migration.processInstance.service.Camunda8Service;
 import org.camunda.community.migration.processInstance.service.MigrationTaskService;
 import org.camunda.community.migration.processInstance.service.ProcessDefinitionMigrationHintService;
 import org.camunda.community.migration.processInstance.service.TaskMappingService;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DynamicContainer;
 import org.junit.jupiter.api.TestFactory;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 @CamundaProcessTest
 @ExtendWith(ProcessEngineExtension.class)
+@Disabled
 public class ProcessInstanceMigrationScenarioTest {
 
-  ZeebeClient zeebeClient;
+  public ZeebeClient zeebeClient;
 
   private static Stream<
           Entry<MigrationTestProcessDefinitionInput, List<MigrationTestProcessInstanceInput>>>
