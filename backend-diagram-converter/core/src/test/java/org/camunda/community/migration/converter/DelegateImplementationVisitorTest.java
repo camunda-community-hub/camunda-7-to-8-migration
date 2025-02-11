@@ -8,8 +8,16 @@ import org.junit.jupiter.api.Test;
 
 public class DelegateImplementationVisitorTest {
   @Test
-  void shouldReturnDelegateName() {
+  void shouldReturnDelegateNameWithDollar() {
     String delegateExpression = "${someReallyCoolDelegate}";
+    Matcher matcher = DELEGATE_NAME_EXTRACT.matcher(delegateExpression);
+    String delegateName = matcher.find() ? matcher.group(1) : null;
+    assertThat(delegateName).isNotNull().isEqualTo("someReallyCoolDelegate");
+  }
+
+  @Test
+  void shouldReturnDelegateNameWithHashtag() {
+    String delegateExpression = "#{someReallyCoolDelegate}";
     Matcher matcher = DELEGATE_NAME_EXTRACT.matcher(delegateExpression);
     String delegateName = matcher.find() ? matcher.group(1) : null;
     assertThat(delegateName).isNotNull().isEqualTo("someReallyCoolDelegate");
