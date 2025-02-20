@@ -8,7 +8,7 @@
   <properties>
     <version.camunda>7.22.0</version.camunda>
     <version.camunda-engine-rest-client-openapi-java>7.21.1</version.camunda-engine-rest-client-openapi-java>
-    <version.spring-boot>3.4.2</version.spring-boot>
+    <version.spring-boot>3.4.3</version.spring-boot>
     <version.maven-surefire>3.5.2</version.maven-surefire>
 
     <version.java>17</version.java>
