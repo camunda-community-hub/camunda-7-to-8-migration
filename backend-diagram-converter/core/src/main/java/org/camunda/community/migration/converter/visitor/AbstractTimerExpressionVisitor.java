@@ -28,7 +28,7 @@ public abstract class AbstractTimerExpressionVisitor extends AbstractBpmnElement
   }
 
   private ExpressionTransformationResult transformTimer(DomElementVisitorContext context) {
-    return ExpressionTransformer.transform(context.getElement().getTextContent());
+    return ExpressionTransformer.transform("Timer", context.getElement().getTextContent());
   }
 
   protected abstract void setNewExpression(

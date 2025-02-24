@@ -45,8 +45,18 @@ public abstract class AbstractDataMapperConvertible extends AbstractExecutionLis
   }
 
   public enum MappingDirection {
-    INPUT,
-    OUTPUT
+    INPUT("Input"),
+    OUTPUT("Output");
+
+    private final String name;
+
+    MappingDirection(String name) {
+      this.name = name;
+    }
+
+    public String getName() {
+      return name;
+    }
   }
 
   public static class ZeebeIoMapping {

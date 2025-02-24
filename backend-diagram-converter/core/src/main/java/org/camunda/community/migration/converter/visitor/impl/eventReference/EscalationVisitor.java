@@ -32,7 +32,7 @@ public class EscalationVisitor extends AbstractEventReferenceVisitor {
     String escalationCode = context.getElement().getAttribute(BPMN, "escalationCode");
     if (escalationCode != null) {
       ExpressionTransformationResult expressionTransformationResult =
-          ExpressionTransformer.transform(escalationCode);
+          ExpressionTransformer.transform("Escalation", escalationCode);
       context.addConversion(
           EscalationConvertible.class,
           c -> c.setEscalationCode(expressionTransformationResult.getFeelExpression()));

@@ -9,7 +9,6 @@ import org.camunda.community.migration.converter.expression.ExpressionTransforma
 import org.camunda.community.migration.converter.expression.ExpressionTransformer;
 import org.junit.jupiter.api.DynamicContainer;
 import org.junit.jupiter.api.DynamicTest;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestFactory;
 
 public class ExpressionTransformerTest {
@@ -79,7 +78,7 @@ public class ExpressionTransformerTest {
     private final List<DynamicTest> tests = new ArrayList<>();
 
     public ExpressionTestBuilder(String expression) {
-      this.result = ExpressionTransformer.transform(expression);
+      this.result = ExpressionTransformer.transform("Test", expression);
     }
 
     public ExpressionTransformationResult getResult() {
@@ -102,7 +101,7 @@ public class ExpressionTransformerTest {
       tests.add(
           DynamicTest.dynamicTest(
               String.format("Expect %s method invocation", expected ? "a" : "no"),
-              () -> assertThat(result.hasMethodInvocation()).isEqualTo(expected)));
+              () -> assertThat(result.getHasMethodInvocation()).isEqualTo(expected)));
       return this;
     }
 
@@ -110,19 +109,8 @@ public class ExpressionTransformerTest {
       tests.add(
           DynamicTest.dynamicTest(
               String.format("Expect %s execution used", expected ? "a" : "no"),
-              () -> assertThat(result.hasExecutionOnly()).isEqualTo(expected)));
+              () -> assertThat(result.getHasExecutionOnly()).isEqualTo(expected)));
       return this;
     }
-  }
-
-  @Test
-  public void testExpressions() {
-    ExpressionTransformationResult underTest =
-        new ExpressionTransformationResult("execution.", null);
-    assertThat(underTest.hasExecutionOnly()).isEqualTo(true);
-    underTest = new ExpressionTransformationResult("execution.getVariable", null);
-    assertThat(underTest.hasExecutionOnly()).isEqualTo(false);
-    underTest = new ExpressionTransformationResult("execution.getProcessInstanceId()", null);
-    assertThat(underTest.hasExecutionOnly()).isEqualTo(true);
   }
 }

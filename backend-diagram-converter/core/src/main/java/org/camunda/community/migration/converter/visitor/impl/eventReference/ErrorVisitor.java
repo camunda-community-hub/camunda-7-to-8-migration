@@ -34,7 +34,7 @@ public class ErrorVisitor extends AbstractEventReferenceVisitor {
       return;
     }
     ExpressionTransformationResult expressionTransformationResult =
-        ExpressionTransformer.transform(errorCode);
+        ExpressionTransformer.transform("Error", errorCode);
     if (expressionTransformationResult.getFeelExpression().startsWith("=")) {
       context.addMessage(MessageFactory.errorCodeNoExpression());
     }

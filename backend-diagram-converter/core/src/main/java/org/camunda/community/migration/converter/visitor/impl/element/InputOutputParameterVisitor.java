@@ -7,6 +7,7 @@ import org.camunda.community.migration.converter.DomElementVisitorContext;
 import org.camunda.community.migration.converter.convertible.AbstractDataMapperConvertible;
 import org.camunda.community.migration.converter.convertible.AbstractDataMapperConvertible.MappingDirection;
 import org.camunda.community.migration.converter.expression.ExpressionTransformationResult;
+import org.camunda.community.migration.converter.expression.ExpressionTransformationResultMessageFactory;
 import org.camunda.community.migration.converter.expression.ExpressionTransformer;
 import org.camunda.community.migration.converter.message.Message;
 import org.camunda.community.migration.converter.message.MessageFactory;
@@ -35,36 +36,16 @@ public abstract class InputOutputParameterVisitor extends AbstractCamundaElement
     }
     String expression = element.getTextContent();
     ExpressionTransformationResult transformationResult =
-        ExpressionTransformer.transform(expression);
+        ExpressionTransformer.transform(
+            direction.getName() + " parameter '" + name + "'", expression);
     context.addConversion(
         AbstractDataMapperConvertible.class,
         abstractTaskConversion ->
             abstractTaskConversion.addZeebeIoMapping(
                 direction, transformationResult.getFeelExpression(), name));
-    Message resultMessage;
-    if (transformationResult.hasExecutionOnly()) {
-      resultMessage =
-          MessageFactory.inputOutputParameterExecution(
-              localName(),
-              name,
-              transformationResult.getJuelExpression(),
-              transformationResult.getFeelExpression());
-    } else if (transformationResult.hasMethodInvocation()) {
-      resultMessage =
-          MessageFactory.inputOutputParameterMethod(
-              localName(),
-              name,
-              transformationResult.getJuelExpression(),
-              transformationResult.getFeelExpression());
-    } else {
-      resultMessage =
-          MessageFactory.inputOutputParameter(
-              localName(),
-              name,
-              transformationResult.getJuelExpression(),
-              transformationResult.getFeelExpression());
-    }
-    return resultMessage;
+    return ExpressionTransformationResultMessageFactory.getMessage(
+        transformationResult,
+        "https://docs.camunda.io/docs/components/concepts/variables/#inputoutput-variable-mappings");
   }
 
   private boolean isScript(DomElement element) {
