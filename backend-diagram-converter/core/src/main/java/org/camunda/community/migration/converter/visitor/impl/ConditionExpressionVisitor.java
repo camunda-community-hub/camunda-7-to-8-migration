@@ -8,6 +8,7 @@ import org.camunda.bpm.model.xml.instance.DomElement;
 import org.camunda.community.migration.converter.DomElementVisitorContext;
 import org.camunda.community.migration.converter.convertible.SequenceFlowConvertible;
 import org.camunda.community.migration.converter.expression.ExpressionTransformationResult;
+import org.camunda.community.migration.converter.expression.ExpressionTransformationResultMessageFactory;
 import org.camunda.community.migration.converter.expression.ExpressionTransformer;
 import org.camunda.community.migration.converter.message.Message;
 import org.camunda.community.migration.converter.message.MessageFactory;
@@ -90,22 +91,13 @@ public class ConditionExpressionVisitor extends AbstractBpmnElementVisitor {
   private void handleJuelExpression(DomElementVisitorContext context) {
     String expression = context.getElement().getTextContent();
     ExpressionTransformationResult transformationResult =
-        ExpressionTransformer.transform(expression);
+        ExpressionTransformer.transform("Condition expression", expression);
     context.addConversion(
         SequenceFlowConvertible.class,
         conversion -> conversion.setConditionExpression(transformationResult.getFeelExpression()));
-    if (transformationResult.hasExecutionOnly()) {
-      context.addMessage(
-          MessageFactory.conditionExpressionExecution(
-              transformationResult.getJuelExpression(), transformationResult.getFeelExpression()));
-    } else if (transformationResult.hasMethodInvocation()) {
-      context.addMessage(
-          MessageFactory.conditionExpressionMethod(
-              transformationResult.getJuelExpression(), transformationResult.getFeelExpression()));
-    } else {
-      context.addMessage(
-          MessageFactory.conditionExpression(
-              transformationResult.getJuelExpression(), transformationResult.getFeelExpression()));
-    }
+    context.addMessage(
+        ExpressionTransformationResultMessageFactory.getMessage(
+            transformationResult,
+            "https://docs.camunda.io/docs/components/modeler/bpmn/exclusive-gateways/#conditions"));
   }
 }

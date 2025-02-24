@@ -5,18 +5,56 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class ExpressionTransformer {
+  private static final Logger LOG = LoggerFactory.getLogger(ExpressionTransformer.class);
   private static final ExpressionTransformer INSTANCE = new ExpressionTransformer();
+  private static final Pattern methodInvocationPattern = Pattern.compile("\\.[\\w]*\\(.*\\)");
+  private static final Pattern executionPattern = Pattern.compile("execution\\.");
+  private static final Pattern executionGetVariablePattern =
+      Pattern.compile("execution.getVariable");
 
   private ExpressionTransformer() {}
 
-  public static ExpressionTransformationResult transform(final String juelExpression) {
+  public static ExpressionTransformationResult transform(
+      final String context, final String juelExpression) {
     if (juelExpression == null) {
       return null;
     }
     String transform = INSTANCE.doTransform(juelExpression);
-    return new ExpressionTransformationResult(juelExpression, transform);
+    boolean hasMethodInvocation = INSTANCE.hasMethodInvocation(juelExpression);
+    boolean hasExecutionOnly = INSTANCE.hasExecutionOnly(juelExpression);
+    return new ExpressionTransformationResult(
+        context, juelExpression, transform, hasMethodInvocation, hasExecutionOnly);
+  }
+
+  private Boolean hasMethodInvocation(String juelExpression) {
+    if (hasExecutionGetVariable(juelExpression)) {
+      return false;
+    }
+    Matcher m = methodInvocationPattern.matcher(juelExpression);
+    boolean methodMatch = m.find();
+    LOG.debug("{} contains method invocation: {}", juelExpression, methodMatch);
+    return methodMatch;
+  }
+
+  private Boolean hasExecutionOnly(String juelExpression) {
+    if (hasExecutionGetVariable(juelExpression)) {
+      return false;
+    }
+    Matcher m = executionPattern.matcher(juelExpression);
+    boolean executionOnlyMatch = m.find();
+    LOG.debug("{} contains execution only: {}", juelExpression, executionOnlyMatch);
+    return executionOnlyMatch;
+  }
+
+  private Boolean hasExecutionGetVariable(String juelExpression) {
+    Matcher m = executionGetVariablePattern.matcher(juelExpression);
+    boolean executionGetVariableMatch = m.find();
+    LOG.debug("{} contains execution.getVariable: {}", juelExpression, executionGetVariableMatch);
+    return executionGetVariableMatch;
   }
 
   private String doTransform(final String juelExpression) {

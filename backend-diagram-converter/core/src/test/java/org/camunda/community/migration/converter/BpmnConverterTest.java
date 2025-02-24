@@ -162,38 +162,30 @@ public class BpmnConverterTest {
   void testCallActivityBefore_8_3() {
     BpmnDiagramCheckResult result = loadAndCheckAgainstVersion("call-activity-latest.bpmn", "8.2");
     BpmnElementCheckResult callActivityResult = result.getResult("callLatest");
-    assertThat(callActivityResult.getMessages()).hasSize(3);
+    assertThat(callActivityResult.getMessages()).hasSize(2);
     assertThat(callActivityResult.getMessages().get(0).getMessage())
         .isEqualTo(
-            "Attribute 'calledElement' on 'callActivity' was mapped. Please review transformed expression: 'myLatestProcess' -> 'myLatestProcess'.");
-    assertThat(callActivityResult.getMessages().get(0).getSeverity()).isEqualTo(Severity.REVIEW);
+            "Element 'camunda:in' with attribute 'variables=\"all\"' is removed. It is default in Zeebe before 8.3.");
+    assertThat(callActivityResult.getMessages().get(0).getSeverity()).isEqualTo(Severity.INFO);
     assertThat(callActivityResult.getMessages().get(1).getMessage())
         .isEqualTo(
-            "Element 'camunda:in' with attribute 'variables=\"all\"' is removed. It is default in Zeebe before 8.3.");
-    assertThat(callActivityResult.getMessages().get(1).getSeverity()).isEqualTo(Severity.INFO);
-    assertThat(callActivityResult.getMessages().get(2).getMessage())
-        .isEqualTo(
             "Element 'camunda:out' with attribute 'variables=\"all\"' is mapped to 'propagateAllChildVariables=\"true\"'.");
-    assertThat(callActivityResult.getMessages().get(2).getSeverity()).isEqualTo(Severity.INFO);
+    assertThat(callActivityResult.getMessages().get(1).getSeverity()).isEqualTo(Severity.INFO);
   }
 
   @Test
   void testCallActivityLatest() {
     BpmnDiagramCheckResult result = loadAndCheck("call-activity-latest.bpmn");
     BpmnElementCheckResult callActivityResult = result.getResult("callLatest");
-    assertThat(callActivityResult.getMessages()).hasSize(3);
+    assertThat(callActivityResult.getMessages()).hasSize(2);
     assertThat(callActivityResult.getMessages().get(0).getMessage())
         .isEqualTo(
-            "Attribute 'calledElement' on 'callActivity' was mapped. Please review transformed expression: 'myLatestProcess' -> 'myLatestProcess'.");
-    assertThat(callActivityResult.getMessages().get(0).getSeverity()).isEqualTo(Severity.REVIEW);
+            "Element 'camunda:in' with attribute 'variables=\"all\"' is mapped to 'propagateAllParentVariables=\"true\"'.");
+    assertThat(callActivityResult.getMessages().get(0).getSeverity()).isEqualTo(Severity.INFO);
     assertThat(callActivityResult.getMessages().get(1).getMessage())
         .isEqualTo(
-            "Element 'camunda:in' with attribute 'variables=\"all\"' is mapped to 'propagateAllParentVariables=\"true\"'.");
-    assertThat(callActivityResult.getMessages().get(1).getSeverity()).isEqualTo(Severity.INFO);
-    assertThat(callActivityResult.getMessages().get(2).getMessage())
-        .isEqualTo(
             "Element 'camunda:out' with attribute 'variables=\"all\"' is mapped to 'propagateAllChildVariables=\"true\"'.");
-    assertThat(callActivityResult.getMessages().get(2).getSeverity()).isEqualTo(Severity.INFO);
+    assertThat(callActivityResult.getMessages().get(1).getSeverity()).isEqualTo(Severity.INFO);
   }
 
   @Test
@@ -201,23 +193,19 @@ public class BpmnConverterTest {
     BpmnDiagramCheckResult result =
         loadAndCheckAgainstVersion("call-activity-deployment.bpmn", "8.5");
     BpmnElementCheckResult callActivityResult = result.getResult("callDeployment");
-    assertThat(callActivityResult.getMessages()).hasSize(4);
+    assertThat(callActivityResult.getMessages()).hasSize(3);
     assertThat(callActivityResult.getMessages().get(0).getMessage())
         .isEqualTo(
             "Attribute 'calledElementBinding' with value 'deployment' on 'callActivity' is not supported.");
     assertThat(callActivityResult.getMessages().get(0).getSeverity()).isEqualTo(Severity.WARNING);
     assertThat(callActivityResult.getMessages().get(1).getMessage())
         .isEqualTo(
-            "Attribute 'calledElement' on 'callActivity' was mapped. Please review transformed expression: 'myLatestProcess' -> 'myLatestProcess'.");
-    assertThat(callActivityResult.getMessages().get(1).getSeverity()).isEqualTo(Severity.REVIEW);
+            "Element 'camunda:in' with attribute 'variables=\"all\"' is mapped to 'propagateAllParentVariables=\"true\"'.");
+    assertThat(callActivityResult.getMessages().get(1).getSeverity()).isEqualTo(Severity.INFO);
     assertThat(callActivityResult.getMessages().get(2).getMessage())
         .isEqualTo(
-            "Element 'camunda:in' with attribute 'variables=\"all\"' is mapped to 'propagateAllParentVariables=\"true\"'.");
-    assertThat(callActivityResult.getMessages().get(2).getSeverity()).isEqualTo(Severity.INFO);
-    assertThat(callActivityResult.getMessages().get(3).getMessage())
-        .isEqualTo(
             "Element 'camunda:out' with attribute 'variables=\"all\"' is mapped to 'propagateAllChildVariables=\"true\"'.");
-    assertThat(callActivityResult.getMessages().get(3).getSeverity()).isEqualTo(Severity.INFO);
+    assertThat(callActivityResult.getMessages().get(2).getSeverity()).isEqualTo(Severity.INFO);
   }
 
   @Test
@@ -225,22 +213,18 @@ public class BpmnConverterTest {
     BpmnDiagramCheckResult result =
         loadAndCheckAgainstVersion("call-activity-deployment.bpmn", "8.6");
     BpmnElementCheckResult callActivityResult = result.getResult("callDeployment");
-    assertThat(callActivityResult.getMessages()).hasSize(4);
+    assertThat(callActivityResult.getMessages()).hasSize(3);
     assertThat(callActivityResult.getMessages().get(0).getMessage())
-        .isEqualTo(
-            "Attribute 'calledElement' on 'callActivity' was mapped. Please review transformed expression: 'myLatestProcess' -> 'myLatestProcess'.");
-    assertThat(callActivityResult.getMessages().get(0).getSeverity()).isEqualTo(Severity.REVIEW);
-    assertThat(callActivityResult.getMessages().get(1).getMessage())
         .isEqualTo("Called element reference binding has been mapped.");
+    assertThat(callActivityResult.getMessages().get(0).getSeverity()).isEqualTo(Severity.INFO);
+    assertThat(callActivityResult.getMessages().get(1).getMessage())
+        .isEqualTo(
+            "Element 'camunda:in' with attribute 'variables=\"all\"' is mapped to 'propagateAllParentVariables=\"true\"'.");
     assertThat(callActivityResult.getMessages().get(1).getSeverity()).isEqualTo(Severity.INFO);
     assertThat(callActivityResult.getMessages().get(2).getMessage())
         .isEqualTo(
-            "Element 'camunda:in' with attribute 'variables=\"all\"' is mapped to 'propagateAllParentVariables=\"true\"'.");
-    assertThat(callActivityResult.getMessages().get(2).getSeverity()).isEqualTo(Severity.INFO);
-    assertThat(callActivityResult.getMessages().get(3).getMessage())
-        .isEqualTo(
             "Element 'camunda:out' with attribute 'variables=\"all\"' is mapped to 'propagateAllChildVariables=\"true\"'.");
-    assertThat(callActivityResult.getMessages().get(3).getSeverity()).isEqualTo(Severity.INFO);
+    assertThat(callActivityResult.getMessages().get(2).getSeverity()).isEqualTo(Severity.INFO);
   }
 
   @Test
@@ -417,7 +401,7 @@ public class BpmnConverterTest {
     assertThat(messages.get(0).getMessage()).contains("Collecting results");
 
     assertThat(messages.get(1).getSeverity()).isEqualTo(Severity.REVIEW);
-    assertThat(messages.get(1).getMessage()).contains(Arrays.asList("collection", "-> '=myList'"));
+    assertThat(messages.get(1).getMessage()).contains(Arrays.asList("Collection", "-> '=myList'"));
 
     assertThat(messages.get(2).getSeverity()).isEqualTo(Severity.REVIEW);
     assertThat(messages.get(2).getMessage())
@@ -437,7 +421,7 @@ public class BpmnConverterTest {
 
     assertThat(messages.get(1).getSeverity()).isEqualTo(Severity.TASK);
     assertThat(messages.get(1).getMessage())
-        .contains(Arrays.asList("collection", "Method invocation is not possible in FEEL"));
+        .contains(Arrays.asList("Collection", "Method invocation is not possible in FEEL"));
 
     assertThat(messages.get(2).getSeverity()).isEqualTo(Severity.TASK);
     assertThat(messages.get(2).getMessage())
@@ -455,7 +439,7 @@ public class BpmnConverterTest {
     BpmnElementCheckMessage message = messages.get(0);
     assertThat(message.getMessage())
         .isEqualTo(
-            "Element 'inputParameter' was transformed. Parameter 'inputParameterName': Please review transformed expression: '' -> '=null'.");
+            "Input parameter 'inputParameterName': Please review transformed expression: '' -> '=null'.");
   }
 
   @Test

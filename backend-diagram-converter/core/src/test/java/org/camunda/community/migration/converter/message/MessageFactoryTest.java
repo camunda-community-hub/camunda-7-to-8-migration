@@ -11,7 +11,7 @@ import org.junit.jupiter.api.Test;
 public class MessageFactoryTest {
 
   private static String random() {
-    return RandomStringUtils.randomAlphabetic(10);
+    return RandomStringUtils.secure().nextAlphabetic(10);
   }
 
   @Test
@@ -64,13 +64,6 @@ public class MessageFactoryTest {
   }
 
   @Test
-  void shouldBuildCallActivityNoCalledElementHint() {
-    Message message = MessageFactory.callActivityNoCalledElementHint();
-    assertNotNull(message);
-    assertNotNull(message.getMessage());
-  }
-
-  @Test
   void shouldBuildInputOutputParameterIsNoExpression() {
     Message message = MessageFactory.inputOutputParameterIsNoExpression(random(), random());
     assertNotNull(message);
@@ -92,22 +85,8 @@ public class MessageFactoryTest {
   }
 
   @Test
-  void shouldBuildAssignee() {
-    Message message = MessageFactory.assignee(random(), random(), random(), random());
-    assertNotNull(message);
-    assertNotNull(message.getMessage());
-  }
-
-  @Test
   void shouldBuildTopic() {
     Message message = MessageFactory.topic(random(), random());
-    assertNotNull(message);
-    assertNotNull(message.getMessage());
-  }
-
-  @Test
-  void shouldBuildFormRef() {
-    Message message = MessageFactory.formRef(random(), random(), random(), random());
     assertNotNull(message);
     assertNotNull(message.getMessage());
   }
@@ -129,20 +108,6 @@ public class MessageFactoryTest {
   @Test
   void shouldBuildScriptFormat() {
     Message message = MessageFactory.scriptFormat(random(), random());
-    assertNotNull(message);
-    assertNotNull(message.getMessage());
-  }
-
-  @Test
-  void shouldBuildConditionExpression() {
-    Message message = MessageFactory.conditionExpression(random(), random());
-    assertNotNull(message);
-    assertNotNull(message.getMessage());
-  }
-
-  @Test
-  void shouldBuildInputOutputParameter() {
-    Message message = MessageFactory.inputOutputParameter(random(), random(), random(), random());
     assertNotNull(message);
     assertNotNull(message.getMessage());
   }
@@ -171,13 +136,6 @@ public class MessageFactoryTest {
   @Test
   void shouldBuildLoopCardinality() {
     Message message = MessageFactory.loopCardinality();
-    assertNotNull(message);
-    assertNotNull(message.getMessage());
-  }
-
-  @Test
-  void shouldBuildScriptFormatMissing() {
-    Message message = MessageFactory.scriptFormatMissing();
     assertNotNull(message);
     assertNotNull(message.getMessage());
   }
@@ -315,29 +273,8 @@ public class MessageFactoryTest {
   }
 
   @Test
-  void shouldBuildCandidateGroups() {
-    Message message = MessageFactory.candidateGroups(random(), random());
-    assertNotNull(message);
-    assertNotNull(message.getMessage());
-  }
-
-  @Test
   void shouldBuildCollectionHint() {
     Message message = MessageFactory.collectionHint();
-    assertNotNull(message);
-    assertNotNull(message.getMessage());
-  }
-
-  @Test
-  void shouldBuildCalledElement() {
-    Message message = MessageFactory.calledElement(random(), random(), random(), random());
-    assertNotNull(message);
-    assertNotNull(message.getMessage());
-  }
-
-  @Test
-  void shouldBuildDecisionRef() {
-    Message message = MessageFactory.decisionRef(random(), random(), random(), random());
     assertNotNull(message);
     assertNotNull(message.getMessage());
   }
@@ -371,13 +308,6 @@ public class MessageFactoryTest {
   }
 
   @Test
-  void shouldBuildCompletionCondition() {
-    Message message = MessageFactory.completionCondition(random(), random());
-    assertNotNull(message);
-    assertNotNull(message.getMessage());
-  }
-
-  @Test
   void shouldBuildElementAvailableInFutureVersion() {
     Message message =
         MessageFactory.elementAvailableInFutureVersion("inclusiveGateway", "8.0.0", "8.1.0");
@@ -386,26 +316,6 @@ public class MessageFactoryTest {
     assertThat(message.getMessage())
         .isEqualTo(
             "Element 'inclusiveGateway' is not supported in Zeebe version '8.0.0'. It is available in version '8.1.0'.");
-  }
-
-  @Test
-  void shouldBuildEscalationCode() {
-    Message message = MessageFactory.escalationCode("old", "new");
-    assertNotNull(message);
-    assertNotNull(message.getMessage());
-    assertNotNull(message.getSeverity());
-    assertThat(message.getMessage())
-        .isEqualTo("Escalation code is transformed from 'old' to 'new'. Please review.");
-  }
-
-  @Test
-  void shouldBuildErrorCode() {
-    Message message = MessageFactory.errorCode("old", "new");
-    assertNotNull(message);
-    assertNotNull(message.getMessage());
-    assertNotNull(message.getSeverity());
-    assertThat(message.getMessage())
-        .isEqualTo("Error code is transformed from 'old' to 'new'. Please review.");
   }
 
   @Test
@@ -425,51 +335,6 @@ public class MessageFactoryTest {
     assertNotNull(message.getSeverity());
     assertThat(message.getMessage())
         .isEqualTo("Result variable is set to Zeebe script result variable.");
-  }
-
-  @Test
-  void shouldBuildCandidateUsers() {
-    String juelExpression = random();
-    String feelExpression = random();
-    Message message = MessageFactory.candidateUsers(juelExpression, feelExpression);
-    assertNotNull(message);
-    assertNotNull(message.getMessage());
-    assertNotNull(message.getSeverity());
-    assertThat(message.getMessage())
-        .isEqualTo(
-            String.format(
-                "Attribute 'candidateUsers' on 'userTask' was mapped. Please review transformed expression: '%s' -> '%s'.",
-                juelExpression, feelExpression));
-  }
-
-  @Test
-  void shouldBuildDueDate() {
-    String juelExpression = random();
-    String feelExpression = random();
-    Message message = MessageFactory.dueDate(juelExpression, feelExpression);
-    assertNotNull(message);
-    assertNotNull(message.getMessage());
-    assertNotNull(message.getSeverity());
-    assertThat(message.getMessage())
-        .isEqualTo(
-            String.format(
-                "Attribute 'dueDate' on 'userTask' was mapped. Please review transformed expression: '%s' -> '%s'.",
-                juelExpression, feelExpression));
-  }
-
-  @Test
-  void shouldBuildFollowUpDate() {
-    String juelExpression = random();
-    String feelExpression = random();
-    Message message = MessageFactory.followUpDate(juelExpression, feelExpression);
-    assertNotNull(message);
-    assertNotNull(message.getMessage());
-    assertNotNull(message.getSeverity());
-    assertThat(message.getMessage())
-        .isEqualTo(
-            String.format(
-                "Attribute 'followUpDate' on 'userTask' was mapped. Please review transformed expression: '%s' -> '%s'.",
-                juelExpression, feelExpression));
   }
 
   @Test

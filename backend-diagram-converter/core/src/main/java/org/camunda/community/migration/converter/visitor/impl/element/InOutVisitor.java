@@ -7,6 +7,7 @@ import org.camunda.community.migration.converter.convertible.AbstractDataMapperC
 import org.camunda.community.migration.converter.convertible.AbstractDataMapperConvertible.MappingDirection;
 import org.camunda.community.migration.converter.convertible.CallActivityConvertible;
 import org.camunda.community.migration.converter.expression.ExpressionTransformationResult;
+import org.camunda.community.migration.converter.expression.ExpressionTransformationResultMessageFactory;
 import org.camunda.community.migration.converter.expression.ExpressionTransformer;
 import org.camunda.community.migration.converter.message.Message;
 import org.camunda.community.migration.converter.message.MessageFactory;
@@ -78,7 +79,8 @@ public abstract class InOutVisitor extends AbstractCamundaElementVisitor {
       return MessageFactory.inOutBusinessKeyNotSupported(context.getElement().getLocalName());
     } else {
       String target = element.getAttribute("target");
-      ExpressionTransformationResult transformationResult = createResult(context.getElement());
+      ExpressionTransformationResult transformationResult =
+          createResult(context.getElement(), target);
       context.addConversion(
           AbstractDataMapperConvertible.class,
           conversion ->
@@ -86,21 +88,20 @@ public abstract class InOutVisitor extends AbstractCamundaElementVisitor {
                   getDirection(context.getElement()),
                   transformationResult.getFeelExpression(),
                   target));
-      return MessageFactory.inputOutputParameter(
-          localName(),
-          target,
-          transformationResult.getJuelExpression(),
-          transformationResult.getFeelExpression());
+      return ExpressionTransformationResultMessageFactory.getMessage(
+          transformationResult,
+          "https://docs.camunda.io/docs/components/modeler/bpmn/call-activities/#variable-mappings");
     }
   }
 
-  private ExpressionTransformationResult createResult(DomElement element) {
+  private ExpressionTransformationResult createResult(DomElement element, String target) {
+    String context = localName() + ", Parameter: '" + target + "'";
     String source = element.getAttribute("source");
     String sourceExpression = element.getAttribute("sourceExpression");
     if (source != null) {
-      return new ExpressionTransformationResult(source, "=" + source);
+      return new ExpressionTransformationResult(context, source, "=" + source, true, true);
     } else if (sourceExpression != null) {
-      return ExpressionTransformer.transform(sourceExpression);
+      return ExpressionTransformer.transform(context, sourceExpression);
     } else {
       throw new IllegalStateException("Must have one of: 'source', 'sourceExpression'");
     }

@@ -3,6 +3,7 @@ package org.camunda.community.migration.converter.visitor.impl.attribute;
 import org.camunda.community.migration.converter.DomElementVisitorContext;
 import org.camunda.community.migration.converter.convertible.AbstractActivityConvertible;
 import org.camunda.community.migration.converter.expression.ExpressionTransformationResult;
+import org.camunda.community.migration.converter.expression.ExpressionTransformationResultMessageFactory;
 import org.camunda.community.migration.converter.expression.ExpressionTransformer;
 import org.camunda.community.migration.converter.message.Message;
 import org.camunda.community.migration.converter.message.MessageFactory;
@@ -17,7 +18,7 @@ public class CollectionVisitor extends AbstractSupportedAttributeVisitor {
   @Override
   protected Message visitSupportedAttribute(DomElementVisitorContext context, String attribute) {
     ExpressionTransformationResult transformationResult =
-        ExpressionTransformer.transform(attribute);
+        ExpressionTransformer.transform("Collection", attribute);
     context.addConversion(
         AbstractActivityConvertible.class,
         AbstractActivityConvertible::initializeLoopCharacteristics);
@@ -29,29 +30,8 @@ public class CollectionVisitor extends AbstractSupportedAttributeVisitor {
                 .getZeebeLoopCharacteristics()
                 .setInputCollection(transformationResult.getFeelExpression()));
     context.addMessage(MessageFactory.collectionHint());
-    Message message;
-    if (transformationResult.hasExecutionOnly()) {
-      message =
-          MessageFactory.collectionExecution(
-              attributeLocalName(),
-              context.getElement().getLocalName(),
-              transformationResult.getJuelExpression(),
-              transformationResult.getFeelExpression());
-    } else if (transformationResult.hasMethodInvocation()) {
-      message =
-          MessageFactory.collectionMethod(
-              attributeLocalName(),
-              context.getElement().getLocalName(),
-              transformationResult.getJuelExpression(),
-              transformationResult.getFeelExpression());
-    } else {
-      message =
-          MessageFactory.collection(
-              attributeLocalName(),
-              context.getElement().getLocalName(),
-              transformationResult.getJuelExpression(),
-              transformationResult.getFeelExpression());
-    }
-    return message;
+    return ExpressionTransformationResultMessageFactory.getMessage(
+        transformationResult,
+        "https://docs.camunda.io/docs/components/modeler/bpmn/multi-instance/#defining-the-collection-to-iterate-over");
   }
 }
