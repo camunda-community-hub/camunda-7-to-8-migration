@@ -12,4 +12,6 @@ org.camunda.community.migration.converter.conversion.EscalationConversion
 org.camunda.community.migration.converter.conversion.ScriptTaskConversion
 org.camunda.community.migration.converter.conversion.AbstractCatchEventConversion
 org.camunda.community.migration.converter.conversion.ExecutionListenerConversion
-org.camunda.community.migration.converter.conversion.ProcessConversion
+org.camunda.community.migration.converter.conversion.ZeebeVersionTagConversion
+org.camunda.community.migration.converter.conversion.TypeRefConversion
+org.camunda.community.migration.converter.conversion.TextConversion

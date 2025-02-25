@@ -586,4 +586,16 @@ public class MessageFactory {
   private Message emptyMessage() {
     return new EmptyMessage();
   }
+
+  public static Message onlyFeelSupported() {
+    return INSTANCE.staticMessage("only-feel-supported");
+  }
+
+  public static Message inputVariableNotSupported() {
+    return INSTANCE.staticMessage("input-variable-not-supported");
+  }
+
+  public static Message numberType() {
+    return INSTANCE.staticMessage("number-type");
+  }
 }

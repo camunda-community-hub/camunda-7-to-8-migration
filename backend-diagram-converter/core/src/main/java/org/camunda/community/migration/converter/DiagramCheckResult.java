@@ -3,8 +3,8 @@ package org.camunda.community.migration.converter;
 import java.util.ArrayList;
 import java.util.List;
 
-public class BpmnDiagramCheckResult {
-  private final List<BpmnElementCheckResult> results = new ArrayList<>();
+public class DiagramCheckResult {
+  private final List<ElementCheckResult> results = new ArrayList<>();
   private String filename;
   private String converterVersion;
 
@@ -16,11 +16,11 @@ public class BpmnDiagramCheckResult {
     this.converterVersion = converterVersion;
   }
 
-  public List<BpmnElementCheckResult> getResults() {
+  public List<ElementCheckResult> getResults() {
     return results;
   }
 
-  public BpmnElementCheckResult getResult(String elementId) {
+  public ElementCheckResult getResult(String elementId) {
     return getResults().stream()
         .filter(element -> element.getElementId().equals(elementId))
         .findFirst()
@@ -37,13 +37,7 @@ public class BpmnDiagramCheckResult {
 
   @Override
   public String toString() {
-    return "BpmnDiagramCheckResult{"
-        + "results="
-        + results
-        + ", filename='"
-        + filename
-        + '\''
-        + '}';
+    return "DiagramCheckResult{" + "results=" + results + ", filename='" + filename + '\'' + '}';
   }
 
   public enum Severity {
@@ -53,15 +47,15 @@ public class BpmnDiagramCheckResult {
     INFO,
   }
 
-  public static class BpmnElementCheckResult {
-    private final List<BpmnElementCheckMessage> messages = new ArrayList<>();
+  public static class ElementCheckResult {
+    private final List<ElementCheckMessage> messages = new ArrayList<>();
     private final List<String> references = new ArrayList<>();
     private final List<String> referencedBy = new ArrayList<>();
     private String elementId;
     private String elementName;
     private String elementType;
 
-    public List<BpmnElementCheckMessage> getMessages() {
+    public List<ElementCheckMessage> getMessages() {
       return messages;
     }
 
@@ -99,7 +93,7 @@ public class BpmnDiagramCheckResult {
 
     @Override
     public String toString() {
-      return "BpmnElementCheckResult{"
+      return "ElementCheckResult{"
           + "messages="
           + messages
           + ", references="
@@ -119,7 +113,7 @@ public class BpmnDiagramCheckResult {
     }
   }
 
-  public static class BpmnElementCheckMessage {
+  public static class ElementCheckMessage {
     private Severity severity;
     private String message;
     private String link;
@@ -159,7 +153,7 @@ public class BpmnDiagramCheckResult {
 
     @Override
     public String toString() {
-      return "BpmnElementCheckMessage{"
+      return "ElementCheckMessage{"
           + "severity="
           + severity
           + ", message='"

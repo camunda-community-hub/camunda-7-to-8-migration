@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="https://www.omg.org/spec/DMN/20191111/MODEL/" xmlns:dmndi="https://www.omg.org/spec/DMN/20191111/DMNDI/" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" xmlns:modeler="http://camunda.org/schema/modeler/1.0" xmlns:biodi="http://bpmn.io/schema/dmn/biodi/2.0" xmlns:camunda="http://camunda.org/schema/1.0/dmn" id="Definitions_05j4cfe" name="DRD" namespace="http://camunda.org/schema/1.0/dmn" exporter="Camunda Modeler" exporterVersion="5.32.0" modeler:executionPlatform="Camunda Platform" modeler:executionPlatformVersion="7.22.0">
+  <decision id="Decision_0kjih6z" name="Decision 1" camunda:versionTag="1.0" camunda:historyTimeToLive="10">
+    <decisionTable id="DecisionTable_0uktpku">
+      <input id="Input_1" label="Hahaha" camunda:inputVariable="wwww">
+        <inputExpression id="InputExpression_1" typeRef="string" expressionLanguage="juel">
+          <text>xyz</text>
+        </inputExpression>
+      </input>
+      <input id="InputClause_0ukvma8">
+        <inputExpression id="LiteralExpression_1aah11t" typeRef="string">
+          <text></text>
+        </inputExpression>
+      </input>
+      <output id="Output_1" typeRef="long" biodi:width="192" />
+      <output id="OutputClause_130msh7" typeRef="double" />
+      <rule id="DecisionRule_024o0i6">
+        <inputEntry id="UnaryTests_1s93kct">
+          <text>${blablabla}</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0xbfx21">
+          <text></text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_07g062v">
+          <text>1</text>
+        </outputEntry>
+        <outputEntry id="LiteralExpression_0dsgmfx">
+          <text>1.5</text>
+        </outputEntry>
+      </rule>
+    </decisionTable>
+  </decision>
+  <decision id="Decision_0ajmowa" name="2">
+    <variable id="InformationItem_03xiq0x" name="lalala" />
+    <literalExpression id="LiteralExpression_10c4687" expressionLanguage="python">
+      <text>x = [1,2]</text>
+    </literalExpression>
+  </decision>
+  <decision id="Decision_1brdzow" name="funny" />
+  <inputData id="InputData_00puzm6" name="is" />
+  <knowledgeSource id="KnowledgeSource_0gdiiyb" name="thing" />
+  <businessKnowledgeModel id="BusinessKnowledgeModel_11hqwrw" name="some">
+    <variable id="InformationItem_16lr7n3" name="some" typeRef="string" />
+    <encapsulatedLogic id="FunctionDefinition_1v20drk">
+      <literalExpression id="LiteralExpression_1fdutym">
+        <text>x=2</text>
+      </literalExpression>
+    </encapsulatedLogic>
+  </businessKnowledgeModel>
+  <dmndi:DMNDI>
+    <dmndi:DMNDiagram>
+      <dmndi:DMNShape dmnElementRef="Decision_0kjih6z">
+        <dc:Bounds height="80" width="180" x="160" y="100" />
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="DMNShape_0xx1ef7" dmnElementRef="Decision_0ajmowa">
+        <dc:Bounds height="80" width="180" x="460" y="160" />
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="DMNShape_1vg58sb" dmnElementRef="Decision_1brdzow">
+        <dc:Bounds height="80" width="180" x="220" y="270" />
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="DMNShape_1l0r5j9" dmnElementRef="InputData_00puzm6">
+        <dc:Bounds height="45" width="125" x="498" y="288" />
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="DMNShape_16ludnf" dmnElementRef="KnowledgeSource_0gdiiyb">
+        <dc:Bounds height="63" width="100" x="540" y="439" />
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="DMNShape_00o54go" dmnElementRef="BusinessKnowledgeModel_11hqwrw">
+        <dc:Bounds height="46" width="135" x="263" y="517" />
+      </dmndi:DMNShape>
+    </dmndi:DMNDiagram>
+  </dmndi:DMNDI>
+</definitions>

@@ -17,7 +17,7 @@ import java.io.StringReader;
 import java.net.URISyntaxException;
 import java.util.List;
 import org.camunda.bpm.model.xml.instance.DomElement;
-import org.camunda.community.migration.converter.BpmnDiagramCheckResult;
+import org.camunda.community.migration.converter.DiagramCheckResult;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
@@ -38,7 +38,7 @@ public class ConverterControllerTest {
 
   @Test
   void shouldReturnCheckResult() throws URISyntaxException {
-    BpmnDiagramCheckResult checkResult =
+    DiagramCheckResult checkResult =
         RestAssured.given()
             .contentType(ContentType.MULTIPART)
             .multiPart(
@@ -46,7 +46,7 @@ public class ConverterControllerTest {
             .accept(ContentType.JSON)
             .post("/check")
             .getBody()
-            .as(BpmnDiagramCheckResult.class);
+            .as(DiagramCheckResult.class);
     assertThat(checkResult)
         .matches(
             result -> result.getFilename().equals("example.bpmn"), "Filename is set correctly");

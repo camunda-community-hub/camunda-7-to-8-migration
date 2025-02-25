@@ -1,13 +1,12 @@
 package org.camunda.community.migration.converter.message;
 
 import static org.assertj.core.api.Assertions.*;
-import static org.camunda.community.migration.converter.message.MessageFactory.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import org.camunda.community.migration.converter.BpmnDiagramCheckResult.Severity;
+import org.camunda.community.migration.converter.DiagramCheckResult.Severity;
 import org.junit.jupiter.api.Test;
 
 public class MessageTemplateProcessorTest {

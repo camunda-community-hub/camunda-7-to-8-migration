@@ -10,7 +10,7 @@ org.camunda.community.migration.converter.visitor.impl.element.Camunda7Namespace
 org.camunda.community.migration.converter.visitor.impl.attribute.CandidateGroupsVisitor
 org.camunda.community.migration.converter.visitor.impl.attribute.ClassVisitor
 org.camunda.community.migration.converter.visitor.impl.element.ConnectorIdVisitor
-org.camunda.community.migration.converter.visitor.impl.DefinitionsVisitor
+org.camunda.community.migration.converter.visitor.impl.BpmnDefinitionsVisitor
 org.camunda.community.migration.converter.visitor.impl.attribute.DelegateExpressionVisitor
 org.camunda.community.migration.converter.visitor.impl.element.ExecutionListenerVisitor
 org.camunda.community.migration.converter.visitor.impl.attribute.ExpressionVisitor
@@ -142,3 +142,16 @@ org.camunda.community.migration.converter.visitor.impl.attribute.FollowUpDateVis
 org.camunda.community.migration.converter.visitor.impl.TimeCycleVisitor
 org.camunda.community.migration.converter.visitor.impl.TimeDateVisitor
 org.camunda.community.migration.converter.visitor.impl.TimeDurationVisitor
+org.camunda.community.migration.converter.visitor.impl.attribute.InputVariableVisitor
+org.camunda.community.migration.converter.visitor.impl.dmn.DecisionTableVisitor
+org.camunda.community.migration.converter.visitor.impl.dmn.DecisionVisitor
+org.camunda.community.migration.converter.visitor.impl.dmn.InputVisitor
+org.camunda.community.migration.converter.visitor.impl.dmn.InputExpressionVisitor
+org.camunda.community.migration.converter.visitor.impl.dmn.ExpressionLanguageVisitor
+org.camunda.community.migration.converter.visitor.impl.dmn.TypeRefVisitor
+org.camunda.community.migration.converter.visitor.impl.dmn.OutputVisitor
+org.camunda.community.migration.converter.visitor.impl.DmnDefinitionsVisitor
+org.camunda.community.migration.converter.visitor.impl.dmn.TextVisitor
+org.camunda.community.migration.converter.visitor.impl.dmn.InputEntryVisitor
+org.camunda.community.migration.converter.visitor.impl.dmn.OutputEntryVisitor
+org.camunda.community.migration.converter.visitor.impl.dmn.LiteralExpressionVisitor

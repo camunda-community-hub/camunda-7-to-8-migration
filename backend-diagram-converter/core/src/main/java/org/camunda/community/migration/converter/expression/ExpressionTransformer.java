@@ -23,7 +23,19 @@ public class ExpressionTransformer {
     if (juelExpression == null) {
       return null;
     }
-    String transform = INSTANCE.doTransform(juelExpression);
+    String transform = INSTANCE.doTransform(juelExpression, false);
+    boolean hasMethodInvocation = INSTANCE.hasMethodInvocation(juelExpression);
+    boolean hasExecutionOnly = INSTANCE.hasExecutionOnly(juelExpression);
+    return new ExpressionTransformationResult(
+        context, juelExpression, transform, hasMethodInvocation, hasExecutionOnly);
+  }
+
+  public static ExpressionTransformationResult transformDmn(
+      final String context, final String juelExpression) {
+    if (juelExpression == null) {
+      return null;
+    }
+    String transform = INSTANCE.doTransform(juelExpression, true);
     boolean hasMethodInvocation = INSTANCE.hasMethodInvocation(juelExpression);
     boolean hasExecutionOnly = INSTANCE.hasExecutionOnly(juelExpression);
     return new ExpressionTransformationResult(
@@ -57,12 +69,12 @@ public class ExpressionTransformer {
     return executionGetVariableMatch;
   }
 
-  private String doTransform(final String juelExpression) {
+  private String doTransform(final String juelExpression, boolean dmnMode) {
     if (juelExpression == null) {
       return null;
     }
     if (juelExpression.isEmpty()) {
-      return "=null";
+      return dmnMode ? null : "=null";
     }
     // split into expressions and non-expressions
     List<String> nonExpressions =
@@ -80,7 +92,7 @@ public class ExpressionTransformer {
             .filter(s -> !s.isEmpty())
             .map(s -> nonExpressions.contains(s) ? "\"" + s + "\"" : handleExpression(s))
             .collect(Collectors.toList());
-    return "=" + String.join(" + ", expressions);
+    return (dmnMode ? "" : "=") + String.join(" + ", expressions);
   }
 
   private String handleExpression(String expression) {

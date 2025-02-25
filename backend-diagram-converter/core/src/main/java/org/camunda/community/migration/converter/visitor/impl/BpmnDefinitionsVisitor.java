@@ -12,7 +12,7 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-public class DefinitionsVisitor extends AbstractBpmnElementVisitor {
+public class BpmnDefinitionsVisitor extends AbstractBpmnElementVisitor {
   private static final String VERSION_HEADER = "executionPlatformVersion";
   private static final String PLATFORM_HEADER = "executionPlatform";
   private static final String CONVERTER_VERSION_HEADER = "converterVersion";

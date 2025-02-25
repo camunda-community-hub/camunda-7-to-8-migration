@@ -10,7 +10,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Properties;
 import java.util.stream.Collectors;
-import org.camunda.community.migration.converter.BpmnDiagramCheckResult.Severity;
+import org.camunda.community.migration.converter.DiagramCheckResult.Severity;
 
 public class MessageTemplateProvider {
   private static final String PROPERTY_MESSAGE = "message";
