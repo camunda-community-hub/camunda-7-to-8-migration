@@ -5,6 +5,7 @@ import static org.camunda.community.migration.converter.NamespaceUri.*;
 import java.util.Arrays;
 import java.util.List;
 import org.camunda.community.migration.converter.DomElementVisitorContext;
+import org.camunda.community.migration.converter.version.SemanticVersion;
 
 public abstract class AbstractDmnElementVisitor extends AbstractElementVisitor {
   @Override
@@ -18,4 +19,9 @@ public abstract class AbstractDmnElementVisitor extends AbstractElementVisitor {
   }
 
   protected abstract void visitDmnElement(DomElementVisitorContext context);
+
+  @Override
+  protected SemanticVersion availableFrom(DomElementVisitorContext context) {
+    return SemanticVersion._8_0;
+  }
 }

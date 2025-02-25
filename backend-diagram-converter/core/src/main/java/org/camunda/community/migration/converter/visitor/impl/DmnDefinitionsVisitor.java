@@ -37,11 +37,6 @@ public class DmnDefinitionsVisitor extends AbstractDmnElementVisitor {
   }
 
   @Override
-  protected SemanticVersion availableFrom(DomElementVisitorContext context) {
-    return SemanticVersion._8_0;
-  }
-
-  @Override
   public String localName() {
     return "definitions";
   }

@@ -1,7 +1,8 @@
 package org.camunda.community.migration.converter.convertible;
 
-public class OutputEntryConvertible extends AbstractRuleConvertible implements TextConvertible {
-  protected String content;
+public class LiteralExpressionConvertible extends AbstractDmnConvertible
+    implements TextConvertible {
+  private String content;
 
   @Override
   public String getContent() {

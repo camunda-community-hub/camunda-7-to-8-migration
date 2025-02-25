@@ -151,3 +151,7 @@ org.camunda.community.migration.converter.visitor.impl.dmn.ExpressionLanguageVis
 org.camunda.community.migration.converter.visitor.impl.dmn.TypeRefVisitor
 org.camunda.community.migration.converter.visitor.impl.dmn.OutputVisitor
 org.camunda.community.migration.converter.visitor.impl.DmnDefinitionsVisitor
+org.camunda.community.migration.converter.visitor.impl.dmn.TextVisitor
+org.camunda.community.migration.converter.visitor.impl.dmn.InputEntryVisitor
+org.camunda.community.migration.converter.visitor.impl.dmn.OutputEntryVisitor
+org.camunda.community.migration.converter.visitor.impl.dmn.LiteralExpressionVisitor

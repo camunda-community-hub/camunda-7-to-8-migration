@@ -2,7 +2,6 @@ package org.camunda.community.migration.converter.visitor;
 
 import org.camunda.community.migration.converter.DomElementVisitorContext;
 import org.camunda.community.migration.converter.convertible.Convertible;
-import org.camunda.community.migration.converter.version.SemanticVersion;
 
 public abstract class AbstractDecisionElementVisitor extends AbstractDmnElementVisitor {
   @Override
@@ -15,10 +14,5 @@ public abstract class AbstractDecisionElementVisitor extends AbstractDmnElementV
 
   protected void postCreationVisitor(DomElementVisitorContext context) {
     // do nothing
-  }
-
-  @Override
-  protected SemanticVersion availableFrom(DomElementVisitorContext context) {
-    return SemanticVersion._8_0;
   }
 }

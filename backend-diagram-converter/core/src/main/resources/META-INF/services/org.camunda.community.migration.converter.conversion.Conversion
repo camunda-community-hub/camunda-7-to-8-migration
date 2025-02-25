@@ -14,3 +14,4 @@ org.camunda.community.migration.converter.conversion.AbstractCatchEventConversio
 org.camunda.community.migration.converter.conversion.ExecutionListenerConversion
 org.camunda.community.migration.converter.conversion.ZeebeVersionTagConversion
 org.camunda.community.migration.converter.conversion.TypeRefConversion
+org.camunda.community.migration.converter.conversion.TextConversion

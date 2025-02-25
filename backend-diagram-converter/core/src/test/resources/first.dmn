@@ -36,6 +36,17 @@
       <text>x = [1,2]</text>
     </literalExpression>
   </decision>
+  <decision id="Decision_1brdzow" name="funny" />
+  <inputData id="InputData_00puzm6" name="is" />
+  <knowledgeSource id="KnowledgeSource_0gdiiyb" name="thing" />
+  <businessKnowledgeModel id="BusinessKnowledgeModel_11hqwrw" name="some">
+    <variable id="InformationItem_16lr7n3" name="some" typeRef="string" />
+    <encapsulatedLogic id="FunctionDefinition_1v20drk">
+      <literalExpression id="LiteralExpression_1fdutym">
+        <text>x=2</text>
+      </literalExpression>
+    </encapsulatedLogic>
+  </businessKnowledgeModel>
   <dmndi:DMNDI>
     <dmndi:DMNDiagram>
       <dmndi:DMNShape dmnElementRef="Decision_0kjih6z">
@@ -43,6 +54,18 @@
       </dmndi:DMNShape>
       <dmndi:DMNShape id="DMNShape_0xx1ef7" dmnElementRef="Decision_0ajmowa">
         <dc:Bounds height="80" width="180" x="460" y="160" />
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="DMNShape_1vg58sb" dmnElementRef="Decision_1brdzow">
+        <dc:Bounds height="80" width="180" x="220" y="270" />
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="DMNShape_1l0r5j9" dmnElementRef="InputData_00puzm6">
+        <dc:Bounds height="45" width="125" x="498" y="288" />
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="DMNShape_16ludnf" dmnElementRef="KnowledgeSource_0gdiiyb">
+        <dc:Bounds height="63" width="100" x="540" y="439" />
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="DMNShape_00o54go" dmnElementRef="BusinessKnowledgeModel_11hqwrw">
+        <dc:Bounds height="46" width="135" x="263" y="517" />
       </dmndi:DMNShape>
     </dmndi:DMNDiagram>
   </dmndi:DMNDI>
