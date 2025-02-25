@@ -1,7 +1,7 @@
 package org.camunda.community.migration.converter.webapp;
 
-import org.camunda.community.migration.converter.BpmnConverter;
-import org.camunda.community.migration.converter.BpmnConverterFactory;
+import org.camunda.community.migration.converter.DiagramConverter;
+import org.camunda.community.migration.converter.DiagramConverterFactory;
 import org.camunda.community.migration.converter.NotificationService;
 import org.camunda.community.migration.converter.NotificationServiceFactory;
 import org.springframework.boot.SpringApplication;
@@ -15,8 +15,8 @@ public class ConverterApplication {
   }
 
   @Bean
-  public BpmnConverter bpmnConverter(NotificationService notificationService) {
+  public DiagramConverter bpmnConverter(NotificationService notificationService) {
     NotificationServiceFactory.getInstance().setInstance(notificationService);
-    return BpmnConverterFactory.getInstance().get();
+    return DiagramConverterFactory.getInstance().get();
   }
 }

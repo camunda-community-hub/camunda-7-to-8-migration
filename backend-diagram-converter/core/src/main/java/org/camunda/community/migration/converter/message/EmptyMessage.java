@@ -1,6 +1,6 @@
 package org.camunda.community.migration.converter.message;
 
-import org.camunda.community.migration.converter.BpmnDiagramCheckResult.Severity;
+import org.camunda.community.migration.converter.DiagramCheckResult.Severity;
 
 public class EmptyMessage implements Message {
 

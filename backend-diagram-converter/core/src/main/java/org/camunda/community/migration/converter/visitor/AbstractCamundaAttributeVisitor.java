@@ -1,12 +1,13 @@
 package org.camunda.community.migration.converter.visitor;
 
+import java.util.List;
 import org.camunda.community.migration.converter.DomElementVisitorContext;
 import org.camunda.community.migration.converter.NamespaceUri;
 
 public abstract class AbstractCamundaAttributeVisitor extends AbstractAttributeVisitor {
 
-  protected String namespaceUri() {
-    return NamespaceUri.CAMUNDA;
+  protected List<String> namespaceUri() {
+    return List.of(NamespaceUri.CAMUNDA, NamespaceUri.CAMUNDA_DMN);
   }
 
   protected boolean removeAttribute(DomElementVisitorContext context) {

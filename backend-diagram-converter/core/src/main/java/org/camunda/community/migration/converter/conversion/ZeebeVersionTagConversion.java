@@ -5,16 +5,16 @@ import static org.camunda.community.migration.converter.NamespaceUri.*;
 
 import org.apache.commons.lang3.StringUtils;
 import org.camunda.bpm.model.xml.instance.DomElement;
-import org.camunda.community.migration.converter.convertible.ProcessConvertible;
+import org.camunda.community.migration.converter.convertible.ZeebeVersionTagConvertible;
 
-public class ProcessConversion extends AbstractTypedConversion<ProcessConvertible> {
+public class ZeebeVersionTagConversion extends AbstractTypedConversion<ZeebeVersionTagConvertible> {
   @Override
-  protected Class<ProcessConvertible> type() {
-    return ProcessConvertible.class;
+  protected Class<ZeebeVersionTagConvertible> type() {
+    return ZeebeVersionTagConvertible.class;
   }
 
   @Override
-  protected void convertTyped(DomElement element, ProcessConvertible convertible) {
+  protected void convertTyped(DomElement element, ZeebeVersionTagConvertible convertible) {
     DomElement extensionElements = getExtensionElements(element);
     if (StringUtils.isNotBlank(convertible.getZeebeVersionTag())) {
       appendZeebeVersionTag(extensionElements, convertible.getZeebeVersionTag());

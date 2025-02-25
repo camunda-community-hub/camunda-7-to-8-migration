@@ -1,7 +1,7 @@
 package org.camunda.community.migration.converter.message;
 
 import java.util.List;
-import org.camunda.community.migration.converter.BpmnDiagramCheckResult.Severity;
+import org.camunda.community.migration.converter.DiagramCheckResult.Severity;
 
 public class MessageTemplate {
   private final Severity severity;

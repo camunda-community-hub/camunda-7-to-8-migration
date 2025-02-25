@@ -6,20 +6,20 @@ import java.io.Writer;
 import java.util.List;
 import org.camunda.bpm.model.bpmn.BpmnModelInstance;
 import org.camunda.bpm.model.xml.instance.DomDocument;
-import org.camunda.community.migration.converter.BpmnConverter;
-import org.camunda.community.migration.converter.BpmnDiagramCheckResult;
 import org.camunda.community.migration.converter.ConverterPropertiesFactory;
 import org.camunda.community.migration.converter.DefaultConverterProperties;
+import org.camunda.community.migration.converter.DiagramCheckResult;
+import org.camunda.community.migration.converter.DiagramConverter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
 public class BpmnConverterService {
-  private final BpmnConverter bpmnConverter;
+  private final DiagramConverter diagramConverter;
 
   @Autowired
-  public BpmnConverterService(BpmnConverter bpmnConverter) {
-    this.bpmnConverter = bpmnConverter;
+  public BpmnConverterService(DiagramConverter diagramConverter) {
+    this.diagramConverter = diagramConverter;
   }
 
   public void convert(
@@ -33,11 +33,11 @@ public class BpmnConverterService {
     adaptedProperties.setPlatformVersion(platformVersion);
     adaptedProperties.setDefaultJobTypeEnabled(defaultJobTypeEnabled);
     adaptedProperties.setAppendDocumentation(appendDocumentation);
-    bpmnConverter.convert(
+    diagramConverter.convert(
         modelInstance, ConverterPropertiesFactory.getInstance().merge(adaptedProperties));
   }
 
-  public BpmnDiagramCheckResult check(
+  public DiagramCheckResult check(
       String filename,
       BpmnModelInstance modelInstance,
       String defaultJobType,
@@ -47,20 +47,20 @@ public class BpmnConverterService {
     adaptedProperties.setDefaultJobType(defaultJobType);
     adaptedProperties.setPlatformVersion(platformVersion);
     adaptedProperties.setDefaultJobTypeEnabled(defaultJobTypeEnabled);
-    return bpmnConverter.check(
+    return diagramConverter.check(
         filename, modelInstance, ConverterPropertiesFactory.getInstance().merge(adaptedProperties));
   }
 
   public String printXml(DomDocument document, boolean prettyPrint) {
     try (StringWriter sw = new StringWriter()) {
-      bpmnConverter.printXml(document, prettyPrint, sw);
+      diagramConverter.printXml(document, prettyPrint, sw);
       return sw.toString();
     } catch (IOException e) {
       throw new RuntimeException(e);
     }
   }
 
-  public void writeCsvFile(List<BpmnDiagramCheckResult> results, Writer writer) {
-    bpmnConverter.writeCsvFile(results, writer);
+  public void writeCsvFile(List<DiagramCheckResult> results, Writer writer) {
+    diagramConverter.writeCsvFile(results, writer);
   }
 }

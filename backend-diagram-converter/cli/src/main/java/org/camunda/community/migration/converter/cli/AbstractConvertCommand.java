@@ -13,17 +13,17 @@ import java.util.concurrent.Callable;
 import java.util.stream.Collectors;
 import org.apache.commons.io.FilenameUtils;
 import org.camunda.bpm.model.bpmn.BpmnModelInstance;
-import org.camunda.community.migration.converter.BpmnConverter;
-import org.camunda.community.migration.converter.BpmnConverterFactory;
-import org.camunda.community.migration.converter.BpmnDiagramCheckResult;
 import org.camunda.community.migration.converter.ConverterPropertiesFactory;
 import org.camunda.community.migration.converter.DefaultConverterProperties;
+import org.camunda.community.migration.converter.DiagramCheckResult;
+import org.camunda.community.migration.converter.DiagramConverter;
+import org.camunda.community.migration.converter.DiagramConverterFactory;
 import picocli.CommandLine.Option;
 
 public abstract class AbstractConvertCommand implements Callable<Integer> {
   private static final String DEFAULT_PREFIX = "converted-c8-";
 
-  protected final BpmnConverter converter;
+  protected final DiagramConverter converter;
   protected int returnCode = 0;
 
   @Option(
@@ -82,7 +82,7 @@ public abstract class AbstractConvertCommand implements Callable<Integer> {
   boolean disableAppendElements;
 
   public AbstractConvertCommand() {
-    BpmnConverterFactory factory = BpmnConverterFactory.getInstance();
+    DiagramConverterFactory factory = DiagramConverterFactory.getInstance();
     factory.getNotificationServiceFactory().setInstance(new PrintNotificationServiceImpl());
     converter = factory.get();
   }
@@ -91,13 +91,13 @@ public abstract class AbstractConvertCommand implements Callable<Integer> {
   public final Integer call() {
     returnCode = 0;
     Map<File, BpmnModelInstance> modelInstances = modelInstances();
-    List<BpmnDiagramCheckResult> results = checkModels(modelInstances);
+    List<DiagramCheckResult> results = checkModels(modelInstances);
     writeResults(modelInstances, results);
     return returnCode;
   }
 
   private void writeResults(
-      Map<File, BpmnModelInstance> modelInstances, List<BpmnDiagramCheckResult> results) {
+      Map<File, BpmnModelInstance> modelInstances, List<DiagramCheckResult> results) {
     if (!check) {
       for (Entry<File, BpmnModelInstance> modelInstance : modelInstances.entrySet()) {
         File file = determineFileName(prefixFileName(modelInstance.getKey()));
@@ -139,14 +139,14 @@ public abstract class AbstractConvertCommand implements Callable<Integer> {
 
   protected abstract File targetDirectory();
 
-  private List<BpmnDiagramCheckResult> checkModels(Map<File, BpmnModelInstance> modelInstances) {
+  private List<DiagramCheckResult> checkModels(Map<File, BpmnModelInstance> modelInstances) {
     return modelInstances.entrySet().stream()
         .map(this::checkModel)
         .filter(Objects::nonNull)
         .collect(Collectors.toList());
   }
 
-  private BpmnDiagramCheckResult checkModel(Entry<File, BpmnModelInstance> modelInstance) {
+  private DiagramCheckResult checkModel(Entry<File, BpmnModelInstance> modelInstance) {
     try {
       return converter.check(
           modelInstance.getKey().getPath(),

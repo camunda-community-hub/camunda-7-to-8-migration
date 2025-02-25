@@ -5,8 +5,8 @@ import java.util.List;
 import java.util.Objects;
 import java.util.function.Consumer;
 import org.camunda.bpm.model.xml.instance.DomElement;
-import org.camunda.community.migration.converter.BpmnDiagramCheckResult.BpmnElementCheckMessage;
-import org.camunda.community.migration.converter.BpmnDiagramCheckResult.BpmnElementCheckResult;
+import org.camunda.community.migration.converter.DiagramCheckResult.ElementCheckMessage;
+import org.camunda.community.migration.converter.DiagramCheckResult.ElementCheckResult;
 import org.camunda.community.migration.converter.convertible.Convertible;
 import org.camunda.community.migration.converter.message.EmptyMessage;
 import org.camunda.community.migration.converter.message.Message;
@@ -41,7 +41,7 @@ public interface DomElementVisitorContext {
    * Sets the currently handled element as BPMN process element. This element can now hold messages
    * and ${@link Convertible} objects in its context
    */
-  void setAsBpmnProcessElement(Convertible convertible);
+  void setAsDiagramElement(Convertible convertible);
 
   /**
    * Adds a conversion to the BPMN process element of the currently handled element
@@ -75,15 +75,15 @@ public interface DomElementVisitorContext {
 
   class DefaultDomElementVisitorContext implements DomElementVisitorContext {
     private final DomElement element;
-    private final BpmnDiagramCheckContext context;
-    private final BpmnDiagramCheckResult result;
+    private final DiagramCheckContext context;
+    private final DiagramCheckResult result;
     private final NotificationService notificationService;
     private final ConverterProperties converterProperties;
 
     public DefaultDomElementVisitorContext(
         DomElement element,
-        BpmnDiagramCheckContext context,
-        BpmnDiagramCheckResult result,
+        DiagramCheckContext context,
+        DiagramCheckResult result,
         NotificationService notificationService,
         ConverterProperties converterProperties) {
       this.element = element;
@@ -114,8 +114,8 @@ public interface DomElementVisitorContext {
     }
 
     @Override
-    public void setAsBpmnProcessElement(Convertible convertible) {
-      createBpmnElementCheckResult(element, convertible);
+    public void setAsDiagramElement(Convertible convertible) {
+      createElementCheckResult(element, convertible);
     }
 
     @Override
@@ -140,8 +140,8 @@ public interface DomElementVisitorContext {
     }
 
     private void references(DomElement element, String referencedElementId) {
-      BpmnElementCheckResult currentElementCheckResult = findBpmnElementCheckResult(element);
-      BpmnElementCheckResult referencedResult = result.getResult(referencedElementId);
+      ElementCheckResult currentElementCheckResult = findBpmnElementCheckResult(element);
+      ElementCheckResult referencedResult = result.getResult(referencedElementId);
       if (referencedResult != null) {
         createReference(currentElementCheckResult, referencedResult);
       } else {
@@ -152,8 +152,7 @@ public interface DomElementVisitorContext {
       }
     }
 
-    private void createReference(
-        BpmnElementCheckResult references, BpmnElementCheckResult referencedBy) {
+    private void createReference(ElementCheckResult references, ElementCheckResult referencedBy) {
       references.getReferences().add(referencedBy.getElementId());
       referencedBy.getReferencedBy().add(references.getElementId());
     }
@@ -164,8 +163,8 @@ public interface DomElementVisitorContext {
       }
     }
 
-    private BpmnElementCheckMessage createMessage(Message message) {
-      BpmnElementCheckMessage m = new BpmnElementCheckMessage();
+    private ElementCheckMessage createMessage(Message message) {
+      ElementCheckMessage m = new ElementCheckMessage();
       m.setMessage(message.getMessage());
       m.setSeverity(message.getSeverity());
       m.setLink(message.getLink());
@@ -173,7 +172,7 @@ public interface DomElementVisitorContext {
       return m;
     }
 
-    private List<BpmnElementCheckMessage> findElementMessages(DomElement element) {
+    private List<ElementCheckMessage> findElementMessages(DomElement element) {
       return findBpmnElementCheckResult(element).getMessages();
     }
 
@@ -191,7 +190,7 @@ public interface DomElementVisitorContext {
       }
     }
 
-    private BpmnElementCheckResult findBpmnElementCheckResult(DomElement element) {
+    private ElementCheckResult findBpmnElementCheckResult(DomElement element) {
       return result.getResults().stream()
           .filter(r -> r.getElementId().equals(extractId(element)))
           .findFirst()
@@ -202,21 +201,21 @@ public interface DomElementVisitorContext {
       return element.getAttribute("id");
     }
 
-    private void createBpmnElementCheckResult(DomElement element, Convertible convertible) {
+    private void createElementCheckResult(DomElement element, Convertible convertible) {
       String id = extractId(element);
       Objects.requireNonNull(id);
       if (containsId(id)) {
         throw new IllegalStateException(
             "Element with id '" + id + "' is already contained in list of results");
       }
-      BpmnElementCheckResult result = new BpmnElementCheckResult();
+      ElementCheckResult result = new ElementCheckResult();
       context.addConvertible(element, convertible);
       result.setElementId(id);
       result.setElementName(element.getAttribute("name"));
       result.setElementType(element.getLocalName());
-      List<BpmnElementCheckResult> bpmnElementCheckResults =
+      List<ElementCheckResult> elementCheckResults =
           context.getReferencesToCreate().getOrDefault(id, new ArrayList<>());
-      bpmnElementCheckResults.forEach(other -> createReference(other, result));
+      elementCheckResults.forEach(other -> createReference(other, result));
       this.result.getResults().add(result);
     }
 

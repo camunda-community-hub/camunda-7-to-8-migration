@@ -13,10 +13,13 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import org.camunda.bpm.model.bpmn.Bpmn;
 import org.camunda.bpm.model.bpmn.BpmnModelInstance;
+import org.camunda.bpm.model.dmn.Dmn;
+import org.camunda.bpm.model.dmn.DmnModelInstance;
+import org.camunda.bpm.model.xml.ModelInstance;
 import org.camunda.bpm.model.xml.instance.DomElement;
-import org.camunda.community.migration.converter.BpmnDiagramCheckResult.BpmnElementCheckMessage;
-import org.camunda.community.migration.converter.BpmnDiagramCheckResult.BpmnElementCheckResult;
-import org.camunda.community.migration.converter.BpmnDiagramCheckResult.Severity;
+import org.camunda.community.migration.converter.DiagramCheckResult.ElementCheckMessage;
+import org.camunda.community.migration.converter.DiagramCheckResult.ElementCheckResult;
+import org.camunda.community.migration.converter.DiagramCheckResult.Severity;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -24,8 +27,8 @@ import org.junit.jupiter.params.provider.CsvSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class BpmnConverterTest {
-  private static final Logger LOG = LoggerFactory.getLogger(BpmnConverterTest.class);
+public class DiagramConverterTest {
+  private static final Logger LOG = LoggerFactory.getLogger(DiagramConverterTest.class);
 
   @ParameterizedTest
   @CsvSource(
@@ -54,13 +57,13 @@ public class BpmnConverterTest {
         "decision-ref-deployment.bpmn",
         "delegate-expression-listener.bpmn"
       })
-  public void shouldConvert(String bpmnFile) {
-    BpmnConverter converter = BpmnConverterFactory.getInstance().get();
+  public void shouldConvertBpmn(String bpmnFile) {
+    DiagramConverter converter = DiagramConverterFactory.getInstance().get();
     ConverterProperties properties = ConverterPropertiesFactory.getInstance().get();
     BpmnModelInstance modelInstance =
         Bpmn.readModelFromStream(this.getClass().getClassLoader().getResourceAsStream(bpmnFile));
     printModel(modelInstance);
-    BpmnDiagramCheckResult result = converter.check(bpmnFile, modelInstance, properties);
+    DiagramCheckResult result = converter.check(bpmnFile, modelInstance, properties);
     printModel(modelInstance);
     StringWriter writer = new StringWriter();
     converter.printXml(modelInstance.getDocument(), true, writer);
@@ -68,18 +71,33 @@ public class BpmnConverterTest {
     io.camunda.zeebe.model.bpmn.Bpmn.readModelFromStream(stream);
   }
 
-  private void printModel(BpmnModelInstance modelInstance) {
+  @ParameterizedTest
+  @CsvSource(value = {"first.dmn"})
+  public void shouldConvertDmn(String dmnFile) {
+    DiagramConverter converter = DiagramConverterFactory.getInstance().get();
+    ConverterProperties properties = ConverterPropertiesFactory.getInstance().get();
+    DmnModelInstance modelInstance =
+        Dmn.readModelFromStream(this.getClass().getClassLoader().getResourceAsStream(dmnFile));
+    printModel(modelInstance);
+    DiagramCheckResult result = converter.check(dmnFile, modelInstance, properties);
+    printModel(modelInstance);
     StringWriter writer = new StringWriter();
-    BpmnConverterFactory.getInstance().get().printXml(modelInstance.getDocument(), true, writer);
+    converter.printXml(modelInstance.getDocument(), true, writer);
+    ByteArrayInputStream stream = new ByteArrayInputStream(writer.toString().getBytes());
+  }
+
+  private void printModel(ModelInstance modelInstance) {
+    StringWriter writer = new StringWriter();
+    DiagramConverterFactory.getInstance().get().printXml(modelInstance.getDocument(), true, writer);
     String[] processModel = writer.toString().split("\n");
-    for (int i = 1; i < processModel.length; i++) {
+    for (int i = 0; i < processModel.length; i++) {
       LOG.debug("" + i + "     " + processModel[i]);
     }
   }
 
   @Test
   public void shouldNotConvertC8() {
-    BpmnConverter converter = BpmnConverterFactory.getInstance().get();
+    DiagramConverter converter = DiagramConverterFactory.getInstance().get();
     ConverterProperties properties = ConverterPropertiesFactory.getInstance().get();
     BpmnModelInstance modelInstance =
         Bpmn.readModelFromStream(
@@ -90,11 +108,11 @@ public class BpmnConverterTest {
 
   @Test
   public void testDelegateHint() {
-    BpmnDiagramCheckResult result = loadAndCheck("java-delegate-class-c7.bpmn");
-    BpmnElementCheckResult delegateClassServiceTask = result.getResult("DelegateClassServiceTask");
+    DiagramCheckResult result = loadAndCheck("java-delegate-class-c7.bpmn");
+    ElementCheckResult delegateClassServiceTask = result.getResult("DelegateClassServiceTask");
     assertNotNull(delegateClassServiceTask);
     assertThat(delegateClassServiceTask.getMessages()).hasSize(1);
-    BpmnElementCheckMessage message = delegateClassServiceTask.getMessages().get(0);
+    ElementCheckMessage message = delegateClassServiceTask.getMessages().get(0);
     assertThat(message.getMessage())
         .isEqualTo(
             "Attribute 'class' on 'serviceTask' was mapped. Delegate call to 'com.camunda.consulting.MyDelegate' was transformed to job type 'camunda-7-adapter'. Please review your implementation.");
@@ -102,27 +120,27 @@ public class BpmnConverterTest {
 
   @Test
   public void testTaskListenerHints() {
-    BpmnDiagramCheckResult result = loadAndCheck("user-task-listener-implementations.bpmn");
-    BpmnElementCheckResult javaClassCheckResult = result.getResult("UserTaskUseJavaClass");
+    DiagramCheckResult result = loadAndCheck("user-task-listener-implementations.bpmn");
+    ElementCheckResult javaClassCheckResult = result.getResult("UserTaskUseJavaClass");
     assertThat(javaClassCheckResult.getMessages()).hasSize(1);
     assertThat(javaClassCheckResult.getMessages().get(0).getMessage())
         .isEqualTo(
             "Listener at 'create' with implementation 'com.camunda.consulting.TaskListenerExample' cannot be transformed. Task Listeners do not exist in Zeebe.");
 
-    BpmnElementCheckResult delegateExpressionCheckResult =
+    ElementCheckResult delegateExpressionCheckResult =
         result.getResult("UserTaskUseDelegateExpression");
     assertThat(delegateExpressionCheckResult.getMessages()).hasSize(1);
     assertThat(delegateExpressionCheckResult.getMessages().get(0).getMessage())
         .isEqualTo(
             "Listener at 'assignment' with implementation '${taskListenerExample}' cannot be transformed. Task Listeners do not exist in Zeebe.");
 
-    BpmnElementCheckResult expressionCheckResult = result.getResult("UserTaskUseExpression");
+    ElementCheckResult expressionCheckResult = result.getResult("UserTaskUseExpression");
     assertThat(expressionCheckResult.getMessages()).hasSize(1);
     assertThat(expressionCheckResult.getMessages().get(0).getMessage())
         .isEqualTo(
             "Listener at 'complete' with implementation '${delegateTask.setName(\"my expression name\")}' cannot be transformed. Task Listeners do not exist in Zeebe.");
 
-    BpmnElementCheckResult inlineScriptCheckResult = result.getResult("UserTaskUseInlineScript");
+    ElementCheckResult inlineScriptCheckResult = result.getResult("UserTaskUseInlineScript");
     assertThat(inlineScriptCheckResult.getMessages()).hasSize(2);
     assertThat(inlineScriptCheckResult.getMessages().get(0).getMessage())
         .isEqualTo(
@@ -134,13 +152,13 @@ public class BpmnConverterTest {
 
   @Test
   void testOrGateways() {
-    BpmnDiagramCheckResult result = loadAndCheckAgainstVersion("or-gateways.bpmn", "8.0.0");
-    BpmnElementCheckResult forkGateway = result.getResult("ForkGateway");
+    DiagramCheckResult result = loadAndCheckAgainstVersion("or-gateways.bpmn", "8.0.0");
+    ElementCheckResult forkGateway = result.getResult("ForkGateway");
     assertThat(forkGateway.getMessages()).hasSize(1);
     assertThat(forkGateway.getMessages().get(0).getMessage())
         .isEqualTo(
             "Element 'Inclusive Gateway' is not supported in Zeebe version '8.0.0'. It is available in version '8.1.0'.");
-    BpmnElementCheckResult joinGateway = result.getResult("JoinGateway");
+    ElementCheckResult joinGateway = result.getResult("JoinGateway");
     assertThat(joinGateway.getMessages()).hasSize(1);
     assertThat(joinGateway.getMessages().get(0).getMessage())
         .isEqualTo(
@@ -150,8 +168,8 @@ public class BpmnConverterTest {
   @Test
   void testOrGateways_8_1() {
     String bpmnFile = "or-gateways.bpmn";
-    BpmnDiagramCheckResult result = loadAndCheckAgainstVersion(bpmnFile, "8.1.0");
-    BpmnElementCheckResult joinGateway = result.getResult("JoinGateway");
+    DiagramCheckResult result = loadAndCheckAgainstVersion(bpmnFile, "8.1.0");
+    ElementCheckResult joinGateway = result.getResult("JoinGateway");
     assertThat(joinGateway.getMessages()).hasSize(1);
     assertThat(joinGateway.getMessages().get(0).getMessage())
         .isEqualTo(
@@ -160,8 +178,8 @@ public class BpmnConverterTest {
 
   @Test
   void testCallActivityBefore_8_3() {
-    BpmnDiagramCheckResult result = loadAndCheckAgainstVersion("call-activity-latest.bpmn", "8.2");
-    BpmnElementCheckResult callActivityResult = result.getResult("callLatest");
+    DiagramCheckResult result = loadAndCheckAgainstVersion("call-activity-latest.bpmn", "8.2");
+    ElementCheckResult callActivityResult = result.getResult("callLatest");
     assertThat(callActivityResult.getMessages()).hasSize(2);
     assertThat(callActivityResult.getMessages().get(0).getMessage())
         .isEqualTo(
@@ -175,8 +193,8 @@ public class BpmnConverterTest {
 
   @Test
   void testCallActivityLatest() {
-    BpmnDiagramCheckResult result = loadAndCheck("call-activity-latest.bpmn");
-    BpmnElementCheckResult callActivityResult = result.getResult("callLatest");
+    DiagramCheckResult result = loadAndCheck("call-activity-latest.bpmn");
+    ElementCheckResult callActivityResult = result.getResult("callLatest");
     assertThat(callActivityResult.getMessages()).hasSize(2);
     assertThat(callActivityResult.getMessages().get(0).getMessage())
         .isEqualTo(
@@ -190,9 +208,8 @@ public class BpmnConverterTest {
 
   @Test
   void testCallActivityDeployment() {
-    BpmnDiagramCheckResult result =
-        loadAndCheckAgainstVersion("call-activity-deployment.bpmn", "8.5");
-    BpmnElementCheckResult callActivityResult = result.getResult("callDeployment");
+    DiagramCheckResult result = loadAndCheckAgainstVersion("call-activity-deployment.bpmn", "8.5");
+    ElementCheckResult callActivityResult = result.getResult("callDeployment");
     assertThat(callActivityResult.getMessages()).hasSize(3);
     assertThat(callActivityResult.getMessages().get(0).getMessage())
         .isEqualTo(
@@ -210,9 +227,8 @@ public class BpmnConverterTest {
 
   @Test
   void testCallActivityDeployment_8_6() {
-    BpmnDiagramCheckResult result =
-        loadAndCheckAgainstVersion("call-activity-deployment.bpmn", "8.6");
-    BpmnElementCheckResult callActivityResult = result.getResult("callDeployment");
+    DiagramCheckResult result = loadAndCheckAgainstVersion("call-activity-deployment.bpmn", "8.6");
+    ElementCheckResult callActivityResult = result.getResult("callDeployment");
     assertThat(callActivityResult.getMessages()).hasSize(3);
     assertThat(callActivityResult.getMessages().get(0).getMessage())
         .isEqualTo("Called element reference binding has been mapped.");
@@ -229,12 +245,12 @@ public class BpmnConverterTest {
 
   @Test
   void testReferences() {
-    BpmnDiagramCheckResult result = loadAndCheck("message-example.bpmn");
-    BpmnElementCheckResult receiveTask = result.getResult("Receive1Task");
+    DiagramCheckResult result = loadAndCheck("message-example.bpmn");
+    ElementCheckResult receiveTask = result.getResult("Receive1Task");
     assertThat(receiveTask).isNotNull();
     assertThat(receiveTask.getReferences()).hasSize(1);
     assertThat(receiveTask.getReferences().get(0)).isEqualTo("Receive1Message");
-    BpmnElementCheckResult message = result.getResult("Receive1Message");
+    ElementCheckResult message = result.getResult("Receive1Message");
     assertThat(message).isNotNull();
     assertThat(message.getReferencedBy()).hasSize(1);
     assertThat(message.getReferencedBy().get(0)).isEqualTo("Receive1Task");
@@ -242,8 +258,8 @@ public class BpmnConverterTest {
 
   @Test
   void testExecutionListener() {
-    BpmnDiagramCheckResult result = loadAndCheck("execution-listener.bpmn");
-    BpmnElementCheckResult serviceTaskWithListenerTask =
+    DiagramCheckResult result = loadAndCheck("execution-listener.bpmn");
+    ElementCheckResult serviceTaskWithListenerTask =
         result.getResult("ServiceTaskWithListenerTask");
     assertThat(serviceTaskWithListenerTask).isNotNull();
     assertThat(serviceTaskWithListenerTask.getMessages()).hasSize(7);
@@ -266,21 +282,21 @@ public class BpmnConverterTest {
 
   @Test
   void testConditionalFlow() {
-    BpmnDiagramCheckResult result = loadAndCheck("conditional-flow.bpmn");
-    BpmnElementCheckResult checkResult = result.getResult("SomethingWorkedSequenceFlow");
-    List<BpmnElementCheckMessage> messages = checkResult.getMessages();
+    DiagramCheckResult result = loadAndCheck("conditional-flow.bpmn");
+    ElementCheckResult checkResult = result.getResult("SomethingWorkedSequenceFlow");
+    List<ElementCheckMessage> messages = checkResult.getMessages();
     assertThat(messages).hasSize(2);
     assertThat(messages.get(0).getMessage()).isEqualTo("A Conditional flow is not supported.");
   }
 
   @Test
   void testInternalScript_8_2() {
-    BpmnDiagramCheckResult result = loadAndCheckAgainstVersion("internal-script.bpmn", "8.2.0");
+    DiagramCheckResult result = loadAndCheckAgainstVersion("internal-script.bpmn", "8.2.0");
     assertThat(result)
         .isNotNull()
         .extracting(r -> r.getResult("FeelScriptTask"))
         .isNotNull()
-        .extracting(BpmnElementCheckResult::getMessages)
+        .extracting(ElementCheckResult::getMessages)
         .asList()
         .hasSize(2);
     assertThat(result.getResult("FeelScriptTask").getMessages().get(0).getMessage())
@@ -291,12 +307,12 @@ public class BpmnConverterTest {
 
   @Test
   void testInternalScript_8_1() {
-    BpmnDiagramCheckResult result = loadAndCheckAgainstVersion("internal-script.bpmn", "8.1.0");
+    DiagramCheckResult result = loadAndCheckAgainstVersion("internal-script.bpmn", "8.1.0");
     assertThat(result)
         .isNotNull()
         .extracting(r -> r.getResult("FeelScriptTask"))
         .isNotNull()
-        .extracting(BpmnElementCheckResult::getMessages)
+        .extracting(ElementCheckResult::getMessages)
         .asList()
         .hasSize(4);
     assertThat(result.getResult("FeelScriptTask").getMessages().get(0).getMessage())
@@ -313,13 +329,13 @@ public class BpmnConverterTest {
 
   @Test
   void testExcutionGetVariable() {
-    BpmnDiagramCheckResult result = loadAndCheck("expression-get-variable.bpmn");
-    List<BpmnElementCheckMessage> equalsYesMessage =
+    DiagramCheckResult result = loadAndCheck("expression-get-variable.bpmn");
+    List<ElementCheckMessage> equalsYesMessage =
         result.getResult("GetVariableEqualsYesFlow").getMessages();
     assertThat(equalsYesMessage).hasSize(1);
     assertThat(equalsYesMessage.get(0).getSeverity()).isEqualTo(Severity.REVIEW);
     assertThat(equalsYesMessage.get(0).getMessage()).contains("-> '=exampleVar = \"yes\"");
-    List<BpmnElementCheckMessage> notEqualsYesMessage =
+    List<ElementCheckMessage> notEqualsYesMessage =
         result.getResult("GetVariableNotEqualsYesFlow").getMessages();
     assertThat(notEqualsYesMessage).hasSize(1);
     assertThat(notEqualsYesMessage.get(0).getSeverity()).isEqualTo(Severity.REVIEW);
@@ -328,20 +344,20 @@ public class BpmnConverterTest {
 
   @Test
   void testExpressionWithMethodInvocation() {
-    BpmnDiagramCheckResult result = loadAndCheck("expression-method-invocation.bpmn");
-    List<BpmnElementCheckMessage> easyExpressionMessage =
+    DiagramCheckResult result = loadAndCheck("expression-method-invocation.bpmn");
+    List<ElementCheckMessage> easyExpressionMessage =
         result.getResult("EasyExpressionSequenceFlow").getMessages();
     assertThat(easyExpressionMessage).hasSize(1);
     assertThat(easyExpressionMessage.get(0).getSeverity()).isEqualTo(Severity.REVIEW);
 
-    List<BpmnElementCheckMessage> executionIsUsedMessage =
+    List<ElementCheckMessage> executionIsUsedMessage =
         result.getResult("ExecutionIsUsedSequenceFlow").getMessages();
     assertThat(executionIsUsedMessage).hasSize(1);
     assertThat(executionIsUsedMessage.get(0).getSeverity()).isEqualTo(Severity.REVIEW);
     assertThat(executionIsUsedMessage.get(0).getMessage())
         .contains("-> '=input != null and input > 5");
 
-    List<BpmnElementCheckMessage> methodInvocationIsUsedMessage =
+    List<ElementCheckMessage> methodInvocationIsUsedMessage =
         result.getResult("MethodInvocationIsUsedSequenceFlow").getMessages();
     assertThat(methodInvocationIsUsedMessage).hasSize(1);
     assertThat(methodInvocationIsUsedMessage.get(0).getSeverity()).isEqualTo(Severity.TASK);
@@ -351,8 +367,8 @@ public class BpmnConverterTest {
 
   @Test
   void testInMappingWithMethodInvocationAndExecution() {
-    BpmnDiagramCheckResult result = loadAndCheck("expression-method-invocation.bpmn");
-    List<BpmnElementCheckMessage> inMappingMessages =
+    DiagramCheckResult result = loadAndCheck("expression-method-invocation.bpmn");
+    List<ElementCheckMessage> inMappingMessages =
         result.getResult("TaskWithInMappingsServiceTask").getMessages();
     assertThat(inMappingMessages).hasSize(3);
 
@@ -372,8 +388,8 @@ public class BpmnConverterTest {
 
   @Test
   void testOutputMappingWithMethodInvocationAndExecution() {
-    BpmnDiagramCheckResult result = loadAndCheck("expression-method-invocation.bpmn");
-    List<BpmnElementCheckMessage> outMappingMessages =
+    DiagramCheckResult result = loadAndCheck("expression-method-invocation.bpmn");
+    List<ElementCheckMessage> outMappingMessages =
         result.getResult("TaskWithOutMappingsServiceTask").getMessages();
     assertThat(outMappingMessages).hasSize(3);
 
@@ -393,8 +409,8 @@ public class BpmnConverterTest {
 
   @Test
   void testMultiInstanceConfigurationWithExecution() {
-    BpmnDiagramCheckResult result = loadAndCheck("expression-method-invocation.bpmn");
-    List<BpmnElementCheckMessage> messages =
+    DiagramCheckResult result = loadAndCheck("expression-method-invocation.bpmn");
+    List<ElementCheckMessage> messages =
         result.getResult("MultiInstanceConfigurationWithExecutionServiceTask").getMessages();
     assertThat(messages).hasSize(4);
     assertThat(messages.get(0).getSeverity()).isEqualTo(Severity.TASK);
@@ -412,8 +428,8 @@ public class BpmnConverterTest {
 
   @Test
   void testMultiInstanceConfigurationWithMethodInvocation() {
-    BpmnDiagramCheckResult result = loadAndCheck("expression-method-invocation.bpmn");
-    List<BpmnElementCheckMessage> messages =
+    DiagramCheckResult result = loadAndCheck("expression-method-invocation.bpmn");
+    List<ElementCheckMessage> messages =
         result.getResult("MultiInstanceConfigurationWithMethodInvocationServiceTask").getMessages();
     assertThat(messages).hasSize(4);
     assertThat(messages.get(0).getSeverity()).isEqualTo(Severity.TASK);
@@ -433,10 +449,10 @@ public class BpmnConverterTest {
 
   @Test
   void testEmptyInputParameterMapping() {
-    BpmnDiagramCheckResult result = loadAndCheck("empty-input-parameter.bpmn");
-    List<BpmnElementCheckMessage> messages = result.getResult("AUserTaskTask").getMessages();
+    DiagramCheckResult result = loadAndCheck("empty-input-parameter.bpmn");
+    List<ElementCheckMessage> messages = result.getResult("AUserTaskTask").getMessages();
     assertThat(messages).hasSize(1);
-    BpmnElementCheckMessage message = messages.get(0);
+    ElementCheckMessage message = messages.get(0);
     assertThat(message.getMessage())
         .isEqualTo(
             "Input parameter 'inputParameterName': Please review transformed expression: '' -> '=null'.");
@@ -444,11 +460,10 @@ public class BpmnConverterTest {
 
   @Test
   void testExecutionListenerWithoutImpl() {
-    BpmnDiagramCheckResult result = loadAndCheck("execution-listener-no-impl.bpmn");
-    List<BpmnElementCheckMessage> messages =
-        result.getResult("ListenerWithoutImplTask").getMessages();
+    DiagramCheckResult result = loadAndCheck("execution-listener-no-impl.bpmn");
+    List<ElementCheckMessage> messages = result.getResult("ListenerWithoutImplTask").getMessages();
     assertThat(messages).hasSize(1);
-    BpmnElementCheckMessage message = messages.get(0);
+    ElementCheckMessage message = messages.get(0);
     assertThat(message.getMessage())
         .isEqualTo(
             "Listener at 'start' with implementation 'null' can be transformed to a job worker. Please adjust the job type.");
@@ -523,10 +538,10 @@ public class BpmnConverterTest {
         "CycleEventSubprocessNonInterruptingStartEvent,true"
       })
   void testTimerEventMessages(String elementId, boolean allowed) {
-    BpmnDiagramCheckResult result = loadAndCheck("flexible-timer-event.bpmn");
-    BpmnElementCheckResult elementResult = result.getResult(elementId);
+    DiagramCheckResult result = loadAndCheck("flexible-timer-event.bpmn");
+    ElementCheckResult elementResult = result.getResult(elementId);
     assertThat(elementResult).isNotNull();
-    List<BpmnElementCheckMessage> warningMessages =
+    List<ElementCheckMessage> warningMessages =
         elementResult.getMessages().stream()
             .filter(m -> m.getSeverity().equals(Severity.WARNING))
             .collect(Collectors.toList());
@@ -542,7 +557,7 @@ public class BpmnConverterTest {
     DefaultConverterProperties modified = new DefaultConverterProperties();
     modified.setDefaultJobTypeEnabled(false);
     ConverterProperties properties = ConverterPropertiesFactory.getInstance().merge(modified);
-    BpmnConverter converter = BpmnConverterFactory.getInstance().get();
+    DiagramConverter converter = DiagramConverterFactory.getInstance().get();
     BpmnModelInstance modelInstance =
         Bpmn.readModelFromStream(getClass().getClassLoader().getResourceAsStream("delegate.bpmn"));
     converter.convert(modelInstance, properties);
@@ -558,31 +573,31 @@ public class BpmnConverterTest {
 
   @Test
   void testConditionalSequenceFlowWithLanguages() {
-    BpmnDiagramCheckResult result = loadAndCheck("conditional-flow-many-languages.bpmn");
+    DiagramCheckResult result = loadAndCheck("conditional-flow-many-languages.bpmn");
     assertThat(result.getResult("JuelSequenceFlow"))
         .isNotNull()
-        .extracting(BpmnElementCheckResult::getMessages)
+        .extracting(ElementCheckResult::getMessages)
         .matches(l -> !l.isEmpty())
         .extracting(l -> l.get(0).getMessage())
         .isEqualTo(
             "Condition expression: Please review transformed expression: '${x == 1}' -> '=x = 1'.");
     assertThat(result.getResult("ExternalScriptSequenceFlow"))
         .isNotNull()
-        .extracting(BpmnElementCheckResult::getMessages)
+        .extracting(ElementCheckResult::getMessages)
         .matches(l -> !l.isEmpty())
         .extracting(l -> l.get(0).getMessage())
         .isEqualTo(
             "Please translate the content from 'some-resource.js' to a valid FEEL expression.");
     assertThat(result.getResult("InternalScriptSequenceFlow"))
         .isNotNull()
-        .extracting(BpmnElementCheckResult::getMessages)
+        .extracting(ElementCheckResult::getMessages)
         .matches(l -> !l.isEmpty())
         .extracting(l -> l.get(0).getMessage())
         .isEqualTo(
             "Please translate the javascript script from 'return x === 3;' to a valid FEEL expression.");
     assertThat(result.getResult("FeelScriptSequenceFlow"))
         .isNotNull()
-        .extracting(BpmnElementCheckResult::getMessages)
+        .extracting(ElementCheckResult::getMessages)
         .matches(l -> !l.isEmpty())
         .extracting(l -> l.get(0).getMessage())
         .isEqualTo(
@@ -923,11 +938,11 @@ public class BpmnConverterTest {
 
   @Test
   void shouldNotTransformTakeListener() {
-    BpmnDiagramCheckResult bpmnDiagramCheckResult = loadAndCheck("take-listener.bpmn");
-    BpmnElementCheckResult takeListenerFlow = bpmnDiagramCheckResult.getResult("takeListenerFlow");
+    DiagramCheckResult diagramCheckResult = loadAndCheck("take-listener.bpmn");
+    ElementCheckResult takeListenerFlow = diagramCheckResult.getResult("takeListenerFlow");
     assertThat(takeListenerFlow).isNotNull();
     assertThat(takeListenerFlow.getMessages()).hasSize(1);
-    BpmnElementCheckMessage message = takeListenerFlow.getMessages().get(0);
+    ElementCheckMessage message = takeListenerFlow.getMessages().get(0);
     assertThat(message).isNotNull();
     assertThat(message.getMessage())
         .isEqualTo(

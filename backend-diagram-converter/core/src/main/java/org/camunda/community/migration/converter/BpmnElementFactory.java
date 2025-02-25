@@ -5,18 +5,19 @@ import org.camunda.bpm.model.xml.instance.DomElement;
 
 public class BpmnElementFactory {
 
-  private static DomElement getOrCreateBpmnElement(
+  private static DomElement getOrCreateElement(
       DomElement parent, String localName, Inserter inserter, Consumer<DomElement> childDecorator) {
+    String namespaceUri = parent.getRootElement().getNamespaceURI();
     return parent.getChildElements().stream()
         .filter(e -> e.getLocalName().equals(localName))
-        .filter(e -> e.getNamespaceURI().equals(NamespaceUri.BPMN))
+        .filter(e -> e.getNamespaceURI().equals(namespaceUri))
         .findFirst()
         .orElseGet(
             () -> {
               DomElement child =
                   parent
                       .getDocument()
-                      .createElement(NamespaceUri.BPMN, createElementName(parent, localName));
+                      .createElement(namespaceUri, createElementName(parent, localName));
               childDecorator.accept(child);
               inserter.insert(parent, child);
               return child;
@@ -24,7 +25,7 @@ public class BpmnElementFactory {
   }
 
   public static DomElement getExtensionElements(DomElement element) {
-    return getOrCreateBpmnElement(
+    return getOrCreateElement(
         element,
         "extensionElements",
         (parent, child) -> parent.insertChildElementAfter(child, getDocumentation(element)),
@@ -32,7 +33,7 @@ public class BpmnElementFactory {
   }
 
   public static DomElement getDocumentation(DomElement element) {
-    return getOrCreateBpmnElement(
+    return getOrCreateElement(
         element,
         "documentation",
         (parent, child) -> parent.insertChildElementAfter(child, null),
@@ -40,12 +41,12 @@ public class BpmnElementFactory {
   }
 
   public static DomElement getMultiInstanceLoopCharacteristics(DomElement element) {
-    return getOrCreateBpmnElement(
+    return getOrCreateElement(
         element, "multiInstanceLoopCharacteristics", DomElement::appendChild, child -> {});
   }
 
   public static DomElement getCompletionCondition(DomElement element) {
-    return getOrCreateBpmnElement(
+    return getOrCreateElement(
         element,
         "completionCondition",
         DomElement::appendChild,
@@ -53,7 +54,7 @@ public class BpmnElementFactory {
   }
 
   public static DomElement getConditionExpression(DomElement element) {
-    return getOrCreateBpmnElement(
+    return getOrCreateElement(
         element,
         "conditionExpression",
         DomElement::appendChild,

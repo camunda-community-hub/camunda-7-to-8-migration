@@ -1,7 +1,7 @@
 package org.camunda.community.migration.converter.visitor.impl.attribute;
 
 import org.camunda.community.migration.converter.DomElementVisitorContext;
-import org.camunda.community.migration.converter.convertible.ProcessConvertible;
+import org.camunda.community.migration.converter.convertible.ZeebeVersionTagConvertible;
 import org.camunda.community.migration.converter.message.Message;
 import org.camunda.community.migration.converter.message.MessageFactory;
 import org.camunda.community.migration.converter.version.SemanticVersion;
@@ -18,7 +18,7 @@ public class VersionTagVisitor extends AbstractSupportedAttributeVisitor {
     if (SemanticVersion.parse(context.getProperties().getPlatformVersion()).ordinal()
         >= SemanticVersion._8_6.ordinal()) {
       context.addConversion(
-          ProcessConvertible.class, process -> process.setZeebeVersionTag(attribute));
+          ZeebeVersionTagConvertible.class, process -> process.setZeebeVersionTag(attribute));
       return MessageFactory.versionTag();
     } else {
 

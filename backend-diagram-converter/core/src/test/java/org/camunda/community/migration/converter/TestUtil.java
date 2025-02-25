@@ -26,7 +26,7 @@ public class TestUtil {
 
   public static BpmnModelInstance loadAndConvert(String bpmnFile) {
     BpmnModelInstance modelInstance = loadModelInstance(bpmnFile);
-    BpmnConverter converter = BpmnConverterFactory.getInstance().get();
+    DiagramConverter converter = DiagramConverterFactory.getInstance().get();
     ConverterProperties properties = ConverterPropertiesFactory.getInstance().get();
     converter.convert(modelInstance, properties);
     return modelInstance;
@@ -34,7 +34,7 @@ public class TestUtil {
 
   public static BpmnModelInstance loadAndConvert(String bpmnFile, String targetVersion) {
     BpmnModelInstance modelInstance = loadModelInstance(bpmnFile);
-    BpmnConverter converter = BpmnConverterFactory.getInstance().get();
+    DiagramConverter converter = DiagramConverterFactory.getInstance().get();
     DefaultConverterProperties properties = new DefaultConverterProperties();
     properties.setPlatformVersion(targetVersion);
     converter.convert(modelInstance, ConverterPropertiesFactory.getInstance().merge(properties));
@@ -43,23 +43,23 @@ public class TestUtil {
 
   public static BpmnModelInstance loadAndConvert(String bpmnFile, ConverterProperties properties) {
     BpmnModelInstance modelInstance = loadModelInstance(bpmnFile);
-    BpmnConverter converter = BpmnConverterFactory.getInstance().get();
+    DiagramConverter converter = DiagramConverterFactory.getInstance().get();
     converter.convert(modelInstance, properties);
     return modelInstance;
   }
 
-  public static BpmnDiagramCheckResult loadAndCheck(String bpmnFile) {
+  public static DiagramCheckResult loadAndCheck(String bpmnFile) {
     ConverterProperties properties = ConverterPropertiesFactory.getInstance().get();
     return loadAndCheckAgainstVersion(bpmnFile, properties.getPlatformVersion());
   }
 
-  public static BpmnDiagramCheckResult loadAndCheckAgainstVersion(
+  public static DiagramCheckResult loadAndCheckAgainstVersion(
       String bpmnFile, String targetVersion) {
-    BpmnConverter converter = BpmnConverterFactory.getInstance().get();
+    DiagramConverter converter = DiagramConverterFactory.getInstance().get();
     BpmnModelInstance modelInstance = loadModelInstance(bpmnFile);
     DefaultConverterProperties properties = new DefaultConverterProperties();
     properties.setPlatformVersion(targetVersion);
-    BpmnDiagramCheckResult result =
+    DiagramCheckResult result =
         converter.check(
             bpmnFile, modelInstance, ConverterPropertiesFactory.getInstance().merge(properties));
     return result;

@@ -7,7 +7,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import org.camunda.bpm.model.bpmn.Bpmn;
 import org.camunda.bpm.model.bpmn.BpmnModelInstance;
-import org.camunda.community.migration.converter.BpmnDiagramCheckResult;
+import org.camunda.community.migration.converter.DiagramCheckResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,7 +48,7 @@ public class ConverterController {
           Boolean defaultJobTypeEnabled,
       @RequestHeader(HttpHeaders.ACCEPT) String[] contentType) {
     try (InputStream in = bpmnFile.getInputStream()) {
-      BpmnDiagramCheckResult diagramCheckResult =
+      DiagramCheckResult diagramCheckResult =
           bpmnConverter.check(
               bpmnFile.getOriginalFilename(),
               Bpmn.readModelFromStream(in),

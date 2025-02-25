@@ -8,8 +8,8 @@ import static org.junit.jupiter.api.DynamicTest.*;
 import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Stream;
-import org.camunda.community.migration.converter.BpmnDiagramCheckResult.BpmnElementCheckMessage;
-import org.camunda.community.migration.converter.BpmnDiagramCheckResult.BpmnElementCheckResult;
+import org.camunda.community.migration.converter.DiagramCheckResult.ElementCheckMessage;
+import org.camunda.community.migration.converter.DiagramCheckResult.ElementCheckResult;
 import org.junit.jupiter.api.DynamicTest;
 import org.junit.jupiter.api.TestFactory;
 import org.junit.jupiter.api.function.Executable;
@@ -51,29 +51,29 @@ public class BpmnElementSupportTest {
     return e -> dynamicTest(name, e);
   }
 
-  private Executable isSupported(BpmnDiagramCheckResult result, String elementId) {
+  private Executable isSupported(DiagramCheckResult result, String elementId) {
     return () -> {
       LOG.info("Complete Result: {}", result);
       LOG.info("Element Result: {}", result.getResult(elementId));
       assertThat(result.getResult(elementId))
           .isNotNull()
-          .extracting(BpmnElementCheckResult::getMessages)
+          .extracting(ElementCheckResult::getMessages)
           .asList()
           .isEmpty();
     };
   }
 
   private Executable isNotSupported(
-      BpmnDiagramCheckResult result, String elementId, String elementType) {
+      DiagramCheckResult result, String elementId, String elementType) {
     return () -> {
       LOG.info("Complete Result: {}", result);
       LOG.info("Element Result: {}", result.getResult(elementId));
       assertThat(result.getResult(elementId))
           .isNotNull()
-          .extracting(BpmnElementCheckResult::getMessages)
+          .extracting(ElementCheckResult::getMessages)
           .matches(l -> l.size() == 1, "Has one entry")
           .extracting(l -> l.get(0))
-          .extracting(BpmnElementCheckMessage::getMessage)
+          .extracting(ElementCheckMessage::getMessage)
           .isEqualTo(
               "Element '"
                   + elementType
@@ -85,7 +85,7 @@ public class BpmnElementSupportTest {
 
   @TestFactory
   Stream<DynamicTest> testMessageEvents() {
-    BpmnDiagramCheckResult result = loadAndCheck("message-events.bpmn");
+    DiagramCheckResult result = loadAndCheck("message-events.bpmn");
     return eventTypeTest(
         "Message",
         isSupported(result, "MessageStartStartEvent"),
@@ -100,7 +100,7 @@ public class BpmnElementSupportTest {
 
   @TestFactory
   Stream<DynamicTest> testTimerEvents() {
-    BpmnDiagramCheckResult result = loadAndCheck("timer-events.bpmn");
+    DiagramCheckResult result = loadAndCheck("timer-events.bpmn");
     return eventTypeTest(
         "Timer",
         isSupported(result, "TimerStartStartEvent"),
@@ -115,7 +115,7 @@ public class BpmnElementSupportTest {
 
   @TestFactory
   Stream<DynamicTest> testSignalEvents() {
-    BpmnDiagramCheckResult result = loadAndCheck("signal-events.bpmn");
+    DiagramCheckResult result = loadAndCheck("signal-events.bpmn");
     return eventTypeTest(
         "Signal",
         isSupported(result, "SignalStartStartEvent"),
@@ -130,7 +130,7 @@ public class BpmnElementSupportTest {
 
   @TestFactory
   Stream<DynamicTest> testErrorEvents() {
-    BpmnDiagramCheckResult result = loadAndCheck("error-events.bpmn");
+    DiagramCheckResult result = loadAndCheck("error-events.bpmn");
     return eventTypeTest(
         "Error",
         null,
@@ -145,7 +145,7 @@ public class BpmnElementSupportTest {
 
   @TestFactory
   Stream<DynamicTest> testConditionalEvents() {
-    BpmnDiagramCheckResult result = loadAndCheck("conditional-events.bpmn");
+    DiagramCheckResult result = loadAndCheck("conditional-events.bpmn");
     return eventTypeTest(
         "Conditional",
         isNotSupported(result, "ConditionalStartStartEvent", "Conditional Start Event"),
@@ -169,7 +169,7 @@ public class BpmnElementSupportTest {
 
   @TestFactory
   Stream<DynamicTest> testEscalationEvents() {
-    BpmnDiagramCheckResult result = loadAndCheck("escalation-events.bpmn");
+    DiagramCheckResult result = loadAndCheck("escalation-events.bpmn");
     return eventTypeTest(
         "Escalation",
         null,
@@ -184,7 +184,7 @@ public class BpmnElementSupportTest {
 
   @TestFactory
   Stream<DynamicTest> testCompensationEvents() {
-    BpmnDiagramCheckResult result = loadAndCheck("compensation-events.bpmn");
+    DiagramCheckResult result = loadAndCheck("compensation-events.bpmn");
     return eventTypeTest(
         "Compensation",
         null,
@@ -202,7 +202,7 @@ public class BpmnElementSupportTest {
 
   @TestFactory
   Stream<DynamicTest> testCancelEvent() {
-    BpmnDiagramCheckResult result = loadAndCheck("cancel-events.bpmn");
+    DiagramCheckResult result = loadAndCheck("cancel-events.bpmn");
     return eventTypeTest(
         "Cancel",
         null,
@@ -217,7 +217,7 @@ public class BpmnElementSupportTest {
 
   @TestFactory
   Stream<DynamicTest> testTerminateEvent() {
-    BpmnDiagramCheckResult result = loadAndCheck("terminate-events.bpmn");
+    DiagramCheckResult result = loadAndCheck("terminate-events.bpmn");
     return eventTypeTest(
         "Terminate",
         null,
@@ -232,7 +232,7 @@ public class BpmnElementSupportTest {
 
   @TestFactory
   Stream<DynamicTest> testLinkEvent() {
-    BpmnDiagramCheckResult result = loadAndCheck("link-events.bpmn");
+    DiagramCheckResult result = loadAndCheck("link-events.bpmn");
     return eventTypeTest(
         "Link",
         null,
@@ -247,7 +247,7 @@ public class BpmnElementSupportTest {
 
   @TestFactory
   Stream<DynamicTest> testMarkers() {
-    BpmnDiagramCheckResult result = loadAndCheck("markers.bpmn");
+    DiagramCheckResult result = loadAndCheck("markers.bpmn");
     return Stream.of(
         dynamicTest("Parallel Task", isSupported(result, "ParallelTask")),
         dynamicTest("Sequential Task", isSupported(result, "SequentialTask")),
@@ -258,7 +258,7 @@ public class BpmnElementSupportTest {
 
   @TestFactory
   Stream<DynamicTest> testGateways() {
-    BpmnDiagramCheckResult result = loadAndCheck("gateways.bpmn");
+    DiagramCheckResult result = loadAndCheck("gateways.bpmn");
     return Stream.of(
         dynamicTest("Exclusive Gateway", isSupported(result, "ExclusiveGateway")),
         dynamicTest("Parallel Gateway", isSupported(result, "ParallelGateway")),
@@ -269,7 +269,7 @@ public class BpmnElementSupportTest {
 
   @TestFactory
   Stream<DynamicTest> testTasks() {
-    BpmnDiagramCheckResult result = loadAndCheck("tasks.bpmn");
+    DiagramCheckResult result = loadAndCheck("tasks.bpmn");
     return Stream.of(
         dynamicTest("Undefined Task", isSupported(result, "UndefinedTask")),
         dynamicTest("Service Task", isSupported(result, "ServiceTask")),
@@ -286,7 +286,7 @@ public class BpmnElementSupportTest {
 
   @TestFactory
   Stream<DynamicTest> testSubprocesses() {
-    BpmnDiagramCheckResult result = loadAndCheck("subprocesses.bpmn");
+    DiagramCheckResult result = loadAndCheck("subprocesses.bpmn");
     return Stream.of(
         dynamicTest("Subprocess", isSupported(result, "SubprocessSubProcess")),
         dynamicTest("Call Activity", isSupported(result, "CallActivityCallActivity")),
@@ -297,7 +297,7 @@ public class BpmnElementSupportTest {
 
   @TestFactory
   Stream<DynamicTest> testParticipants() {
-    BpmnDiagramCheckResult result = loadAndCheck("participants.bpmn");
+    DiagramCheckResult result = loadAndCheck("participants.bpmn");
     return Stream.of(
         dynamicTest("Pool", isSupported(result, "PoolParticipant")),
         dynamicTest("Lane", isSupported(result, "LaneLane")));
