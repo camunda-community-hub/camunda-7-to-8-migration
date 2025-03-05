@@ -1,8 +1,8 @@
 package org.camunda.community.migration.adapter.worker;
 
-import io.camunda.zeebe.client.api.response.ActivatedJob;
-import io.camunda.zeebe.client.api.worker.JobClient;
-import io.camunda.zeebe.client.api.worker.JobHandler;
+import io.camunda.client.api.response.ActivatedJob;
+import io.camunda.client.api.worker.JobClient;
+import io.camunda.client.api.worker.JobHandler;
 import java.util.Optional;
 import org.camunda.bpm.client.task.ExternalTask;
 import org.camunda.bpm.client.task.ExternalTaskHandler;

@@ -3,17 +3,19 @@ package org.camunda.community.migration.adapter.worker;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
 
-import io.camunda.zeebe.client.api.ZeebeFuture;
-import io.camunda.zeebe.client.api.command.CompleteJobCommandStep1;
-import io.camunda.zeebe.client.api.command.FinalCommandStep;
-import io.camunda.zeebe.client.api.response.ActivatedJob;
-import io.camunda.zeebe.client.api.response.CompleteJobResponse;
-import io.camunda.zeebe.client.api.worker.JobClient;
+import io.camunda.client.api.CamundaFuture;
+import io.camunda.client.api.command.CompleteJobCommandStep1;
+import io.camunda.client.api.command.CompleteJobResult;
+import io.camunda.client.api.command.FinalCommandStep;
+import io.camunda.client.api.response.ActivatedJob;
+import io.camunda.client.api.response.CompleteJobResponse;
+import io.camunda.client.api.worker.JobClient;
 import java.io.InputStream;
 import java.time.Duration;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.UnaryOperator;
 import org.camunda.bpm.engine.delegate.DelegateExecution;
 import org.camunda.bpm.engine.delegate.ExecutionListener;
 import org.camunda.bpm.engine.delegate.JavaDelegate;
@@ -34,7 +36,7 @@ class CamundaPlatform7DelegationWorkerTest {
       new CamundaPlatform7DelegationWorker(
           juelExpressionResolver, classResolver, new VariableTyper(Collections.emptySet()));
 
-  @Test
+  @Test // TODO do we need to test end
   void shouldExecuteExecutionListenerOnStart() throws Exception {
     long jobKey = 0L;
     Map<String, String> headers = new HashMap<>();
@@ -195,8 +197,8 @@ class CamundaPlatform7DelegationWorkerTest {
     }
 
     @Override
-    public ZeebeFuture<CompleteJobResponse> send() {
-      return mock(ZeebeFuture.class);
+    public CamundaFuture<CompleteJobResponse> send() {
+      return mock(CamundaFuture.class);
     }
 
     @Override
@@ -207,6 +209,21 @@ class CamundaPlatform7DelegationWorkerTest {
     @Override
     public CompleteJobCommandStep1 useGrpc() {
       throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public CompleteJobCommandStep2 withResult() {
+      return null;
+    }
+
+    @Override
+    public CompleteJobCommandStep1 withResult(CompleteJobResult jobResult) {
+      return null;
+    }
+
+    @Override
+    public CompleteJobCommandStep1 withResult(UnaryOperator<CompleteJobResult> jobResultModifier) {
+      return null;
     }
   }
 }
