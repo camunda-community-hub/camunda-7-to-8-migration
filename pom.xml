@@ -20,7 +20,7 @@
     <maven.compiler.source>${version.java}</maven.compiler.source>
     <maven.compiler.target>${version.java}</maven.compiler.target>
 
-    <version.zeebe>8.6.10</version.zeebe>
+    <version.zeebe>8.6.11</version.zeebe>
     <version.zeebe-process-test-extension-testcontainer>8.6.6</version.zeebe-process-test-extension-testcontainer>
     <version.camunda.platform>7.22.0</version.camunda.platform>
     <version.jsoup>1.19.1</version.jsoup>
