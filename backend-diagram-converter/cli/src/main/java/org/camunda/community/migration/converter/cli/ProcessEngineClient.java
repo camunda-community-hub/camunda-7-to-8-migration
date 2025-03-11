@@ -11,8 +11,11 @@ import org.springframework.web.util.DefaultUriBuilderFactory;
 
 public class ProcessEngineClient {
   private static final String LATEST_PROCESS_DEFINITIONS = "/process-definition?latestVersion=true";
+  private static final String LATEST_DECISION_DEFINITIONS =
+      "/decision-definition?latestVersion=true";
 
   private static final String PROCESS_DEFINITION_XML = "/process-definition/{id}/xml";
+  private static final String DECISION_DEFINITION_XML = "/decision-definition/{id}/xml";
   private final RestTemplate restTemplate;
 
   private ProcessEngineClient(String url) {
@@ -48,5 +51,22 @@ public class ProcessEngineClient {
         PROCESS_DEFINITION_XML,
         ProcessDefinitionDiagramDto.class,
         Collections.singletonMap("id", processDefinitionId));
+  }
+
+  public List<DecisionDefinitionDto> getAllLatestDecisionDefinitions() {
+    return restTemplate
+        .exchange(
+            LATEST_DECISION_DEFINITIONS,
+            HttpMethod.GET,
+            null,
+            new ParameterizedTypeReference<List<DecisionDefinitionDto>>() {})
+        .getBody();
+  }
+
+  public DecisionDefinitionDiagramDto getDmnXml(String decisionDefinitionId) {
+    return restTemplate.getForObject(
+        DECISION_DEFINITION_XML,
+        DecisionDefinitionDiagramDto.class,
+        Collections.singletonMap("id", decisionDefinitionId));
   }
 }
