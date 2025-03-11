@@ -116,7 +116,7 @@ public class DiagramConverter {
                 conversionElementAppender.appendReferences(element, references);
                 conversionElementAppender.appendReferencedBy(element, referencedBys);
               }
-              if (properties.getAppendDocumentation()) {
+              if (properties.getAppendDocumentation() && isBpmn(rootElement.getDocument())) {
                 conversionElementAppender.appendDocumentation(
                     element, collectMessages(result, messages, references));
               }
@@ -175,15 +175,26 @@ public class DiagramConverter {
         .orElseGet(ArrayList::new);
   }
 
-  private AbstractModelParser getParser(DomDocument document) {
+  private boolean isBpmn(DomDocument document) {
+    return determineDiagramType(document) == DiagramType.BPMN;
+  }
+
+  private DiagramType determineDiagramType(DomDocument document) {
     if (document.getRootElement().getNamespaceURI().equals(BPMN)) {
-      return new BpmnParser();
+      return DiagramType.BPMN;
     }
     if (Arrays.asList(DMN).contains(document.getRootElement().getNamespaceURI())) {
-      return new DmnParser();
+      return DiagramType.DMN;
     }
     throw new IllegalArgumentException(
         "Unknown document namespace: " + document.getRootElement().getNamespaceURI());
+  }
+
+  private AbstractModelParser getParser(DomDocument document) {
+    return switch (determineDiagramType(document)) {
+      case DMN -> new DmnParser();
+      case BPMN -> new BpmnParser();
+    };
   }
 
   public void printXml(DomDocument document, boolean prettyPrint, Writer writer) {

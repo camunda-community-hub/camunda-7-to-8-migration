@@ -12,7 +12,7 @@ import java.util.Objects;
 import java.util.concurrent.Callable;
 import java.util.stream.Collectors;
 import org.apache.commons.io.FilenameUtils;
-import org.camunda.bpm.model.bpmn.BpmnModelInstance;
+import org.camunda.bpm.model.xml.ModelInstance;
 import org.camunda.community.migration.converter.ConverterPropertiesFactory;
 import org.camunda.community.migration.converter.DefaultConverterProperties;
 import org.camunda.community.migration.converter.DiagramCheckResult;
@@ -90,16 +90,16 @@ public abstract class AbstractConvertCommand implements Callable<Integer> {
   @Override
   public final Integer call() {
     returnCode = 0;
-    Map<File, BpmnModelInstance> modelInstances = modelInstances();
+    Map<File, ModelInstance> modelInstances = modelInstances();
     List<DiagramCheckResult> results = checkModels(modelInstances);
     writeResults(modelInstances, results);
     return returnCode;
   }
 
   private void writeResults(
-      Map<File, BpmnModelInstance> modelInstances, List<DiagramCheckResult> results) {
+      Map<File, ModelInstance> modelInstances, List<DiagramCheckResult> results) {
     if (!check) {
-      for (Entry<File, BpmnModelInstance> modelInstance : modelInstances.entrySet()) {
+      for (Entry<File, ModelInstance> modelInstance : modelInstances.entrySet()) {
         File file = determineFileName(prefixFileName(modelInstance.getKey()));
         if (!override && file.exists()) {
           LOG_CLI.error("File does already exist: {}", file);
@@ -139,14 +139,14 @@ public abstract class AbstractConvertCommand implements Callable<Integer> {
 
   protected abstract File targetDirectory();
 
-  private List<DiagramCheckResult> checkModels(Map<File, BpmnModelInstance> modelInstances) {
+  private List<DiagramCheckResult> checkModels(Map<File, ModelInstance> modelInstances) {
     return modelInstances.entrySet().stream()
         .map(this::checkModel)
         .filter(Objects::nonNull)
         .collect(Collectors.toList());
   }
 
-  private DiagramCheckResult checkModel(Entry<File, BpmnModelInstance> modelInstance) {
+  private DiagramCheckResult checkModel(Entry<File, ModelInstance> modelInstance) {
     try {
       return converter.check(
           modelInstance.getKey().getPath(),
@@ -159,7 +159,7 @@ public abstract class AbstractConvertCommand implements Callable<Integer> {
     }
   }
 
-  protected abstract Map<File, BpmnModelInstance> modelInstances();
+  protected abstract Map<File, ModelInstance> modelInstances();
 
   protected DefaultConverterProperties converterProperties() {
     DefaultConverterProperties properties = new DefaultConverterProperties();

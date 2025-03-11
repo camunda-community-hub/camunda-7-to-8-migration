@@ -16,6 +16,8 @@ import java.io.IOException;
 import java.io.StringReader;
 import java.net.URISyntaxException;
 import java.util.List;
+import org.camunda.bpm.model.dmn.Dmn;
+import org.camunda.bpm.model.dmn.DmnModelInstance;
 import org.camunda.bpm.model.xml.instance.DomElement;
 import org.camunda.community.migration.converter.DiagramCheckResult;
 import org.junit.jupiter.api.BeforeEach;
@@ -92,5 +94,24 @@ public class ConverterControllerTest {
     BpmnModelInstance bpmnModelInstance = Bpmn.readModelFromStream(in);
     DomElement process = bpmnModelInstance.getDocument().getElementById("Process_11j5dku");
     assertThat(process).isNotNull();
+  }
+
+  @Test
+  void shouldReturnDmn() throws URISyntaxException {
+    byte[] bpmn =
+        RestAssured.given()
+            .contentType(ContentType.MULTIPART)
+            .multiPart(
+                "file", new File(getClass().getClassLoader().getResource("first.dmn").toURI()))
+            .formParam("appendDocumentation", true)
+            .accept("application/dmn+xml")
+            .post("/convert")
+            .getBody()
+            .asByteArray();
+    ByteArrayInputStream in = new ByteArrayInputStream(bpmn);
+    LOG.info("{}", new String(bpmn));
+    DmnModelInstance bpmnModelInstance = Dmn.readModelFromStream(in);
+    DomElement decision = bpmnModelInstance.getDocument().getElementById("Decision_0kjih6z");
+    assertThat(decision).isNotNull();
   }
 }

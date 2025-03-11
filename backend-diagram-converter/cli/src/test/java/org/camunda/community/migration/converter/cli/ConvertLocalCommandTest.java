@@ -32,6 +32,20 @@ public class ConvertLocalCommandTest {
   }
 
   @Test
+  public void shouldConvertDmn(@TempDir File tempDir) {
+    setupDir("first.dmn", tempDir);
+    ConvertLocalCommand command = new ConvertLocalCommand();
+    command.file = tempDir;
+    Integer call = command.call();
+    assertEquals(0, call);
+    assertThat(tempDir.listFiles()).hasSize(2);
+    assertThat(tempDir.listFiles())
+        .satisfiesExactly(
+            f -> f.getName().equals("first.dmn"),
+            f -> f.getName().equals("converted-c8-first.dmn"));
+  }
+
+  @Test
   public void shouldConvertLegacy(@TempDir File tempDir) {
     setupDir("c7.bpmn20.xml", tempDir);
     ConvertLocalCommand command = new ConvertLocalCommand();

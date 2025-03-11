@@ -4,7 +4,7 @@ import java.io.IOException;
 import java.io.StringWriter;
 import java.io.Writer;
 import java.util.List;
-import org.camunda.bpm.model.bpmn.BpmnModelInstance;
+import org.camunda.bpm.model.xml.ModelInstance;
 import org.camunda.bpm.model.xml.instance.DomDocument;
 import org.camunda.community.migration.converter.ConverterPropertiesFactory;
 import org.camunda.community.migration.converter.DefaultConverterProperties;
@@ -14,16 +14,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
-public class BpmnConverterService {
+public class DiagramConverterService {
   private final DiagramConverter diagramConverter;
 
   @Autowired
-  public BpmnConverterService(DiagramConverter diagramConverter) {
+  public DiagramConverterService(DiagramConverter diagramConverter) {
     this.diagramConverter = diagramConverter;
   }
 
   public void convert(
-      BpmnModelInstance modelInstance,
+      ModelInstance modelInstance,
       boolean appendDocumentation,
       String defaultJobType,
       String platformVersion,
@@ -39,7 +39,7 @@ public class BpmnConverterService {
 
   public DiagramCheckResult check(
       String filename,
-      BpmnModelInstance modelInstance,
+      ModelInstance modelInstance,
       String defaultJobType,
       String platformVersion,
       Boolean defaultJobTypeEnabled) {

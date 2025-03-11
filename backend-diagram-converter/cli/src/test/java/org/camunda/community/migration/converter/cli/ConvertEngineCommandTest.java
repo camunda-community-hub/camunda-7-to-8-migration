@@ -70,6 +70,7 @@ public class ConvertEngineCommandTest {
         .createDeployment()
         .name("test")
         .addModelInstance("test.bpmn", test2)
+        .addClasspathResource("first.dmn")
         .deploy();
     processEngine
         .getRepositoryService()
@@ -81,6 +82,6 @@ public class ConvertEngineCommandTest {
     command.targetDirectory = tempDir;
     command.url = "http://localhost:" + randomServerPort + "/engine-rest";
     command.call();
-    assertThat(tempDir.listFiles()).hasSize(2);
+    assertThat(tempDir.listFiles()).hasSize(3);
   }
 }
