@@ -196,6 +196,11 @@
         <version>${version.archunit}</version>
       </dependency>
       <dependency>
+        <groupId>org.checkerframework</groupId>
+        <artifactId>checker-qual</artifactId>
+        <version>3.49.1</version>
+      </dependency>
+      <dependency>
         <groupId>org.camunda.community.migration</groupId>
         <artifactId>backend-diagram-converter-core</artifactId>
         <version>${project.version}</version>
