@@ -9,7 +9,7 @@
     <version.camunda>7.22.0</version.camunda>
     <version.spring-boot>3.4.3</version.spring-boot>
     <version.maven-surefire>3.5.2</version.maven-surefire>
-    <version.adapter>0.10.4</version.adapter>
+    <version.adapter>0.11.1</version.adapter>
     <version.zeebe>8.6.11</version.zeebe>
 
     <version.java>17</version.java>
