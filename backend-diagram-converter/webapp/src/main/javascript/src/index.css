@@ -1,0 +1,13 @@
+@import "https://cdn.jsdelivr.net/npm/tailwindcss@latest/dist/tailwind.min.css";
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Apply IBM Plex Sans globally */
+@layer base {
+  body {
+    @apply font-sans text-gray-900;
+  }
+}
