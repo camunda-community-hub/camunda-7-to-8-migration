@@ -10,7 +10,7 @@ body:
     description: Clearly describe the activity we should carry out
     placeholder: Clearly describe the activity we should carry out
   validations:
-    required: true
+    required: false
 - type: textarea
   id: why
   attributes:
@@ -18,4 +18,4 @@ body:
     description: Argue why doing it is a healthy investment of our time
     placeholder: Argue why doing it is a healthy investment of our time
   validations:
-    required: true
+    required: false
