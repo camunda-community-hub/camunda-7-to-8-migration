@@ -360,6 +360,28 @@ public class DiagramConverter {
         .collect(Collectors.toList());
   }
 
+  public List<DiagramConverterResultDTO> createLineItemDTOList(List<DiagramCheckResult> results) {
+    return results.stream()
+        .flatMap(
+            diagramCheckResult ->
+                diagramCheckResult.getResults().stream()
+                    .flatMap(
+                        elementCheckResult ->
+                            elementCheckResult.getMessages().stream()
+                                .map(
+                                    message ->
+                                        new DiagramConverterResultDTO(
+                                            diagramCheckResult.getFilename(),
+                                            elementCheckResult.getElementName(),
+                                            elementCheckResult.getElementId(),
+                                            elementCheckResult.getElementType(),
+                                            message.getSeverity().name(),
+                                            message.getId(),
+                                            message.getMessage(),
+                                            message.getLink()))))
+        .collect(Collectors.toList());
+  }
+
   record MustacheContext(List<MustacheResultContext> contexts) {
     record MustacheResultContext(String filename, List<MustacheElementResultContext> results) {
       record MustacheElementResultContext(

@@ -1,12 +1,15 @@
 package org.camunda.community.migration.converter.webapp;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringWriter;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 import org.camunda.bpm.model.xml.ModelInstance;
 import org.camunda.community.migration.converter.DiagramCheckResult;
+import org.camunda.community.migration.converter.DiagramConverterResultDTO;
 import org.camunda.community.migration.converter.DiagramType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,12 +32,16 @@ public class ConverterController {
   private static final Logger LOG = LoggerFactory.getLogger(ConverterController.class);
   private final DiagramConverterService bpmnConverter;
   private final BuildProperties buildProperties;
+  private final ExcelWriter excelWriter;
 
   @Autowired
   public ConverterController(
-      DiagramConverterService bpmnConverter, BuildProperties buildProperties) {
+      DiagramConverterService bpmnConverter,
+      BuildProperties buildProperties,
+      ExcelWriter excelWriter) {
     this.bpmnConverter = bpmnConverter;
     this.buildProperties = buildProperties;
+    this.excelWriter = excelWriter;
   }
 
   @PostMapping(
@@ -63,9 +70,27 @@ public class ConverterController {
       if (contentType == null
           || contentType.length == 0
           || Arrays.asList(contentType).contains(MediaType.APPLICATION_JSON_VALUE)) {
+        // JSON response
         return ResponseEntity.ok(diagramCheckResult);
-      }
-      if (Arrays.asList(contentType).contains("text/csv")) {
+      } else if (Arrays.asList(contentType)
+          .contains("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")) {
+        // Excel file
+        List<DiagramConverterResultDTO> data =
+            bpmnConverter.createLineItemDTOList(Collections.singletonList(diagramCheckResult));
+        ByteArrayOutputStream os = new ByteArrayOutputStream();
+        excelWriter.writeResultsToExcel(data, os);
+        Resource file = new ByteArrayResource(os.toByteArray());
+        return ResponseEntity.ok()
+            .header(
+                HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"migrationAnalyzer.xlsx\"")
+            .header(
+                HttpHeaders.CONTENT_TYPE,
+                "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
+            .contentType(MediaType.APPLICATION_OCTET_STREAM)
+            .body(file);
+
+      } else if (Arrays.asList(contentType).contains("text/csv")) {
+        // CSV file
         StringWriter sw = new StringWriter();
         bpmnConverter.writeCsvFile(Collections.singletonList(diagramCheckResult), sw);
         Resource file = new ByteArrayResource(sw.toString().getBytes());
