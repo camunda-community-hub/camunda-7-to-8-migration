@@ -4,10 +4,10 @@ import static org.assertj.core.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 import com.google.common.io.Resources;
-import io.camunda.zeebe.client.api.response.ActivatedJob;
-import io.camunda.zeebe.client.api.worker.JobClient;
-import io.camunda.zeebe.client.impl.ZeebeObjectMapper;
-import io.camunda.zeebe.client.impl.response.ActivatedJobImpl;
+import io.camunda.client.api.response.ActivatedJob;
+import io.camunda.client.api.worker.JobClient;
+import io.camunda.client.impl.CamundaObjectMapper;
+import io.camunda.client.impl.response.ActivatedJobImpl;
 import io.camunda.zeebe.gateway.protocol.GatewayOuterClass;
 import java.nio.charset.Charset;
 import java.util.List;
@@ -33,7 +33,7 @@ public class ExternalTaskHandlerWrapperTest {
     JobClient client = mock(JobClient.class);
     ActivatedJob job =
         new ActivatedJobImpl(
-            new ZeebeObjectMapper(),
+            new CamundaObjectMapper(),
             GatewayOuterClass.ActivatedJob.newBuilder()
                 .setVariables(loadVariableContent())
                 .setCustomHeaders("{}")
