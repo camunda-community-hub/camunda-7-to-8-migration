@@ -4,8 +4,9 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringWriter;
+import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 import org.camunda.bpm.model.xml.ModelInstance;
 import org.camunda.community.migration.converter.DiagramCheckResult;
@@ -44,72 +45,113 @@ public class ConverterController {
     this.excelWriter = excelWriter;
   }
 
+  /**
+   * POST a list of BPMN or DMN models for analyzing tasks. Can be returned in various formats:
+   * - JSON representation of a {@link List} of {@link DiagramCheckResult}s
+   * - Excel file, filled with result data
+   * - CSV file containing result data
+   */
   @PostMapping(
       value = "/check",
-      produces = {MediaType.APPLICATION_JSON_VALUE, "text/csv"},
+      produces = {
+        MediaType.APPLICATION_JSON_VALUE,
+        "text/csv",
+        "application/excel",
+        "application/vnd.ms-excel",
+        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+      },
       consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
   public ResponseEntity<?> check(
-      @RequestParam("file") MultipartFile diagramFile,
+      @RequestParam("file") List<MultipartFile> diagramFiles,
       @RequestParam(value = "defaultJobType", required = false) String defaultJobType,
       @RequestParam(value = "platformVersion", required = false) String platformVersion,
       @RequestParam(value = "defaultJobTypeEnabled", required = false, defaultValue = "true")
           Boolean defaultJobTypeEnabled,
       @RequestHeader(HttpHeaders.ACCEPT) String[] contentType) {
-    DiagramType diagramType = determineDiagramType(diagramFile);
 
-    try (InputStream in = diagramFile.getInputStream()) {
-      ModelInstance modelInstance = diagramType.readDiagram(in);
+    ArrayList<DiagramCheckResult> resultList = new ArrayList<DiagramCheckResult>();
 
-      DiagramCheckResult diagramCheckResult =
-          bpmnConverter.check(
-              diagramFile.getOriginalFilename(),
-              modelInstance,
-              defaultJobType,
-              platformVersion,
-              defaultJobTypeEnabled);
-      if (contentType == null
-          || contentType.length == 0
-          || Arrays.asList(contentType).contains(MediaType.APPLICATION_JSON_VALUE)) {
-        // JSON response
-        return ResponseEntity.ok(diagramCheckResult);
-      } else if (Arrays.asList(contentType)
-          .contains("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")) {
-        // Excel file
-        List<DiagramConverterResultDTO> data =
-            bpmnConverter.createLineItemDTOList(Collections.singletonList(diagramCheckResult));
-        ByteArrayOutputStream os = new ByteArrayOutputStream();
-        excelWriter.writeResultsToExcel(data, os);
-        Resource file = new ByteArrayResource(os.toByteArray());
-        return ResponseEntity.ok()
-            .header(
-                HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"migrationAnalyzer.xlsx\"")
-            .header(
-                HttpHeaders.CONTENT_TYPE,
-                "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
-            .contentType(MediaType.APPLICATION_OCTET_STREAM)
-            .body(file);
+    // Check all files
+    for (Iterator diagramFilesIterator = diagramFiles.iterator();
+        diagramFilesIterator.hasNext(); ) {
+      MultipartFile diagramFile = (MultipartFile) diagramFilesIterator.next();
+      DiagramType diagramType = determineDiagramType(diagramFile);
 
-      } else if (Arrays.asList(contentType).contains("text/csv")) {
-        // CSV file
-        StringWriter sw = new StringWriter();
-        bpmnConverter.writeCsvFile(Collections.singletonList(diagramCheckResult), sw);
-        Resource file = new ByteArrayResource(sw.toString().getBytes());
-        return ResponseEntity.ok()
-            .header(
-                HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"conversionResult.csv\"")
-            .contentType(MediaType.APPLICATION_OCTET_STREAM)
-            .body(file);
-      } else {
-        String errorMessage = "Invalid content type '" + String.join("', '", contentType) + "'";
-        LOG.error("{}", errorMessage);
-        return ResponseEntity.badRequest().body(errorMessage);
+      try (InputStream in = diagramFile.getInputStream()) {
+        ModelInstance modelInstance = diagramType.readDiagram(in);
+
+        DiagramCheckResult diagramCheckResult =
+            bpmnConverter.check(
+                diagramFile.getOriginalFilename(),
+                modelInstance,
+                defaultJobType,
+                platformVersion,
+                defaultJobTypeEnabled);
+        resultList.add(diagramCheckResult);
+      } catch (IOException e) {
+        LOG.error("Error while reading input stream of diagram file", e);
+        return ResponseEntity.badRequest().body(e.getMessage());
       }
-    } catch (IOException e) {
-      LOG.error("Error while reading input stream of diagram file", e);
-      return ResponseEntity.badRequest().body(e.getMessage());
+    }
+
+    // return response depending on the requested format
+    if (jsonRequested(contentType)) { // JSON
+      return ResponseEntity.ok(resultList);
+
+    } else if (excelRequested(contentType)) { // EXCEL
+
+      List<DiagramConverterResultDTO> data = bpmnConverter.createLineItemDTOList(resultList);
+
+      ByteArrayOutputStream os = new ByteArrayOutputStream();
+      excelWriter.writeResultsToExcel(data, os);
+      Resource file = new ByteArrayResource(os.toByteArray());
+
+      return ResponseEntity.ok()
+          .header(
+              HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"migrationAnalyzer.xlsx\"")
+          .header(
+              HttpHeaders.CONTENT_TYPE,
+              "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
+          .contentType(MediaType.APPLICATION_OCTET_STREAM)
+          .body(file);
+
+    } else if (csvRequested(contentType)) { // CSV
+
+      StringWriter sw = new StringWriter();
+      bpmnConverter.writeCsvFile(resultList, sw);
+      Resource file = new ByteArrayResource(sw.toString().getBytes());
+      return ResponseEntity.ok()
+          .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"migrationAnalyzer.csv\"")
+          .contentType(MediaType.APPLICATION_OCTET_STREAM)
+          .body(file);
+
+    } else {
+      String errorMessage = "Invalid content type '" + String.join("', '", contentType) + "'";
+      LOG.error("{}", errorMessage);
+      return ResponseEntity.badRequest().body(errorMessage);
     }
   }
 
+  private boolean csvRequested(String[] contentType) {
+    return contentType != null && Arrays.asList(contentType).contains("text/csv");
+  }
+
+  private boolean jsonRequested(String[] contentType) {
+    return contentType == null
+        || contentType.length == 0
+        || Arrays.asList(contentType).contains(MediaType.APPLICATION_JSON_VALUE);
+  }
+
+  private boolean excelRequested(String[] contentType) {
+    return contentType != null && Arrays.asList(contentType).contains("application/excel")
+        || Arrays.asList(contentType).contains("application/vnd.ms-excel")
+        || Arrays.asList(contentType)
+            .contains("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+  }
+
+  /**
+   * POST method to actually convert a BPMN or DMN model. 
+   */
   @PostMapping(
       value = "/convert",
       produces = {"application/bpmn+xml", "application/dmn+xml"},
@@ -146,6 +188,10 @@ public class ConverterController {
     }
   }
 
+  /**
+   * GET method to retrieve the current version of the diagram converter tool
+   * @return
+   */
   @GetMapping(value = "/version", produces = MediaType.TEXT_PLAIN_VALUE)
   public ResponseEntity<String> getVersion() {
     String implementationVersion = buildProperties.getVersion();

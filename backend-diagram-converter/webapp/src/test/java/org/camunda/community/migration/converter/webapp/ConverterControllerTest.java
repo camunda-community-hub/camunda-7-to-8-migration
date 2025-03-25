@@ -9,6 +9,7 @@ import com.opencsv.exceptions.CsvException;
 import io.camunda.zeebe.model.bpmn.Bpmn;
 import io.camunda.zeebe.model.bpmn.BpmnModelInstance;
 import io.restassured.RestAssured;
+import io.restassured.common.mapper.TypeRef;
 import io.restassured.http.ContentType;
 import java.io.ByteArrayInputStream;
 import java.io.File;
@@ -16,6 +17,11 @@ import java.io.IOException;
 import java.io.StringReader;
 import java.net.URISyntaxException;
 import java.util.List;
+
+import org.apache.poi.xssf.usermodel.XSSFCell;
+import org.apache.poi.xssf.usermodel.XSSFRow;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.camunda.bpm.model.dmn.Dmn;
 import org.camunda.bpm.model.dmn.DmnModelInstance;
 import org.camunda.bpm.model.xml.instance.DomElement;
@@ -40,7 +46,7 @@ public class ConverterControllerTest {
 
   @Test
   void shouldReturnCheckResult() throws URISyntaxException {
-    DiagramCheckResult checkResult =
+    List<DiagramCheckResult> checkResult =
         RestAssured.given()
             .contentType(ContentType.MULTIPART)
             .multiPart(
@@ -48,11 +54,42 @@ public class ConverterControllerTest {
             .accept(ContentType.JSON)
             .post("/check")
             .getBody()
-            .as(DiagramCheckResult.class);
+            .as(new TypeRef<List<DiagramCheckResult>>() {});
+    
     assertThat(checkResult)
-        .matches(
-            result -> result.getFilename().equals("example.bpmn"), "Filename is set correctly");
-    assertThat(checkResult.getResults()).isNotEmpty();
+        .hasSize(1)
+        .first()
+        .matches(result -> result.getFilename().equals("example.bpmn"), "Filename is set correctly")
+        .matches(result -> result.getResults().size() > 0, "Found results");
+  }
+
+  @Test
+  void multipleFilesCheck() throws URISyntaxException {
+    List<DiagramCheckResult> checkResult =
+        RestAssured.given()
+            .contentType(ContentType.MULTIPART)
+            .multiPart(
+                "file", new File(getClass().getClassLoader().getResource("example.bpmn").toURI()))
+            .multiPart(
+                "file", new File(getClass().getClassLoader().getResource("example2.bpmn").toURI()))
+            .accept(ContentType.JSON)
+            .post("/check")
+            .getBody()
+            .as(new TypeRef<List<DiagramCheckResult>>() {});
+    
+    assertThat(checkResult)
+        .anySatisfy(singleCheckResult -> {
+        	assertThat(singleCheckResult.getFilename()).isEqualTo("example.bpmn");
+          assertThat(singleCheckResult.getResults())
+              .isNotEmpty()
+              .anySatisfy(result -> assertThat(result.getElementId()).isEqualTo("Activity_Example1"));
+         })
+        .anySatisfy(singleCheckResult -> {
+        	assertThat(singleCheckResult.getFilename()).isEqualTo("example2.bpmn");
+          assertThat(singleCheckResult.getResults())
+              .isNotEmpty()
+              .anySatisfy(result -> assertThat(result.getElementId()).isEqualTo("Activity_Example2"));
+         });
   }
 
   @Test
@@ -76,6 +113,57 @@ public class ConverterControllerTest {
       throw new RuntimeException(e);
     }
   }
+
+  @Test
+  void shouldReturnValidExcelFile() throws Exception {
+    byte[] response =
+        RestAssured.given()
+            .contentType(ContentType.MULTIPART)
+            .multiPart(
+                "file", new File(getClass().getClassLoader().getResource("example.bpmn").toURI()))
+            .accept("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
+            //	      .accept("application/vnd.ms-excel")
+            //	      .accept("application/excel")
+            .post("/check")
+            .getBody()
+            .asByteArray();
+
+    // Validate Excel using Apache POI
+    try (XSSFWorkbook workbook = new XSSFWorkbook(new ByteArrayInputStream(response))) {
+      assertThat(workbook.getNumberOfSheets()).isGreaterThan(0);
+    }
+  }
+  
+  @Test
+  void multipleBpmnWithExcel() throws Exception {
+    byte[] response =
+        RestAssured.given()
+            .contentType(ContentType.MULTIPART)
+            .multiPart(
+                "file", new File(getClass().getClassLoader().getResource("example.bpmn").toURI()))
+            .multiPart(
+                "file", new File(getClass().getClassLoader().getResource("example2.bpmn").toURI()))
+            .accept("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
+            //	      .accept("application/vnd.ms-excel")
+            //	      .accept("application/excel")
+            .post("/check")
+            .getBody()
+            .asByteArray();
+
+    // Validate Excel using Apache POI
+    try (XSSFWorkbook workbook = new XSSFWorkbook(new ByteArrayInputStream(response))) {
+    	XSSFSheet sheet = workbook.getSheet("AnalysisResults");
+    	assertThat(sheet).as("Sheet 'AnalysisResults' should exist").isNotNull();
+
+    	// Collect values from rows 1 and 2, column 0
+    	String filename1 = sheet.getRow(1).getCell(0).getStringCellValue();
+    	String filename2 = sheet.getRow(2).getCell(0).getStringCellValue();
+
+    	// Assert both expected filenames are present, order-independent
+    	assertThat(List.of(filename1, filename2))
+    	    .containsExactlyInAnyOrder("example.bpmn", "example2.bpmn");
+    }
+  }  
 
   @Test
   void shouldReturnBpmn() throws URISyntaxException {
