@@ -152,11 +152,14 @@ public class BpmnElementSupportTest {
         null,
         isNotSupported(result, "ConditionalCatchEvent", "Conditional Intermediate Catch Event"),
         null,
-        isNotSupported(result, "ConditionalAttachedBoundaryEvent", "Conditional Boundary Event"),
+        isNotSupported(
+            result,
+            "ConditionalAttachedBoundaryEvent",
+            "Conditional Boundary Event attached to Task"),
         isNotSupported(
             result,
             "ConditionalAttachedNoninterruptingBoundaryEvent",
-            "Non-interrupting Conditional Boundary Event"),
+            "Non-interrupting Conditional Boundary Event attached to Task"),
         isNotSupported(
             result,
             "ConditionalEventSubprocesStartStartEvent",
@@ -209,7 +212,8 @@ public class BpmnElementSupportTest {
         null,
         null,
         isNotSupported(result, "CancelEndEvent", "Cancel End Event"),
-        isNotSupported(result, "CancelBoundaryEvent", "Cancel Boundary Event"),
+        isNotSupported(
+            result, "CancelBoundaryEvent", "Cancel Boundary Event attached to Transaction"),
         null,
         null,
         null);

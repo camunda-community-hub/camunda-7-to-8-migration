@@ -91,7 +91,7 @@ public class DiagramConverterTest {
     DiagramConverterFactory.getInstance().get().printXml(modelInstance.getDocument(), true, writer);
     String[] processModel = writer.toString().split("\n");
     for (int i = 0; i < processModel.length; i++) {
-      LOG.debug("" + i + "     " + processModel[i]);
+      LOG.debug("{}     {}", i, processModel[i]);
     }
   }
 
@@ -666,6 +666,28 @@ public class DiagramConverterTest {
   }
 
   @Test
+  void testEscalationEventOnServiceTask() {
+    BpmnDiagramCheckResult bpmnDiagramCheckResult =
+        loadAndCheckAgainstVersion("escalation-on-service-task.bpmn", "8.5");
+    BpmnElementCheckResult itEscalatesBoundaryEvent =
+        bpmnDiagramCheckResult.getResult("ItEscalatesBoundaryEvent");
+    assertThat(itEscalatesBoundaryEvent).isNotNull();
+    assertThat(itEscalatesBoundaryEvent.getMessages()).hasSize(1);
+    assertThat(itEscalatesBoundaryEvent.getMessages().get(0).getMessage())
+        .isEqualTo(
+            "Element 'Escalation Boundary Event attached to Service Task' is not supported in Zeebe version '8.5'. Please review.");
+  }
+
+  @Test
+  void testEscalationEventOnSubProcess() {
+    BpmnDiagramCheckResult bpmnDiagramCheckResult = loadAndCheck("escalation-on-subprocess.bpmn");
+    BpmnElementCheckResult itEscalatesBoundaryEvent =
+        bpmnDiagramCheckResult.getResult("ItEscalatesBoundaryEvent");
+    assertThat(itEscalatesBoundaryEvent).isNotNull();
+    assertThat(itEscalatesBoundaryEvent.getMessages()).isEmpty();
+  }
+
+  @Test
   void testVersionTagConversion() {
     BpmnModelInstance modelInstance = loadAndConvert("version-tag.bpmn");
     DomElement process = modelInstance.getDocument().getElementById("process");
@@ -831,7 +853,7 @@ public class DiagramConverterTest {
     assertThat(input).isNotNull();
     assertThat(input.getAttribute(ZEEBE, "target")).isEqualTo("HinweisText");
     assertThat(input.getAttribute(ZEEBE, "source"))
-        .isEqualTo("=\"Vorgang automatisiert durchgefÃ¼hrt und abgeschlossen\"");
+        .isEqualTo("=\"Vorgang automatisiert durchgeführt und abgeschlossen\"");
   }
 
   @Test

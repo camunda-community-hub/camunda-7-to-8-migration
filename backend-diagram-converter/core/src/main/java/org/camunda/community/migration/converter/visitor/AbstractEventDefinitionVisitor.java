@@ -28,7 +28,22 @@ public abstract class AbstractEventDefinitionVisitor extends AbstractBpmnElement
     fullEventName +=
         StringUtils.capitalize(
             element.getParentElement().getLocalName().replaceAll("([A-Z])", " $1"));
+    if (isBoundaryEvent(element)) {
+      DomElement attachedActivity = findAttachedActivity(element);
+      fullEventName += " attached to " + super.elementNameForMessage(attachedActivity);
+    }
     return fullEventName;
+  }
+
+  protected DomElement findAttachedActivity(DomElement element) {
+    DomElement boundaryEvent = element.getParentElement();
+    String attachedToRef = boundaryEvent.getAttribute(BPMN, "attachedToRef");
+    return element.getDocument().getElementById(attachedToRef);
+  }
+
+  protected boolean isBoundaryEvent(DomElement element) {
+    return element.getParentElement().getLocalName().equals("boundaryEvent")
+        && element.getParentElement().getNamespaceURI().equals(BPMN);
   }
 
   protected String simpleEventName(DomElement element) {
