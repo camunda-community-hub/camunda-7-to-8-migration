@@ -82,7 +82,7 @@ public class DiagramConverter {
 
   private DiagramCheckResult check(
       String filename, DomElement rootElement, ConverterProperties properties) {
-    LOG.info("Start check");
+    LOG.info("Start checking " + filename);
     DiagramCheckResult result = new DiagramCheckResult();
     result.setFilename(filename);
     result.setConverterVersion(getClass().getPackage().getImplementationVersion());

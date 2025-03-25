@@ -1,13 +1,18 @@
 package org.camunda.community.migration.converter.webapp;
 
+import java.io.BufferedOutputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map.Entry;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 import org.camunda.bpm.model.xml.ModelInstance;
 import org.camunda.community.migration.converter.DiagramCheckResult;
 import org.camunda.community.migration.converter.DiagramConverterResultDTO;
@@ -149,9 +154,7 @@ public class ConverterController {
             .contains("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
   }
 
-  /**
-   * POST method to actually convert a BPMN or DMN model. 
-   */
+  /** POST method to actually convert a BPMN or DMN model. */
   @PostMapping(
       value = "/convert",
       produces = {"application/bpmn+xml", "application/dmn+xml"},
@@ -164,6 +167,7 @@ public class ConverterController {
       @RequestParam(value = "platformVersion", required = false) String platformVersion,
       @RequestParam(value = "defaultJobTypeEnabled", required = false, defaultValue = "true")
           Boolean defaultJobTypeEnabled) {
+
     DiagramType diagramType = determineDiagramType(diagramFile);
     try (InputStream in = diagramFile.getInputStream()) {
       ModelInstance modelInstance = diagramType.readDiagram(in);
@@ -189,7 +193,73 @@ public class ConverterController {
   }
 
   /**
+   * POST method to convert a list of BPMN or DMN models in one go. Returns a ZIP file with all the
+   * contents
+   */
+  @PostMapping(
+      value = "/convertBatch",
+      produces = {"application/zip"},
+      consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
+  public ResponseEntity<?> convertBatch(
+      @RequestParam("file") List<MultipartFile> diagramFiles,
+      @RequestParam(value = "appendDocumentation", required = false, defaultValue = "false")
+          Boolean appendDocumentation,
+      @RequestParam(value = "defaultJobType", required = false) String defaultJobType,
+      @RequestParam(value = "platformVersion", required = false) String platformVersion,
+      @RequestParam(value = "defaultJobTypeEnabled", required = false, defaultValue = "true")
+          Boolean defaultJobTypeEnabled) {
+
+    HashMap<String, Resource> resultList = new HashMap<String, Resource>();
+
+    // Check all files
+    for (Iterator diagramFilesIterator = diagramFiles.iterator();
+        diagramFilesIterator.hasNext(); ) {
+      MultipartFile diagramFile = (MultipartFile) diagramFilesIterator.next();
+
+      DiagramType diagramType = determineDiagramType(diagramFile);
+      try (InputStream in = diagramFile.getInputStream()) {
+
+        ModelInstance modelInstance = diagramType.readDiagram(in);
+        bpmnConverter.convert(
+            modelInstance,
+            appendDocumentation,
+            defaultJobType,
+            platformVersion,
+            defaultJobTypeEnabled);
+        String xml = bpmnConverter.printXml(modelInstance.getDocument(), true);
+        Resource file = new ByteArrayResource(xml.getBytes());
+        resultList.put("converted-c8-" + diagramFile.getOriginalFilename(), file);
+
+      } catch (IOException e) {
+        return ResponseEntity.badRequest().body(e.getMessage());
+      } catch (Exception e) {
+        return ResponseEntity.internalServerError().body(e.getMessage());
+      }
+    }
+
+    // Creating byteArray stream, make it bufferable and passing this buffer to ZipOutputStream
+    ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+    BufferedOutputStream bufferedOutputStream = new BufferedOutputStream(byteArrayOutputStream);
+
+    try (ZipOutputStream zipOutputStream = new ZipOutputStream(bufferedOutputStream)) {
+      for (Entry<String, Resource> file : resultList.entrySet()) {
+        zipOutputStream.putNextEntry(new ZipEntry(file.getKey()));
+        zipOutputStream.write(file.getValue().getContentAsByteArray());
+        zipOutputStream.closeEntry();
+      }
+    } catch (IOException e) {
+      return ResponseEntity.badRequest().body(e.getMessage());
+    }
+
+    return ResponseEntity.ok()
+        .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"converted-diagrams.zip\"")
+        .header(HttpHeaders.CONTENT_TYPE, "application/zip")
+        .body(byteArrayOutputStream.toByteArray());
+  }
+
+  /**
    * GET method to retrieve the current version of the diagram converter tool
+   *
    * @return
    */
   @GetMapping(value = "/version", produces = MediaType.TEXT_PLAIN_VALUE)
