@@ -667,9 +667,9 @@ public class DiagramConverterTest {
 
   @Test
   void testEscalationEventOnServiceTask() {
-    BpmnDiagramCheckResult bpmnDiagramCheckResult =
+    DiagramCheckResult bpmnDiagramCheckResult =
         loadAndCheckAgainstVersion("escalation-on-service-task.bpmn", "8.5");
-    BpmnElementCheckResult itEscalatesBoundaryEvent =
+    ElementCheckResult itEscalatesBoundaryEvent =
         bpmnDiagramCheckResult.getResult("ItEscalatesBoundaryEvent");
     assertThat(itEscalatesBoundaryEvent).isNotNull();
     assertThat(itEscalatesBoundaryEvent.getMessages()).hasSize(1);
@@ -680,8 +680,8 @@ public class DiagramConverterTest {
 
   @Test
   void testEscalationEventOnSubProcess() {
-    BpmnDiagramCheckResult bpmnDiagramCheckResult = loadAndCheck("escalation-on-subprocess.bpmn");
-    BpmnElementCheckResult itEscalatesBoundaryEvent =
+    DiagramCheckResult bpmnDiagramCheckResult = loadAndCheck("escalation-on-subprocess.bpmn");
+    ElementCheckResult itEscalatesBoundaryEvent =
         bpmnDiagramCheckResult.getResult("ItEscalatesBoundaryEvent");
     assertThat(itEscalatesBoundaryEvent).isNotNull();
     assertThat(itEscalatesBoundaryEvent.getMessages()).isEmpty();
@@ -853,7 +853,7 @@ public class DiagramConverterTest {
     assertThat(input).isNotNull();
     assertThat(input.getAttribute(ZEEBE, "target")).isEqualTo("HinweisText");
     assertThat(input.getAttribute(ZEEBE, "source"))
-        .isEqualTo("=\"Vorgang automatisiert durchgeführt und abgeschlossen\"");
+        .isEqualTo("=\"Vorgang automatisiert durchgefÃ¼hrt und abgeschlossen\"");
   }
 
   @Test
