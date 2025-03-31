@@ -1,29 +1,20 @@
-# Camunda Platform 7 To Camunda Platform 8 Migration Tooling
+# Camunda 7 To 8 Migration Artefacts
 
 [![Community Extension](https://img.shields.io/badge/Community%20Extension-An%20open%20source%20community%20maintained%20project-FF4700)](https://github.com/camunda-community-hub/community)
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/org.camunda.community.migration/camunda-7-to-8-migration/badge.svg)](https://maven-badges.herokuapp.com/maven-central/org.camunda.community.migration/camunda-7-to-8-migration)
 
-This tool helps with migration of process solutions from Camunda Platform 7 to
-Camunda Platform 8. This is described in the
-[migration guide](https://docs.camunda.io/docs/guides/migrating-from-Camunda-Platform/)
+Collection of tools and material around migration of process solutions from Camunda 7 to Camunda 8. 
 
-This projects contains:
+Refer to the [migration guide](https://docs.camunda.io/docs/guides/migrating-from-camunda-7/) for details.
 
-- [An adapter library](./camunda-7-adapter) to re-use Java Delegates or
-  expressions from Camunda Platform 7 when running Camunda Platform 8
-- [An example](./example) containing a sample process solution for Camunda
-  Platform 7 and the migrated version that runs on Camunda Platform 8
-- [A process diagram converter](./backend-diagram-converter) that is implemented
-  in Java and performs checks and migration
-  - [A web frontend](./backend-diagram-converter/webapp) with graphical output
-    of the conversion result
-  - [A command line tool](./backend-diagram-converter/cli) to support mass
-    conversion
-- [A Process Instance Migration Tool](./process-instance-migration) to migrate
-  instances of a converted process definition to Camunda Platform 8
-- [A migration script](./cawemo-to-web-modeler-migration) to migrate Cawemo projects to Web Modeler
+This repository contains:
+- [The Code Migration Detector](./code-migration-detector) to check your implementation for Camunda 7 API usage
+- [The Camunda 7 Adapter](./camunda-7-adapter) to re-use Java Delegates or  expressions from Camunda 7 when running Camunda 8
+- [An example](./example) containing a sample process solution for Camunda 7 and the migrated version that runs on Camunda 8
+- [The Cawemo migration script](./cawemo-to-web-modeler-migration) to migrate Cawemo projects to Web Modeler
 - [A curated list of community migration approaches](./migration-approaches/README.md)
-- [A tool](./code-migration-detector) to check your implementation for Camunda 7 API usage
+
+You might also want to check out the [Migration Analyzer](https://github.com/camunda-community-hub/camunda-7-to-8-migration-analyzer) or other official [migration tooling](https://docs.camunda.io/docs/guides/migrating-from-camunda-7/migration-tooling/).
 
 ## Use Snapshot Versions
 

@@ -1,5 +1,0 @@
-notification:
-  slack:
-    enabled: false
-    token: ""
-    channel-name: ""
