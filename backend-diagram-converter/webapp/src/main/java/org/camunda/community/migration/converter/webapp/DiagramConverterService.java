@@ -10,6 +10,7 @@ import org.camunda.community.migration.converter.ConverterPropertiesFactory;
 import org.camunda.community.migration.converter.DefaultConverterProperties;
 import org.camunda.community.migration.converter.DiagramCheckResult;
 import org.camunda.community.migration.converter.DiagramConverter;
+import org.camunda.community.migration.converter.DiagramConverterResultDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -62,5 +63,9 @@ public class DiagramConverterService {
 
   public void writeCsvFile(List<DiagramCheckResult> results, Writer writer) {
     diagramConverter.writeCsvFile(results, writer);
+  }
+
+  public List<DiagramConverterResultDTO> createLineItemDTOList(List<DiagramCheckResult> results) {
+    return diagramConverter.createLineItemDTOList(results);
   }
 }

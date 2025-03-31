@@ -37,11 +37,68 @@
       <artifactId>rest-assured</artifactId>
       <scope>test</scope>
     </dependency>
+    <dependency>
+        <groupId>org.apache.poi</groupId>
+        <artifactId>poi</artifactId>
+      <version>5.2.3</version>
+    </dependency>
+ <dependency>
+        <groupId>org.apache.poi</groupId>
+        <artifactId>poi-ooxml</artifactId>
+        <version>5.2.3</version>
+    </dependency>
   </dependencies>
 
   <build>
     <finalName>${project.artifactId}</finalName>
     <plugins>
+      <!-- Frontend Maven Plugin -->
+      <plugin>
+        <groupId>com.github.eirslett</groupId>
+        <artifactId>frontend-maven-plugin</artifactId>
+        <version>1.12.0</version>
+        <configuration>
+            <installDirectory>target</installDirectory>
+        </configuration>
+         
+        <executions>
+          <!-- Step 1: Install Node.js & npm -->
+          <execution>
+            <id>install-node-and-npm</id>
+            <goals>
+              <goal>install-node-and-npm</goal>
+            </goals>
+            <configuration>
+              <nodeVersion>v22.9.0</nodeVersion>  <!-- Specify Node.js version -->
+              <npmVersion>11.0.0</npmVersion>    <!-- Specify npm version -->
+            </configuration>
+          </execution>
+
+          <!-- Step 2: Install npm dependencies -->
+          <execution>
+            <id>npm-install</id>
+            <goals>
+              <goal>npm</goal>
+            </goals>
+            <configuration>
+              <arguments>install</arguments>
+              <workingDirectory>src/main/javascript</workingDirectory> <!-- Set correct path -->
+            </configuration>
+          </execution>
+
+          <!-- Step 3: Run the npm "package" task -->
+          <execution>
+            <id>npm-package</id>
+            <goals>
+              <goal>npm</goal>
+            </goals>
+            <configuration>
+              <arguments>run package</arguments>
+              <workingDirectory>src/main/javascript</workingDirectory> <!-- Path to frontend -->
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
       <plugin>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-maven-plugin</artifactId>

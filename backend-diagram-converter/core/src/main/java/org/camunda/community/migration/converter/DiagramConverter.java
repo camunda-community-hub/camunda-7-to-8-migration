@@ -82,7 +82,7 @@ public class DiagramConverter {
 
   private DiagramCheckResult check(
       String filename, DomElement rootElement, ConverterProperties properties) {
-    LOG.info("Start check");
+    LOG.info("Start checking " + filename);
     DiagramCheckResult result = new DiagramCheckResult();
     result.setFilename(filename);
     result.setConverterVersion(getClass().getPackage().getImplementationVersion());
@@ -357,6 +357,28 @@ public class DiagramConverter {
                                           message.getMessage(),
                                           message.getLink()
                                         })))
+        .collect(Collectors.toList());
+  }
+
+  public List<DiagramConverterResultDTO> createLineItemDTOList(List<DiagramCheckResult> results) {
+    return results.stream()
+        .flatMap(
+            diagramCheckResult ->
+                diagramCheckResult.getResults().stream()
+                    .flatMap(
+                        elementCheckResult ->
+                            elementCheckResult.getMessages().stream()
+                                .map(
+                                    message ->
+                                        new DiagramConverterResultDTO(
+                                            diagramCheckResult.getFilename(),
+                                            elementCheckResult.getElementName(),
+                                            elementCheckResult.getElementId(),
+                                            elementCheckResult.getElementType(),
+                                            message.getSeverity().name(),
+                                            message.getId(),
+                                            message.getMessage(),
+                                            message.getLink()))))
         .collect(Collectors.toList());
   }
 
