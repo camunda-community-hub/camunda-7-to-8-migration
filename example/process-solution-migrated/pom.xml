@@ -20,7 +20,7 @@
     <version.camunda>7.22.0</version.camunda>
     <version.adapter>0.11.1</version.adapter>
 <version.zeebe>8.6.12</version.zeebe>
-    <plugin.version.maven-surefire-plugin>3.5.2</plugin.version.maven-surefire-plugin>
+    <plugin.version.maven-surefire-plugin>3.5.3</plugin.version.maven-surefire-plugin>
   </properties>
 
   <dependencyManagement>
