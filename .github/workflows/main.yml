@@ -56,10 +56,6 @@ jobs:
           maven-auto-release-after-close: true
           github-token: ${{ secrets.GITHUB_TOKEN }}
         id: release
-      - name: Push all diagram converter images
-        run: docker push -a -q ghcr.io/camunda-community-hub/camunda-7-to-8-migration/diagram-converter
-      - name: Push all process instance migrator images
-        run: docker push -a -q ghcr.io/camunda-community-hub/camunda-7-to-8-migration/process-instance-migration
       - if: github.event.release
         name: Attach Java artifacts to GitHub Release (Release only)
         uses: actions/upload-release-asset@v1

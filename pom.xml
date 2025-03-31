@@ -465,7 +465,6 @@
   </profiles>
   <modules>
     <module>camunda-7-adapter</module>
-    <module>process-instance-migration</module>
     <module>test-example-diagrams</module>
     <module>code-migration-detector</module>
   </modules>

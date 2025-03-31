@@ -1,6 +1,0 @@
-operate:
-  client:
-    base-url: http://localhost:8081
-    username: demo
-    password: demo
-
