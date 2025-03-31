@@ -51,10 +51,9 @@ public class ConverterController {
   }
 
   /**
-   * POST a list of BPMN or DMN models for analyzing tasks. Can be returned in various formats:
-   * - JSON representation of a {@link List} of {@link DiagramCheckResult}s
-   * - Excel file, filled with result data
-   * - CSV file containing result data
+   * POST a list of BPMN or DMN models for analyzing tasks. Can be returned in various formats: -
+   * JSON representation of a {@link List} of {@link DiagramCheckResult}s - Excel file, filled with
+   * result data - CSV file containing result data
    */
   @PostMapping(
       value = "/check",
