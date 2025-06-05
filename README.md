@@ -3,7 +3,7 @@
 [![Community Extension](https://img.shields.io/badge/Community%20Extension-An%20open%20source%20community%20maintained%20project-FF4700)](https://github.com/camunda-community-hub/community)
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/org.camunda.community.migration/camunda-7-to-8-migration/badge.svg)](https://maven-badges.herokuapp.com/maven-central/org.camunda.community.migration/camunda-7-to-8-migration)
 
-Collection of tools and material around migration of process solutions from Camunda 7 to Camunda 8. 
+Collection of tools and material around migration of process solutions from Camunda 7 to Camunda 8.
 
 Refer to the [migration guide](https://docs.camunda.io/docs/guides/migrating-from-camunda-7/) for details.
 
