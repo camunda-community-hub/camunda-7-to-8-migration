@@ -8,15 +8,12 @@ import io.camunda.zeebe.client.ZeebeClient;
 import io.camunda.zeebe.client.api.response.ProcessInstanceEvent;
 import io.camunda.zeebe.model.bpmn.Bpmn;
 import io.camunda.zeebe.model.bpmn.BpmnModelInstance;
-import io.micrometer.core.instrument.MeterRegistry;
-import io.micrometer.core.instrument.simple.SimpleMeterRegistry;
 import java.util.Collections;
 import org.camunda.community.migration.adapter.CamundaPlatform7AdapterTest.Config;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
 
 @SpringBootTest(classes = Config.class, properties = "logging.level.root=INFO")
@@ -24,12 +21,7 @@ import org.springframework.context.annotation.Import;
 public class CamundaPlatform7AdapterTest {
 
   @Import({CamundaPlatform7AdapterConfig.class})
-  static class Config {
-    @Bean
-    public MeterRegistry meterRegistry() {
-      return new SimpleMeterRegistry();
-    }
-  }
+  static class Config {}
 
   @Autowired private ZeebeClient zeebeClient;
 
