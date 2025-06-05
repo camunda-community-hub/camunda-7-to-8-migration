@@ -34,7 +34,7 @@
     <version.guava>33.4.6-jre</version.guava>
     <version.error_prone_annotations>2.37.0</version.error_prone_annotations>
     <version.java-jwt>4.5.0</version.java-jwt>
-    <version.okio>3.10.2</version.okio>
+    <version.okio>3.12.0</version.okio>
     <version.archunit>1.4.0</version.archunit>
 
     <plugin.version.function-maven-plugin>0.11.1</plugin.version.function-maven-plugin>
