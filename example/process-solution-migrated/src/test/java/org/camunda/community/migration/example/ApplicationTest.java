@@ -13,6 +13,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import java.util.List;
 import java.util.concurrent.TimeoutException;
 
+import static io.camunda.process.test.api.assertions.ElementSelectors.*;
 import static io.camunda.zeebe.protocol.Protocol.*;
 import static org.assertj.core.api.Assertions.*;
 
@@ -36,10 +37,10 @@ public class ApplicationTest {
         .join();
     CamundaAssert
         .assertThat(processInstance)
-        .hasCompletedElements("Sub Process");
+        .hasCompletedElements(byName("Sub Process"));
     CamundaAssert
         .assertThat(processInstance)
-        .hasActiveElements("Say hello to\n" + "demo");
+        .hasActiveElements(byName("Say hello to\n" + "demo"));
     List<ActivatedJob> userTasks = zeebeClient
         .newActivateJobsCommand()
         .jobType(USER_TASK_JOB_TYPE)
@@ -57,7 +58,7 @@ public class ApplicationTest {
         .join();
     CamundaAssert
         .assertThat(processInstance)
-        .hasCompletedElements("Say hello to\n" + "demo")
+        .hasCompletedElements(byName("Say hello to\n" + "demo"))
         .isCompleted();
   }
 

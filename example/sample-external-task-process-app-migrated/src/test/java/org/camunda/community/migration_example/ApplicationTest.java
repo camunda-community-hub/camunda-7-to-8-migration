@@ -9,10 +9,11 @@ import org.camunda.community.migration_example.services.CustomerService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 
 import java.util.concurrent.TimeoutException;
 
+import static io.camunda.process.test.api.assertions.ElementSelectors.*;
 import static org.mockito.Mockito.*;
 
 @SpringBootTest
@@ -22,7 +23,7 @@ public class ApplicationTest {
   @Autowired
   ZeebeClient zeebeClient;
 
-  @MockBean
+  @MockitoBean
   CustomerService mockedCustomerService;
 
   @Test
@@ -45,7 +46,7 @@ public class ApplicationTest {
     CamundaAssert
         .assertThat(processInstance)
         .isCompleted()
-        .hasCompletedElements("Payment completed");
+        .hasCompletedElements(byName("Payment completed"));
     //                                             .hasNotPassedElement("Activity_0rwd82t");
     // missing hasNotCompleted()
   }
