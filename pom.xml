@@ -22,35 +22,19 @@
 
     <version.zeebe>8.7.4</version.zeebe>
     <version.camunda.platform>7.23.0</version.camunda.platform>
-    <version.jsoup>1.19.1</version.jsoup>
-    <version.spring-boot>3.4.4</version.spring-boot>
-    <version.picocli>4.7.6</version.picocli>
-    <version.commons-io>2.18.0</version.commons-io>
-    <version.slack-api-client>1.45.3</version.slack-api-client>
-    <version.opencsv>5.10</version.opencsv>
-    <version.jaxb-api>2.3.1</version.jaxb-api>
-    <version.grpc>1.71.0</version.grpc>
+    <version.spring-boot>3.5.0</version.spring-boot>
+
     <version.protobuf>4.31.1</version.protobuf>
     <version.guava>33.4.6-jre</version.guava>
     <version.error_prone_annotations>2.37.0</version.error_prone_annotations>
-    <version.java-jwt>4.5.0</version.java-jwt>
-    <version.okio>3.10.2</version.okio>
+
     <version.archunit>1.4.0</version.archunit>
 
-    <plugin.version.function-maven-plugin>0.11.1</plugin.version.function-maven-plugin>
     <plugin.version.maven-enforcer-plugin>3.5.0</plugin.version.maven-enforcer-plugin>
-    <plugin.version.maven-install-plugin>3.1.4</plugin.version.maven-install-plugin>
-    <plugin.version.maven-resources-plugin>3.3.1</plugin.version.maven-resources-plugin>
-    <plugin.version.maven-shade-plugin>3.6.0</plugin.version.maven-shade-plugin>
     <plugin.version.maven-surefire-plugin>3.5.3</plugin.version.maven-surefire-plugin>
     <plugin.version.spotless-maven-plugin>2.44.3</plugin.version.spotless-maven-plugin>
     <plugin.version.maven-compiler-plugin>3.14.0</plugin.version.maven-compiler-plugin>
-    <plugin.version.native-maven-plugin>0.10.6</plugin.version.native-maven-plugin>
-    <plugin.version.maven-depdendency-plugin>3.8.1</plugin.version.maven-depdendency-plugin>
     <plugin.version.maven-site-plugin>3.21.0</plugin.version.maven-site-plugin>
-    <plugin.version.maven-assembly-plugin>3.7.1</plugin.version.maven-assembly-plugin>
-    <plugin.version.maven-release-plugin>3.1.1</plugin.version.maven-release-plugin>
-    <plugin.version.frontend-maven-plugin>1.15.1</plugin.version.frontend-maven-plugin>
     <plugin.version.maven-source-plugin>3.3.1</plugin.version.maven-source-plugin>
   </properties>
 
@@ -78,13 +62,6 @@
         <scope>import</scope>
       </dependency>
       <dependency>
-        <groupId>io.grpc</groupId>
-        <artifactId>grpc-bom</artifactId>
-        <version>${version.grpc}</version>
-        <type>pom</type>
-        <scope>import</scope>
-      </dependency>
-      <dependency>
         <groupId>com.google.protobuf</groupId>
         <artifactId>protobuf-bom</artifactId>
         <version>${version.protobuf}</version>
@@ -96,56 +73,18 @@
         <artifactId>guava-bom</artifactId>
         <version>${version.guava}</version>
         <type>pom</type>
-      </dependency>
-      <dependency>
-        <groupId>com.google.guava</groupId>
-        <artifactId>guava</artifactId>
-        <version>${version.guava}</version>
+        <scope>import</scope>
       </dependency>
       <dependency>
         <groupId>com.google.errorprone</groupId>
         <artifactId>error_prone_annotations</artifactId>
         <version>${version.error_prone_annotations}</version>
       </dependency>
-      <dependency>
-        <groupId>info.picocli</groupId>
-        <artifactId>picocli</artifactId>
-        <version>${version.picocli}</version>
-      </dependency>
-      <dependency>
-        <groupId>info.picocli</groupId>
-        <artifactId>picocli-codegen</artifactId>
-        <version>${version.picocli}</version>
-      </dependency>
-      <dependency>
-        <groupId>commons-io</groupId>
-        <artifactId>commons-io</artifactId>
-        <version>${version.commons-io}</version>
-      </dependency>
+
       <dependency>
         <groupId>io.camunda</groupId>
         <artifactId>spring-boot-starter-camunda-sdk</artifactId>
         <version>${version.zeebe}</version>
-      </dependency>
-      <dependency>
-        <groupId>io.camunda.spring</groupId>
-        <artifactId>spring-boot-starter-camunda-operate</artifactId>
-        <version>8.7.0</version>
-      </dependency>
-      <dependency>
-        <groupId>org.camunda.feel</groupId>
-        <artifactId>feel-engine</artifactId>
-        <version>1.19.1</version>
-      </dependency>
-      <dependency>
-        <groupId>org.scala-lang</groupId>
-        <artifactId>scala-library</artifactId>
-        <version>2.13.16</version>
-      </dependency>
-      <dependency>
-        <groupId>jakarta.xml.bind</groupId>
-        <artifactId>jakarta.xml.bind-api</artifactId>
-        <version>4.0.2</version>
       </dependency>
       <dependency>
         <groupId>io.camunda</groupId>
@@ -153,54 +92,9 @@
         <version>${version.zeebe}</version>
       </dependency>
       <dependency>
-        <groupId>org.jsoup</groupId>
-        <artifactId>jsoup</artifactId>
-        <version>${version.jsoup}</version>
-      </dependency>
-      <dependency>
-        <groupId>com.slack.api</groupId>
-        <artifactId>slack-api-client</artifactId>
-        <version>${version.slack-api-client}</version>
-      </dependency>
-      <dependency>
-        <groupId>com.opencsv</groupId>
-        <artifactId>opencsv</artifactId>
-        <version>${version.opencsv}</version>
-      </dependency>
-      <dependency>
-        <groupId>javax.xml.bind</groupId>
-        <artifactId>jaxb-api</artifactId>
-        <version>${version.jaxb-api}</version>
-      </dependency>
-      <dependency>
-        <groupId>com.auth0</groupId>
-        <artifactId>java-jwt</artifactId>
-        <version>${version.java-jwt}</version>
-      </dependency>
-      <dependency>
-        <groupId>com.squareup.okio</groupId>
-        <artifactId>okio</artifactId>
-        <version>${version.okio}</version>
-      </dependency>
-      <dependency>
         <groupId>com.tngtech.archunit</groupId>
         <artifactId>archunit-junit5</artifactId>
         <version>${version.archunit}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.checkerframework</groupId>
-        <artifactId>checker-qual</artifactId>
-        <version>3.49.4</version>
-      </dependency>
-      <dependency>
-        <groupId>org.camunda.community.migration</groupId>
-        <artifactId>backend-diagram-converter-core</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.camunda.community.migration</groupId>
-        <artifactId>camunda-7-adapter</artifactId>
-        <version>${project.version}</version>
       </dependency>
     </dependencies>
   </dependencyManagement>
@@ -227,28 +121,8 @@
         </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-assembly-plugin</artifactId>
-          <version>${plugin.version.maven-assembly-plugin}</version>
-        </plugin>
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-resources-plugin</artifactId>
-          <version>${plugin.version.maven-resources-plugin}</version>
-        </plugin>
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-site-plugin</artifactId>
           <version>${plugin.version.maven-site-plugin}</version>
-        </plugin>
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-dependency-plugin</artifactId>
-          <version>${plugin.version.maven-depdendency-plugin}</version>
-        </plugin>
-        <plugin>
-          <groupId>org.graalvm.buildtools</groupId>
-          <artifactId>native-maven-plugin</artifactId>
-          <version>${plugin.version.native-maven-plugin}</version>
         </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
@@ -273,16 +147,6 @@
               <createdDate>${maven.build.timestamp}</createdDate>
             </image>
           </configuration>
-        </plugin>
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-install-plugin</artifactId>
-          <version>${plugin.version.maven-install-plugin}</version>
-        </plugin>
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-shade-plugin</artifactId>
-          <version>${plugin.version.maven-shade-plugin}</version>
         </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
@@ -335,21 +199,6 @@
             </java>
             <pom />
           </configuration>
-        </plugin>
-        <plugin>
-          <groupId>com.google.cloud.functions</groupId>
-          <artifactId>function-maven-plugin</artifactId>
-          <version>${plugin.version.function-maven-plugin}</version>
-        </plugin>
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-release-plugin</artifactId>
-          <version>${plugin.version.maven-release-plugin}</version>
-        </plugin>
-        <plugin>
-          <groupId>com.github.eirslett</groupId>
-          <artifactId>frontend-maven-plugin</artifactId>
-          <version>${plugin.version.frontend-maven-plugin}</version>
         </plugin>
         <plugin>
           <groupId>org.eclipse.m2e</groupId>
