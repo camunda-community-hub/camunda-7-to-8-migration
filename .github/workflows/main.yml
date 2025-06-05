@@ -43,7 +43,7 @@ jobs:
         run: go build
         working-directory: cawemo-to-web-modeler-migration
       - name: Deploy SNAPSHOT / Release
-        uses: camunda-community-hub/community-action-maven-release@v1
+        uses: camunda-community-hub/community-action-maven-release@v2
         with:
           maven-additional-options: -P!autoFormat
           release-version: ${{ github.event.release.tag_name }}
