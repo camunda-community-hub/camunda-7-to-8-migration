@@ -1,1 +1,3 @@
-spring.datasource.url: jdbc:h2:mem:camunda-h2-database
+spring:
+  datasource:
+    url: jdbc:h2:mem:camunda-h2-database
