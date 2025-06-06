@@ -28,7 +28,7 @@
     <version.guava>33.4.6-jre</version.guava>
     <version.error_prone_annotations>2.37.0</version.error_prone_annotations>
 
-    <version.archunit>1.4.0</version.archunit>
+    <version.archunit>1.4.1</version.archunit>
 
     <plugin.version.maven-enforcer-plugin>3.5.0</plugin.version.maven-enforcer-plugin>
     <plugin.version.maven-surefire-plugin>3.5.3</plugin.version.maven-surefire-plugin>
