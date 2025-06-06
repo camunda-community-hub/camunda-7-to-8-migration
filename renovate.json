@@ -2,15 +2,20 @@
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "extends": [
     "config:recommended",
-    ":automergeMinor",
-    ":automergePatch",
     "schedule:automergeNonOfficeHours"
+  ],
+  "labels": [
+    "dependencies"
   ],
   "packageRules": [
     {
-      "description" : "Do not update npm",
-      "matchManagers": ["npm"],
-      "enabled": false
+      "matchUpdateTypes": [
+        "minor",
+        "patch",
+        "pin",
+        "digest"
+      ],
+      "automerge": true
     }
   ]
 }
