@@ -29,6 +29,7 @@ jobs:
       if: always()
       with:
         files: '**/target/surefire-reports/*.xml'
+        comment_mode: off
   Examples:
     runs-on: ubuntu-latest
     permissions:
