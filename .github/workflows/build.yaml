@@ -44,8 +44,10 @@ jobs:
         distribution: 'temurin'
         java-version: '17'
         cache: 'maven'
-    - name: Test examples
-      run: mvn test -f example -B
+    - name: Test Java Adapter examples
+      run: mvn test -f camunda-7-adapter/example -B
+    - name: Test Code Migration Detector examples
+      run: mvn test -f code-migration-detector/example -B
   GoCawemoScript:
     runs-on: ubuntu-latest
     permissions:
