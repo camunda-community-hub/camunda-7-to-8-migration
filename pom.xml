@@ -9,7 +9,7 @@
   <parent>
     <groupId>org.camunda.community</groupId>
     <artifactId>community-hub-release-parent</artifactId>
-    <version>2.1.0</version>
+    <version>2.0.1</version>
   </parent>
 
   <properties>
@@ -20,19 +20,19 @@
     <maven.compiler.source>${version.java}</maven.compiler.source>
     <maven.compiler.target>${version.java}</maven.compiler.target>
 
-    <version.zeebe>8.7.7</version.zeebe>
+    <version.zeebe>8.7.5</version.zeebe>
     <version.camunda.platform>7.23.0</version.camunda.platform>
-    <version.spring-boot>3.5.3</version.spring-boot>
+    <version.spring-boot>3.5.0</version.spring-boot>
 
     <version.protobuf>4.31.1</version.protobuf>
     <version.guava>33.4.8-jre</version.guava>
-    <version.error_prone_annotations>2.40.0</version.error_prone_annotations>
+    <version.error_prone_annotations>2.38.0</version.error_prone_annotations>
 
     <version.archunit>1.4.1</version.archunit>
 
-    <plugin.version.maven-enforcer-plugin>3.6.0</plugin.version.maven-enforcer-plugin>
+    <plugin.version.maven-enforcer-plugin>3.5.0</plugin.version.maven-enforcer-plugin>
     <plugin.version.maven-surefire-plugin>3.5.3</plugin.version.maven-surefire-plugin>
-    <plugin.version.spotless-maven-plugin>2.45.0</plugin.version.spotless-maven-plugin>
+    <plugin.version.spotless-maven-plugin>2.44.5</plugin.version.spotless-maven-plugin>
     <plugin.version.maven-compiler-plugin>3.14.0</plugin.version.maven-compiler-plugin>
     <plugin.version.maven-site-plugin>3.21.0</plugin.version.maven-site-plugin>
     <plugin.version.maven-source-plugin>3.3.1</plugin.version.maven-source-plugin>
@@ -84,17 +84,17 @@
       <dependency>
         <groupId>io.camunda</groupId>
         <artifactId>spring-boot-starter-camunda-sdk</artifactId>
-        <version>${version.zeebe}</version>
+        <version>8.7.5</version>
       </dependency>
       <dependency>
         <groupId>io.camunda</groupId>
         <artifactId>camunda-process-test-spring</artifactId>
-        <version>${version.zeebe}</version>
+        <version>8.7.5</version>
       </dependency>
       <dependency>
         <groupId>com.tngtech.archunit</groupId>
         <artifactId>archunit-junit5</artifactId>
-        <version>${version.archunit}</version>
+        <version>1.4.1</version>
       </dependency>
     </dependencies>
   </dependencyManagement>
