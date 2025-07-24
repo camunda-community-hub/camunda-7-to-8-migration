@@ -22,7 +22,7 @@
 
     <version.zeebe>8.7.8</version.zeebe>
     <version.camunda.platform>7.23.0</version.camunda.platform>
-    <version.spring-boot>3.5.3</version.spring-boot>
+    <version.spring-boot>3.5.4</version.spring-boot>
 
     <version.protobuf>4.31.1</version.protobuf>
     <version.guava>33.4.8-jre</version.guava>
