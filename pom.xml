@@ -26,7 +26,7 @@
 
     <version.protobuf>4.31.1</version.protobuf>
     <version.guava>33.4.8-jre</version.guava>
-    <version.error_prone_annotations>2.40.0</version.error_prone_annotations>
+    <version.error_prone_annotations>2.41.0</version.error_prone_annotations>
 
     <version.archunit>1.4.1</version.archunit>
 
