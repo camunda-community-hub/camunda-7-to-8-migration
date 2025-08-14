@@ -14,7 +14,7 @@ jobs:
       packages: write
       contents: write
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
         name: Checkout
       - name: Set up Go environment
         uses: actions/setup-go@v5
