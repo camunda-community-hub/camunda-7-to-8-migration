@@ -24,7 +24,7 @@
     <version.camunda.platform>7.23.0</version.camunda.platform>
     <version.spring-boot>3.5.4</version.spring-boot>
 
-    <version.protobuf>4.31.1</version.protobuf>
+    <version.protobuf>4.32.0</version.protobuf>
     <version.guava>33.4.8-jre</version.guava>
     <version.error_prone_annotations>2.41.0</version.error_prone_annotations>
 
