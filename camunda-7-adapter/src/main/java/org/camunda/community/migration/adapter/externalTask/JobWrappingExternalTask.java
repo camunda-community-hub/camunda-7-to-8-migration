@@ -1,6 +1,6 @@
 package org.camunda.community.migration.adapter.externalTask;
 
-import io.camunda.zeebe.client.api.response.ActivatedJob;
+import io.camunda.client.api.response.ActivatedJob;
 import java.time.Instant;
 import java.util.Date;
 import java.util.Map;
