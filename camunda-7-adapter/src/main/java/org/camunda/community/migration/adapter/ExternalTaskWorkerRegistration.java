@@ -1,10 +1,10 @@
 package org.camunda.community.migration.adapter;
 
-import io.camunda.zeebe.client.ZeebeClient;
-import io.camunda.zeebe.client.api.worker.JobWorker;
-import io.camunda.zeebe.client.api.worker.JobWorkerBuilderStep1.JobWorkerBuilderStep3;
-import io.camunda.zeebe.spring.client.annotation.processor.AbstractZeebeAnnotationProcessor;
-import io.camunda.zeebe.spring.client.bean.ClassInfo;
+import io.camunda.client.CamundaClient;
+import io.camunda.client.api.worker.JobWorker;
+import io.camunda.client.api.worker.JobWorkerBuilderStep1.JobWorkerBuilderStep3;
+import io.camunda.client.bean.BeanInfo;
+import io.camunda.client.spring.annotation.processor.AbstractCamundaAnnotationProcessor;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -12,16 +12,17 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.Consumer;
+import java.util.function.Supplier;
 import org.camunda.bpm.client.spring.impl.client.ClientConfiguration;
 import org.camunda.bpm.client.spring.impl.subscription.SpringTopicSubscriptionImpl;
 import org.camunda.community.migration.adapter.worker.ExternalTaskHandlerWrapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class ExternalTaskWorkerRegistration extends AbstractZeebeAnnotationProcessor {
+public class ExternalTaskWorkerRegistration extends AbstractCamundaAnnotationProcessor {
   private static final Logger LOG = LoggerFactory.getLogger(ExternalTaskWorkerRegistration.class);
   private final ClientConfiguration clientConfiguration;
-  private final Map<String, SpringTopicSubscriptionImpl> springTopicSubscriptions = new HashMap<>();
+  private final Map<String, Supplier<Object>> springTopicSubscriptions = new HashMap<>();
   private final List<JobWorker> openedWorkers = new ArrayList<>();
 
   public ExternalTaskWorkerRegistration(ClientConfiguration clientConfiguration) {
@@ -43,21 +44,21 @@ public class ExternalTaskWorkerRegistration extends AbstractZeebeAnnotationProce
   }
 
   @Override
-  public boolean isApplicableFor(ClassInfo beanInfo) {
-    return SpringTopicSubscriptionImpl.class.isAssignableFrom(beanInfo.getBean().getClass());
+  protected boolean isApplicableFor(BeanInfo beanInfo) {
+    return SpringTopicSubscriptionImpl.class.isAssignableFrom(beanInfo.getTargetClass());
   }
 
   @Override
-  public void configureFor(ClassInfo beanInfo) {
-    LOG.info("Registering Zeebe worker(s) of bean: {}", beanInfo.getBean());
-    springTopicSubscriptions.put(
-        beanInfo.getBeanName(), (SpringTopicSubscriptionImpl) beanInfo.getBean());
+  protected void configureFor(BeanInfo beanInfo) {
+    LOG.info("Registering Zeebe worker(s) of bean: {}", beanInfo.getBeanName());
+    springTopicSubscriptions.put(beanInfo.getBeanName(), beanInfo.getBeanSupplier());
   }
 
   @Override
-  public void start(ZeebeClient zeebeClient) {
+  public void start(CamundaClient zeebeClient) {
     springTopicSubscriptions.forEach(
-        (beanName, bean) -> {
+        (beanName, beanSupplier) -> {
+          SpringTopicSubscriptionImpl bean = (SpringTopicSubscriptionImpl) beanSupplier.get();
           JobWorkerBuilderStep3 builder =
               zeebeClient
                   .newWorker()
@@ -80,7 +81,7 @@ public class ExternalTaskWorkerRegistration extends AbstractZeebeAnnotationProce
   }
 
   @Override
-  public void stop(ZeebeClient zeebeClient) {
+  public void stop(CamundaClient zeebeClient) {
     openedWorkers.forEach(JobWorker::close);
   }
 }

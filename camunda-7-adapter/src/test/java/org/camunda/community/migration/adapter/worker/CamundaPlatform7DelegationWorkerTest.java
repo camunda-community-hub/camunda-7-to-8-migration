@@ -3,17 +3,25 @@ package org.camunda.community.migration.adapter.worker;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
 
-import io.camunda.zeebe.client.api.ZeebeFuture;
-import io.camunda.zeebe.client.api.command.CompleteJobCommandStep1;
-import io.camunda.zeebe.client.api.command.FinalCommandStep;
-import io.camunda.zeebe.client.api.response.ActivatedJob;
-import io.camunda.zeebe.client.api.response.CompleteJobResponse;
-import io.camunda.zeebe.client.api.worker.JobClient;
+import io.camunda.client.api.CamundaFuture;
+import io.camunda.client.api.command.CompleteJobCommandStep1;
+import io.camunda.client.api.command.CompleteJobResult;
+import io.camunda.client.api.command.FinalCommandStep;
+import io.camunda.client.api.response.ActivatedJob;
+import io.camunda.client.api.response.CompleteJobResponse;
+import io.camunda.client.api.response.DocumentReferenceResponse;
+import io.camunda.client.api.response.UserTaskProperties;
+import io.camunda.client.api.search.enums.JobKind;
+import io.camunda.client.api.search.enums.ListenerEventType;
+import io.camunda.client.api.worker.JobClient;
 import java.io.InputStream;
 import java.time.Duration;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.function.Function;
 import org.camunda.bpm.engine.delegate.DelegateExecution;
 import org.camunda.bpm.engine.delegate.ExecutionListener;
 import org.camunda.bpm.engine.delegate.JavaDelegate;
@@ -149,6 +157,21 @@ class CamundaPlatform7DelegationWorkerTest {
       }
 
       @Override
+      public UserTaskProperties getUserTask() {
+        return null;
+      }
+
+      @Override
+      public JobKind getKind() {
+        return null;
+      }
+
+      @Override
+      public ListenerEventType getListenerEventType() {
+        return null;
+      }
+
+      @Override
       public String toJson() {
         return null;
       }
@@ -156,6 +179,16 @@ class CamundaPlatform7DelegationWorkerTest {
       @Override
       public String getTenantId() {
         return null;
+      }
+
+      @Override
+      public List<DocumentReferenceResponse> getDocumentReferences(String name) {
+        return List.of();
+      }
+
+      @Override
+      public Set<String> getTags() {
+        return Set.of();
       }
     };
   }
@@ -190,13 +223,19 @@ class CamundaPlatform7DelegationWorkerTest {
     }
 
     @Override
+    public CompleteJobCommandStep1 withResult(
+        Function<CompleteJobCommandJobResultStep, CompleteJobResult> consumer) {
+      throw new UnsupportedOperationException();
+    }
+
+    @Override
     public FinalCommandStep<CompleteJobResponse> requestTimeout(Duration requestTimeout) {
       throw new UnsupportedOperationException();
     }
 
     @Override
-    public ZeebeFuture<CompleteJobResponse> send() {
-      return mock(ZeebeFuture.class);
+    public CamundaFuture<CompleteJobResponse> send() {
+      return mock(CamundaFuture.class);
     }
 
     @Override
