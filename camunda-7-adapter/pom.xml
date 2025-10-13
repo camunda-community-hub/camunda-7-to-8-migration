@@ -2,6 +2,7 @@
   <modelVersion>4.0.0</modelVersion>
 
   <artifactId>camunda-7-adapter</artifactId>
+  <name>Camunda 7 Adapter</name>
   <packaging>jar</packaging>
 
   <parent>

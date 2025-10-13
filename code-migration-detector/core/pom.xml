@@ -3,6 +3,7 @@
 
     <artifactId>code-migration-detector-test</artifactId>
     <packaging>jar</packaging>
+  <name>Code Migration Detector Test</name>
 
     <parent>
         <groupId>org.camunda.community.migration</groupId>

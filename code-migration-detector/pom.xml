@@ -2,6 +2,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>code-migration-detector</artifactId>
+  <name>Code Migration Detector</name>
     <packaging>pom</packaging>
     <parent>
         <groupId>org.camunda.community.migration</groupId>
