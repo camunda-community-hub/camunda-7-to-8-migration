@@ -14,7 +14,6 @@ import java.util.List;
 import java.util.concurrent.TimeoutException;
 
 import static io.camunda.process.test.api.assertions.ElementSelectors.*;
-import static io.camunda.zeebe.protocol.Protocol.*;
 import static org.assertj.core.api.Assertions.*;
 
 @SpringBootTest
@@ -43,7 +42,7 @@ public class ApplicationTest {
         .hasActiveElements(byName("Say hello to\n" + "demo"));
     List<ActivatedJob> userTasks = zeebeClient
         .newActivateJobsCommand()
-        .jobType(USER_TASK_JOB_TYPE)
+        .jobType("io.camunda.zeebe:userTask")
         .maxJobsToActivate(100)
         .send()
         .join()
