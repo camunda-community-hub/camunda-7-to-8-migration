@@ -49,7 +49,7 @@
     <dependency>
       <groupId>org.camunda.bpm</groupId>
       <artifactId>camunda-external-task-client-spring</artifactId>
-      <version>7.23.0</version>
+      <version>7.24.0</version>
     </dependency>
   </dependencies>
 
