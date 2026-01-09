@@ -115,9 +115,9 @@
       <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>org.camunda.community.process_test_coverage</groupId>
-      <artifactId>camunda-process-test-coverage-junit5-platform-7</artifactId>
-      <version>3.0.1</version>
+      <groupId>io.holunda.c7</groupId>
+      <artifactId>c7-process-test-coverage-junit5</artifactId>
+      <version>2025.12.2</version>
       <scope>test</scope>
     </dependency>
   </dependencies>
