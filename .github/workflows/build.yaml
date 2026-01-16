@@ -59,7 +59,7 @@ jobs:
     - name: Setup Go
       uses: actions/setup-go@v6
       with:
-        go-version: 1.25.5
+        go-version: 1.25.6
     - name: Build Artefact
       run: go build
       working-directory: cawemo-to-web-modeler-migration
