@@ -117,7 +117,7 @@
     <dependency>
       <groupId>io.holunda.c7</groupId>
       <artifactId>c7-process-test-coverage-junit5</artifactId>
-      <version>2026.04.1</version>
+      <version>2026.04.2</version>
       <scope>test</scope>
     </dependency>
   </dependencies>
