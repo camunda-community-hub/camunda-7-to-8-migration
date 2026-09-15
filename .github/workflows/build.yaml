@@ -13,7 +13,7 @@ jobs:
       uses: actions/setup-java@v5
       with:
         distribution: 'temurin'
-        java-version: '17'
+        java-version: '17.0.20+101'
         cache: 'maven'
     - name: Login to GitHub Container Registry
       uses: docker/login-action@v3
@@ -42,7 +42,7 @@ jobs:
       uses: actions/setup-java@v5
       with:
         distribution: 'temurin'
-        java-version: '17'
+        java-version: '17.0.20+101'
         cache: 'maven'
     - name: Test Java Adapter examples
       run: mvn test -f camunda-7-adapter/example -B
