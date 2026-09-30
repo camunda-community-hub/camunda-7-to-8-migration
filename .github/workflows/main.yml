@@ -23,7 +23,7 @@ jobs:
       - name: Set up Java environment
         uses: actions/setup-java@v5
         with:
-          java-version: '17.0.20+101'
+          java-version: '25.0.4+101.0.LTS'
           distribution: 'temurin'
           cache: maven
           gpg-private-key: ${{ secrets.MAVEN_CENTRAL_GPG_SIGNING_KEY_SEC }}
